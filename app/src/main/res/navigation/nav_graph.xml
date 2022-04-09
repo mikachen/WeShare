@@ -3,26 +3,73 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.zoe.weshare.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
-
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-    </fragment>
+        android:id="@+id/homeFragment"
+        android:name="com.zoe.weshare.home.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/fragment_home"/>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.zoe.weshare.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/mapFragment"
+        android:name="com.zoe.weshare.map.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.zoe.weshare.message.MessageFragment"
+        android:label="fragment_message"
+        tools:layout="@layout/fragment_message" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.zoe.weshare.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/postEventFragment"
+        android:name="com.zoe.weshare.posting.PostEventFragment"
+        android:label="post_event_fragment"
+        tools:layout="@layout/fragment_post_event"/>
+    <fragment
+        android:id="@+id/postGiftFragment"
+        android:name="com.zoe.weshare.posting.PostGiftFragment"
+        android:label="fragment_post_gift"
+        tools:layout="@layout/fragment_post_gift" />
 
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+
+        <!--    Actions   -->
+    <action
+        android:id="@+id/navigate_to_home_fragment"
+        app:destination="@id/homeFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/navigate_to_map_fragment"
+        app:destination="@id/mapFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/navigate_to_message_fragment"
+        app:destination="@id/messageFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/navigate_to_profile_fragment"
+        app:destination="@id/profileFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/navigate_to_post_event_fragment"
+        app:destination="@id/postEventFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/navigate_to_post_gift_fragment"
+        app:destination="@id/postGiftFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
+
+
 </navigation>
