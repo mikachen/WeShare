@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zoe.weshare.MainViewModel
 import com.zoe.weshare.data.source.WeShareRepository
+import com.zoe.weshare.posting.event.PostEventViewModel
 
 
 /**

@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.WeShare" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.WeShare" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#53c0da</item>
         <item name="colorPrimaryVariant">#53c0da</item>
