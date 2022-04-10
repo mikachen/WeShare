@@ -33,7 +33,7 @@ class HomeFragment : Fragment(), CardStackListener {
 
 
         setupCardStackView()
-        
+
         return binding.root
     }
 
