@@ -1,7 +1,9 @@
 package com.zoe.weshare.data.source
 
-import androidx.lifecycle.MutableLiveData
+import com.zoe.weshare.data.Result
 
+import com.zoe.weshare.data.EventPost
+import com.zoe.weshare.data.GiftPost
 
 
 /**
@@ -13,5 +15,12 @@ class DefaultWeShareRepository(private val remoteDataSource: WeShareDataSource,
                                  private val localDataSource: WeShareDataSource
 ) : WeShareRepository {
 
+    override suspend fun postNewEvent(event: EventPost): Result<Boolean> {
+        return remoteDataSource.postNewEvent(event)
+    }
+
+    override suspend fun postNewGift(gift: GiftPost): Result<Boolean>{
+        return remoteDataSource.postNewGift(gift)
+    }
 
 }
