@@ -36,6 +36,13 @@ class MainActivity : AppCompatActivity() {
             this
         ) {
             binding.toolbarTitle.text = it.value
+
+            when(it){
+                CurrentFragmentType.POSTEVENT -> hideAllFabs()
+                CurrentFragmentType.POSTGIFT -> hideAllFabs()
+                else -> showAllFabs()
+            }
+
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -99,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupFab(){
+    private fun setupFab() {
 
         binding.subfabPostEvent.setOnClickListener {
             findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToPostEventFragment())
@@ -107,5 +114,18 @@ class MainActivity : AppCompatActivity() {
         binding.subfabPostGift.setOnClickListener {
             findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToPostGiftFragment())
         }
+    }
+
+    fun hideAllFabs(){
+        binding.fabMain.hide()
+        binding.subfabPostEvent.hide()
+        binding.subfabPostGift.hide()
+        binding.subfabPostFavoriate.hide()
+    }
+    fun showAllFabs(){
+        binding.fabMain.show()
+        binding.subfabPostEvent.show()
+        binding.subfabPostGift.show()
+        binding.subfabPostFavoriate.show()
     }
 }

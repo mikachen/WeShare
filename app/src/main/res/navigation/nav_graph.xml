@@ -27,12 +27,12 @@
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/postEventFragment"
-        android:name="com.zoe.weshare.posting.PostEventFragment"
+        android:name="com.zoe.weshare.posting.event.PostEventFragment"
         android:label="post_event_fragment"
         tools:layout="@layout/fragment_post_event"/>
     <fragment
         android:id="@+id/postGiftFragment"
-        android:name="com.zoe.weshare.posting.PostGiftFragment"
+        android:name="com.zoe.weshare.posting.gift.PostGiftFragment"
         android:label="fragment_post_gift"
         tools:layout="@layout/fragment_post_gift" />
 
@@ -62,13 +62,13 @@
     <action
         android:id="@+id/navigate_to_post_event_fragment"
         app:destination="@id/postEventFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true" />
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="false" />
     <action
         android:id="@+id/navigate_to_post_gift_fragment"
         app:destination="@id/postGiftFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true" />
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="false" />
 
 
 

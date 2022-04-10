@@ -19,8 +19,8 @@ class HomeFragment : Fragment(), CardStackListener {
 
     private lateinit var cardStackView: CardStackView
     private lateinit var binding: FragmentHomeBinding
-    private val manager by lazy { CardStackLayoutManager(requireContext(), this) }
-    private val adapter by lazy { CardStackAdapter(createSpot()) }
+    private lateinit var manager: CardStackLayoutManager
+    private lateinit var adapter: CardStackAdapter
 
 
     override fun onCreateView(
@@ -31,15 +31,17 @@ class HomeFragment : Fragment(), CardStackListener {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
 
+
         setupCardStackView()
-
-
-
+        
         return binding.root
     }
 
     private fun setupCardStackView() {
         cardStackView = binding.cardStackView
+        manager =  CardStackLayoutManager(requireContext(), this)
+        adapter = CardStackAdapter(createSpot())
+
         manager.setStackFrom(StackFrom.None)
         manager.setVisibleCount(3)
         manager.setTranslationInterval(8.0f)
