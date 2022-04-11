@@ -54,9 +54,9 @@
         android:layout_gravity="bottom"
         app:background="@color/white"
         app:fabAnimationMode="slide"
-        app:fabCradleMargin="5dp"
-        app:fabCradleRoundedCornerRadius="20dp"
-        app:fabCradleVerticalOffset="5dp"
+        app:fabCradleMargin="8dp"
+        app:fabCradleRoundedCornerRadius="30dp"
+        app:fabCradleVerticalOffset="2dp"
         app:hideOnScroll="true">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -133,7 +133,9 @@
         android:id="@+id/fab_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_baseline_home_24"
+        android:backgroundTint="#6FB7B7"
+        android:src="@drawable/ic_baseline_add_24"
+        app:maxImageSize="48dp"
         app:layout_anchor="@id/bottomAppBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
