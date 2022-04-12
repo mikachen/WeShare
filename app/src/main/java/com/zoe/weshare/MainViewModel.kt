@@ -8,5 +8,4 @@ import com.zoe.weshare.util.CurrentFragmentType
 class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     val currentFragmentType = MutableLiveData<CurrentFragmentType>()
-
 }

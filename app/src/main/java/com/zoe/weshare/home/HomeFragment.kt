@@ -22,15 +22,13 @@ class HomeFragment : Fragment(), CardStackListener {
     private lateinit var manager: CardStackLayoutManager
     private lateinit var adapter: CardStackAdapter
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-
 
         setupCardStackView()
 
@@ -39,7 +37,7 @@ class HomeFragment : Fragment(), CardStackListener {
 
     private fun setupCardStackView() {
         cardStackView = binding.cardStackView
-        manager =  CardStackLayoutManager(requireContext(), this)
+        manager = CardStackLayoutManager(requireContext(), this)
         adapter = CardStackAdapter(createSpot())
 
         manager.setStackFrom(StackFrom.None)

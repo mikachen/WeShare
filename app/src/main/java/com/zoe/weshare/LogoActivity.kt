@@ -1,9 +1,9 @@
 package com.zoe.weshare
 
 import android.animation.Animator
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.zoe.weshare.databinding.ActivityLogoBinding
 
 class LogoActivity : AppCompatActivity() {

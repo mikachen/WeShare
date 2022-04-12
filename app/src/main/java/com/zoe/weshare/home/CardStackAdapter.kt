@@ -10,7 +10,6 @@ class CardStackAdapter(private var list: List<String> = emptyList()) : RecyclerV
     class CardsViewHolder(val binding: ItemEventCardsViewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(text: String) {
             binding.text.text = text
-
         }
     }
 
@@ -31,8 +30,6 @@ class CardStackAdapter(private var list: List<String> = emptyList()) : RecyclerV
         return list.size
     }
 
-
-
     fun setSpots(list: List<String>) {
         this.list = list
     }
@@ -40,5 +37,4 @@ class CardStackAdapter(private var list: List<String> = emptyList()) : RecyclerV
     fun getSpots(): List<String> {
         return list
     }
-
 }
