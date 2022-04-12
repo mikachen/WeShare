@@ -6,6 +6,12 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'org.jlleitschuh.gradle.ktlint'
+
+}
+ktlint {
+    android.set(true)
+    outputColorName.set("RED")
 }
 
 android {
@@ -50,6 +56,15 @@ android {
 
 dependencies {
 
+    implementation "com.google.android.libraries.places:places:2.6.0"
+
+
+    //Fused Location Provider for Android (includes activity recognition and geofencing)
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    //Google Maps SDK for Android
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+
     //process of requesting permissions at runtime
     implementation 'com.karumi:dexter:6.2.3'
 
@@ -72,6 +87,5 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'com.google.firebase:firebase-firestore-ktx:24.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
     testImplementation 'junit:junit:4.13.2'
 }

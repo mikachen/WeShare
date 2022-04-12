@@ -22,8 +22,8 @@
             android:id="@+id/toolbar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/setofont"
             android:letterSpacing="0.15"
             android:textColor="@color/black"
@@ -31,6 +31,7 @@
             android:textStyle="normal"
             tools:text="Home"
             tools:visibility="visible" />
+
 
     </androidx.appcompat.widget.Toolbar>
 
@@ -64,10 +65,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:elevation="4dp"
-            app:labelVisibilityMode="unlabeled"
             android:background="@drawable/transparent_background"
+            android:elevation="4dp"
             app:itemIconSize="@dimen/size_bottom_nav_icon"
+            app:labelVisibilityMode="unlabeled"
             app:menu="@menu/bottom_nav_menu" />
 
 
@@ -114,8 +115,8 @@
             android:id="@+id/subfab_post_gift"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="35dp"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="35dp"
             android:backgroundTint="#FFC0CB"
             android:scaleType="center"
             android:src="@drawable/ic_baseline_card_giftcard_24"
@@ -135,10 +136,10 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#6FB7B7"
         android:src="@drawable/ic_baseline_add_24"
-        app:maxImageSize="48dp"
         app:layout_anchor="@id/bottomAppBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxImageSize="48dp" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

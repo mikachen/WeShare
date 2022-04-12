@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.factory.ViewModelFactory
 
-
 /***
  * Extension functions for Activity.
  */

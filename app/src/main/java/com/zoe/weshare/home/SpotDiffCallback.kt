@@ -22,5 +22,4 @@ class SpotDiffCallback(
     override fun areContentsTheSame(oldPosition: Int, newPosition: Int): Boolean {
         return old[oldPosition] == new[newPosition]
     }
-
 }

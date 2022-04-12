@@ -3,10 +3,12 @@ package com.zoe.weshare.posting.gift
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.GiftPost
+import com.zoe.weshare.data.PostLocation
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
@@ -22,6 +24,7 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
     val gift: LiveData<GiftPost>
         get() = _gift
 
+    val locationChoice = MutableLiveData<LatLng>()
 
     // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()
@@ -39,7 +42,6 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
     val error: LiveData<String>
         get() = _error
 
-
     private val _leave = MutableLiveData<Boolean>()
     val leave: LiveData<Boolean>
         get() = _leave
@@ -47,7 +49,6 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
     private val _readyToPost = MutableLiveData<Boolean>()
     val readyToPost: LiveData<Boolean>
         get() = _readyToPost
-
 
     fun newPost(gift: GiftPost) {
         coroutineScope.launch {
@@ -77,17 +78,15 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
     }
 
     // fragment view binding edit text pass in data
-    fun updateTitle(title: String) {
-        if (title.isEmpty()) {
-            _readyToPost.value = false
-        } else {
-
+    fun updateTitle(title: String, point: LatLng) {
+        if (title.isNotEmpty()) {
             _gift.apply {
                 value = GiftPost(
                     title = title,
-                    author = authorD)
+                    author = authorD,
+                    location = PostLocation(point.latitude.toString(), point.longitude.toString())
+                )
             }
-            _readyToPost.value = true
         }
     }
 
@@ -99,4 +98,3 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
         _leave.value = null
     }
 }
-

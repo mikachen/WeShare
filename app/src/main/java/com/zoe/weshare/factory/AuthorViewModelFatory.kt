@@ -7,7 +7,6 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 
-
 /**
  * Factory for all ViewModels which need [Author].
  */

@@ -29,12 +29,20 @@
         android:id="@+id/postEventFragment"
         android:name="com.zoe.weshare.posting.event.PostEventFragment"
         android:label="post_event_fragment"
-        tools:layout="@layout/fragment_post_event"/>
+        tools:layout="@layout/fragment_post_event">
+        <action
+            android:id="@+id/action_postEventFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/postGiftFragment"
         android:name="com.zoe.weshare.posting.gift.PostGiftFragment"
         android:label="fragment_post_gift"
-        tools:layout="@layout/fragment_post_gift" />
+        tools:layout="@layout/fragment_post_gift" >
+        <action
+            android:id="@+id/action_postGiftFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
+    </fragment>
 
 
         <!--    Actions   -->
@@ -64,12 +72,18 @@
         app:destination="@id/postEventFragment"
         app:popUpTo="@id/homeFragment"
         app:popUpToInclusive="false" />
+
     <action
         android:id="@+id/navigate_to_post_gift_fragment"
         app:destination="@id/postGiftFragment"
         app:popUpTo="@id/homeFragment"
         app:popUpToInclusive="false" />
 
+    <fragment
+        android:id="@+id/searchLocationFragment"
+        android:name="com.zoe.weshare.seachLocation.SearchLocationFragment"
+        android:label="fragment_search_location"
+        tools:layout="@layout/fragment_search_location" />
 
 
 </navigation>
