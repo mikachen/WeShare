@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.posting.event.PostEventViewModel
-
 
 class PostGiftFragment : Fragment() {
     val author = Author(
@@ -22,23 +20,13 @@ class PostGiftFragment : Fragment() {
     private lateinit var binding: FragmentPostGiftBinding
     private val viewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
 
-
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
         binding = FragmentPostGiftBinding.inflate(inflater, container, false)
-
-        viewModel.readyToPost.observe(viewLifecycleOwner) {
-            if (it) {
-                viewModel.gift.value?.let { gift -> viewModel.newPost(gift) }
-            }else{
-                Toast.makeText(activity,"請檢查資料", Toast.LENGTH_SHORT).show()
-            }
-        }
-
 
         setupNextBtn()
 
@@ -47,13 +35,7 @@ class PostGiftFragment : Fragment() {
 
     private fun setupNextBtn() {
         binding.nextButton.setOnClickListener {
-            viewModel.updateTitle(collectData())
+            findNavController().navigate(PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment())
         }
-    }
-
-    private fun collectData(): String {
-        val title = binding.editTitle.text.toString()
-
-        return title
     }
 }

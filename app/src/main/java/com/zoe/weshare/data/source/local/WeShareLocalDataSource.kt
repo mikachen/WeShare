@@ -6,7 +6,6 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareDataSource
 
-
 /*
  * Concrete implementation of a WeShare source as a db.
  */
@@ -20,4 +19,11 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getGifts(): Result<List<GiftPost>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getEvents(): Result<List<EventPost>> {
+        TODO("Not yet implemented")
+    }
 }

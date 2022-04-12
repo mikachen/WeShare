@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zoe.weshare.MainViewModel
 import com.zoe.weshare.data.source.WeShareRepository
-import com.zoe.weshare.posting.event.PostEventViewModel
-
+import com.zoe.weshare.map.MapViewModel
+import com.zoe.weshare.seachLocation.SearchLocationViewModel
 
 /**
  * Factory for all ViewModels.
@@ -20,6 +20,12 @@ class ViewModelFactory constructor(
             when {
                 isAssignableFrom(MainViewModel::class.java) ->
                     MainViewModel(repository)
+
+                isAssignableFrom(SearchLocationViewModel::class.java) ->
+                    SearchLocationViewModel(repository)
+
+                isAssignableFrom(MapViewModel::class.java) ->
+                    MapViewModel(repository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

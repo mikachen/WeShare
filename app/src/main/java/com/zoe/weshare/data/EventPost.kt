@@ -1,7 +1,7 @@
 package com.zoe.weshare.data
 
 data class EventPost(
-    var id: String = "", //unique = doc id
+    var id: String = "", // unique = doc id
     var author: Author? = null,
     var title: String = "",
     var sort: String = "",
