@@ -3,10 +3,12 @@ package com.zoe.weshare.posting.event
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.maps.model.LatLng
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.EventPost
+import com.zoe.weshare.data.PostLocation
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
@@ -18,7 +20,7 @@ import kotlinx.coroutines.launch
 class PostEventViewModel(private val repository: WeShareRepository, private val authorD: Author?) :
     ViewModel() {
 
-    private val _event = MutableLiveData<EventPost>()
+    val _event = MutableLiveData<EventPost>()
     val event: LiveData<EventPost>
         get() = _event
 
@@ -74,7 +76,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     }
 
     // fragment view binding edit text pass in data
-    fun updateTitle(title: String) {
+    fun updateTitle(title: String, point: LatLng) {
         if (title.isEmpty()) {
             _readyToPost.value = false
         } else {
@@ -82,7 +84,8 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             _event.apply {
                 value = EventPost(
                     title = title,
-                    author = authorD
+                    author = authorD,
+                    location = PostLocation(point.latitude.toString(), point.longitude.toString())
                 )
             }
             _readyToPost.value = true

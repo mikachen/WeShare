@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
+import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.PostLocation
 import com.zoe.weshare.data.Result
@@ -21,9 +22,9 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
     val gifts: LiveData<List<GiftPost>>
         get() = _gifts
 
-    private var _giftsLocation = MutableLiveData<List<PostLocation>>()
-    val giftsLocation: LiveData<List<PostLocation>>
-        get() = _giftsLocation
+    private var _events = MutableLiveData<List<EventPost>>()
+    val events: LiveData<List<EventPost>>
+        get() = _events
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -45,9 +46,9 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     init {
         getGiftsResult()
+        getEventsResult()
     }
 
-    private val locations = mutableListOf<PostLocation>()
 
     private fun getGiftsResult() {
 
@@ -55,35 +56,64 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
             _status.value = LoadApiStatus.LOADING
             val result = repository.getGifts()
 
-            when (result) {
+            _gifts.value = when (result) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    _gifts.value = result.data!!
-
-                    result.data.forEach {
-                        it.location?.let { it1 -> locations.add(it1) }
-                    }
-                    _giftsLocation.value = locations
+                     result.data
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    _gifts.value = null
+                     null
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    _gifts.value = null
+                    null
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                    _gifts.value = null
+                     null
                 }
             }
             _refreshStatus.value = false
         }
     }
+
+    private fun getEventsResult() {
+
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+            val result = repository.getEvents()
+
+            _events.value = when (result) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    result.data
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+            _refreshStatus.value = false
+        }
+    }
+
 }

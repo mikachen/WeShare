@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class PostGiftViewModel(private val repository: WeShareRepository, private val authorD: Author?) :
     ViewModel() {
 
-    private val _gift = MutableLiveData<GiftPost>()
+    val _gift = MutableLiveData<GiftPost>()
     val gift: LiveData<GiftPost>
         get() = _gift
 
