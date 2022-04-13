@@ -34,6 +34,7 @@
             android:id="@+id/action_postEventFragment_to_searchLocationFragment"
             app:destination="@id/searchLocationFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/postGiftFragment"
         android:name="com.zoe.weshare.posting.gift.PostGiftFragment"
@@ -42,6 +43,22 @@
         <action
             android:id="@+id/action_postGiftFragment_to_searchLocationFragment"
             app:destination="@id/searchLocationFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/searchLocationFragment"
+        android:name="com.zoe.weshare.seachLocation.SearchLocationFragment"
+        android:label="fragment_search_location"
+        tools:layout="@layout/fragment_search_location" >
+        <argument
+            android:name="newGift"
+            app:argType="com.zoe.weshare.data.GiftPost"
+            app:nullable="true" />
+        <argument
+            android:name="newEvent"
+            app:argType="com.zoe.weshare.data.EventPost"
+            app:nullable="true" />
     </fragment>
 
 
@@ -78,12 +95,6 @@
         app:destination="@id/postGiftFragment"
         app:popUpTo="@id/homeFragment"
         app:popUpToInclusive="false" />
-
-    <fragment
-        android:id="@+id/searchLocationFragment"
-        android:name="com.zoe.weshare.seachLocation.SearchLocationFragment"
-        android:label="fragment_search_location"
-        tools:layout="@layout/fragment_search_location" />
 
 
 </navigation>

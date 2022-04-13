@@ -1,9 +1,9 @@
 package com.zoe.weshare.seachLocation
 
+import android.os.Bundle
 import android.Manifest
 import android.location.Address
 import android.location.Geocoder
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +28,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import java.util.*
 
@@ -45,8 +46,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
     var isPermissionGranted: Boolean = false
 
     private val defaultTaiwan = LatLng(23.897879, 121.063772)
-    private val viewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
-//    private val viewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,13 +53,44 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?,
     ): View? {
 
+
+        val newEvent = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newEvent }
+        val newGift = arguments?.let {SearchLocationFragmentArgs.fromBundle(it).newGift}
+
+        Log.d("newEvent","$newEvent")
+        Log.d("newGift","$newGift")
+
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
+
+
+        if(newEvent != null){
+            val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
+            Log.d("eventViewModel","Create")
+            eventViewModel._event.value = newEvent
+
+            setUpSearchView(eventVm = eventViewModel, giftVm = null)
+
+            binding.nextButton.setOnClickListener {
+                eventViewModel.event.value?.let { event -> eventViewModel.newPost(event) }
+            }
+
+        } else{
+            val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
+            Log.d("giftViewModel","Create")
+
+            giftViewModel._gift.value = newGift
+
+            setUpSearchView(eventVm = null, giftVm = giftViewModel)
+
+            binding.nextButton.setOnClickListener {
+                giftViewModel.gift.value?.let { gift -> giftViewModel.newPost(gift) }
+            }
+        }
+
 
         // 檢查、要求user啟用ACCESS_FINE_LOCATION權限
         checkUserPermissions()
 
-        setupSubmitBtn()
-        setUpSearchView()
 
         // 當user同意location權限後，檢查user是否有啟用GooglePlayService
         if (isPermissionGranted) {
@@ -79,13 +109,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    private fun setupSubmitBtn() {
-        binding.nextButton.setOnClickListener {
-            viewModel.gift.value?.let { gift -> viewModel.newPost(gift) }
-        }
-    }
 
-    private fun setUpSearchView() {
+    private fun setUpSearchView(eventVm: PostEventViewModel? , giftVm: PostGiftViewModel?) {
 
         searchView = binding.searchView
 
@@ -94,6 +119,9 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return if (query != null) {
+
+                    map.clear() //清掉舊marker
+
                     val geocoder = Geocoder(requireContext(), Locale.getDefault())
 
                     try {
@@ -112,7 +140,10 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
                             map.animateCamera(CameraUpdateFactory.newLatLngZoom(result, 16F))
 
-                            viewModel.updateTitle(query, result)
+                            eventVm?.updateTitle(title = query, point = result )
+                            giftVm?.updateTitle(title = query, point = result )
+
+                            //TODO  位置寫入VM
                         }
                     } catch (e: Exception) {
 

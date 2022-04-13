@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.EventPost
+import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 
@@ -18,7 +20,6 @@ class PostGiftFragment : Fragment() {
     )
 
     private lateinit var binding: FragmentPostGiftBinding
-    private val viewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +36,10 @@ class PostGiftFragment : Fragment() {
 
     private fun setupNextBtn() {
         binding.nextButton.setOnClickListener {
-            findNavController().navigate(PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment())
+            val mockGiftData = GiftPost(
+                title = "giftTitle"
+            )
+            findNavController().navigate(PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment(newGift = mockGiftData,newEvent = null))
         }
     }
 }
