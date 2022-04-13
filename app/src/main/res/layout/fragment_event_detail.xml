@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_attend_buttons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scrollView_child"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/images_layout"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:background="@color/greenTestColor"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- header information : title, user's image, name, locations-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_header"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/images_layout">
+
+                <TextView
+                    android:id="@+id/text_event_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="淨灘活動" />
+
+                <ImageView
+                    android:id="@+id/image_profile_avatar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_profile"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_event_title" />
+
+                <TextView
+                    android:id="@+id/text_profile_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:letterSpacing="0.15"
+                    android:maxLines="1"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/image_profile_avatar"
+                    app:layout_constraintTop_toTopOf="@id/image_profile_avatar"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    tools:text="Zoelo" />
+
+                <TextView
+                    android:id="@+id/created_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:letterSpacing="0.15"
+                    android:maxLines="1"
+                    app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/text_profile_name"
+                    tools:text="2022-04-05刊登" />
+
+                <TextView
+                    android:id="@+id/text_discontinued_countdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:letterSpacing="0.15"
+                    android:maxLines="1"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_profile_avatar"
+                    app:layout_constraintStart_toEndOf="@+id/image_profile_avatar"
+                    tools:text="還有3小時結束" />
+
+                <TextView
+                    android:id="@+id/text_posted_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:letterSpacing="0.15"
+                    android:maxLines="1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/image_profile_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/image_profile_avatar"
+                    tools:text="刊登位置：龍山寺" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_header" />
+
+            <!-- detail: sort, description, volunteerNeeds-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_detail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider1">
+
+                <TextView
+                    android:id="@+id/text_sort"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="分類：環境保護" />
+
+                <TextView
+                    android:id="@+id/text_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="20sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_sort"
+                    tools:text="「只要親自淨灘過一次，就能了解拋棄式塑膠的恐怖。」這是大多數人參與過淨灘活動後的感想。臺灣是海島國家，卻從來只養成海鮮文化，就算幾乎每個縣市都與海比鄰，與「海洋」的距離卻非常遙遠。" />
+
+                <TextView
+                    android:id="@+id/text_volunteer_needs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintStart_toStartOf="@id/text_sort"
+                    app:layout_constraintTop_toBottomOf="@id/text_description"
+                    tools:text="需求志工數4人"
+
+                    />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_detail" />
+
+            <!-- layout_bulletin_board-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_bulletin_board"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider2">
+
+                <Button
+                    android:id="@+id/button_like_event"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="點讚活動"
+                    app:layout_constraintEnd_toStartOf="@id/button_leave_comment"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/button_leave_comment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="分享留言"
+                    app:layout_constraintEnd_toStartOf="@id/button_share_event"
+                    app:layout_constraintStart_toEndOf="@id/button_like_event"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/button_share_event"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="分享活動"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/button_leave_comment"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_leave_comment"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:hint="leave a comment ..."
+                    app:layout_constraintEnd_toStartOf="@id/button_send_comment"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/button_like_event">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edit_leave_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:gravity="center|start"
+                        android:singleLine="true"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <ImageView
+                    android:id="@+id/button_send_comment"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@color/greenTestColor"
+                    android:src="@drawable/ic_launcher_foreground"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_leave_comment"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/layout_leave_comment" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layout_leave_comment" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider4"
+                    tools:itemCount="8"
+                    tools:listitem="@layout/item_event_bulletin_board" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- layout attend btns-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_attend_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nestedScrollView">
+
+        <Button
+            android:id="@+id/attend_event_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="我要參加"
+            app:layout_constraintEnd_toStartOf="@id/attend_volunteer_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/attend_volunteer_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="志工登記"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/attend_event_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

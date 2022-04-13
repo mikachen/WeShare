@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
+
+
+    <ImageView
+        android:id="@+id/image_profile_avatar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_profile"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_profile_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:letterSpacing="0.15"
+        android:maxLines="1"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/image_profile_avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Merry Jane" />
+
+    <TextView
+        android:id="@+id/text_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:letterSpacing="0.15"
+        android:maxLines="1"
+        app:layout_constraintTop_toBottomOf="@id/text_profile_name"
+        app:layout_constraintStart_toStartOf="@id/text_profile_name"
+        tools:text="每年都要參加der拉～～～" />
+
+    <TextView
+        android:id="@+id/created_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="56dp"
+        android:maxLines="1"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
+        app:layout_constraintEnd_toStartOf="@id/block_btn"
+        app:layout_constraintTop_toTopOf="@id/text_profile_name"
+        tools:text="3 hrs ago" />
+
+    <TextView
+        android:id="@+id/block_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:letterSpacing="0.15"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_profile_name"
+        tools:text="封鎖它" />
+
+    <TextView
+        android:id="@+id/like_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:letterSpacing="0.15"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="點贊" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
