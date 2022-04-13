@@ -1,14 +1,18 @@
 package com.zoe.weshare.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+
+@Parcelize
 data class EventPost(
-    var id: String = "", // unique = doc id
+    var id: String = "",
     var author: Author? = null,
     var title: String = "",
     var sort: String = "",
-//    var coEditor: String, //共編人
     var volunteerNeeds: Int = -1,
     var description: String = "",
     var image: String = "",
     var createdTime: Long = -1,
-//    var location: GeoPoint, //N,E
-)
+    var location: PostLocation? = null
+):Parcelable

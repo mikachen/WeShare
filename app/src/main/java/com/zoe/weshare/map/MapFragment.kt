@@ -29,6 +29,7 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zoe.weshare.MainActivity
+import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentMapBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -61,15 +62,21 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (checkGooglePlayService()) {
                 binding.mapView.onCreate(savedInstanceState)
                 binding.mapView.getMapAsync(this)
-                fusedLocationClient =
-                    LocationServices.getFusedLocationProviderClient(requireContext())
+
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
                 val viewModel by viewModels<MapViewModel> { getVmFactory() }
 
                 viewModel.gifts.observe(viewLifecycleOwner) {
                     Log.d("giftsLocation", "observe $it")
-                    createMarker(it)
+                    createMarker(gifts = it, null)
                 }
+
+                viewModel.events.observe(viewLifecycleOwner) {
+                    Log.d("giftsLocation", "observe $it")
+                    createMarker(null,events = it)
+                }
+
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -82,13 +89,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    fun createMarker(gifts: List<GiftPost>) {
+    private fun createMarker(gifts: List<GiftPost>?, events: List<EventPost>?) {
 //        map.addMarker(MarkerOptions().position(hotel).title("Hotel"))
 //            ?.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_gift))
 
-        gifts.forEach {
+        gifts?.forEach {
 
-            val point = LatLng(it.location!!.latitude.toDouble(), it.location!!.longitude.toDouble())
+            val point =
+                LatLng(it.location!!.latitude.toDouble(), it.location!!.longitude.toDouble())
 
             map.addMarker(
                 MarkerOptions()
@@ -96,6 +104,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     .title(it.title)
             )
                 ?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        }
+
+        events?.forEach {
+
+            val point =
+                LatLng(it.location!!.latitude.toDouble(), it.location!!.longitude.toDouble())
+
+            map.addMarker(
+                MarkerOptions()
+                    .position(point)
+                    .title(it.title)
+            )
+                ?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
         }
     }
 
@@ -172,14 +193,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             val dialog = googleApiAvailability.getErrorDialog(
                 requireActivity(),
                 result,
-                201,
-                object : DialogInterface.OnCancelListener {
-                    override fun onCancel(p0: DialogInterface?) {
-                        Toast.makeText(requireContext(), "User Cancel Dialog", Toast.LENGTH_LONG)
-                            .show()
-                    }
-                }
-            )
+                201
+            ) {
+                Toast.makeText(requireContext(), "User Cancel Dialog", Toast.LENGTH_LONG)
+                    .show()
+            }
             dialog?.show()
         }
         return false

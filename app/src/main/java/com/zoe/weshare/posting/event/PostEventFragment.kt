@@ -1,16 +1,16 @@
 package com.zoe.weshare.posting.event
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.EventPost
+import com.zoe.weshare.data.PostLocation
 import com.zoe.weshare.databinding.FragmentPostEventBinding
-import com.zoe.weshare.ext.getVmFactory
 
 class PostEventFragment : Fragment() {
 
@@ -20,7 +20,6 @@ class PostEventFragment : Fragment() {
     )
 
     private lateinit var binding: FragmentPostEventBinding
-    private val viewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,14 +29,6 @@ class PostEventFragment : Fragment() {
 
         binding = FragmentPostEventBinding.inflate(inflater, container, false)
 
-        viewModel.readyToPost.observe(viewLifecycleOwner) {
-            if (it) {
-                viewModel.event.value?.let { event -> viewModel.newPost(event) }
-            } else {
-                Toast.makeText(activity, "請檢查資料", Toast.LENGTH_SHORT).show()
-            }
-        }
-
         setupNextBtn()
 
         return binding.root
@@ -45,7 +36,29 @@ class PostEventFragment : Fragment() {
 
     private fun setupNextBtn() {
         binding.nextButton.setOnClickListener {
-            findNavController().navigate(PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment())
+
+            val author = Author(
+                name = "Mock",
+                userId = "Mock1234"
+            )
+
+            val newlocation = PostLocation("23.897879", "121.063772")
+            val mockEventData = EventPost(
+//                id = "testDocID",
+//                author = author,
+//                title = "giftTitle",
+//                sort = "Test",
+//                volunteerNeeds = 123,
+//                description = "1135135135135135",
+//                image = "1",
+//                createdTime = 213123123123213,
+//                location = newlocation
+            )
+
+            Log.d("mockEventData","$mockEventData")
+            findNavController().navigate(PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment(
+                newEvent = mockEventData,
+                newGift = null))
         }
     }
 }
