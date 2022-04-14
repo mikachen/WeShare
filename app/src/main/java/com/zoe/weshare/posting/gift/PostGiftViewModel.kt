@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class PostGiftViewModel(private val repository: WeShareRepository, private val authorD: Author?) :
     ViewModel() {
 
-    val _gift = MutableLiveData<GiftPost>()
+    var _gift = MutableLiveData<GiftPost>()
     val gift: LiveData<GiftPost>
         get() = _gift
 
@@ -78,15 +78,14 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
     }
 
     // fragment view binding edit text pass in data
-    fun updateTitle(title: String, point: LatLng) {
-        if (title.isNotEmpty()) {
-            _gift.apply {
-                value = GiftPost(
-                    title = title,
-                    author = authorD,
-                    location = PostLocation(point.latitude.toString(), point.longitude.toString())
-                )
-            }
+    fun updateLocation(locationName: String, point: LatLng) {
+        _gift.value?.apply {
+
+            location = PostLocation(
+                locationName = locationName,
+                latitude = point.latitude.toString(),
+                longitude = point.longitude.toString()
+            )
         }
     }
 

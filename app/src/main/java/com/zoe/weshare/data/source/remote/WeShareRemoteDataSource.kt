@@ -16,7 +16,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
     private const val PATH_EVENT_POST = "EventPost"
     private const val PATH_GIFT_POST = "GiftPost"
     private const val PATH_USER_INFO = "Users"
-    private const val PATH_USER_WHO_ASK_FOR_GIFT ="UserWhoRequest"
+    private const val PATH_USER_WHO_ASK_FOR_GIFT = "UserWhoRequest"
 
     private const val KEY_CREATED_TIME = "createdTime"
 
@@ -29,13 +29,8 @@ object WeShareRemoteDataSource : WeShareDataSource {
             event.id = document.id
             event.createdTime = Calendar.getInstance().timeInMillis
 
-            /** MockData */
-            event.sort = "淨灘"
-            event.volunteerNeeds = 4
-            event.description = "測試文字測試文字測試文字測試文字測試文字測試文字測試文字"
             event.image =
-                "https://images-cn.ssl-images-amazon.cn/images/I/71PdnmcB7gL.__AC_SY300_SX300_QL70_ML2_.jpg"
-
+                "https://img.ltn.com.tw/Upload/news/600/2019/09/29/2930967_2_1.jpg"
             document
                 .set(event)
                 .addOnCompleteListener { task ->
@@ -64,13 +59,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
             gift.id = document.id
             gift.createdTime = Calendar.getInstance().timeInMillis
 
-            /** MockData */
-            gift.sort = "食品"
-            gift.condidtion = "全新"
+
             gift.quantity = 8
-            gift.description = "測試文字測試文字測試文字測試文字測試文字測試文字測試文字"
             gift.image =
-                "https://static.parade.com/wp-content/uploads/2020/05/cat-jokes.png"
+                "https://cs-a.ecimg.tw/items/DBAB08A39148142/000001_1553076513.jpg"
 
             document
                 .set(gift)
@@ -143,7 +135,8 @@ object WeShareRemoteDataSource : WeShareDataSource {
             }
     }
 
-    override suspend fun getUserInfo(uid: String): Result<UserProfile> = suspendCoroutine { continuation ->
+    override suspend fun getUserInfo(uid: String): Result<UserProfile> =
+        suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
                 .collection(PATH_USER_INFO)
                 .whereEqualTo("uid", uid)
@@ -172,32 +165,34 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun getGiftAskForComments(docId: String): Result<List<Comment>>  = suspendCoroutine { continuation ->
-        FirebaseFirestore.getInstance()
-            .collection(PATH_GIFT_POST).document(docId)
-            .collection(PATH_USER_WHO_ASK_FOR_GIFT).orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val list = mutableListOf<Comment>()
-                    for (document in task.result!!) {
-                        Logger.d(document.id + " => " + document.data)
+    override suspend fun getGiftAskForComments(docId: String): Result<List<Comment>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(PATH_GIFT_POST).document(docId)
+                .collection(PATH_USER_WHO_ASK_FOR_GIFT)
+                .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<Comment>()
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
 
-                        val requestComments = document.toObject(Comment::class.java)
-                        list.add(requestComments)
-                    }
-                    continuation.resume(Result.Success(list))
-                } else {
-                    task.exception?.let {
+                            val requestComments = document.toObject(Comment::class.java)
+                            list.add(requestComments)
+                        }
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
 
-                        Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
-                        continuation.resume(Result.Error(it))
-                        return@addOnCompleteListener
+                            Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                     }
-                    continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                 }
-            }
-    }
+        }
 
 }
 

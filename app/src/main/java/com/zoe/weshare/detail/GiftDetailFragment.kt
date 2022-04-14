@@ -52,11 +52,11 @@ class GiftDetailFragment : Fragment() {
 
     private fun setUpDetailContent(selectedGift: GiftPost) {
 
-        bindImage(binding.images, selectedGift.image)
-
         binding.apply {
+            bindImage(this.images, selectedGift.image)
             textGiftTitle.text = selectedGift.title
             textProfileName.text = selectedGift.author?.name
+            bindImage(this.imageProfileAvatar, selectedGift.author?.image)
             textPostedLocation.text = selectedGift.location?.locationName
             textCreatedTime.text = selectedGift.createdTime.toDisplayFormat()
             textSort.text = selectedGift.sort
