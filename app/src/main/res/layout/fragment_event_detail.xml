@@ -3,6 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="@dimen/height_bottom_app_bar"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -23,11 +24,11 @@
 
 
             <ImageView
-                android:id="@+id/images_layout"
+                android:id="@+id/images"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:background="@color/greenTestColor"
-                android:scaleType="centerCrop"
+                android:layout_height="500dp"
+                android:src="@drawable/tiger_pngrepo_com"
+                android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -39,10 +40,10 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/images_layout">
+                app:layout_constraintTop_toBottomOf="@id/images">
 
                 <TextView
-                    android:id="@+id/text_event_title"
+                    android:id="@+id/text_gift_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -63,7 +64,7 @@
                     android:src="@drawable/ic_profile"
                     app:layout_constraintDimensionRatio="1:1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_event_title" />
+                    app:layout_constraintTop_toBottomOf="@id/text_gift_title" />
 
                 <TextView
                     android:id="@+id/text_profile_name"
@@ -80,7 +81,7 @@
                     tools:text="Zoelo" />
 
                 <TextView
-                    android:id="@+id/created_time"
+                    android:id="@+id/text_created_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
@@ -153,14 +154,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textSize="20sp"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_sort"
                     tools:text="「只要親自淨灘過一次，就能了解拋棄式塑膠的恐怖。」這是大多數人參與過淨灘活動後的感想。臺灣是海島國家，卻從來只養成海鮮文化，就算幾乎每個縣市都與海比鄰，與「海洋」的距離卻非常遙遠。" />
 
                 <TextView
-                    android:id="@+id/text_volunteer_needs"
+                    android:id="@+id/text_registrants_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -195,21 +196,21 @@
                 app:layout_constraintTop_toBottomOf="@id/divider2">
 
                 <Button
-                    android:id="@+id/button_like_event"
+                    android:id="@+id/button_like_gift"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="點讚活動"
-                    app:layout_constraintEnd_toStartOf="@id/button_leave_comment"
+                    app:layout_constraintEnd_toStartOf="@id/button_send_pm"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
-                    android:id="@+id/button_leave_comment"
+                    android:id="@+id/button_send_pm"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="分享留言"
                     app:layout_constraintEnd_toStartOf="@id/button_share_event"
-                    app:layout_constraintStart_toEndOf="@id/button_like_event"
+                    app:layout_constraintStart_toEndOf="@id/button_like_gift"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <Button
@@ -218,7 +219,7 @@
                     android:layout_height="wrap_content"
                     android:text="分享活動"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/button_leave_comment"
+                    app:layout_constraintStart_toEndOf="@id/button_send_pm"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -231,7 +232,7 @@
                     android:hint="leave a comment ..."
                     app:layout_constraintEnd_toStartOf="@id/button_send_comment"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/button_like_event">
+                    app:layout_constraintTop_toBottomOf="@id/button_like_gift">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_leave_comment"
@@ -271,7 +272,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider4"
                     tools:itemCount="8"
-                    tools:listitem="@layout/item_event_bulletin_board" />
+                    tools:listitem="@layout/item_comment_board" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -292,7 +293,7 @@
         app:layout_constraintTop_toBottomOf="@id/nestedScrollView">
 
         <Button
-            android:id="@+id/attend_event_button"
+            android:id="@+id/ask_for_gift_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="我要參加"
@@ -306,7 +307,7 @@
             android:layout_height="wrap_content"
             android:text="志工登記"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/attend_event_button"
+            app:layout_constraintStart_toEndOf="@id/ask_for_gift_button"
             app:layout_constraintTop_toTopOf="parent" />
 
 

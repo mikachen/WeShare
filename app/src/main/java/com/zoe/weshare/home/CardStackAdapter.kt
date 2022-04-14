@@ -3,14 +3,35 @@ package com.zoe.weshare.home
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.ItemEventCardsViewBinding
+import com.zoe.weshare.ext.bindImage
+import com.zoe.weshare.ext.toDisplayFormat
 
-class CardStackAdapter(private var list: List<String> = emptyList()) : RecyclerView.Adapter<CardStackAdapter.CardsViewHolder>() {
+//TODO if融合卡片內容，把贈品 活動取出 標題 圖片 刊登時間 地點名 來顯示recyclerView??
+
+class CardStackAdapter(private val onClickListener: StackViewOnClickListener) : RecyclerView.Adapter<CardStackAdapter.CardsViewHolder>() {
+
+
+    var list: List<GiftPost> = emptyList()
+
 
     class CardsViewHolder(val binding: ItemEventCardsViewBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(text: String) {
-            binding.text.text = text
+        fun bind(data: GiftPost) {
+
+            binding.textTitle.text = data.title
+            binding.textPostedLocation.text = data.title
+            binding.textDiscontinuedCountdown.text = data.createdTime.toDisplayFormat()
+
+            bindImage(binding.image,data.image)
+
+
         }
+    }
+
+
+    class StackViewOnClickListener(val clickListener: (selectedProduct: GiftPost) -> Unit) {
+        fun onClick(selectedGift: GiftPost) = clickListener(selectedGift)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardsViewHolder {
@@ -24,17 +45,17 @@ class CardStackAdapter(private var list: List<String> = emptyList()) : RecyclerV
     override fun onBindViewHolder(holder: CardsViewHolder, position: Int) {
         val data = list[position]
         holder.bind(data)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(data)
+        }
     }
 
     override fun getItemCount(): Int {
         return list.size
     }
 
-    fun setSpots(list: List<String>) {
-        this.list = list
+    fun onListUpdate(dataList: List<GiftPost>){
+        list = dataList
     }
 
-    fun getSpots(): List<String> {
-        return list
-    }
 }

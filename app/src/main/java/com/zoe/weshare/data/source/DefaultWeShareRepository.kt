@@ -1,8 +1,6 @@
 package com.zoe.weshare.data.source
 
-import com.zoe.weshare.data.EventPost
-import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.*
 
 /**
  * Created by Wayne Chen on 2020-01-15.
@@ -28,5 +26,13 @@ class DefaultWeShareRepository(
 
     override suspend fun getEvents(): Result<List<EventPost>> {
         return remoteDataSource.getEvents()
+    }
+
+    override suspend fun getUserInfo(uid: String): Result<UserProfile> {
+        return remoteDataSource.getUserInfo(uid)
+    }
+
+    override suspend fun getGiftAskForComments(docId: String): Result<List<Comment>> {
+        return remoteDataSource.getGiftAskForComments(docId)
     }
 }
