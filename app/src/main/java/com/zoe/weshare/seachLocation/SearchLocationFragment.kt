@@ -1,9 +1,9 @@
 package com.zoe.weshare.seachLocation
 
-import android.os.Bundle
 import android.Manifest
 import android.location.Address
 import android.location.Geocoder
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -55,7 +55,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
 
         val newEvent = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newEvent }
-        val newGift = arguments?.let {SearchLocationFragmentArgs.fromBundle(it).newGift}
+        val newGift = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newGift }
 
         Log.d("newEvent","$newEvent")
         Log.d("newGift","$newGift")
@@ -142,8 +142,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
                             eventVm?.updateTitle(title = query, point = result )
                             giftVm?.updateTitle(title = query, point = result )
-
-                            //TODO  位置寫入VM
                         }
                     } catch (e: Exception) {
 

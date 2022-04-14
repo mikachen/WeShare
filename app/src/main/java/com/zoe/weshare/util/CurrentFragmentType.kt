@@ -9,5 +9,8 @@ enum class CurrentFragmentType(val value: String) {
     MESSAGE(getString(R.string.message)),
     PROFILE(getString(R.string.profile)),
     POSTEVENT(getString(R.string.post_event)),
-    POSTGIFT(getString(R.string.post_gift))
+    POSTGIFT(getString(R.string.post_gift)),
+    GIFTDETAIL("贈品詳情"),
+    EVENTDETAIL("活動詳情"),
+    SEARCHLOCATION("選擇地點")
 }
