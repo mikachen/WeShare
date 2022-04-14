@@ -38,8 +38,6 @@ class CommentsAdapter(val viewModel: GiftDetailViewModel) :
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.toDisplayFormat()
 
-            Log.d("!userList.isNullOrEmpty()", "${!userList.isNullOrEmpty()}")
-
             if (!userList.isNullOrEmpty()) {
                 for (element in userList) {
                     if (element.uid == comment.uid) {

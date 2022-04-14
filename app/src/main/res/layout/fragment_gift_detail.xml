@@ -155,10 +155,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_sort"
-                    tools:text="鈦極不沾無毒塗層，通過16,000次耐用測試，不易沾鍋輕鬆煎出完美太陽蛋。"/>
+                    tools:text="鈦極不沾無毒塗層。"/>
 
                 <TextView
                     android:id="@+id/text_registrants_number"

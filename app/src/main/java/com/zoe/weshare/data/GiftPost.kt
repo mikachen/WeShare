@@ -10,10 +10,11 @@ data class GiftPost(
     var author: Author? = null,
     var title: String = "",
     var sort: String = "",
-    var condidtion: String = "",
+    var condition: String = "",
     var description: String = "",
     var image: String = "",
     var createdTime: Long = -1,
     var quantity: Int = -1,
-    var location: PostLocation? = null
+    var location: PostLocation? = null,
+    var userWhoLike: List<String>? = null
 ):Parcelable

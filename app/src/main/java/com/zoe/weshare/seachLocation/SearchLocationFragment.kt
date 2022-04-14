@@ -26,6 +26,8 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.EventPost
+import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.posting.event.PostEventViewModel
@@ -34,11 +36,11 @@ import java.util.*
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
     val author = Author(
-        name = "Mock",
-        userId = "Mock1234"
+        name = "Zoe Lo",
+        uid = "zoe1018",
+        image = "https://www.computerhope.com/jargon/a/android.png"
     )
 
-    // TODO 輕量地圖
     private lateinit var searchView: SearchView
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentSearchLocationBinding
@@ -57,18 +59,16 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         val newEvent = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newEvent }
         val newGift = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newGift }
 
-        Log.d("newEvent","$newEvent")
-        Log.d("newGift","$newGift")
-
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
 
         if(newEvent != null){
             val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
-            Log.d("eventViewModel","Create")
+
             eventViewModel._event.value = newEvent
 
             setUpSearchView(eventVm = eventViewModel, giftVm = null)
+            setUpUserPreview(gift = null, event = newEvent)
 
             binding.nextButton.setOnClickListener {
                 eventViewModel.event.value?.let { event -> eventViewModel.newPost(event) }
@@ -76,11 +76,15 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
         } else{
             val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
-            Log.d("giftViewModel","Create")
 
             giftViewModel._gift.value = newGift
 
             setUpSearchView(eventVm = null, giftVm = giftViewModel)
+            setUpUserPreview(gift = newGift, event = null)
+
+            giftViewModel.locationChoice.observe(viewLifecycleOwner){
+                binding.locationTitle.text
+            }
 
             binding.nextButton.setOnClickListener {
                 giftViewModel.gift.value?.let { gift -> giftViewModel.newPost(gift) }
@@ -108,8 +112,23 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
         return binding.root
     }
+    private fun setUpUserPreview(gift: GiftPost? , event:EventPost?) {
+        if (gift != null) {
+            binding.apply {
+                this.title.text = gift.title
+                this.sort.text = gift.sort
+                this.description.text = gift.description
+            }
+        }
 
-
+        if (event != null) {
+            binding.apply {
+                this.title.text = event.title
+                this.sort.text = event.sort
+                this.description.text = event.description
+            }
+        }
+    }
     private fun setUpSearchView(eventVm: PostEventViewModel? , giftVm: PostGiftViewModel?) {
 
         searchView = binding.searchView
@@ -131,6 +150,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
                             val result = LatLng(listAddress[0].latitude, listAddress[0].longitude)
 
+                            binding.locationTitle.text = query
+
                             map.addMarker(MarkerOptions().position(result).title("Search Point"))
                                 ?.setIcon(
                                     BitmapDescriptorFactory.defaultMarker(
@@ -140,8 +161,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
                             map.animateCamera(CameraUpdateFactory.newLatLngZoom(result, 16F))
 
-                            eventVm?.updateTitle(title = query, point = result )
-                            giftVm?.updateTitle(title = query, point = result )
+                            eventVm?.updateLocation(locationName = query, point = result )
+                            giftVm?.updateLocation(locationName = query, point = result )
                         }
                     } catch (e: Exception) {
 
@@ -210,7 +231,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-
         setupMapSettings()
     }
 
