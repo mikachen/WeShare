@@ -1,8 +1,6 @@
 package com.zoe.weshare.data.source
 
-import com.zoe.weshare.data.EventPost
-import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.*
 
 interface WeShareRepository {
 
@@ -11,4 +9,8 @@ interface WeShareRepository {
 
     suspend fun getGifts(): Result<List<GiftPost>>
     suspend fun getEvents(): Result<List<EventPost>>
+
+    suspend fun getUserInfo(uid: String): Result<UserProfile>
+
+    suspend fun getGiftAskForComments(docId: String): Result<List<Comment>>
 }

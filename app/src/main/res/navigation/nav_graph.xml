@@ -9,7 +9,7 @@
         android:id="@+id/homeFragment"
         android:name="com.zoe.weshare.home.HomeFragment"
         android:label="home_fragment"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.zoe.weshare.map.MapFragment"
@@ -39,7 +39,7 @@
         android:id="@+id/postGiftFragment"
         android:name="com.zoe.weshare.posting.gift.PostGiftFragment"
         android:label="fragment_post_gift"
-        tools:layout="@layout/fragment_post_gift" >
+        tools:layout="@layout/fragment_post_gift">
         <action
             android:id="@+id/action_postGiftFragment_to_searchLocationFragment"
             app:destination="@id/searchLocationFragment" />
@@ -50,7 +50,7 @@
         android:id="@+id/searchLocationFragment"
         android:name="com.zoe.weshare.seachLocation.SearchLocationFragment"
         android:label="fragment_search_location"
-        tools:layout="@layout/fragment_search_location" >
+        tools:layout="@layout/fragment_search_location">
         <argument
             android:name="newGift"
             app:argType="com.zoe.weshare.data.GiftPost"
@@ -62,7 +62,24 @@
     </fragment>
 
 
-        <!--    Actions   -->
+    <fragment
+        android:id="@+id/eventDetailFragment"
+        android:name="com.zoe.weshare.detail.EventDetailFragment"
+        android:label="EventDetailFragment"
+        tools:layout="@layout/fragment_event_detail" />
+
+    <fragment
+        android:id="@+id/giftDetailFragment"
+        android:name="com.zoe.weshare.detail.GiftDetailFragment"
+        android:label="GiftDetailFragment"
+        tools:layout="@layout/fragment_gift_detail" >
+        <argument
+            android:name="selectedGift"
+            app:argType="com.zoe.weshare.data.GiftPost" />
+    </fragment>
+
+
+    <!--    Actions   -->
     <action
         android:id="@+id/navigate_to_home_fragment"
         app:destination="@id/homeFragment"
@@ -95,6 +112,14 @@
         app:destination="@id/postGiftFragment"
         app:popUpTo="@id/homeFragment"
         app:popUpToInclusive="false" />
+
+    <action
+        android:id="@+id/action_global_eventDetailFragment"
+        app:destination="@id/eventDetailFragment" />
+
+    <action
+        android:id="@+id/action_global_giftDetailFragment"
+        app:destination="@id/giftDetailFragment" />
 
 
 </navigation>

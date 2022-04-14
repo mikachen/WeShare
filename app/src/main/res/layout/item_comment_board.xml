@@ -11,14 +11,14 @@
         android:id="@+id/image_profile_avatar"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:src="@drawable/ic_profile"
-        android:layout_marginTop="4dp"
         android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
         android:scaleType="centerCrop"
+        android:src="@drawable/ic_profile"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -41,12 +41,12 @@
         android:layout_marginEnd="16dp"
         android:letterSpacing="0.15"
         android:maxLines="1"
-        app:layout_constraintTop_toBottomOf="@id/text_profile_name"
         app:layout_constraintStart_toStartOf="@id/text_profile_name"
+        app:layout_constraintTop_toBottomOf="@id/text_profile_name"
         tools:text="每年都要參加der拉～～～" />
 
     <TextView
-        android:id="@+id/created_time"
+        android:id="@+id/text_created_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="56dp"
@@ -64,10 +64,10 @@
         android:layout_marginEnd="4dp"
         android:letterSpacing="0.15"
         android:maxLines="1"
+        android:text="封鎖"
         app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_profile_name"
-        tools:text="封鎖它" />
+        app:layout_constraintTop_toTopOf="@id/text_profile_name" />
 
     <TextView
         android:id="@+id/like_btn"
@@ -76,8 +76,8 @@
         android:layout_marginEnd="4dp"
         android:letterSpacing="0.15"
         android:maxLines="1"
+        android:text="點贊"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="點贊" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

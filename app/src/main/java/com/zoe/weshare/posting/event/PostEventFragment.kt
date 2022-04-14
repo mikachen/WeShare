@@ -37,27 +37,8 @@ class PostEventFragment : Fragment() {
     private fun setupNextBtn() {
         binding.nextButton.setOnClickListener {
 
-            val author = Author(
-                name = "Mock",
-                userId = "Mock1234"
-            )
-
-            val newlocation = PostLocation("23.897879", "121.063772")
-            val mockEventData = EventPost(
-//                id = "testDocID",
-//                author = author,
-//                title = "giftTitle",
-//                sort = "Test",
-//                volunteerNeeds = 123,
-//                description = "1135135135135135",
-//                image = "1",
-//                createdTime = 213123123123213,
-//                location = newlocation
-            )
-
-            Log.d("mockEventData","$mockEventData")
             findNavController().navigate(PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment(
-                newEvent = mockEventData,
+                newEvent = EventPost(),
                 newGift = null))
         }
     }

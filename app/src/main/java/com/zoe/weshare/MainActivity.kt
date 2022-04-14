@@ -75,6 +75,9 @@ class MainActivity : AppCompatActivity() {
                 R.id.profileFragment -> CurrentFragmentType.PROFILE
                 R.id.postEventFragment -> CurrentFragmentType.POSTEVENT
                 R.id.postGiftFragment -> CurrentFragmentType.POSTGIFT
+                R.id.eventDetailFragment -> CurrentFragmentType.EVENTDETAIL
+                R.id.giftDetailFragment -> CurrentFragmentType.GIFTDETAIL
+                R.id.searchLocationFragment -> CurrentFragmentType.SEARCHLOCATION
 
                 else -> viewModel.currentFragmentType.value
             }

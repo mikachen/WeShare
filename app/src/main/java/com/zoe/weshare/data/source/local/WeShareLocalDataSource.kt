@@ -1,9 +1,7 @@
 package com.zoe.weshare.data.source.local
 
 import android.content.Context
-import com.zoe.weshare.data.EventPost
-import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 
 /*
@@ -24,6 +22,14 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     }
 
     override suspend fun getEvents(): Result<List<EventPost>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUserInfo(uid: String): Result<UserProfile> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getGiftAskForComments(docId: String): Result<List<Comment>> {
         TODO("Not yet implemented")
     }
 }

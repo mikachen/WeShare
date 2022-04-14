@@ -10,14 +10,16 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.2828125" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/fragment_search_location.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/item_comment_board.xml" value="0.24270833333333333" />
         <entry key="app/src/main/res/layout/item_event_bulletin_board.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/item_event_cards_view.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/item_event_cards_view.xml" value="0.33" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
       </map>
     </option>
