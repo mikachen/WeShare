@@ -5,6 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class Author(
-    val userId: String = "",
+    val uid: String = "",
     val name: String = "",
+    val image: String = ""
 ) : Parcelable

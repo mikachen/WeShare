@@ -16,4 +16,35 @@
     <string name="result_fail">Result Fail</string>
     <string name="title_activity_maps">MapsActivity</string>
 
+
+
+    <string-array name="gift_item_condition">
+        <item>全新</item>
+        <item>二手</item>
+    </string-array>
+
+    <string-array name="gift_item_sort">
+        <item>食品</item>
+        <item>生活用品</item>
+        <item>服飾用品</item>
+        <item>電子器材</item>
+        <item>醫療用品</item>
+        <item>寵物用品</item>
+        <item>娛樂器材</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="event_type_sort">
+        <item>社區服務</item>
+        <item>募款拍賣</item>
+        <item>環境保護</item>
+        <item>動物保護</item>
+        <item>知識傳播</item>
+        <item>公共福利</item>
+        <item>社會援助</item>
+        <item>文化藝術活動</item>
+        <item>國際合作</item>
+        <item>其他</item>
+    </string-array>
+
 </resources>

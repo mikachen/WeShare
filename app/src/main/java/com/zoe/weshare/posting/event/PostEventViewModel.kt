@@ -44,9 +44,6 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     val leave: LiveData<Boolean>
         get() = _leave
 
-    private val _readyToPost = MutableLiveData<Boolean>()
-    val readyToPost: LiveData<Boolean>
-        get() = _readyToPost
 
     fun newPost(event: EventPost) {
         coroutineScope.launch {
@@ -75,22 +72,18 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         }
     }
 
-    // fragment view binding edit text pass in data
-    fun updateTitle(title: String, point: LatLng) {
-        if (title.isEmpty()) {
-            _readyToPost.value = false
-        } else {
+    // update user's location choice
+    fun updateLocation(locationName: String, point: LatLng) {
+        _event.value?.apply {
 
-            _event.apply {
-                value = EventPost(
-                    title = title,
-                    author = authorD,
-                    location = PostLocation(point.latitude.toString(), point.longitude.toString())
-                )
-            }
-            _readyToPost.value = true
+            location = PostLocation(
+                locationName = locationName,
+                latitude = point.latitude.toString(),
+                longitude = point.longitude.toString()
+            )
         }
     }
+
 
     fun leave(needRefresh: Boolean = false) {
         _leave.value = needRefresh
