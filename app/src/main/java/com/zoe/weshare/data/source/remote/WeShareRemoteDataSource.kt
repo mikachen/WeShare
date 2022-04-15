@@ -17,6 +17,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
     private const val PATH_GIFT_POST = "GiftPost"
     private const val PATH_USER_INFO = "Users"
     private const val PATH_USER_WHO_ASK_FOR_GIFT = "UserWhoRequest"
+    private const val PATH_USER_WHO_COMMENT_EVENT = "UserWhoComment"
 
     private const val KEY_CREATED_TIME = "createdTime"
 
@@ -170,6 +171,93 @@ object WeShareRemoteDataSource : WeShareDataSource {
             FirebaseFirestore.getInstance()
                 .collection(PATH_GIFT_POST).document(docId)
                 .collection(PATH_USER_WHO_ASK_FOR_GIFT)
+                .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<Comment>()
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val requestComments = document.toObject(Comment::class.java)
+                            list.add(requestComments)
+                        }
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun askForGift(docId: String,comment: Comment): Result<Boolean> =
+        suspendCoroutine { continuation ->
+
+            val commentPost = FirebaseFirestore.getInstance().collection(PATH_GIFT_POST)
+                .document(docId).collection(PATH_USER_WHO_ASK_FOR_GIFT)
+            val document = commentPost.document()
+
+            comment.id = document.id
+            comment.createdTime = Calendar.getInstance().timeInMillis
+
+            document
+                .set(comment)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("askForGiftComment: $comment")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+    }
+
+    override suspend fun sendEventComment(docId: String, comment: Comment): Result<Boolean> =
+        suspendCoroutine { continuation ->
+
+            val commentPost = FirebaseFirestore.getInstance().collection(PATH_EVENT_POST)
+                .document(docId).collection(PATH_USER_WHO_COMMENT_EVENT)
+            val document = commentPost.document()
+
+            comment.id = document.id
+            comment.createdTime = Calendar.getInstance().timeInMillis
+
+            document
+                .set(comment)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("sendEventComment: $comment")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun getEventComments(docId: String): Result<List<Comment>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(PATH_EVENT_POST).document(docId)
+                .collection(PATH_USER_WHO_COMMENT_EVENT)
                 .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener { task ->

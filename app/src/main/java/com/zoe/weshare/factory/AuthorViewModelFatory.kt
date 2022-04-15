@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.source.WeShareRepository
+import com.zoe.weshare.detail.event.EventDetailViewModel
+import com.zoe.weshare.detail.gift.AskForGiftViewModel
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 
@@ -24,6 +26,14 @@ class AuthorViewModelFactory(
 
         if (modelClass.isAssignableFrom(PostGiftViewModel::class.java)) {
             return PostGiftViewModel(repository, author) as T
+        }
+
+        if (modelClass.isAssignableFrom(AskForGiftViewModel::class.java)) {
+            return AskForGiftViewModel(repository, author) as T
+        }
+
+        if (modelClass.isAssignableFrom(EventDetailViewModel::class.java)) {
+            return EventDetailViewModel(repository, author) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

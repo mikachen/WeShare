@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
+import com.zoe.weshare.data.Cards
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
@@ -15,7 +16,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+const val GIFT_TYPE = 0
+const val EVENT_TYPE = 1
+
 class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
+
+    var cardsViewList = mutableListOf<Cards>()
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>
@@ -24,6 +30,10 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     private var _events = MutableLiveData<List<EventPost>>()
     val events: LiveData<List<EventPost>>
         get() = _events
+
+    private var _cards = MutableLiveData<List<Cards>>()
+    val cards: LiveData<List<Cards>>
+        get() = _cards
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -43,18 +53,52 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     val refreshStatus: LiveData<Boolean>
         get() = _refreshStatus
 
-    private val _navigateToSelectedProperty = MutableLiveData<GiftPost?>()
-    val navigateToSelectedProperty: LiveData<GiftPost?>
-        get() = _navigateToSelectedProperty
+    private val _navigateToSelectedGift = MutableLiveData<GiftPost>()
+    val navigateToSelectedGift: LiveData<GiftPost?>
+        get() = _navigateToSelectedGift
+
+
+    private val _navigateToSelectedEvent = MutableLiveData<EventPost>()
+    val navigateToSelectedEvent: LiveData<EventPost?>
+        get() = _navigateToSelectedEvent
 
     init {
         getGiftsResult()
         getEventsResult()
     }
 
+    fun onCardPrepare(gifts: List<GiftPost>?, events: List<EventPost>? ){
+        if(gifts != null){
+            for (element in gifts){
+                val newCard = Cards(
+                    id = element.id,
+                    title = element.title,
+                    createdTime = element.createdTime,
+                    postType = GIFT_TYPE,
+                    image = element.image,
+                    locationName = element.location!!.locationName
+                )
+                cardsViewList.add(newCard)
+            }
+        }
+        if(events != null){
+            for (element in events){
+                val newCard = Cards(
+                    id = element.id,
+                    title = element.title,
+                    createdTime = element.createdTime,
+                    postType = EVENT_TYPE,
+                    image = element.image,
+                    locationName = element.location!!.locationName
+                )
+                cardsViewList.add(newCard)
+            }
+        }
+        _cards.value = cardsViewList
+    }
+
 
     private fun getGiftsResult() {
-
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
             val result = repository.getGifts()
@@ -87,7 +131,6 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     private fun getEventsResult() {
-
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
             val result = repository.getEvents()
@@ -119,11 +162,15 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
-    fun displayPropertyDetails(gift: GiftPost) {
-        _navigateToSelectedProperty.value = gift
+    fun displayCardDetails(card: Cards) {
+        when(card.postType){
+            0 -> _navigateToSelectedGift.value = _gifts.value?.single { it.id == card.id }
+            1 -> _navigateToSelectedEvent.value = _events.value?.single { it.id == card.id }
+        }
     }
 
-    fun displayPropertyDetailsComplete() {
-        _navigateToSelectedProperty.value = null
+    fun displayCardDetailsComplete() {
+        _navigateToSelectedGift.value = null
+        _navigateToSelectedEvent.value = null
     }
 }

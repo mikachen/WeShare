@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.Comment
-import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.data.source.WeShareRepository
@@ -17,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GiftDetailViewModel(private val repository: WeShareRepository) : ViewModel() {
+class CommentsViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     private var _user = MutableLiveData<List<UserProfile>>()
     val user: LiveData<List<UserProfile>>
@@ -30,6 +29,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository) : ViewModel
     private var _onCommentsDisplay = MutableLiveData<Int>()
     val onCommentsDisplay: LiveData<Int>
         get() = _onCommentsDisplay
+
+    var _newComment = MutableLiveData<Comment>()
+    val newComment: LiveData<Comment>
+        get() = _newComment
+
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -52,6 +56,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository) : ViewModel
     private val profileList = mutableListOf<UserProfile>()
 
     fun getUserList(comments: List<Comment>){
+
         _onCommentsDisplay.value = comments.size
 
         for(element in comments){
@@ -87,10 +92,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository) : ViewModel
             _refreshStatus.value = false
             _user.value = profileList
             _onCommentsDisplay.value = _onCommentsDisplay.value?.minus(1)
+
         }
     }
 
-    fun getAllRequestComments(docId: String){
+    fun getAskForGiftComments(docId: String){
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
             val result = repository.getGiftAskForComments(docId)
@@ -121,4 +127,63 @@ class GiftDetailViewModel(private val repository: WeShareRepository) : ViewModel
             _refreshStatus.value = false
         }
     }
+
+    fun getEventComments(docId: String){
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+            val result = repository.getEventComments(docId)
+
+            _comments.value = when (result) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    result.data
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+            _refreshStatus.value = false
+        }
+    }
+
+    fun sendComment(docId: String, comment: Comment) {
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.sendEventComment(docId, comment)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
 }

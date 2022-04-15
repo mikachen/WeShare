@@ -13,5 +13,7 @@ interface WeShareDataSource {
     suspend fun getEvents(): Result<List<EventPost>>
     suspend fun getUserInfo(uid: String): Result<UserProfile>
     suspend fun getGiftAskForComments(docId: String): Result<List<Comment>>
-
+    suspend fun askForGift(docId: String,comment: Comment): Result<Boolean>
+    suspend fun sendEventComment(docId: String,comment: Comment): Result<Boolean>
+    suspend fun getEventComments(docId: String): Result<List<Comment>>
 }
