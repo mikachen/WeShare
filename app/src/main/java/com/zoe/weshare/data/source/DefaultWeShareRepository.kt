@@ -47,4 +47,13 @@ class DefaultWeShareRepository(
     override suspend fun getEventComments(docId: String): Result<List<Comment>> {
         return remoteDataSource.getEventComments(docId)
     }
+
+    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>{
+        return remoteDataSource.getChatsHistory(docId)
+    }
+
+    override suspend fun sendMessage(docId: String,comment: Comment): Result<Boolean>{
+        return remoteDataSource.sendMessage(docId,comment)
+    }
+
 }

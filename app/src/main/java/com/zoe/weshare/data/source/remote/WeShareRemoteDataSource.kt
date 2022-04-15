@@ -16,8 +16,11 @@ object WeShareRemoteDataSource : WeShareDataSource {
     private const val PATH_EVENT_POST = "EventPost"
     private const val PATH_GIFT_POST = "GiftPost"
     private const val PATH_USER_INFO = "Users"
-    private const val PATH_USER_WHO_ASK_FOR_GIFT = "UserWhoRequest"
-    private const val PATH_USER_WHO_COMMENT_EVENT = "UserWhoComment"
+    private const val PATH_CHATROOM = "ChatRoom"
+
+    private const val SUB_PATH_GIFT_USER_WHO_ASK_FOR = "UserWhoRequest"
+    private const val SUB_PATH_EVENT_USER_WHO_COMMENT = "UserWhoComment"
+    private const val SUB_PATH_CHATROOM_MESSAGE = "Messages"
 
     private const val KEY_CREATED_TIME = "createdTime"
 
@@ -170,7 +173,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
                 .collection(PATH_GIFT_POST).document(docId)
-                .collection(PATH_USER_WHO_ASK_FOR_GIFT)
+                .collection(SUB_PATH_GIFT_USER_WHO_ASK_FOR)
                 .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener { task ->
@@ -195,11 +198,11 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun askForGift(docId: String,comment: Comment): Result<Boolean> =
+    override suspend fun askForGift(docId: String, comment: Comment): Result<Boolean> =
         suspendCoroutine { continuation ->
 
             val commentPost = FirebaseFirestore.getInstance().collection(PATH_GIFT_POST)
-                .document(docId).collection(PATH_USER_WHO_ASK_FOR_GIFT)
+                .document(docId).collection(SUB_PATH_GIFT_USER_WHO_ASK_FOR)
             val document = commentPost.document()
 
             comment.id = document.id
@@ -222,13 +225,13 @@ object WeShareRemoteDataSource : WeShareDataSource {
                         continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                     }
                 }
-    }
+        }
 
     override suspend fun sendEventComment(docId: String, comment: Comment): Result<Boolean> =
         suspendCoroutine { continuation ->
 
             val commentPost = FirebaseFirestore.getInstance().collection(PATH_EVENT_POST)
-                .document(docId).collection(PATH_USER_WHO_COMMENT_EVENT)
+                .document(docId).collection(SUB_PATH_EVENT_USER_WHO_COMMENT)
             val document = commentPost.document()
 
             comment.id = document.id
@@ -257,7 +260,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
                 .collection(PATH_EVENT_POST).document(docId)
-                .collection(PATH_USER_WHO_COMMENT_EVENT)
+                .collection(SUB_PATH_EVENT_USER_WHO_COMMENT)
                 .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener { task ->
@@ -270,6 +273,68 @@ object WeShareRemoteDataSource : WeShareDataSource {
                             list.add(requestComments)
                         }
                         continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            val newMessage = FirebaseFirestore.getInstance().collection(PATH_CHATROOM)
+                .document(docId).collection(SUB_PATH_CHATROOM_MESSAGE)
+            val document = newMessage.document()
+
+            comment.id = document.id
+            comment.createdTime = Calendar.getInstance().timeInMillis
+
+            document
+                .set(comment)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("sendNewMessage: $comment")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(PATH_CHATROOM).document(docId)
+                .collection(SUB_PATH_CHATROOM_MESSAGE)
+                .orderBy(KEY_CREATED_TIME, Query.Direction.ASCENDING)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<Comment>()
+
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val historyMessage = document.toObject(Comment::class.java)
+                            list.add(historyMessage)
+                        }
+
+                        //回傳結果分類接收或發送方
+                        val chatsHistory = ChatsHistory(list)
+                        continuation.resume(Result.Success(chatsHistory.toMessageItem()))
+
                     } else {
                         task.exception?.let {
 

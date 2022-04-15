@@ -11,9 +11,8 @@ interface WeShareRepository {
     suspend fun getUserInfo(uid: String): Result<UserProfile>
     suspend fun getGiftAskForComments(docId: String): Result<List<Comment>>
     suspend fun askForGift(docId: String,comment: Comment): Result<Boolean>
-
     suspend fun sendEventComment(docId: String,comment: Comment): Result<Boolean>
     suspend fun getEventComments(docId: String): Result<List<Comment>>
-
-
+    suspend fun sendMessage(docId: String,comment: Comment): Result<Boolean>
+    suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>
 }

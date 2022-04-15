@@ -44,4 +44,12 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     override suspend fun getEventComments(docId: String): Result<List<Comment>> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>{
+        TODO("Not yet implemented")
+    }
 }

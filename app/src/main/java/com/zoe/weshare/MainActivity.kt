@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.currentFragmentType.value = when (navController.currentDestination?.id) {
                 R.id.homeFragment -> CurrentFragmentType.HOME
                 R.id.mapFragment -> CurrentFragmentType.MAP
-                R.id.messageFragment -> CurrentFragmentType.MESSAGE
+                R.id.chatRoomFragment -> CurrentFragmentType.CHATROOM
                 R.id.profileFragment -> CurrentFragmentType.PROFILE
                 R.id.postEventFragment -> CurrentFragmentType.POSTEVENT
                 R.id.postGiftFragment -> CurrentFragmentType.POSTGIFT
@@ -99,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_messages -> {
 
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToMessageFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToChatroomFragment())
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_profile -> {

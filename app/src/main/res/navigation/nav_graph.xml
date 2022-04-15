@@ -16,10 +16,10 @@
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
     <fragment
-        android:id="@+id/messageFragment"
-        android:name="com.zoe.weshare.message.MessageFragment"
-        android:label="fragment_message"
-        tools:layout="@layout/fragment_message" />
+        android:id="@+id/chatRoomFragment"
+        android:name="com.zoe.weshare.message.ChatRoomFragment"
+        android:label="fragment_chat_room"
+        tools:layout="@layout/fragment_chatroom" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.zoe.weshare.profile.ProfileFragment"
@@ -110,8 +110,8 @@
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
     <action
-        android:id="@+id/navigate_to_message_fragment"
-        app:destination="@id/messageFragment"
+        android:id="@+id/navigate_to_chatroom_fragment"
+        app:destination="@id/chatRoomFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
     <action
