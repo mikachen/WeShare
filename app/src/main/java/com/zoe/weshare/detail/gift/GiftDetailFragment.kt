@@ -1,13 +1,17 @@
-package com.zoe.weshare.detail
+package com.zoe.weshare.detail.gift
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftDetailBinding
+import com.zoe.weshare.detail.CommentsAdapter
+import com.zoe.weshare.detail.CommentsViewModel
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
@@ -20,7 +24,7 @@ class GiftDetailFragment : Fragment() {
     private lateinit var binding: FragmentGiftDetailBinding
     private lateinit var adapter: CommentsAdapter
 
-    val viewModel by viewModels<GiftDetailViewModel> { getVmFactory() }
+    val viewModel by viewModels<CommentsViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +34,7 @@ class GiftDetailFragment : Fragment() {
 
         val selectedGift = GiftDetailFragmentArgs.fromBundle(requireArguments()).selectedGift
         setUpDetailContent(selectedGift)
-        viewModel.getAllRequestComments(selectedGift.id)
+        viewModel.getAskForGiftComments(selectedGift.id)
 
         adapter = CommentsAdapter(viewModel)
         binding.commentsRecyclerView.adapter = adapter
@@ -41,17 +45,17 @@ class GiftDetailFragment : Fragment() {
 
         //want to make sure finish getting userInfo before start recyclerView adapter
         viewModel.onCommentsDisplay.observe(viewLifecycleOwner) {
-            if(it == 0) {
+            if (it == 0) {
                 adapter.submitList(viewModel.comments.value)
             }
         }
 
+        setUpBtn(selectedGift)
         return binding.root
     }
 
 
     private fun setUpDetailContent(selectedGift: GiftPost) {
-
         binding.apply {
             bindImage(this.images, selectedGift.image)
             textGiftTitle.text = selectedGift.title
@@ -64,6 +68,11 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-    private fun setUpBtn() {}
-
+    private fun setUpBtn(selectedGift: GiftPost) {
+        binding.buttonAskForGift.setOnClickListener {
+            findNavController().navigate(GiftDetailFragmentDirections
+                .actionGiftDetailFragmentToAskForGiftFragment(
+                selectedGift.id))
+        }
+    }
 }

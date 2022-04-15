@@ -1,6 +1,5 @@
 package com.zoe.weshare.detail
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -12,7 +11,7 @@ import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayFormat
 
-class CommentsAdapter(val viewModel: GiftDetailViewModel) :
+class CommentsAdapter(val viewModel: CommentsViewModel) :
     ListAdapter<Comment, CommentsAdapter.CommentsViewHolder>(DiffCall()) {
 
 
@@ -74,3 +73,4 @@ class DiffCall : DiffUtil.ItemCallback<Comment>() {
         return oldItem == newItem
     }
 }
+
