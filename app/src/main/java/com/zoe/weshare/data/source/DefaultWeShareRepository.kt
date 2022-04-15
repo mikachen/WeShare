@@ -36,8 +36,8 @@ class DefaultWeShareRepository(
         return remoteDataSource.getGiftAskForComments(docId)
     }
 
-    override suspend fun askForGift(docId: String,comment: Comment): Result<Boolean> {
-        return remoteDataSource.askForGift(docId,comment)
+    override suspend fun askForGift(docId: String, comment: Comment): Result<Boolean> {
+        return remoteDataSource.askForGift(docId, comment)
     }
 
     override suspend fun sendEventComment(docId: String, comment: Comment): Result<Boolean> {
@@ -48,12 +48,11 @@ class DefaultWeShareRepository(
         return remoteDataSource.getEventComments(docId)
     }
 
-    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>{
+    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>> {
         return remoteDataSource.getChatsHistory(docId)
     }
 
-    override suspend fun sendMessage(docId: String,comment: Comment): Result<Boolean>{
-        return remoteDataSource.sendMessage(docId,comment)
+    override suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean> {
+        return remoteDataSource.sendMessage(docId, comment)
     }
-
 }

@@ -3,7 +3,6 @@ package com.zoe.weshare.data.source
 import com.zoe.weshare.data.*
 
 interface WeShareRepository {
-
     suspend fun postNewEvent(event: EventPost): Result<Boolean>
     suspend fun postNewGift(gift: GiftPost): Result<Boolean>
     suspend fun getGifts(): Result<List<GiftPost>>

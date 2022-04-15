@@ -348,4 +348,3 @@ object WeShareRemoteDataSource : WeShareDataSource {
         }
 
 }
-
