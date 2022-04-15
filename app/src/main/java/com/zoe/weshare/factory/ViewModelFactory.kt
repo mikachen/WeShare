@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zoe.weshare.MainViewModel
 import com.zoe.weshare.data.source.WeShareRepository
-import com.zoe.weshare.detail.GiftDetailViewModel
+import com.zoe.weshare.detail.CommentsViewModel
 import com.zoe.weshare.home.HomeViewModel
 import com.zoe.weshare.map.MapViewModel
 import com.zoe.weshare.seachLocation.SearchLocationViewModel
@@ -32,8 +32,9 @@ class ViewModelFactory constructor(
                 isAssignableFrom(MapViewModel::class.java) ->
                     MapViewModel(repository)
 
-                isAssignableFrom(GiftDetailViewModel::class.java) ->
-                    GiftDetailViewModel(repository)
+                isAssignableFrom(CommentsViewModel::class.java) ->
+                    CommentsViewModel(repository)
+
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

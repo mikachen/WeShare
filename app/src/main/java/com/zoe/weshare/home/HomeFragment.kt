@@ -8,16 +8,12 @@ import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.DiffUtil
 import com.yuyakaido.android.cardstackview.*
 import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentHomeBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.map.MapViewModel
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -42,16 +38,30 @@ class HomeFragment : Fragment(), CardStackListener {
 
         setupCardStackView()
 
-
         viewModel.gifts.observe(viewLifecycleOwner){
+            viewModel.onCardPrepare(gifts = it , events = null)
+        }
+
+        viewModel.events.observe(viewLifecycleOwner){
+            viewModel.onCardPrepare(gifts = null , events = it)
+        }
+
+        viewModel.cards.observe(viewLifecycleOwner){
             adapter.onListUpdate(it)
             adapter.notifyDataSetChanged()
         }
 
-        viewModel.navigateToSelectedProperty.observe(viewLifecycleOwner) {
+        viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
-                viewModel.displayPropertyDetailsComplete()
+                viewModel.displayCardDetailsComplete()
+            }
+        }
+
+        viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
+                viewModel.displayCardDetailsComplete()
             }
         }
 
@@ -60,8 +70,8 @@ class HomeFragment : Fragment(), CardStackListener {
 
     private fun setupCardStackView() {
         cardStackView = binding.cardStackView
-        adapter = CardStackAdapter(CardStackAdapter.StackViewOnClickListener { selectedGift ->
-            viewModel.displayPropertyDetails(selectedGift)
+        adapter = CardStackAdapter(CardStackAdapter.StackViewOnClickListener { selectedCard ->
+            viewModel.displayCardDetails(selectedCard)
         })
         manager = CardStackLayoutManager(requireContext(), this)
         manager.setStackFrom(StackFrom.Top)

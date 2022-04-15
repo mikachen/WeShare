@@ -64,19 +64,38 @@
 
     <fragment
         android:id="@+id/eventDetailFragment"
-        android:name="com.zoe.weshare.detail.EventDetailFragment"
+        android:name="com.zoe.weshare.detail.event.EventDetailFragment"
         android:label="EventDetailFragment"
-        tools:layout="@layout/fragment_event_detail" />
+        tools:layout="@layout/fragment_event_detail" >
+
+        <argument
+            android:name="selectedEvent"
+            app:argType="com.zoe.weshare.data.EventPost" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/giftDetailFragment"
-        android:name="com.zoe.weshare.detail.GiftDetailFragment"
+        android:name="com.zoe.weshare.detail.gift.GiftDetailFragment"
         android:label="GiftDetailFragment"
         tools:layout="@layout/fragment_gift_detail" >
         <argument
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
+        <action
+            android:id="@+id/action_giftDetailFragment_to_askForGiftFragment"
+            app:destination="@id/askForGiftFragment" />
     </fragment>
+
+    <dialog
+        android:id="@+id/askForGiftFragment"
+        android:name="com.zoe.weshare.detail.gift.AskForGiftFragment"
+        android:label="fragment_ask_for_gift"
+        tools:layout="@layout/fragment_ask_for_gift" >
+        <argument
+            android:name="documentId"
+            app:argType="string" />
+    </dialog>
 
 
     <!--    Actions   -->
@@ -120,6 +139,7 @@
     <action
         android:id="@+id/action_global_giftDetailFragment"
         app:destination="@id/giftDetailFragment" />
+
 
 
 </navigation>

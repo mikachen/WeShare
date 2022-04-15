@@ -237,7 +237,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edit_leave_comment"
                         android:layout_width="match_parent"
-                        android:layout_height="36dp"
+                        android:layout_height="56dp"
                         android:gravity="center|start"
                         android:singleLine="true"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
@@ -265,11 +265,14 @@
                     app:layout_constraintTop_toBottomOf="@id/layout_leave_comment" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/comments_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider4"
                     tools:itemCount="8"
                     tools:listitem="@layout/item_comment_board" />

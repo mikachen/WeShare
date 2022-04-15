@@ -35,4 +35,16 @@ class DefaultWeShareRepository(
     override suspend fun getGiftAskForComments(docId: String): Result<List<Comment>> {
         return remoteDataSource.getGiftAskForComments(docId)
     }
+
+    override suspend fun askForGift(docId: String,comment: Comment): Result<Boolean> {
+        return remoteDataSource.askForGift(docId,comment)
+    }
+
+    override suspend fun sendEventComment(docId: String, comment: Comment): Result<Boolean> {
+        return remoteDataSource.sendEventComment(docId, comment)
+    }
+
+    override suspend fun getEventComments(docId: String): Result<List<Comment>> {
+        return remoteDataSource.getEventComments(docId)
+    }
 }

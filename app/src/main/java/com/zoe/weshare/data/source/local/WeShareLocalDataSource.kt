@@ -32,4 +32,16 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     override suspend fun getGiftAskForComments(docId: String): Result<List<Comment>> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun askForGift(docId: String, comment: Comment): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendEventComment(docId: String, comment: Comment): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getEventComments(docId: String): Result<List<Comment>> {
+        TODO("Not yet implemented")
+    }
 }
