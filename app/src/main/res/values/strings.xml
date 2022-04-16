@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">WeShare</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="map_api_key_name">com.google.android.geo.API_KEY</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="home">首頁</string>

@@ -1,8 +1,7 @@
 package com.zoe.weshare.seachLocation
 
 import android.Manifest
-import android.location.Address
-import android.location.Geocoder
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,17 +13,24 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.zoe.weshare.MainActivity
+import com.zoe.weshare.R
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
@@ -32,7 +38,6 @@ import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
-import java.util.*
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
     val author = Author(
@@ -55,6 +60,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?,
     ): View? {
 
+        initializePlace()
 
         val newEvent = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newEvent }
         val newGift = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newGift }
@@ -62,27 +68,29 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
 
-        if(newEvent != null){
+        if (newEvent != null) {
             val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
+            setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
 
             eventViewModel._event.value = newEvent
 
-            setUpSearchView(eventVm = eventViewModel, giftVm = null)
+
             setUpUserPreview(gift = null, event = newEvent)
 
             binding.nextButton.setOnClickListener {
                 eventViewModel.event.value?.let { event -> eventViewModel.newPost(event) }
             }
 
-        } else{
+        } else {
             val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
+
+            setUpAutoCompleteSearchPlace(giftVm = giftViewModel, eventVm = null)
 
             giftViewModel._gift.value = newGift
 
-            setUpSearchView(eventVm = null, giftVm = giftViewModel)
             setUpUserPreview(gift = newGift, event = null)
 
-            giftViewModel.locationChoice.observe(viewLifecycleOwner){
+            giftViewModel.locationChoice.observe(viewLifecycleOwner) {
                 binding.locationTitle.text
             }
 
@@ -112,7 +120,63 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
         return binding.root
     }
-    private fun setUpUserPreview(gift: GiftPost? , event:EventPost?) {
+
+    private fun initializePlace() {
+        val info = (activity as MainActivity).applicationContext.packageManager
+            .getApplicationInfo((activity as MainActivity).packageName,
+                PackageManager.GET_META_DATA)
+
+        val key = info.metaData[resources.getString(R.string.map_api_key_name)].toString()
+
+        Places.initialize(requireContext(), key)
+    }
+
+    private fun setUpAutoCompleteSearchPlace(
+        eventVm: PostEventViewModel?,
+        giftVm: PostGiftViewModel?,
+    ) {
+        val autocompleteFragment =
+            childFragmentManager.findFragmentById(R.id.autocomplete_support_fragment) as AutocompleteSupportFragment
+
+        autocompleteFragment.setPlaceFields(
+            listOf(
+                Place.Field.NAME,
+                Place.Field.LAT_LNG,
+            ))
+
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+
+                val name = place.name
+                val result = place.latLng
+
+                when (null) {
+                    name -> Toast.makeText(requireContext(), "查無此地名", Toast.LENGTH_SHORT).show()
+                    result -> Toast.makeText(requireContext(), "查無此地", Toast.LENGTH_SHORT).show()
+                    else -> {
+                        binding.locationTitle.text = name
+                        map.addMarker(MarkerOptions().position(result).title("Search Point"))
+                            ?.setIcon(
+                                BitmapDescriptorFactory.defaultMarker(
+                                    BitmapDescriptorFactory.HUE_RED
+                                )
+                            )
+
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(result, 16F))
+                        eventVm?.updateLocation(locationName = name, point = result)
+                        giftVm?.updateLocation(locationName = name, point = result)
+                    }
+                }
+            }
+
+            override fun onError(status: Status) {
+                // TODO: Handle the error.
+                Log.i("TAG", "An error occurred: $status")
+            }
+        })
+    }
+
+    private fun setUpUserPreview(gift: GiftPost?, event: EventPost?) {
         if (gift != null) {
             binding.apply {
                 this.title.text = gift.title
@@ -128,56 +192,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 this.description.text = event.description
             }
         }
-    }
-    private fun setUpSearchView(eventVm: PostEventViewModel? , giftVm: PostGiftViewModel?) {
-
-        searchView = binding.searchView
-
-        searchView.queryHint = "search a location..."
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return if (query != null) {
-
-                    map.clear() //清掉舊marker
-
-                    val geocoder = Geocoder(requireContext(), Locale.getDefault())
-
-                    try {
-                        val listAddress: List<Address> = geocoder.getFromLocationName(query, 1)
-
-                        if (listAddress.isNotEmpty()) {
-
-                            val result = LatLng(listAddress[0].latitude, listAddress[0].longitude)
-
-                            binding.locationTitle.text = query
-
-                            map.addMarker(MarkerOptions().position(result).title("Search Point"))
-                                ?.setIcon(
-                                    BitmapDescriptorFactory.defaultMarker(
-                                        BitmapDescriptorFactory.HUE_RED
-                                    )
-                                )
-
-                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(result, 16F))
-
-                            eventVm?.updateLocation(locationName = query, point = result )
-                            giftVm?.updateLocation(locationName = query, point = result )
-                        }
-                    } catch (e: Exception) {
-
-                        Log.d("Exception", "$e")
-                    }
-                    false
-                } else {
-                    true
-                }
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return true
-            }
-        })
     }
 
     private fun checkGooglePlayService(): Boolean {

@@ -6,10 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.data.Comment
-import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
-import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.ext.toDisplaySentTime
 
 class CommentsAdapter(val viewModel: CommentsViewModel) :
     ListAdapter<Comment, CommentsAdapter.CommentsViewHolder>(DiffCall()) {
@@ -24,27 +23,27 @@ class CommentsAdapter(val viewModel: CommentsViewModel) :
 
     override fun onBindViewHolder(holder: CommentsViewHolder, position: Int) {
         val comment = getItem(position)
-        val userList = viewModel.user.value
-
-        holder.bind(comment, userList)
+        holder.bind(comment, viewModel)
     }
 
 
     class CommentsViewHolder(private val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, userList: List<UserProfile>?) {
+        fun bind(comment: Comment, viewModel: CommentsViewModel) {
 
             binding.textComment.text = comment.content
-            binding.textCreatedTime.text = comment.createdTime.toDisplayFormat()
+            binding.textCreatedTime.text = comment.createdTime.toDisplaySentTime()
 
-            if (!userList.isNullOrEmpty()) {
-                for (element in userList) {
-                    if (element.uid == comment.uid) {
-                        binding.textProfileName.text = element.name
-                        bindImage(binding.imageProfileAvatar, element.image)
+            if (viewModel.onProfileSearching.value == 0) {
+                if (viewModel.profileList.isNotEmpty()) {
+                    val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
+                    speaker?.let {
+                        bindImage(binding.imageProfileAvatar, speaker.image)
+                        binding.textProfileName.text = speaker.name
                     }
                 }
             }
+
         }
 
         companion object {

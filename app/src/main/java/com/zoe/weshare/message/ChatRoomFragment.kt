@@ -38,6 +38,7 @@ class ChatRoomFragment : Fragment() {
         binding = FragmentChatroomBinding.inflate(inflater, container, false)
 
         viewModel.getHistoryMessage(selectedRoom.id)
+
         selectedRoom.participants?.let { viewModel.getUserList(it) }
 
 

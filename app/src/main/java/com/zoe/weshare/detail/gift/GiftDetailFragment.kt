@@ -40,13 +40,14 @@ class GiftDetailFragment : Fragment() {
         binding.commentsRecyclerView.adapter = adapter
 
         viewModel.comments.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
             viewModel.getUserList(it)
         }
 
-        //want to make sure finish getting userInfo before start recyclerView adapter
-        viewModel.onCommentsDisplay.observe(viewLifecycleOwner) {
+        //drawing the user avatar image and nickName after searching user's profile docs
+        viewModel.onProfileSearching.observe(viewLifecycleOwner) {
             if (it == 0) {
-                adapter.submitList(viewModel.comments.value)
+                adapter.notifyDataSetChanged()
             }
         }
 

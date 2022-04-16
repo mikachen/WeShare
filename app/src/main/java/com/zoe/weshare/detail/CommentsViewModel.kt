@@ -18,17 +18,15 @@ import kotlinx.coroutines.launch
 
 class CommentsViewModel(private val repository: WeShareRepository) : ViewModel() {
 
-    private var _user = MutableLiveData<List<UserProfile>>()
-    val user: LiveData<List<UserProfile>>
-        get() = _user
+    val profileList = mutableListOf<UserProfile>()
 
     private var _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>>
         get() = _comments
 
-    private var _onCommentsDisplay = MutableLiveData<Int>()
-    val onCommentsDisplay: LiveData<Int>
-        get() = _onCommentsDisplay
+    private var _onProfileSearching = MutableLiveData<Int>()
+    val onProfileSearching: LiveData<Int>
+        get() = _onProfileSearching
 
      var _newComment = MutableLiveData<Comment>()
     val newComment: LiveData<Comment>
@@ -53,13 +51,13 @@ class CommentsViewModel(private val repository: WeShareRepository) : ViewModel()
     val refreshStatus: LiveData<Boolean>
         get() = _refreshStatus
 
-    private val profileList = mutableListOf<UserProfile>()
 
     fun getUserList(comments: List<Comment>){
 
-        _onCommentsDisplay.value = comments.size
+        val filtered = comments.distinctBy { it.uid }
+        _onProfileSearching.value = filtered.size
 
-        for(element in comments){
+        for(element in filtered){
             getUserInfo(element.uid)
         }
     }
@@ -90,9 +88,7 @@ class CommentsViewModel(private val repository: WeShareRepository) : ViewModel()
                 }
             }
             _refreshStatus.value = false
-            _user.value = profileList
-            _onCommentsDisplay.value = _onCommentsDisplay.value?.minus(1)
-
+            _onProfileSearching.value = _onProfileSearching.value?.minus(1)
         }
     }
 
