@@ -1,10 +1,19 @@
 package com.zoe.weshare.data
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-class ChatRoom (
+@Parcelize
+data class ChatRoom (
     val id: String ="",
     val title: String = "",
     val lastMsg: String = "",
     val lastMsgSentTime: Long = -1,
-    val participantsUid: List<String>? = null
-)
+    val participants: Participant? = null
+):Parcelable
+
+
+@Parcelize
+data class Participant(
+    val uid: Boolean = true,
+):Parcelable

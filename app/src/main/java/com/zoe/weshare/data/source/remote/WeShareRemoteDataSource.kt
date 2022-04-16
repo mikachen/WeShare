@@ -347,4 +347,36 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
+    override suspend fun getRelatedChatRooms(uid: String): Result<List<ChatRoom>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(PATH_CHATROOM)
+                .whereEqualTo("participants.$uid", true)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<ChatRoom>()
+
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val result = document.toObject(ChatRoom::class.java)
+
+                            list.add(result)
+                        }
+
+                        continuation.resume(Result.Success(list))
+
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
 }
+

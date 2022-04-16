@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -32,9 +33,11 @@ class ChatRoomFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
+        val selectedRoom = ChatRoomFragmentArgs.fromBundle(requireArguments()).selectedRoom
+
         binding = FragmentChatroomBinding.inflate(inflater, container, false)
 
-        viewModel.getHistoryMessage("8TmvsmzlT3S58KuUnxNd")
+        viewModel.getHistoryMessage(selectedRoom.id)
 
         adapter = MessageAdapter(viewModel)
         binding.messagesRecyclerView.adapter = adapter
@@ -49,9 +52,13 @@ class ChatRoomFragment : Fragment() {
         }
 
 
-
+        setUpTitle(selectedRoom)
         setUpBtn()
         return binding.root
+    }
+
+    private fun setUpTitle(room: ChatRoom){
+        binding.textRoomTitle.text = room.title
     }
 
     private fun setUpBtn() {
@@ -59,12 +66,10 @@ class ChatRoomFragment : Fragment() {
             val newMessage = binding.editBox.text.toString()
 
             if (newMessage.isNotEmpty()){
-                viewModel._newMessage.value = Comment(
-                    uid = author.uid,
-                    content = newMessage
-                )
+                viewModel.onSending(newMessage)
+                binding.editBox.text?.clear()
             }else{
-                Toast.makeText(requireContext(),"comment is empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),"Msg is empty", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -76,8 +81,10 @@ class ChatRoomFragment : Fragment() {
                     uid = "Ken1123",
                     content = mockMessage
                 )
+                binding.editBox.text?.clear()
+
             }else{
-                Toast.makeText(requireContext(),"comment is empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),"Msg is empty", Toast.LENGTH_SHORT).show()
             }
         }
     }

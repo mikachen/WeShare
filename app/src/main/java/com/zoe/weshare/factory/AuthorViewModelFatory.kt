@@ -7,6 +7,7 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.detail.event.EventDetailViewModel
 import com.zoe.weshare.detail.gift.AskForGiftViewModel
 import com.zoe.weshare.message.MessageViewModel
+import com.zoe.weshare.message.roomlist.RoomListViewModel
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 
@@ -39,6 +40,10 @@ class AuthorViewModelFactory(
 
         if (modelClass.isAssignableFrom(MessageViewModel::class.java)) {
             return MessageViewModel(repository, author) as T
+        }
+
+        if (modelClass.isAssignableFrom(RoomListViewModel::class.java)) {
+            return RoomListViewModel(repository, author) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

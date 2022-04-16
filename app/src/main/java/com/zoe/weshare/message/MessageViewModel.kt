@@ -13,8 +13,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MessageViewModel(private val repository: WeShareRepository, private val authorD: Author?) :
+class MessageViewModel(private val repository: WeShareRepository, private val author: Author?) :
     ViewModel() {
+
+
+    private var _user = MutableLiveData<List<UserProfile>>()
+    val user: LiveData<List<UserProfile>>
+        get() = _user
 
 
     private var _messageItems = MutableLiveData<List<MessageItem>>()
@@ -45,6 +50,21 @@ class MessageViewModel(private val repository: WeShareRepository, private val au
     private val _leave = MutableLiveData<Boolean>()
     val leave: LiveData<Boolean>
         get() = _leave
+
+
+    private var _onCommentsDisplay = MutableLiveData<Int>()
+    val onCommentsDisplay: LiveData<Int>
+        get() = _onCommentsDisplay
+
+
+    fun onSending(inputMsg: String){
+        _newMessage.value = Comment(
+            uid = author!!.uid,
+            content = inputMsg,
+        )
+    }
+
+
 
     fun getHistoryMessage(docId: String) {
         coroutineScope.launch {
@@ -104,14 +124,6 @@ class MessageViewModel(private val repository: WeShareRepository, private val au
         }
     }
 
-    private var _user = MutableLiveData<List<UserProfile>>()
-    val user: LiveData<List<UserProfile>>
-        get() = _user
-
-    private var _onCommentsDisplay = MutableLiveData<Int>()
-    val onCommentsDisplay: LiveData<Int>
-        get() = _onCommentsDisplay
-
 
     fun getUserList(comments: List<Comment>) {
         _onCommentsDisplay.value = comments.size
@@ -120,6 +132,7 @@ class MessageViewModel(private val repository: WeShareRepository, private val au
             getUserInfo(element.uid)
         }
     }
+
 
     private fun getUserInfo(uid: String) {
 

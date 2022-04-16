@@ -52,4 +52,8 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>{
         TODO("Not yet implemented")
     }
+
+    override suspend fun getRelatedChatRooms(uid: String): Result<List<ChatRoom>> {
+        TODO("Not yet implemented")
+    }
 }

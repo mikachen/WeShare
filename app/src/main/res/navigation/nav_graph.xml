@@ -16,10 +16,17 @@
         android:label="fragment_map"
         tools:layout="@layout/fragment_map" />
     <fragment
-        android:id="@+id/chatRoomFragment"
-        android:name="com.zoe.weshare.message.ChatRoomFragment"
-        android:label="fragment_chat_room"
-        tools:layout="@layout/fragment_chatroom" />
+        android:id="@+id/roomListFragment"
+        android:name="com.zoe.weshare.message.roomlist.RoomListFragment"
+        android:label="fragment_room_list"
+        tools:layout="@layout/fragment_room_list">
+        <action
+            android:id="@+id/action_roomListFragment_to_chatRoomFragment"
+            app:destination="@id/chatRoomFragment" />
+    </fragment>
+
+
+
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.zoe.weshare.profile.ProfileFragment"
@@ -61,12 +68,22 @@
             app:nullable="true" />
     </fragment>
 
+    <fragment
+        android:id="@+id/chatRoomFragment"
+        android:name="com.zoe.weshare.message.ChatRoomFragment"
+        android:label="fragment_chat_room"
+        tools:layout="@layout/fragment_chatroom">
+        <argument
+            android:name="selectedRoom"
+            app:argType="com.zoe.weshare.data.ChatRoom" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/eventDetailFragment"
         android:name="com.zoe.weshare.detail.event.EventDetailFragment"
         android:label="EventDetailFragment"
-        tools:layout="@layout/fragment_event_detail" >
+        tools:layout="@layout/fragment_event_detail">
 
         <argument
             android:name="selectedEvent"
@@ -78,7 +95,7 @@
         android:id="@+id/giftDetailFragment"
         android:name="com.zoe.weshare.detail.gift.GiftDetailFragment"
         android:label="GiftDetailFragment"
-        tools:layout="@layout/fragment_gift_detail" >
+        tools:layout="@layout/fragment_gift_detail">
         <argument
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
@@ -91,7 +108,7 @@
         android:id="@+id/askForGiftFragment"
         android:name="com.zoe.weshare.detail.gift.AskForGiftFragment"
         android:label="fragment_ask_for_gift"
-        tools:layout="@layout/fragment_ask_for_gift" >
+        tools:layout="@layout/fragment_ask_for_gift">
         <argument
             android:name="documentId"
             app:argType="string" />
@@ -109,11 +126,13 @@
         app:destination="@id/mapFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
+
     <action
-        android:id="@+id/navigate_to_chatroom_fragment"
-        app:destination="@id/chatRoomFragment"
+        android:id="@+id/navigate_to_roomlist_fragment"
+        app:destination="@id/roomListFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
+
     <action
         android:id="@+id/navigate_to_profile_fragment"
         app:destination="@id/profileFragment"
@@ -139,6 +158,7 @@
     <action
         android:id="@+id/action_global_giftDetailFragment"
         app:destination="@id/giftDetailFragment" />
+
 
 
 
