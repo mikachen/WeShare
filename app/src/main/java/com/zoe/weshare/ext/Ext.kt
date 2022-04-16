@@ -12,6 +12,12 @@ fun Long.toDisplayFormat(): String {
     return SimpleDateFormat("yyyy.MM.dd hh:mm", Locale.TAIWAN).format(this)
 }
 
+
+fun Long.toDisplaySentTime(): String {
+    return SimpleDateFormat("hh:mm", Locale.TAIWAN).format(this)
+}
+
+
 fun bindImage(imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
         val imgUri = it.toUri().buildUpon().scheme("https").build()

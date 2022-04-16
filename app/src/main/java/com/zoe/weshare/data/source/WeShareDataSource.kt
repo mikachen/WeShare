@@ -18,5 +18,5 @@ interface WeShareDataSource {
     suspend fun getEventComments(docId: String): Result<List<Comment>>
     suspend fun sendMessage(docId: String,comment: Comment): Result<Boolean>
     suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>
-
+    suspend fun getRelatedChatRooms(uid: String): Result<List<ChatRoom>>
 }

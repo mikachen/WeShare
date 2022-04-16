@@ -3,8 +3,8 @@ package com.zoe.weshare.data
 
 class ChatRoom (
     val id: String ="",
+    val title: String = "",
     val lastMsg: String = "",
-    val lastMsgCreatedTime: Long = -1,
-    val participantUid: List<String>? = null,
-    val title: String = ""
+    val lastMsgSentTime: Long = -1,
+    val participantsUid: List<String>? = null
 )

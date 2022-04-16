@@ -9,6 +9,7 @@ import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.MessageItem
 import com.zoe.weshare.databinding.ItemMessageReceiveBinding
 import com.zoe.weshare.databinding.ItemMessageSendBinding
+import com.zoe.weshare.ext.toDisplaySentTime
 
 class MessageAdapter (val viewModel: MessageViewModel) :
     ListAdapter<MessageItem, RecyclerView.ViewHolder>(DiffCallback) {
@@ -41,24 +42,29 @@ class MessageAdapter (val viewModel: MessageViewModel) :
         val itemType = getItem(position)
         when(holder){
             is SendViewHolder -> {
-                (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it) }
+                (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it,viewModel) }
             }
             is ReceiveViewHolder -> {
-                (itemType as MessageItem.OnReceiveSide).message?.let { holder.bind(it) }
+                (itemType as MessageItem.OnReceiveSide).message?.let { holder.bind(it,viewModel) }
             }
         }
     }
 
     class SendViewHolder(private var binding: ItemMessageSendBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment) {
-            binding.messageView.text = comment.content
+        fun bind(comment: Comment ,viewModel: MessageViewModel) {
+            binding.textMessage.text = comment.content
+            binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
         }
     }
 
     class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment) {
-            binding.messageView.text = comment.content
+        fun bind(comment: Comment, viewModel: MessageViewModel) {
+            binding.textMessage.text = comment.content
+            binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
 
+            viewModel?.let {
+                //TODO 拿到頭像
+            }
         }
     }
 

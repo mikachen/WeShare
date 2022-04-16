@@ -34,7 +34,7 @@ class ChatRoomFragment : Fragment() {
 
         binding = FragmentChatroomBinding.inflate(inflater, container, false)
 
-        viewModel.getHistoryMessage("0l0LsKb7AnjXSWU1X4QW")
+        viewModel.getHistoryMessage("8TmvsmzlT3S58KuUnxNd")
 
         adapter = MessageAdapter(viewModel)
         binding.messagesRecyclerView.adapter = adapter
@@ -45,7 +45,7 @@ class ChatRoomFragment : Fragment() {
         }
 
         viewModel.newMessage.observe(viewLifecycleOwner) {
-            viewModel.sendNewMessage("0l0LsKb7AnjXSWU1X4QW", it)
+            viewModel.sendNewMessage("8TmvsmzlT3S58KuUnxNd", it)
         }
 
 

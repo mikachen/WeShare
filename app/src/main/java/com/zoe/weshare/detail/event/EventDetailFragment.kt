@@ -61,9 +61,9 @@ class EventDetailFragment : Fragment() {
             viewModel.sendComment(selectedEvent.id, it)
         }
 
+
+
         setUpBtn()
-
-
         return binding.root
     }
 
@@ -95,5 +95,4 @@ class EventDetailFragment : Fragment() {
             textDescription.text = selectedEvent.description
         }
     }
-
 }

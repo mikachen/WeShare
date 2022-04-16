@@ -30,7 +30,7 @@ class CommentsViewModel(private val repository: WeShareRepository) : ViewModel()
     val onCommentsDisplay: LiveData<Int>
         get() = _onCommentsDisplay
 
-    var _newComment = MutableLiveData<Comment>()
+     var _newComment = MutableLiveData<Comment>()
     val newComment: LiveData<Comment>
         get() = _newComment
 

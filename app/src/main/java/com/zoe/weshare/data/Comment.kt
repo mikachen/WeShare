@@ -6,3 +6,4 @@ data class Comment(
     var content: String = "",
     var createdTime: Long= -1,
 )
+
