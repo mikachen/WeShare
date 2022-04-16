@@ -5,15 +5,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ChatRoom (
-    val id: String ="",
-    val title: String = "",
-    val lastMsg: String = "",
-    val lastMsgSentTime: Long = -1,
-    val participants: Participant? = null
+    var id: String ="",
+    var title: String = "",
+    var lastMsg: String = "",
+    var lastMsgSentTime: Long = -1,
+    var participants: List<String>? = null
 ):Parcelable
 
-
-@Parcelize
-data class Participant(
-    val uid: Boolean = true,
-):Parcelable

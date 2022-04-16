@@ -49,7 +49,6 @@ class RoomListViewModel(private val repository: WeShareRepository, private val a
 
     init {
         author?.let { getRelatedChatRooms(it.uid) }
-        Log.d("RLViewModel","INIT")
     }
 
 
@@ -58,9 +57,6 @@ class RoomListViewModel(private val repository: WeShareRepository, private val a
             _status.value = LoadApiStatus.LOADING
 
             val result = repository.getRelatedChatRooms(uid)
-
-            Log.d("RLViewModel","$result")
-            Log.d("RLViewModel","$uid")
 
             _rooms.value = when (result) {
                 is Result.Success -> {
@@ -89,7 +85,6 @@ class RoomListViewModel(private val repository: WeShareRepository, private val a
     }
 
     fun displayRoomDetails(selectedRoom: ChatRoom) {
-        Log.d("IN VN","$selectedRoom")
         _navigateToSelectedRoom.value = selectedRoom
     }
 

@@ -1,6 +1,7 @@
 package com.zoe.weshare.data.source.remote
 
 import android.icu.util.Calendar
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.zoe.weshare.R
@@ -349,9 +350,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
     override suspend fun getRelatedChatRooms(uid: String): Result<List<ChatRoom>> =
         suspendCoroutine { continuation ->
+
             FirebaseFirestore.getInstance()
                 .collection(PATH_CHATROOM)
-                .whereEqualTo("participants.$uid", true)
+                .whereArrayContains("participants",uid)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {

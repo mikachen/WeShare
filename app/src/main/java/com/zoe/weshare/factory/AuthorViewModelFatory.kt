@@ -6,7 +6,7 @@ import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.detail.event.EventDetailViewModel
 import com.zoe.weshare.detail.gift.AskForGiftViewModel
-import com.zoe.weshare.message.MessageViewModel
+import com.zoe.weshare.message.ChatRoomViewModel
 import com.zoe.weshare.message.roomlist.RoomListViewModel
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
@@ -38,8 +38,8 @@ class AuthorViewModelFactory(
             return EventDetailViewModel(repository, author) as T
         }
 
-        if (modelClass.isAssignableFrom(MessageViewModel::class.java)) {
-            return MessageViewModel(repository, author) as T
+        if (modelClass.isAssignableFrom(ChatRoomViewModel::class.java)) {
+            return ChatRoomViewModel(repository, author) as T
         }
 
         if (modelClass.isAssignableFrom(RoomListViewModel::class.java)) {

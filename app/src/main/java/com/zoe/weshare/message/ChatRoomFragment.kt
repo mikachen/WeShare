@@ -23,8 +23,8 @@ class ChatRoomFragment : Fragment() {
     )
 
     lateinit var binding: FragmentChatroomBinding
-    private val viewModel by viewModels<MessageViewModel> { getVmFactory(author) }
-    lateinit var adapter: MessageAdapter
+    private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(author) }
+    lateinit var adapter: ChatRoomAdapter
 
 
     override fun onCreateView(
@@ -38,8 +38,10 @@ class ChatRoomFragment : Fragment() {
         binding = FragmentChatroomBinding.inflate(inflater, container, false)
 
         viewModel.getHistoryMessage(selectedRoom.id)
+        selectedRoom.participants?.let { viewModel.getUserList(it) }
 
-        adapter = MessageAdapter(viewModel)
+
+        adapter = ChatRoomAdapter(viewModel)
         binding.messagesRecyclerView.adapter = adapter
 
         viewModel.messageItems.observe(viewLifecycleOwner){
@@ -47,8 +49,15 @@ class ChatRoomFragment : Fragment() {
             binding.messagesRecyclerView.scrollToPosition(adapter.itemCount -1)
         }
 
+        //drawing the user avatar image and nickName after searching user's profile docs
+        viewModel.onProfileSearching.observe(viewLifecycleOwner){
+            if (it == 0){
+                adapter.notifyDataSetChanged()
+            }
+        }
+
         viewModel.newMessage.observe(viewLifecycleOwner) {
-            viewModel.sendNewMessage("8TmvsmzlT3S58KuUnxNd", it)
+            viewModel.sendNewMessage(selectedRoom.id, it)
         }
 
 

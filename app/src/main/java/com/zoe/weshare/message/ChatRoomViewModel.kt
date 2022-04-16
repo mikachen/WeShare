@@ -13,14 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MessageViewModel(private val repository: WeShareRepository, private val author: Author?) :
+class ChatRoomViewModel(private val repository: WeShareRepository, private val author: Author?) :
     ViewModel() {
 
-
-    private var _user = MutableLiveData<List<UserProfile>>()
-    val user: LiveData<List<UserProfile>>
-        get() = _user
-
+    val profileList = mutableListOf<UserProfile>()
 
     private var _messageItems = MutableLiveData<List<MessageItem>>()
     val messageItems: LiveData<List<MessageItem>>
@@ -52,18 +48,17 @@ class MessageViewModel(private val repository: WeShareRepository, private val au
         get() = _leave
 
 
-    private var _onCommentsDisplay = MutableLiveData<Int>()
-    val onCommentsDisplay: LiveData<Int>
-        get() = _onCommentsDisplay
+    private var _onProfileSearching = MutableLiveData<Int>()
+    val onProfileSearching: LiveData<Int>
+        get() = _onProfileSearching
 
 
-    fun onSending(inputMsg: String){
+    fun onSending(inputMsg: String) {
         _newMessage.value = Comment(
             uid = author!!.uid,
             content = inputMsg,
         )
     }
-
 
 
     fun getHistoryMessage(docId: String) {
@@ -124,20 +119,15 @@ class MessageViewModel(private val repository: WeShareRepository, private val au
         }
     }
 
-
-    fun getUserList(comments: List<Comment>) {
-        _onCommentsDisplay.value = comments.size
-
-        for (element in comments) {
-            getUserInfo(element.uid)
+    fun getUserList(participants: List<String>) {
+        _onProfileSearching.value = participants.size
+        for (element in participants) {
+            getUserInfo(element)
         }
     }
 
 
     private fun getUserInfo(uid: String) {
-
-        val profileList = mutableListOf<UserProfile>()
-
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
@@ -161,8 +151,7 @@ class MessageViewModel(private val repository: WeShareRepository, private val au
                     _status.value = LoadApiStatus.ERROR
                 }
             }
-            _user.value = profileList
-            _onCommentsDisplay.value = _onCommentsDisplay.value?.minus(1)
+            _onProfileSearching.value = _onProfileSearching.value?.minus(1)
 
         }
     }

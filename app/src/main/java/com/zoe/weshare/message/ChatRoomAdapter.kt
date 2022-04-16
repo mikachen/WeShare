@@ -9,9 +9,10 @@ import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.MessageItem
 import com.zoe.weshare.databinding.ItemMessageReceiveBinding
 import com.zoe.weshare.databinding.ItemMessageSendBinding
+import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
 
-class MessageAdapter (val viewModel: MessageViewModel) :
+class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
     ListAdapter<MessageItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     override fun getItemViewType(position: Int): Int {
@@ -40,30 +41,40 @@ class MessageAdapter (val viewModel: MessageViewModel) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val itemType = getItem(position)
-        when(holder){
+        when (holder) {
             is SendViewHolder -> {
-                (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it,viewModel) }
+                (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it, viewModel) }
             }
             is ReceiveViewHolder -> {
-                (itemType as MessageItem.OnReceiveSide).message?.let { holder.bind(it,viewModel) }
+                (itemType as MessageItem.OnReceiveSide).message?.let { holder.bind(it, viewModel) }
             }
         }
     }
 
-    class SendViewHolder(private var binding: ItemMessageSendBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment ,viewModel: MessageViewModel) {
+    class SendViewHolder(private var binding: ItemMessageSendBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(comment: Comment, viewModel: ChatRoomViewModel) {
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
         }
     }
 
-    class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, viewModel: MessageViewModel) {
+    class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(comment: Comment, viewModel: ChatRoomViewModel) {
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
 
-            viewModel?.let {
-                //TODO 拿到頭像
+
+            if (viewModel.onProfileSearching.value == 0) {
+                if (viewModel.profileList.isNotEmpty()) {
+                    val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
+                    speaker?.let {
+                        bindImage(binding.imageAvatar, speaker.image)
+                        binding.textSpeakerName.text = speaker.name
+                    }
+                }
+
             }
         }
     }
@@ -72,6 +83,7 @@ class MessageAdapter (val viewModel: MessageViewModel) :
         override fun areItemsTheSame(oldItem: MessageItem, newItem: MessageItem): Boolean {
             return oldItem === newItem
         }
+
         override fun areContentsTheSame(oldItem: MessageItem, newItem: MessageItem): Boolean {
             return oldItem.id == newItem.id
         }
