@@ -1,14 +1,10 @@
-package com.zoe.weshare.detail.gift
+package com.zoe.weshare.detail.askgift
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -17,7 +13,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zoe.weshare.R
 import com.zoe.weshare.data.Author
-import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 
@@ -42,8 +37,13 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
         binding = FragmentAskForGiftBinding.inflate(inflater, container, false)
 
 
-        viewModel.comment.observe(viewLifecycleOwner) {
-            viewModel.askForGift(docId, it)
+        viewModel.newRequest.observe(viewLifecycleOwner) {
+            if (it != null){
+                viewModel.askForGift(docId, it)
+                viewModel.onNavigateBackToGiftDetail()
+            }else{
+                findNavController().navigateUp()
+            }
         }
 
         setUpBtn()
@@ -63,16 +63,17 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
 
     private fun setUpBtn() {
         binding.buttonSubmit.setOnClickListener {
+            // TODO 判斷是否登入
 
-            val message = binding.editLeaveComment.text.toString()
+            val message = binding.editLeaveComment.text
 
-            if (message.isNotEmpty()) {
-                viewModel._comment.value = Comment(
-                    uid = author.uid,
-                    content = message
-                )
-            } else {
-                Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()
+            if (message != null) {
+                if (message.isNotEmpty()) {
+                    viewModel.onSendNewRequest(message.toString())
+                    message.clear()
+                } else {
+                    Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -88,5 +89,4 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
         // 鍵盤彈出後，畫面拉長上推畫面 android:windowSoftInputMode = adjustResize
         setStyle(STYLE_NORMAL, R.style.DialogStyle)
     }
-
 }

@@ -14,5 +14,6 @@ data class EventPost(
     var description: String = "",
     var image: String = "",
     var createdTime: Long = -1,
-    var location: PostLocation? = null
+    var location: PostLocation? = null,
+    var whoLiked: List<String>? = null
 ):Parcelable

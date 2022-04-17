@@ -1,4 +1,4 @@
-package com.zoe.weshare.detail.gift
+package com.zoe.weshare.detail.askgift
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +7,6 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.Comment
-import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
@@ -18,12 +17,12 @@ import kotlinx.coroutines.launch
 
 class AskForGiftViewModel(
     private val repository: WeShareRepository,
-    private val authorD: Author?,
+    private val author: Author?,
 ) : ViewModel() {
 
-    var _comment = MutableLiveData<Comment>()
-    val comment: LiveData<Comment>
-        get() = _comment
+    private var _newRequest = MutableLiveData<Comment?>()
+    val newRequest: LiveData<Comment?>
+        get() = _newRequest
 
 
     // Create a Coroutine scope using a job to be able to cancel when needed
@@ -72,6 +71,16 @@ class AskForGiftViewModel(
                 }
             }
         }
+    }
+
+    fun onSendNewRequest(message: String){
+        _newRequest.value = Comment(
+            uid = author!!.uid,
+            content = message
+        )
+    }
+    fun onNavigateBackToGiftDetail(){
+        _newRequest.value = null
     }
 
     fun leave(needRefresh: Boolean = false) {

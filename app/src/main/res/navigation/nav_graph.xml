@@ -88,6 +88,9 @@
         <argument
             android:name="selectedEvent"
             app:argType="com.zoe.weshare.data.EventPost" />
+        <action
+            android:id="@+id/action_eventDetailFragment_to_commentDialogFragment"
+            app:destination="@id/commentDialogFragment" />
 
     </fragment>
 
@@ -106,7 +109,7 @@
 
     <dialog
         android:id="@+id/askForGiftFragment"
-        android:name="com.zoe.weshare.detail.gift.AskForGiftFragment"
+        android:name="com.zoe.weshare.detail.askgift.AskForGiftFragment"
         android:label="fragment_ask_for_gift"
         tools:layout="@layout/fragment_ask_for_gift">
         <argument
@@ -123,9 +126,7 @@
         app:popUpToInclusive="true" />
     <action
         android:id="@+id/navigate_to_map_fragment"
-        app:destination="@id/mapFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true" />
+        app:destination="@id/mapFragment" />
 
     <action
         android:id="@+id/navigate_to_roomlist_fragment"
@@ -158,8 +159,15 @@
     <action
         android:id="@+id/action_global_giftDetailFragment"
         app:destination="@id/giftDetailFragment" />
-
-
+    <dialog
+        android:id="@+id/commentDialogFragment"
+        android:name="com.zoe.weshare.detail.commenting.CommentDialogFragment"
+        android:label="fragment_comment_dialog"
+        tools:layout="@layout/fragment_comment_dialog" >
+        <argument
+            android:name="documentId"
+            app:argType="string" />
+    </dialog>
 
 
 </navigation>

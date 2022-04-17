@@ -113,15 +113,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFab() {
+        //default close
         closeSubMenusFab()
 
         binding.fabMain.setOnClickListener {
-
             if (subFabsExpanded) {
                 closeSubMenusFab()
+
             } else {
                 openSubMenusFab()
             }
+            rotateFabMain()
+
         }
 
         binding.subfabPostEvent.setOnClickListener {
@@ -146,7 +149,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openSubMenusFab() {
-        rotateFabMain()
 
         binding.subfabPostEvent.show()
         binding.subfabPostGift.show()
@@ -179,13 +181,13 @@ class MainActivity : AppCompatActivity() {
         val toDegree: Float
 
         if (subFabsExpanded) {
-            // 旋轉由-45度到0度。開啟狀態(x) -> 關閉狀態(+)
-            fromDegree = -45.0f
-            toDegree = 0.0f
-        } else {
-            // 旋轉由0度到-45度。開啟狀態(x) -> 關閉狀態(+)
+            // 旋轉由0度到-45度。狀態(+) -> 狀態(x)
             fromDegree = 0.0f
             toDegree = -45.0f
+        } else {
+            // 旋轉由-45度到0度。狀態(x) -> 狀態(+)
+            fromDegree = -45.0f
+            toDegree = 0.0f
         }
 
         val animRotate = RotateAnimation(

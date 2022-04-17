@@ -1,4 +1,4 @@
-package com.zoe.weshare.detail.event
+package com.zoe.weshare.detail.gift
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,12 +15,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class EventDetailViewModel(private val repository: WeShareRepository): ViewModel() {
+class GiftDetailViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     private var _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>>
         get() = _comments
-
 
     val profileList = mutableListOf<UserProfile>()
 
@@ -46,10 +45,10 @@ class EventDetailViewModel(private val repository: WeShareRepository): ViewModel
         get() = _leave
 
 
-    fun getHistoryComments(docId: String){
+    fun getAskForGiftComments(docId: String){
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getEventComments(docId)
+            val result = repository.getGiftAskForComments(docId)
 
             _comments.value = when (result) {
                 is Result.Success -> {

@@ -16,68 +16,77 @@
         android:layout_marginBottom="4dp"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_profile"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/text_profile_name"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/layout_main_content"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:letterSpacing="0.15"
-        android:maxLines="1"
-        android:textSize="16sp"
+        android:background="@drawable/shape_comment_box_roundconer"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="8dp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@+id/image_profile_avatar"
         app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/text_profile_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        android:layout_gravity="top"
+        android:textSize="14sp"
         tools:text="Merry Jane" />
 
     <TextView
         android:id="@+id/text_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:letterSpacing="0.15"
+        android:layout_marginTop="1dp"
         android:maxLines="1"
-        app:layout_constraintStart_toStartOf="@id/text_profile_name"
-        app:layout_constraintTop_toBottomOf="@id/text_profile_name"
+        android:textSize="16sp"
+        android:layout_gravity="bottom"
         tools:text="每年都要參加der拉～～～" />
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/text_created_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="56dp"
         android:maxLines="1"
-        android:textAlignment="textEnd"
-        app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
-        app:layout_constraintEnd_toStartOf="@id/block_btn"
-        app:layout_constraintTop_toTopOf="@id/text_profile_name"
+        android:textSize="12sp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toStartOf="@id/layout_main_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_main_content"
         tools:text="3 hrs ago" />
 
     <TextView
         android:id="@+id/block_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
         android:letterSpacing="0.15"
+        android:textSize="14sp"
         android:maxLines="1"
         android:text="封鎖"
-        app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_profile_name" />
+        app:layout_constraintTop_toTopOf="@id/layout_main_content" />
 
     <TextView
-        android:id="@+id/like_btn"
+        android:id="@+id/button_press_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:letterSpacing="0.15"
+        android:layout_marginStart="16dp"
         android:maxLines="1"
-        android:text="點贊"
+        android:text="Like"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/text_created_time"
+        app:layout_constraintStart_toEndOf="@id/text_created_time" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

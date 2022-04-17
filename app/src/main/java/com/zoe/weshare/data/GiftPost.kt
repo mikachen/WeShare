@@ -16,5 +16,5 @@ data class GiftPost(
     var createdTime: Long = -1,
     var quantity: Int = -1,
     var location: PostLocation? = null,
-    var userWhoLike: List<String>? = null
+    var whoLiked: List<String>? = null
 ):Parcelable

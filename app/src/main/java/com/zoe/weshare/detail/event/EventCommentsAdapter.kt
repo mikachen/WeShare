@@ -1,4 +1,4 @@
-package com.zoe.weshare.detail
+package com.zoe.weshare.detail.event
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,26 +10,26 @@ import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
 
-class CommentsAdapter(val viewModel: CommentsViewModel) :
-    ListAdapter<Comment, CommentsAdapter.CommentsViewHolder>(DiffCall()) {
+class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
+    ListAdapter<Comment, EventCommentsAdapter.EventCommentsViewHolder>(DiffCall()) {
 
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
-    ): CommentsViewHolder {
-        return CommentsViewHolder.from(parent)
+    ): EventCommentsViewHolder {
+        return EventCommentsViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: CommentsViewHolder, position: Int) {
+    override fun onBindViewHolder(holderEvent: EventCommentsViewHolder, position: Int) {
         val comment = getItem(position)
-        holder.bind(comment, viewModel)
+        holderEvent.bind(comment, viewModel)
     }
 
 
-    class CommentsViewHolder(private val binding: ItemCommentBoardBinding) :
+    class EventCommentsViewHolder(private val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, viewModel: CommentsViewModel) {
+        fun bind(comment: Comment, viewModel: EventDetailViewModel) {
 
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.toDisplaySentTime()
@@ -47,11 +47,11 @@ class CommentsAdapter(val viewModel: CommentsViewModel) :
         }
 
         companion object {
-            fun from(parent: ViewGroup): CommentsViewHolder {
+            fun from(parent: ViewGroup): EventCommentsViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemCommentBoardBinding.inflate(layoutInflater, parent, false)
 
-                return CommentsViewHolder(binding)
+                return EventCommentsViewHolder(binding)
             }
         }
     }

@@ -72,7 +72,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:letterSpacing="0.15"
                     android:maxLines="1"
                     android:textSize="18sp"
                     app:layout_constraintStart_toEndOf="@+id/image_profile_avatar"
@@ -85,11 +84,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:letterSpacing="0.15"
-                    android:maxLines="1"
-                    app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
+                    android:gravity="end"
+                    android:letterSpacing="0.08"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/text_profile_name"
+                    app:layout_constraintTop_toTopOf="@id/text_gift_title"
                     tools:text="2022-04-05刊登" />
 
                 <TextView
@@ -143,11 +141,29 @@
 
                 <TextView
                     android:id="@+id/text_sort"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="分類：生活用品" />
+
+
+                <TextView
+                    android:id="@+id/text_registrants_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="已有15人登記索取" />
+
+                <TextView
+                    android:id="@+id/text_quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_sort"
+                    tools:text="提供數量：8" />
 
                 <TextView
                     android:id="@+id/text_description"
@@ -156,62 +172,49 @@
                     android:layout_marginTop="8dp"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_sort"
-                    tools:text="鈦極不沾無毒塗層。"/>
+                    app:layout_constraintTop_toBottomOf="@id/text_quantity"
+                    tools:text="詳細說明：鈦極不沾無毒塗層。"/>
 
-                <TextView
-                    android:id="@+id/text_registrants_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    app:layout_constraintStart_toStartOf="@id/text_sort"
-                    app:layout_constraintTop_toBottomOf="@id/text_description"
-                    tools:text="已有15人登記索取"
-
-                    />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_detail" />
-
             <!-- layout_bulletin_board-->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_bulletin_board"
+                android:id="@+id/layout_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider2">
+                app:layout_constraintTop_toBottomOf="@id/layout_detail">
+
+
+                <TextView
+                    android:id="@+id/text_liked_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="3人說讚"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <Button
-                    android:id="@+id/button_like_gift"
+                    android:id="@+id/button_press_like"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="感恩讚"
-                    app:layout_constraintEnd_toStartOf="@id/button_send_pm"
+                    app:layout_constraintEnd_toStartOf="@id/button_leave_a_comment"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/text_liked_number" />
 
                 <Button
-                    android:id="@+id/button_send_pm"
+                    android:id="@+id/button_leave_a_comment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="私訊我"
                     app:layout_constraintEnd_toStartOf="@id/button_share_event"
-                    app:layout_constraintStart_toEndOf="@id/button_like_gift"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toEndOf="@id/button_press_like"
+                    app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
                 <Button
                     android:id="@+id/button_share_event"
@@ -219,8 +222,8 @@
                     android:layout_height="wrap_content"
                     android:text="分享貼文"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/button_send_pm"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toEndOf="@id/button_leave_a_comment"
+                    app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
 
 
@@ -237,7 +240,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_bulletin_board" />
+                app:layout_constraintTop_toBottomOf="@id/layout_buttons" />
 
             <TextView
                 android:id="@+id/title_people_who_asked"
