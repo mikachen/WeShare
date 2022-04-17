@@ -57,7 +57,6 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     val navigateToSelectedGift: LiveData<GiftPost?>
         get() = _navigateToSelectedGift
 
-
     private val _navigateToSelectedEvent = MutableLiveData<EventPost>()
     val navigateToSelectedEvent: LiveData<EventPost?>
         get() = _navigateToSelectedEvent
@@ -67,9 +66,9 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         getEventsResult()
     }
 
-    fun onCardPrepare(gifts: List<GiftPost>?, events: List<EventPost>? ){
-        if(gifts != null){
-            for (element in gifts){
+    fun onCardPrepare(gifts: List<GiftPost>?, events: List<EventPost>?) {
+        if (gifts != null) {
+            for (element in gifts) {
                 val newCard = Cards(
                     id = element.id,
                     title = element.title,
@@ -81,8 +80,8 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
                 cardsViewList.add(newCard)
             }
         }
-        if(events != null){
-            for (element in events){
+        if (events != null) {
+            for (element in events) {
                 val newCard = Cards(
                     id = element.id,
                     title = element.title,
@@ -96,7 +95,6 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
         _cards.value = cardsViewList
     }
-
 
     private fun getGiftsResult() {
         coroutineScope.launch {
@@ -163,7 +161,7 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     fun displayCardDetails(card: Cards) {
-        when(card.postType){
+        when (card.postType) {
             0 -> _navigateToSelectedGift.value = _gifts.value?.single { it.id == card.id }
             1 -> _navigateToSelectedEvent.value = _events.value?.single { it.id == card.id }
         }

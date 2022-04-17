@@ -67,20 +67,17 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
-
         if (newEvent != null) {
             val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
             setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
 
             eventViewModel._event.value = newEvent
 
-
             setUpUserPreview(gift = null, event = newEvent)
 
             binding.nextButton.setOnClickListener {
                 eventViewModel.event.value?.let { event -> eventViewModel.newPost(event) }
             }
-
         } else {
             val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
 
@@ -99,10 +96,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-
         // 檢查、要求user啟用ACCESS_FINE_LOCATION權限
         checkUserPermissions()
-
 
         // 當user同意location權限後，檢查user是否有啟用GooglePlayService
         if (isPermissionGranted) {
@@ -123,8 +118,10 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
     private fun initializePlace() {
         val info = (activity as MainActivity).applicationContext.packageManager
-            .getApplicationInfo((activity as MainActivity).packageName,
-                PackageManager.GET_META_DATA)
+            .getApplicationInfo(
+                (activity as MainActivity).packageName,
+                PackageManager.GET_META_DATA
+            )
 
         val key = info.metaData[resources.getString(R.string.map_api_key_name)].toString()
 
@@ -142,7 +139,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             listOf(
                 Place.Field.NAME,
                 Place.Field.LAT_LNG,
-            ))
+            )
+        )
 
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {

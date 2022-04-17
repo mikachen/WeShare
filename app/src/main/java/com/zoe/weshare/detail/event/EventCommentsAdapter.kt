@@ -5,14 +5,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.zoe.weshare.R
+import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.util.Util
 
 class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
     ListAdapter<Comment, EventCommentsAdapter.EventCommentsViewHolder>(DiffCall()) {
 
+    val author = Util.readInstanceProperty<Author>(viewModel, "author")
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -24,17 +28,40 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
     override fun onBindViewHolder(holderEvent: EventCommentsViewHolder, position: Int) {
         val comment = getItem(position)
         holderEvent.bind(comment, viewModel)
+
+        val whoLikedList = viewModel.updateCommentLike[position].whoLiked
+        val isUserLiked: Boolean = whoLikedList?.contains(author.uid) == true
+
+        holderEvent.binding.apply {
+
+            if (!whoLikedList.isNullOrEmpty()) {
+                textLikesCount.text =
+                    Util.getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+            } else {
+                textLikesCount.text = ""
+            }
+
+            if (isUserLiked) {
+                buttonCommentLike.setTextColor(Util.getColor(R.color.lightBlueTestColor))
+            } else {
+                buttonCommentLike.setTextColor(Util.getColor(R.color.greyTestColor))
+            }
+
+            buttonCommentLike.setOnClickListener {
+                viewModel.onCommentsLikePressed(comment, isUserLiked, position)
+            }
+        }
+
     }
 
-
-    class EventCommentsViewHolder(private val binding: ItemCommentBoardBinding) :
+    class EventCommentsViewHolder(val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(comment: Comment, viewModel: EventDetailViewModel) {
 
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.toDisplaySentTime()
 
-            if (viewModel.onProfileSearching.value == 0) {
+            if (viewModel.onProfileSearchComplete.value == 0) {
                 if (viewModel.profileList.isNotEmpty()) {
                     val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
                     speaker?.let {
@@ -43,7 +70,6 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
                     }
                 }
             }
-
         }
 
         companion object {
@@ -72,4 +98,3 @@ class DiffCall : DiffUtil.ItemCallback<Comment>() {
         return oldItem == newItem
     }
 }
-

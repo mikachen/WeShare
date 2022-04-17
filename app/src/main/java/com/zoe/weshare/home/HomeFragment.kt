@@ -27,7 +27,6 @@ class HomeFragment : Fragment(), CardStackListener {
 
     val viewModel by viewModels<HomeViewModel> { getVmFactory() }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -38,15 +37,15 @@ class HomeFragment : Fragment(), CardStackListener {
 
         setupCardStackView()
 
-        viewModel.gifts.observe(viewLifecycleOwner){
-            viewModel.onCardPrepare(gifts = it , events = null)
+        viewModel.gifts.observe(viewLifecycleOwner) {
+            viewModel.onCardPrepare(gifts = it, events = null)
         }
 
-        viewModel.events.observe(viewLifecycleOwner){
-            viewModel.onCardPrepare(gifts = null , events = it)
+        viewModel.events.observe(viewLifecycleOwner) {
+            viewModel.onCardPrepare(gifts = null, events = it)
         }
 
-        viewModel.cards.observe(viewLifecycleOwner){
+        viewModel.cards.observe(viewLifecycleOwner) {
             adapter.onListUpdate(it)
             adapter.notifyDataSetChanged()
         }
@@ -70,9 +69,11 @@ class HomeFragment : Fragment(), CardStackListener {
 
     private fun setupCardStackView() {
         cardStackView = binding.cardStackView
-        adapter = CardStackAdapter(CardStackAdapter.StackViewOnClickListener { selectedCard ->
-            viewModel.displayCardDetails(selectedCard)
-        })
+        adapter = CardStackAdapter(
+            CardStackAdapter.StackViewOnClickListener { selectedCard ->
+                viewModel.displayCardDetails(selectedCard)
+            }
+        )
         manager = CardStackLayoutManager(requireContext(), this)
         manager.setStackFrom(StackFrom.Top)
         manager.setVisibleCount(3)
@@ -122,5 +123,4 @@ class HomeFragment : Fragment(), CardStackListener {
 //        val textView = view.findViewById<TextView>(R.id.item_name)
 //        Log.d("CardStackView", "onCardDisappeared: ($position) ${textView.text}")
     }
-
 }

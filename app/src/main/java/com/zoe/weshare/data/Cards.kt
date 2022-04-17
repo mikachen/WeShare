@@ -3,7 +3,6 @@ package com.zoe.weshare.data
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-
 @Parcelize
 data class Cards(
 
@@ -14,4 +13,4 @@ data class Cards(
     val image: String,
     val locationName: String,
 
-):Parcelable
+) : Parcelable

@@ -16,7 +16,6 @@ import com.zoe.weshare.data.Author
 import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 
-
 class AskForGiftFragment : BottomSheetDialogFragment() {
 
     val author = Author(
@@ -29,19 +28,19 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
     val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(author) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         val docId = AskForGiftFragmentArgs.fromBundle(requireArguments()).documentId
 
         binding = FragmentAskForGiftBinding.inflate(inflater, container, false)
 
-
         viewModel.newRequest.observe(viewLifecycleOwner) {
-            if (it != null){
+            if (it != null) {
                 viewModel.askForGift(docId, it)
                 viewModel.onNavigateBackToGiftDetail()
-            }else{
+            } else {
                 findNavController().navigateUp()
             }
         }
@@ -55,7 +54,7 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
 
         if (dialog is BottomSheetDialog) {
-            dialog.behavior.skipCollapsed =true
+            dialog.behavior.skipCollapsed = true
             dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
         return dialog
@@ -81,7 +80,6 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
             findNavController().navigateUp()
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

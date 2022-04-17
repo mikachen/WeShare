@@ -57,6 +57,9 @@ android {
 
 dependencies {
 
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.20")
+
+
     implementation "com.google.android.libraries.places:places:2.6.0"
 
     //Fused Location Provider for Android (includes activity recognition and geofencing)

@@ -3,7 +3,6 @@ package com.zoe.weshare.data
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-
 @Parcelize
 data class GiftPost(
     var id: String = "", // unique = doc id
@@ -17,4 +16,4 @@ data class GiftPost(
     var quantity: Int = -1,
     var location: PostLocation? = null,
     var whoLiked: List<String>? = null
-):Parcelable
+) : Parcelable

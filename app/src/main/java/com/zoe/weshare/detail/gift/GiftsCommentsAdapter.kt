@@ -1,18 +1,25 @@
 package com.zoe.weshare.detail.gift
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.zoe.weshare.R
+import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.util.Util.getColor
+import com.zoe.weshare.util.Util.getStringWithIntParm
+import com.zoe.weshare.util.Util.readInstanceProperty
 
-class GiftsCommentsAdapter (val viewModel: GiftDetailViewModel) :
+class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
     ListAdapter<Comment, GiftsCommentsAdapter.GiftCommentsViewHolder>(DiffCall()) {
 
+    val author = readInstanceProperty<Author>(viewModel, "author")
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -24,17 +31,41 @@ class GiftsCommentsAdapter (val viewModel: GiftDetailViewModel) :
     override fun onBindViewHolder(holderGift: GiftCommentsViewHolder, position: Int) {
         val comment = getItem(position)
         holderGift.bind(comment, viewModel)
+
+        val whoLikedList = viewModel.updateCommentLike[position].whoLiked
+        val isUserLiked: Boolean = whoLikedList?.contains(author.uid) == true
+
+
+        holderGift.binding.apply {
+
+            if (!whoLikedList.isNullOrEmpty()) {
+                textLikesCount.text =
+                    getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+            }else {
+                textLikesCount.text = ""
+            }
+
+            if (isUserLiked) {
+                buttonCommentLike.setTextColor(getColor(R.color.lightBlueTestColor))
+            } else {
+                buttonCommentLike.setTextColor(getColor(R.color.greyTestColor))
+            }
+
+            buttonCommentLike.setOnClickListener {
+                viewModel.onCommentsLikePressed(comment, isUserLiked, position)
+            }
+        }
     }
 
-
-    class GiftCommentsViewHolder(private val binding: ItemCommentBoardBinding) :
+    class GiftCommentsViewHolder(val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(comment: Comment, viewModel: GiftDetailViewModel) {
 
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.toDisplaySentTime()
 
-            if (viewModel.onProfileSearching.value == 0) {
+            // displaying user's image and name
+            if (viewModel.onProfileSearchComplete.value == 0) {
                 if (viewModel.profileList.isNotEmpty()) {
                     val sender = viewModel.profileList.singleOrNull { it.uid == comment.uid }
                     sender?.let {
@@ -71,4 +102,3 @@ class DiffCall : DiffUtil.ItemCallback<Comment>() {
         return oldItem == newItem
     }
 }
-

@@ -44,7 +44,6 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     val leave: LiveData<Boolean>
         get() = _leave
 
-
     fun newPost(event: EventPost) {
         coroutineScope.launch {
 
@@ -83,7 +82,6 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             )
         }
     }
-
 
     fun leave(needRefresh: Boolean = false) {
         _leave.value = needRefresh

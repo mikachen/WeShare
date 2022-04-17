@@ -7,16 +7,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.zoe.weshare.R
 import java.util.*
+import kotlin.reflect.KProperty1
 
 fun Long.toDisplayFormat(): String {
     return SimpleDateFormat("yyyy.MM.dd\t\nhh:mm", Locale.TAIWAN).format(this)
 }
 
-
 fun Long.toDisplaySentTime(): String {
     return SimpleDateFormat("hh:mm", Locale.TAIWAN).format(this)
 }
-
 
 fun bindImage(imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
@@ -30,4 +29,6 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
             )
             .into(imgView)
     }
+
+
 }

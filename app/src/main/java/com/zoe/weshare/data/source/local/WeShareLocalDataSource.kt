@@ -49,11 +49,43 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>{
+    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>> {
         TODO("Not yet implemented")
     }
 
     override suspend fun getRelatedChatRooms(uid: String): Result<List<ChatRoom>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun likeEventPost(docId: String, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun likeGiftPost(docId: String, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cancelLikeEventPost(docId: String, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cancelLikeGiftPost(docId: String, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun likeGiftComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun likeEventComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cancelLikeGiftComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun cancelLikeEventComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
         TODO("Not yet implemented")
     }
 }

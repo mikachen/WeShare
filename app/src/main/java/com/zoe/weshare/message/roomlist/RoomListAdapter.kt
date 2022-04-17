@@ -12,7 +12,6 @@ import com.zoe.weshare.ext.toDisplaySentTime
 class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
     ListAdapter<ChatRoom, RoomListAdapter.RoomListViewHolder>(DiffCall()) {
 
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
@@ -34,8 +33,6 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
         fun onClick(selectedRoom: ChatRoom) = clickListener(selectedRoom)
     }
 
-
-
     class RoomListViewHolder(private val binding: ItemRelatedRoomListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(room: ChatRoom) {
@@ -45,7 +42,6 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
                 textLastMessage.text = room.lastMsg
                 textLastSentTime.text = room.lastMsgSentTime.toDisplaySentTime()
             }
-
         }
 
         companion object {
@@ -74,4 +70,3 @@ class DiffCall : DiffUtil.ItemCallback<ChatRoom>() {
         return oldItem.id == newItem.id
     }
 }
-

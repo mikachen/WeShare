@@ -9,7 +9,7 @@ import com.zoe.weshare.data.*
  */
 class DefaultWeShareRepository(
     private val remoteDataSource: WeShareDataSource,
-    private val localDataSource: WeShareDataSource
+    private val localDataSource: WeShareDataSource,
 ) : WeShareRepository {
 
     override suspend fun postNewEvent(event: EventPost): Result<Boolean> {
@@ -59,4 +59,37 @@ class DefaultWeShareRepository(
     override suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean> {
         return remoteDataSource.sendMessage(docId, comment)
     }
+
+    override suspend fun likeEventPost(docId: String, uid: String): Result<Boolean> {
+        return remoteDataSource.likeEventPost(docId, uid)
+    }
+
+    override suspend fun likeGiftPost(docId: String, uid: String): Result<Boolean> {
+        return remoteDataSource.likeGiftPost(docId, uid)
+    }
+
+    override suspend fun cancelLikeEventPost(docId: String, uid: String): Result<Boolean> {
+        return remoteDataSource.cancelLikeEventPost(docId, uid)
+    }
+
+    override suspend fun cancelLikeGiftPost(docId: String, uid: String): Result<Boolean> {
+        return remoteDataSource.cancelLikeGiftPost(docId, uid)
+    }
+
+    override suspend fun likeGiftComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
+        return remoteDataSource.likeGiftComment(docId,subDocId, uid)
+    }
+    override suspend fun likeEventComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
+        return remoteDataSource.likeEventComment(docId,subDocId, uid)
+    }
+
+    override suspend fun cancelLikeGiftComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
+        return remoteDataSource.cancelLikeGiftComment(docId,subDocId, uid)
+    }
+
+    override suspend fun cancelLikeEventComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
+        return remoteDataSource.cancelLikeEventComment(docId,subDocId, uid)
+    }
+
+
 }

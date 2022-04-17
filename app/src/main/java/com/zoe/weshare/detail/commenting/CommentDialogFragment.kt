@@ -16,7 +16,6 @@ import com.zoe.weshare.data.Author
 import com.zoe.weshare.databinding.FragmentCommentDialogBinding
 import com.zoe.weshare.ext.getVmFactory
 
-
 class CommentDialogFragment : BottomSheetDialogFragment() {
 
     val author = Author(
@@ -29,23 +28,22 @@ class CommentDialogFragment : BottomSheetDialogFragment() {
     val viewModel by viewModels<CommentViewModel> { getVmFactory(author) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         val docId = CommentDialogFragmentArgs.fromBundle(requireArguments()).documentId
 
         binding = FragmentCommentDialogBinding.inflate(inflater, container, false)
 
-
         viewModel.newComment.observe(viewLifecycleOwner) {
-            if (it != null){
+            if (it != null) {
                 viewModel.sendComment(docId, it)
                 viewModel.onNavigateBackToEventDetail()
-            }else{
+            } else {
                 findNavController().navigateUp()
             }
         }
-
 
         setUpBtn()
         return binding.root
@@ -79,14 +77,10 @@ class CommentDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         // 鍵盤彈出後，畫面拉長上推畫面 android:windowSoftInputMode = adjustResize
         setStyle(STYLE_NORMAL, R.style.DialogStyle)
     }
-
-
-
 }

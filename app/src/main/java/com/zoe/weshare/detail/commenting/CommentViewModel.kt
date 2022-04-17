@@ -8,7 +8,6 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.Result
-import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import kotlinx.coroutines.CoroutineScope
@@ -40,8 +39,6 @@ class CommentViewModel(private val repository: WeShareRepository, private val au
     val refreshStatus: LiveData<Boolean>
         get() = _refreshStatus
 
-
-
     fun sendComment(docId: String, comment: Comment) {
         coroutineScope.launch {
 
@@ -68,15 +65,14 @@ class CommentViewModel(private val repository: WeShareRepository, private val au
         }
     }
 
-
-    fun onSendNewComment(message: String){
+    fun onSendNewComment(message: String) {
         _newComment.value = Comment(
             uid = author!!.uid,
             content = message
         )
     }
 
-    fun onNavigateBackToEventDetail(){
+    fun onNavigateBackToEventDetail() {
         _newComment.value = null
     }
 

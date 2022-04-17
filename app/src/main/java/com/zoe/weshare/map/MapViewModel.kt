@@ -7,7 +7,6 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.data.PostLocation
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
@@ -49,7 +48,6 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
         getEventsResult()
     }
 
-
     private fun getGiftsResult() {
 
         coroutineScope.launch {
@@ -60,12 +58,12 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                     result.data
+                    result.data
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                     null
+                    null
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
@@ -76,7 +74,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                     null
+                    null
                 }
             }
             _refreshStatus.value = false
@@ -115,5 +113,4 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
             _refreshStatus.value = false
         }
     }
-
 }

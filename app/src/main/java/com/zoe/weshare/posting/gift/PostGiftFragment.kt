@@ -35,10 +35,13 @@ class PostGiftFragment : Fragment() {
         binding = FragmentPostGiftBinding.inflate(inflater, container, false)
 
         viewModel.gift.observe(viewLifecycleOwner) {
-            findNavController().navigate(PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment(
-                newGift = it,
-                newEvent = null))
-            Log.d("giftObs","$it")
+            findNavController().navigate(
+                PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment(
+                    newGift = it,
+                    newEvent = null
+                )
+            )
+            Log.d("giftObs", "$it")
         }
 
         setupNextBtn()
@@ -60,7 +63,7 @@ class PostGiftFragment : Fragment() {
         val condition = binding.dropdownMenuCondition.text.toString()
         val description = binding.editDescription.text.toString()
 
-        when(true){
+        when (true) {
             title.isEmpty() -> Toast.makeText(requireContext(), "title.isEmpty", Toast.LENGTH_SHORT).show()
             sort.isEmpty() -> Toast.makeText(requireContext(), "sort.isEmpty", Toast.LENGTH_SHORT).show()
             condition.isEmpty() -> Toast.makeText(requireContext(), "condition.isEmpty", Toast.LENGTH_SHORT).show()
@@ -80,14 +83,16 @@ class PostGiftFragment : Fragment() {
         val sortsString = resources.getStringArray(R.array.gift_item_sort)
         val conditionString = resources.getStringArray(R.array.gift_item_condition)
 
-
-        val sortAdapter = ArrayAdapter(requireContext(),
-            android.R.layout.simple_list_item_1, sortsString)
+        val sortAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_1, sortsString
+        )
         binding.dropdownMenuSort.setAdapter(sortAdapter)
 
-        val conditionAdapter = ArrayAdapter(requireContext(),
-            android.R.layout.simple_list_item_1, conditionString)
+        val conditionAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_1, conditionString
+        )
         binding.dropdownMenuCondition.setAdapter(conditionAdapter)
-
     }
 }

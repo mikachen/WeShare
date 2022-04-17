@@ -113,18 +113,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFab() {
-        //default close
+        // default close
         closeSubMenusFab()
 
         binding.fabMain.setOnClickListener {
             if (subFabsExpanded) {
                 closeSubMenusFab()
-
             } else {
                 openSubMenusFab()
             }
             rotateFabMain()
-
         }
 
         binding.subfabPostEvent.setOnClickListener {

@@ -9,6 +9,7 @@ import android.provider.OpenableColumns
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.zoe.weshare.WeShareApplication
+import kotlin.reflect.KProperty1
 
 object Util {
 
@@ -26,6 +27,10 @@ object Util {
 
     fun getString(resourceId: Int): String {
         return WeShareApplication.instance.getString(resourceId)
+    }
+
+    fun getStringWithIntParm(resourceId: Int, parms: Int): String {
+        return WeShareApplication.instance.getString(resourceId,parms)
     }
 
     fun getColor(resourceId: Int): Int {
@@ -54,5 +59,14 @@ object Util {
             returnCursor.close()
         }
         return name
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun <R> readInstanceProperty(instance: Any, propertyName: String): R {
+        val property = instance::class.members
+            // don't cast here to <Any, R>, it would succeed silently
+            .first { it.name == propertyName } as KProperty1<Any, *>
+        // force a invalid cast exception if incorrect type here
+        return property.get(instance) as R
     }
 }

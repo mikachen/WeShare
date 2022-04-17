@@ -26,7 +26,6 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
     val newMessage: LiveData<Comment>
         get() = _newMessage
 
-
     // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()
 
@@ -47,11 +46,9 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
     val leave: LiveData<Boolean>
         get() = _leave
 
-
     private var _onProfileSearching = MutableLiveData<Int>()
     val onProfileSearching: LiveData<Int>
         get() = _onProfileSearching
-
 
     fun onSending(inputMsg: String) {
         _newMessage.value = Comment(
@@ -59,7 +56,6 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
             content = inputMsg,
         )
     }
-
 
     fun getHistoryMessage(docId: String) {
         coroutineScope.launch {
@@ -126,7 +122,6 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
         }
     }
 
-
     private fun getUserInfo(uid: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
@@ -152,7 +147,6 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
                 }
             }
             _onProfileSearching.value = _onProfileSearching.value?.minus(1)
-
         }
     }
 }

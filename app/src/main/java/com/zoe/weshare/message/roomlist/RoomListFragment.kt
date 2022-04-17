@@ -12,7 +12,6 @@ import com.zoe.weshare.data.Author
 import com.zoe.weshare.databinding.FragmentRoomListBinding
 import com.zoe.weshare.ext.getVmFactory
 
-
 class RoomListFragment : Fragment() {
 
     val author = Author(
@@ -26,17 +25,20 @@ class RoomListFragment : Fragment() {
     lateinit var adapter: RoomListAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
         binding = FragmentRoomListBinding.inflate(inflater, container, false)
 
-        adapter = RoomListAdapter(RoomListAdapter.RoomListOnClickListener { selectedRoom ->
+        adapter = RoomListAdapter(
+            RoomListAdapter.RoomListOnClickListener { selectedRoom ->
 
-            Log.d("CLICK", "ONCLICK")
-            viewModel.displayRoomDetails(selectedRoom)
-        })
+                Log.d("CLICK", "ONCLICK")
+                viewModel.displayRoomDetails(selectedRoom)
+            }
+        )
         binding.roomlistRecyclerView.adapter = adapter
 
         viewModel.room.observe(viewLifecycleOwner) {
@@ -45,15 +47,15 @@ class RoomListFragment : Fragment() {
 
         viewModel.navigateToSelectedRoom.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(RoomListFragmentDirections.actionRoomListFragmentToChatRoomFragment(
-                    it))
+                findNavController().navigate(
+                    RoomListFragmentDirections.actionRoomListFragmentToChatRoomFragment(
+                        it
+                    )
+                )
                 viewModel.displayRoomDetailsComplete()
             }
         }
 
-
-
         return binding.root
     }
-
 }

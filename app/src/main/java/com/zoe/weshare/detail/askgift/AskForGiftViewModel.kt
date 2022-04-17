@@ -24,7 +24,6 @@ class AskForGiftViewModel(
     val newRequest: LiveData<Comment?>
         get() = _newRequest
 
-
     // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()
 
@@ -44,7 +43,6 @@ class AskForGiftViewModel(
     private val _leave = MutableLiveData<Boolean>()
     val leave: LiveData<Boolean>
         get() = _leave
-
 
     fun askForGift(docId: String, comment: Comment) {
         coroutineScope.launch {
@@ -73,13 +71,13 @@ class AskForGiftViewModel(
         }
     }
 
-    fun onSendNewRequest(message: String){
+    fun onSendNewRequest(message: String) {
         _newRequest.value = Comment(
             uid = author!!.uid,
             content = message
         )
     }
-    fun onNavigateBackToGiftDetail(){
+    fun onNavigateBackToGiftDetail() {
         _newRequest.value = null
     }
 

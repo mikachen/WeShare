@@ -202,6 +202,7 @@
                     android:id="@+id/button_press_like"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/black"
                     android:text="感恩讚"
                     app:layout_constraintEnd_toStartOf="@id/button_leave_a_comment"
                     app:layout_constraintStart_toStartOf="parent"

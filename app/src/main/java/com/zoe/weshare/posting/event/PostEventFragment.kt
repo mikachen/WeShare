@@ -26,7 +26,6 @@ class PostEventFragment : Fragment() {
     private lateinit var binding: FragmentPostEventBinding
     val viewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,11 +34,13 @@ class PostEventFragment : Fragment() {
 
         binding = FragmentPostEventBinding.inflate(inflater, container, false)
 
-
         viewModel.event.observe(viewLifecycleOwner) {
-            findNavController().navigate(PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment(
-                newEvent = it,
-                newGift = null))
+            findNavController().navigate(
+                PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment(
+                    newEvent = it,
+                    newGift = null
+                )
+            )
             Log.d("giftObs", "$it")
         }
 
@@ -69,9 +70,11 @@ class PostEventFragment : Fragment() {
                 .show()
             volunteerNeeds.isEmpty() -> Toast.makeText(requireContext(), "sort.isEmpty", Toast.LENGTH_SHORT)
                 .show()
-            description.isEmpty() -> Toast.makeText(requireContext(),
+            description.isEmpty() -> Toast.makeText(
+                requireContext(),
                 "description.isEmpty",
-                Toast.LENGTH_SHORT).show()
+                Toast.LENGTH_SHORT
+            ).show()
 
             else -> viewModel._event.value = EventPost(
                 author = author,
@@ -86,8 +89,10 @@ class PostEventFragment : Fragment() {
     private fun setupDropdownMenu() {
         val sortsString = resources.getStringArray(R.array.event_type_sort)
 
-        val sortAdapter = ArrayAdapter(requireContext(),
-            android.R.layout.simple_list_item_1, sortsString)
+        val sortAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_1, sortsString
+        )
 
         binding.dropdownMenuSort.setAdapter(sortAdapter)
     }

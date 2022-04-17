@@ -4,18 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.data.Cards
-import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.ItemEventCardsViewBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayFormat
 
-//TODO if 融合卡片內容，把贈品 活動取出 標題 圖片 刊登時間 地點名 來顯示recyclerView??
+// TODO if 融合卡片內容，把贈品 活動取出 標題 圖片 刊登時間 地點名 來顯示recyclerView??
 
 class CardStackAdapter(private val onClickListener: StackViewOnClickListener) : RecyclerView.Adapter<CardStackAdapter.CardsViewHolder>() {
 
-
     var list: List<Cards> = emptyList()
-
 
     class CardsViewHolder(val binding: ItemEventCardsViewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Cards) {
@@ -24,10 +21,9 @@ class CardStackAdapter(private val onClickListener: StackViewOnClickListener) : 
             binding.textPostedLocation.text = data.title
             binding.textDiscontinuedCountdown.text = data.createdTime.toDisplayFormat()
 
-            bindImage(binding.image,data.image)
+            bindImage(binding.image, data.image)
         }
     }
-
 
     class StackViewOnClickListener(val clickListener: (selectedProduct: Cards) -> Unit) {
         fun onClick(selectedCard: Cards) = clickListener(selectedCard)
@@ -53,8 +49,7 @@ class CardStackAdapter(private val onClickListener: StackViewOnClickListener) : 
         return list.size
     }
 
-    fun onListUpdate(dataList: List<Cards>){
+    fun onListUpdate(dataList: List<Cards>) {
         list = dataList
     }
-
 }

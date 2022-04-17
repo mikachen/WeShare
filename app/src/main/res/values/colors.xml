@@ -9,5 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="greenTestColor">#3c73a8</color>
     <color name="yellowTestColor">#f8dca5</color>
+    <color name="lightBlueTestColor">#64cae3</color>
+    <color name="greyTestColor">#A9A9A9</color>
 
 </resources>

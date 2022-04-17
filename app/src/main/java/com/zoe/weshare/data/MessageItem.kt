@@ -9,6 +9,5 @@ sealed class MessageItem {
     }
     data class OnReceiveSide(val message: Comment? = null) : MessageItem() {
         override val id: String? = message?.id
-
     }
 }

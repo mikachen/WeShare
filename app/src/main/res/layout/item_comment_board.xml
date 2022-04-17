@@ -59,7 +59,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:textSize="12sp"
+        android:textSize="13sp"
+        android:textColor="#A9A9A9"
         android:layout_marginStart="4dp"
         app:layout_constraintStart_toStartOf="@id/layout_main_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,21 +73,34 @@
         android:layout_height="wrap_content"
         android:letterSpacing="0.15"
         android:textSize="14sp"
+        android:textColor="#A9A9A9"
         android:maxLines="1"
         android:text="封鎖"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/layout_main_content" />
 
     <TextView
-        android:id="@+id/button_press_like"
+        android:id="@+id/button_comment_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:maxLines="1"
         android:text="Like"
-        android:textSize="12sp"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_created_time"
         app:layout_constraintStart_toEndOf="@id/text_created_time" />
+
+    <TextView
+        android:id="@+id/text_likes_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:maxLines="1"
+        tools:text="22人都說讚"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_created_time"
+        app:layout_constraintStart_toEndOf="@id/button_comment_like" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

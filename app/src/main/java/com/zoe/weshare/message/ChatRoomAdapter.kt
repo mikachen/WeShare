@@ -65,7 +65,6 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
 
-
             if (viewModel.onProfileSearching.value == 0) {
                 if (viewModel.profileList.isNotEmpty()) {
                     val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
@@ -74,7 +73,6 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
                         binding.textSpeakerName.text = speaker.name
                     }
                 }
-
             }
         }
     }
@@ -91,8 +89,4 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
         private const val ITEM_VIEW_TYPE_SEND = 0x00
         private const val ITEM_VIEW_TYPE_RECEIVE = 0x01
     }
-
 }
-
-
-
