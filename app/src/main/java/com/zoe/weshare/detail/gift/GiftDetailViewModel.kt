@@ -56,10 +56,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
     val error: LiveData<String?>
         get() = _error
 
-    private val _leave = MutableLiveData<Boolean>()
-    val leave: LiveData<Boolean>
-        get() = _leave
-
     fun getAskForGiftComments(docId: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING

@@ -33,8 +33,6 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.data.Cards
-import com.zoe.weshare.data.EventPost
-import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentMapBinding
 import com.zoe.weshare.ext.getVmFactory
 
@@ -92,7 +90,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     adapter.submitCards(it)
 
                     //markers on map
-                    if(viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
+                    if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
                         createMarker(it)
                     }
                 }
@@ -114,16 +112,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                 viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
                     it?.let {
-                        findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(
-                            it))
+                        findNavController()
+                            .navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
                         viewModel.displayCardDetailsComplete()
                     }
                 }
 
                 viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
                     it?.let {
-                        findNavController().navigate(NavGraphDirections.actionGlobalEventDetailFragment(
-                            it))
+                        findNavController()
+                            .navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
                         viewModel.displayCardDetailsComplete()
                     }
                 }

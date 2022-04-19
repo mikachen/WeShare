@@ -41,8 +41,8 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         get() = _status
 
     // error: The internal MutableLiveData that stores the error of the most recent request
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?>
         get() = _error
 
     // status for the loading icon of swl
@@ -50,11 +50,11 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     val refreshStatus: LiveData<Boolean>
         get() = _refreshStatus
 
-    private val _navigateToSelectedGift = MutableLiveData<GiftPost>()
+    private val _navigateToSelectedGift = MutableLiveData<GiftPost?>()
     val navigateToSelectedGift: LiveData<GiftPost?>
         get() = _navigateToSelectedGift
 
-    private val _navigateToSelectedEvent = MutableLiveData<EventPost>()
+    private val _navigateToSelectedEvent = MutableLiveData<EventPost?>()
     val navigateToSelectedEvent: LiveData<EventPost?>
         get() = _navigateToSelectedEvent
 

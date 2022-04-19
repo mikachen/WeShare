@@ -56,9 +56,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
     val error: LiveData<String?>
         get() = _error
 
-    private val _leave = MutableLiveData<Boolean>()
-    val leave: LiveData<Boolean>
-        get() = _leave
 
     fun getHistoryComments(docId: String) {
         coroutineScope.launch {

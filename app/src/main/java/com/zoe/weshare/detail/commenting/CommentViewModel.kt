@@ -30,8 +30,8 @@ class CommentViewModel(private val repository: WeShareRepository, private val au
         get() = _status
 
     // error: The internal MutableLiveData that stores the error of the most recent request
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?>
         get() = _error
 
     // status for the loading icon of swl
@@ -76,11 +76,4 @@ class CommentViewModel(private val repository: WeShareRepository, private val au
         _newComment.value = null
     }
 
-    fun leave(needRefresh: Boolean = false) {
-//        _leave.value = needRefresh
-    }
-
-    fun onLeft() {
-//        _leave.value = null
-    }
 }

@@ -21,8 +21,8 @@ class RoomListViewModel(private val repository: WeShareRepository, private val a
     val room: LiveData<List<ChatRoom>>
         get() = _rooms
 
-    private var _navigateToSelectedRoom = MutableLiveData<ChatRoom>()
-    val navigateToSelectedRoom: LiveData<ChatRoom>
+    private var _navigateToSelectedRoom = MutableLiveData<ChatRoom?>()
+    val navigateToSelectedRoom: LiveData<ChatRoom?>
         get() = _navigateToSelectedRoom
 
     // Create a Coroutine scope using a job to be able to cancel when needed
@@ -37,13 +37,9 @@ class RoomListViewModel(private val repository: WeShareRepository, private val a
         get() = _status
 
     // error: The internal MutableLiveData that stores the error of the most recent request
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?>
         get() = _error
-
-    private val _leave = MutableLiveData<Boolean>()
-    val leave: LiveData<Boolean>
-        get() = _leave
 
     init {
         author?.let { getRelatedChatRooms(it.uid) }
