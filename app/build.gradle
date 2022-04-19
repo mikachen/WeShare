@@ -71,9 +71,6 @@ dependencies {
     //process of requesting permissions at runtime
     implementation 'com.karumi:dexter:6.2.3'
 
-    //card-stack-swipe
-    implementation 'com.yuyakaido.android:card-stack-view:2.3.4'
-
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.13.1'
 
