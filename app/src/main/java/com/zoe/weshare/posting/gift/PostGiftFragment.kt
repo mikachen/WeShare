@@ -11,14 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.R
-import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.Util.author
 
 class PostGiftFragment : Fragment() {
-
 
     private lateinit var binding: FragmentPostGiftBinding
     val viewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }

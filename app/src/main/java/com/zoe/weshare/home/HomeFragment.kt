@@ -14,16 +14,16 @@ import com.yuyakaido.android.cardstackview.*
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.databinding.FragmentCardSwipeBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.map.CardGalleryAdapter
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
+
+
 class HomeFragment : Fragment(), CardStackListener {
 
     private lateinit var cardStackView: CardStackView
     private lateinit var binding: FragmentCardSwipeBinding
     private lateinit var manager: CardStackLayoutManager
-    private lateinit var adapter: CardStackAdapter
+    private lateinit var adapter: CardGalleryAdapter
 
     val viewModel by viewModels<HomeViewModel> { getVmFactory() }
 
@@ -46,7 +46,7 @@ class HomeFragment : Fragment(), CardStackListener {
         }
 
         viewModel.cards.observe(viewLifecycleOwner) {
-            adapter.onListUpdate(it)
+            adapter.submitCards(it)
             adapter.notifyDataSetChanged()
         }
 
@@ -69,8 +69,8 @@ class HomeFragment : Fragment(), CardStackListener {
 
     private fun setupCardStackView() {
         cardStackView = binding.cardStackView
-        adapter = CardStackAdapter(
-            CardStackAdapter.StackViewOnClickListener { selectedCard ->
+        adapter = CardGalleryAdapter(
+            CardGalleryAdapter.CardOnClickListener { selectedCard ->
                 viewModel.displayCardDetails(selectedCard)
             }
         )

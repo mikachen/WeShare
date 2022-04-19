@@ -1,8 +1,7 @@
 package com.zoe.weshare.ext
 
+import android.content.res.Resources
 import android.icu.text.SimpleDateFormat
-import android.view.View
-import android.view.animation.Animation
 import android.widget.ImageView
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -30,6 +29,5 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
             )
             .into(imgView)
     }
-
-
 }
+

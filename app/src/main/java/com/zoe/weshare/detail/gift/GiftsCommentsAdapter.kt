@@ -1,6 +1,5 @@
 package com.zoe.weshare.detail.gift
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -35,13 +34,12 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
         val whoLikedList = viewModel.updateCommentLike[position].whoLiked
         val isUserLiked: Boolean = whoLikedList?.contains(author.uid) == true
 
-
         holderGift.binding.apply {
 
             if (!whoLikedList.isNullOrEmpty()) {
                 textLikesCount.text =
                     getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
-            }else {
+            } else {
                 textLikesCount.text = ""
             }
 

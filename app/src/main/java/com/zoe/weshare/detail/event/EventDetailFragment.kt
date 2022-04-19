@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.R
-import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventDetailBinding
 import com.zoe.weshare.ext.bindImage
@@ -19,7 +18,6 @@ import com.zoe.weshare.util.Util.author
 import com.zoe.weshare.util.Util.getColor
 
 class EventDetailFragment : Fragment() {
-
 
     private lateinit var binding: FragmentEventDetailBinding
     private lateinit var adapter: EventCommentsAdapter
@@ -46,7 +44,7 @@ class EventDetailFragment : Fragment() {
             setUpBtn(it)
         }
 
-        viewModel.onCommentLikePressed.observe(viewLifecycleOwner){
+        viewModel.onCommentLikePressed.observe(viewLifecycleOwner) {
             adapter.notifyItemChanged(it)
         }
 
@@ -54,8 +52,8 @@ class EventDetailFragment : Fragment() {
 
             adapter.submitList(it)
 
-            //make sure it only run one time in the beginning
-            if(viewModel.onProfileSearchComplete.value == null) {
+            // make sure it only run one time in the beginning
+            if (viewModel.onProfileSearchComplete.value == null) {
                 viewModel.searchUsersProfile(it)
             }
         }

@@ -39,11 +39,11 @@ object Util {
     }
 
     fun getStringWithIntParm(resourceId: Int, parms: Int): String {
-        return WeShareApplication.instance.getString(resourceId,parms)
+        return WeShareApplication.instance.getString(resourceId, parms)
     }
 
     fun getStringWithStrParm(resourceId: Int, parms: String): String {
-        return WeShareApplication.instance.getString(resourceId,parms)
+        return WeShareApplication.instance.getString(resourceId, parms)
     }
 
     fun getColor(resourceId: Int): Int {

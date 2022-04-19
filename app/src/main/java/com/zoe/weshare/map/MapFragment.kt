@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.*
@@ -20,13 +24,15 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.zoe.weshare.MainActivity
+import com.zoe.weshare.NavGraphDirections
+import com.zoe.weshare.data.Cards
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentMapBinding
@@ -42,6 +48,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var currentLocation: LatLng
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private lateinit var adapter: CardGalleryAdapter
+
+    private val markersRef = mutableListOf<Marker>()
+
+    val viewModel by viewModels<MapViewModel> { getVmFactory() }
+
     var isPermissionGranted: Boolean = false
 
     override fun onCreateView(
@@ -52,8 +64,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         binding = FragmentMapBinding.inflate(inflater, container, false)
 
-        // 檢查、要求user啟用ACCESS_FINE_LOCATION權限
-        checkUserPermissions()
+        checkUserPermissions() // 檢查、要求user啟用ACCESS_FINE_LOCATION權限
 
         // 當user同意location權限後，檢查user是否有啟用GooglePlayService
         if (isPermissionGranted) {
@@ -65,14 +76,56 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 fusedLocationClient =
                     LocationServices.getFusedLocationProviderClient(requireContext())
 
-                val viewModel by viewModels<MapViewModel> { getVmFactory() }
+
+                setupCardGallery()
 
                 viewModel.gifts.observe(viewLifecycleOwner) {
-                    createMarker(gifts = it, null)
+                    viewModel.onCardPrepare(gifts = it, events = null)
                 }
 
                 viewModel.events.observe(viewLifecycleOwner) {
-                    createMarker(null, events = it)
+                    viewModel.onCardPrepare(gifts = null, events = it)
+                }
+
+                viewModel.cards.observe(viewLifecycleOwner) {
+                    //cards recycler view
+                    adapter.submitCards(it)
+
+                    //markers on map
+                    if(viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
+                        createMarker(it)
+                    }
+                }
+
+                viewModel.snapPosition.observe(viewLifecycleOwner) {
+                    Log.d("snapPosition CHANGE!", "$it")
+
+                    //trigger marker showInfoWindow
+                    markersRef[it].showInfoWindow()
+
+                    //move camera
+                    viewModel.cardsViewList[it].postLocation?.let { location ->
+                        val point =
+                            LatLng(location.latitude.toDouble(), location.longitude.toDouble())
+                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 13F))
+                    }
+                }
+
+
+                viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
+                    it?.let {
+                        findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(
+                            it))
+                        viewModel.displayCardDetailsComplete()
+                    }
+                }
+
+                viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
+                    it?.let {
+                        findNavController().navigate(NavGraphDirections.actionGlobalEventDetailFragment(
+                            it))
+                        viewModel.displayCardDetailsComplete()
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -86,34 +139,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    private fun createMarker(gifts: List<GiftPost>?, events: List<EventPost>?) {
-//        map.addMarker(MarkerOptions().position(hotel).title("Hotel"))
-//            ?.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_gift))
+    private fun createMarker(cards: List<Cards>?) {
 
-        gifts?.forEach {
+        cards?.forEach {
+            it.postLocation?.let { location ->
 
-            val point =
-                LatLng(it.location!!.latitude.toDouble(), it.location!!.longitude.toDouble())
+                val point =
+                    LatLng(location.latitude.toDouble(), location.longitude.toDouble())
 
-            map.addMarker(
-                MarkerOptions()
-                    .position(point)
-                    .title(it.title)
-            )
-                ?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-        }
+                val options = MarkerOptions().position(point).title(it.title)
 
-        events?.forEach {
+                val newMarker = map.addMarker(options)
 
-            val point =
-                LatLng(it.location!!.latitude.toDouble(), it.location!!.longitude.toDouble())
-
-            map.addMarker(
-                MarkerOptions()
-                    .position(point)
-                    .title(it.title)
-            )
-                ?.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                if (newMarker != null) {
+                    when (it.postType) {
+                        GIFT_TYPE -> newMarker.setIcon(BitmapDescriptorFactory.defaultMarker(
+                            BitmapDescriptorFactory.HUE_RED))
+                        EVENT_TYPE -> newMarker.setIcon(BitmapDescriptorFactory.defaultMarker(
+                            BitmapDescriptorFactory.HUE_YELLOW))
+                    }
+                    markersRef.add(newMarker)
+                }
+            }
         }
     }
 
@@ -135,7 +182,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 } else {
                     currentLocation = LatLng(location.latitude, location.longitude)
                     map.isMyLocationEnabled = true
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 13F))
                 }
             }
         } else {
@@ -228,12 +275,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setupMapSettings() {
-        map.setOnCameraMoveStartedListener {
-            (activity as MainActivity).binding.bottomAppBar.performHide()
-        }
-        map.setOnCameraIdleListener {
-            (activity as MainActivity).binding.bottomAppBar.performShow()
-        }
 
         map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isCompassEnabled = true
@@ -244,6 +285,40 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             getLastLocation()
             true
         }
+    }
+
+    private fun setupCardGallery() {
+
+        val recyclerView = binding.cardsRecycleview
+
+        adapter = CardGalleryAdapter(
+            CardGalleryAdapter.CardOnClickListener { selectedCard ->
+                viewModel.displayCardDetails(selectedCard)
+            }
+        )
+
+        val manager = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.HORIZONTAL, false)
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = manager
+
+        val linearSnapHelper = LinearSnapHelper().apply {
+            attachToRecyclerView(recyclerView)
+        }
+
+        val marginDecoration = GalleryDecoration()
+        recyclerView.addItemDecoration(marginDecoration)
+
+
+        recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
+            viewModel.onGalleryScrollChange(
+                recyclerView.layoutManager, linearSnapHelper
+            )
+        }
+//        val currentPosition = recyclerView.adapter!!.itemCount / 2
+//        manager.scrollToPosition(currentPosition)
+
     }
 
     override fun onStart() {

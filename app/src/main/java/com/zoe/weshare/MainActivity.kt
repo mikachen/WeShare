@@ -16,7 +16,6 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
 import com.zoe.weshare.util.Logger
 
-
 class MainActivity : AppCompatActivity() {
 // TODO 處理user點開fab main卻沒有實際點擊按鈕的情況，應該要關閉fab, 從刊登頁面返回也會壞掉
 
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-            if (it == CurrentFragmentType.POSTGIFT || it == CurrentFragmentType.POSTEVENT) {
+            if (it == CurrentFragmentType.POSTGIFT || it == CurrentFragmentType.POSTEVENT || it == CurrentFragmentType.MAP) {
                 binding.fabMain.hide()
                 binding.bottomAppBar.performHide()
             } else {
@@ -222,6 +221,4 @@ class MainActivity : AppCompatActivity() {
 
         binding.fabMain.startAnimation(animRotate)
     }
-
-
 }

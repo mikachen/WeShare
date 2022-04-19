@@ -210,7 +210,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
             sendLikeOnComment(comment.id)
 
             whoLikedList.add(author!!.uid)
-
         } else {
             cancelLikeOnComment(comment.id)
 
@@ -222,14 +221,16 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.likeEventComment(
-                docId = onViewDisplaying.value!!.id,
-                subDocId = subDoc,
-                uid = author!!.uid)) {
+            when (
+                val result = repository.likeEventComment(
+                    docId = onViewDisplaying.value!!.id,
+                    subDocId = subDoc,
+                    uid = author!!.uid
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -251,14 +252,16 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.cancelLikeEventComment(
-                docId = onViewDisplaying.value!!.id,
-                subDocId = subDoc,
-                uid = author!!.uid)) {
+            when (
+                val result = repository.cancelLikeEventComment(
+                    docId = onViewDisplaying.value!!.id,
+                    subDocId = subDoc,
+                    uid = author!!.uid
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error

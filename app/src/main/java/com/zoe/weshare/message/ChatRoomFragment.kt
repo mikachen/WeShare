@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
@@ -15,7 +14,6 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.Util.author
 
 class ChatRoomFragment : Fragment() {
-
 
     lateinit var binding: FragmentChatroomBinding
     private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(author) }

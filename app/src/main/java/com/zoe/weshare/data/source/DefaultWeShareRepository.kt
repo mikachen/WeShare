@@ -2,11 +2,8 @@ package com.zoe.weshare.data.source
 
 import com.zoe.weshare.data.*
 
-/**
- * Created by Wayne Chen on 2020-01-15.
- *
- * Concrete implementation to load Publisher sources.
- */
+
+
 class DefaultWeShareRepository(
     private val remoteDataSource: WeShareDataSource,
     private val localDataSource: WeShareDataSource,
@@ -76,20 +73,35 @@ class DefaultWeShareRepository(
         return remoteDataSource.cancelLikeGiftPost(docId, uid)
     }
 
-    override suspend fun likeGiftComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
-        return remoteDataSource.likeGiftComment(docId,subDocId, uid)
-    }
-    override suspend fun likeEventComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
-        return remoteDataSource.likeEventComment(docId,subDocId, uid)
-    }
-
-    override suspend fun cancelLikeGiftComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
-        return remoteDataSource.cancelLikeGiftComment(docId,subDocId, uid)
+    override suspend fun likeGiftComment(
+        docId: String,
+        subDocId: String,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.likeGiftComment(docId, subDocId, uid)
     }
 
-    override suspend fun cancelLikeEventComment(docId: String, subDocId:String, uid: String): Result<Boolean> {
-        return remoteDataSource.cancelLikeEventComment(docId,subDocId, uid)
+    override suspend fun likeEventComment(
+        docId: String,
+        subDocId: String,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.likeEventComment(docId, subDocId, uid)
     }
 
+    override suspend fun cancelLikeGiftComment(
+        docId: String,
+        subDocId: String,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.cancelLikeGiftComment(docId, subDocId, uid)
+    }
 
+    override suspend fun cancelLikeEventComment(
+        docId: String,
+        subDocId: String,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.cancelLikeEventComment(docId, subDocId, uid)
+    }
 }

@@ -191,14 +191,16 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.likeGiftComment(
-                docId = onViewDisplaying.value!!.id,
-                subDocId = subDoc,
-                uid = author!!.uid)) {
+            when (
+                val result = repository.likeGiftComment(
+                    docId = onViewDisplaying.value!!.id,
+                    subDocId = subDoc,
+                    uid = author!!.uid
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -220,14 +222,16 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.cancelLikeGiftComment(
-                docId = onViewDisplaying.value!!.id,
-                subDocId = subDoc,
-                uid = author!!.uid)) {
+            when (
+                val result = repository.cancelLikeGiftComment(
+                    docId = onViewDisplaying.value!!.id,
+                    subDocId = subDoc,
+                    uid = author!!.uid
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -267,7 +271,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
             sendLikeOnComment(comment.id)
 
             whoLikedList.add(author!!.uid)
-
         } else {
             cancelLikeOnComment(comment.id)
 
@@ -275,4 +278,3 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
         }
     }
 }
-

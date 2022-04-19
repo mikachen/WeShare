@@ -11,6 +11,5 @@ data class Cards(
     val createdTime: Long,
     val postType: Int,
     val image: String,
-    val locationName: String,
-
-) : Parcelable
+    val postLocation: PostLocation?,
+    ) : Parcelable

@@ -51,7 +51,6 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
                 viewModel.onCommentsLikePressed(comment, isUserLiked, position)
             }
         }
-
     }
 
     class EventCommentsViewHolder(val binding: ItemCommentBoardBinding) :

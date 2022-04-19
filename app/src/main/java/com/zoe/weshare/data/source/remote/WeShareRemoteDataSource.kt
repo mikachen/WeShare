@@ -467,8 +467,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-
-    override suspend fun likeGiftComment(docId: String, subDocId:String, uid: String): Result<Boolean> =
+    override suspend fun likeGiftComment(docId: String, subDocId: String, uid: String): Result<Boolean> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
                 .collection(SUB_PATH_GIFT_USER_WHO_ASK_FOR).document(subDocId)
@@ -489,7 +488,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
-    override suspend fun cancelLikeGiftComment(docId: String, subDocId:String, uid: String): Result<Boolean> =
+    override suspend fun cancelLikeGiftComment(docId: String, subDocId: String, uid: String): Result<Boolean> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
                 .collection(SUB_PATH_GIFT_USER_WHO_ASK_FOR).document(subDocId)
@@ -511,7 +510,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun likeEventComment(docId: String, subDocId:String, uid: String): Result<Boolean> =
+    override suspend fun likeEventComment(docId: String, subDocId: String, uid: String): Result<Boolean> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance().collection(PATH_EVENT_POST).document(docId)
                 .collection(SUB_PATH_EVENT_USER_WHO_COMMENT).document(subDocId)
@@ -532,7 +531,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
-    override suspend fun cancelLikeEventComment(docId: String, subDocId:String, uid: String): Result<Boolean> =
+    override suspend fun cancelLikeEventComment(docId: String, subDocId: String, uid: String): Result<Boolean> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance().collection(PATH_EVENT_POST).document(docId)
                 .collection(SUB_PATH_EVENT_USER_WHO_COMMENT).document(subDocId)
@@ -553,5 +552,4 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
-
 }

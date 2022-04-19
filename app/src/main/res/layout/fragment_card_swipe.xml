@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_event_cards_view" />
+        tools:listitem="@layout/item_card_gallery_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,9 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-const val GIFT_TYPE = 0
-const val EVENT_TYPE = 1
-
 class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     var cardsViewList = mutableListOf<Cards>()
@@ -73,9 +70,9 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
                     id = element.id,
                     title = element.title,
                     createdTime = element.createdTime,
-                    postType = GIFT_TYPE,
+                    postType = 0,
                     image = element.image,
-                    locationName = element.location!!.locationName
+                    postLocation = element.location
                 )
                 cardsViewList.add(newCard)
             }
@@ -86,9 +83,9 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
                     id = element.id,
                     title = element.title,
                     createdTime = element.createdTime,
-                    postType = EVENT_TYPE,
+                    postType = 1,
                     image = element.image,
-                    locationName = element.location!!.locationName
+                    postLocation = element.location
                 )
                 cardsViewList.add(newCard)
             }

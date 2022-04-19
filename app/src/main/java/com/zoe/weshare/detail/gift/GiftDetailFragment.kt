@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.R
-import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftDetailBinding
 import com.zoe.weshare.ext.bindImage
@@ -18,7 +17,6 @@ import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.Util.author
 
 class GiftDetailFragment : Fragment() {
-
 
     private lateinit var binding: FragmentGiftDetailBinding
     private lateinit var adapter: GiftsCommentsAdapter
@@ -45,7 +43,7 @@ class GiftDetailFragment : Fragment() {
             setUpBtn(it)
         }
 
-        viewModel.onCommentLikePressed.observe(viewLifecycleOwner){
+        viewModel.onCommentLikePressed.observe(viewLifecycleOwner) {
             adapter.notifyItemChanged(it)
         }
 
@@ -53,8 +51,8 @@ class GiftDetailFragment : Fragment() {
 
             adapter.submitList(it)
 
-            //make sure it only run one time
-            if(viewModel.onProfileSearchComplete.value == null) {
+            // make sure it only run one time
+            if (viewModel.onProfileSearchComplete.value == null) {
                 viewModel.searchUsersProfile(it)
             }
         }
@@ -94,7 +92,7 @@ class GiftDetailFragment : Fragment() {
             textPostedLocation.text = resources.getString(R.string.gift_post_location_name, selectedGift.location?.locationName)
             textCreatedTime.text = resources.getString(R.string.posted_time, selectedGift.createdTime.toDisplayFormat())
             textSort.text = resources.getString(R.string.gift_post_sort, selectedGift.sort)
-            textQuantity.text = resources.getString(R.string.gift_post_quantity,selectedGift.quantity)
+            textQuantity.text = resources.getString(R.string.gift_post_quantity, selectedGift.quantity)
             textLikedNumber.text = resources.getString(R.string.number_who_liked, selectedGift.whoLiked?.size)
             textDescription.text = selectedGift.description
         }
