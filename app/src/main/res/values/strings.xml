@@ -46,11 +46,16 @@
     </string-array>
 
     <string name="posted_time">%s 刊登\t</string>
+    <string name="card_posted_time">刊登時間:%1$s</string>
+
     <string name="gift_post_location_name">取物地點: %1$s</string>
     <string name="event_post_location_name">活動地點: %1$s</string>
+    <string name="post_location_name">刊登地點:%1$s</string>
 
     <string name="gift_post_sort">物品分類: %1$s</string>
     <string name="event_post_sort">活動分類: %1$s</string>
+
+    <string name="gift_post_quantity">提供數量: %1$d</string>
 
     <string name="number_who_liked">%1$d 人說讚</string>
     <string name="number_volunteer_needs">需求志工數: %1$d人</string>

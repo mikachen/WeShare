@@ -162,11 +162,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:gravity="start"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_sort"
-                    tools:text="「只要親自淨灘過一次，就能了解拋棄式塑膠的恐怖。」這是大多數人參與過淨灘活動後的感想。臺灣是海島國家，卻從來只養成海鮮文化，就算幾乎每個縣市都與海比鄰，與「海洋」的距離卻非常遙遠。" />
-
+                    tools:text=" 需求. 效果見圖: 單行時文字靠右顯示 多行時要求第二行靠左顯示. 過程. 要求圖片靠右對其,"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

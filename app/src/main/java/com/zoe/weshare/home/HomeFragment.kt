@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
 import com.yuyakaido.android.cardstackview.*
 import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.databinding.FragmentHomeBinding
+import com.zoe.weshare.databinding.FragmentCardSwipeBinding
 import com.zoe.weshare.ext.getVmFactory
 
 /**
@@ -21,7 +21,7 @@ import com.zoe.weshare.ext.getVmFactory
 class HomeFragment : Fragment(), CardStackListener {
 
     private lateinit var cardStackView: CardStackView
-    private lateinit var binding: FragmentHomeBinding
+    private lateinit var binding: FragmentCardSwipeBinding
     private lateinit var manager: CardStackLayoutManager
     private lateinit var adapter: CardStackAdapter
 
@@ -33,7 +33,7 @@ class HomeFragment : Fragment(), CardStackListener {
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentCardSwipeBinding.inflate(inflater, container, false)
 
         setupCardStackView()
 

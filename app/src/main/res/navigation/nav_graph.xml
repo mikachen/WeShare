@@ -9,7 +9,7 @@
         android:id="@+id/homeFragment"
         android:name="com.zoe.weshare.home.HomeFragment"
         android:label="home_fragment"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_card_swipe" />
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.zoe.weshare.map.MapFragment"

@@ -3,10 +3,12 @@ package com.zoe.weshare.home
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.zoe.weshare.R
 import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.ItemEventCardsViewBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.Util.getStringWithStrParm
 
 // TODO if 融合卡片內容，把贈品 活動取出 標題 圖片 刊登時間 地點名 來顯示recyclerView??
 
@@ -17,11 +19,13 @@ class CardStackAdapter(private val onClickListener: StackViewOnClickListener) : 
     class CardsViewHolder(val binding: ItemEventCardsViewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Cards) {
 
-            binding.textTitle.text = data.title
-            binding.textPostedLocation.text = data.title
-            binding.textDiscontinuedCountdown.text = data.createdTime.toDisplayFormat()
+            binding.apply {
 
-            bindImage(binding.image, data.image)
+            textTitle.text = data.title
+            textPostedLocation.text = getStringWithStrParm(R.string.post_location_name,data.locationName)
+            textDiscontinuedCountdown.text = getStringWithStrParm(R.string.card_posted_time,data.createdTime.toDisplayFormat())
+            bindImage(image, data.image)
+            }
         }
     }
 

@@ -12,14 +12,10 @@ import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.util.Util.author
 
 class ChatRoomFragment : Fragment() {
 
-    val author = Author(
-        name = "Zoe Lo",
-        uid = "zoe1018",
-        image = "https://www.computerhope.com/jargon/a/android.png"
-    )
 
     lateinit var binding: FragmentChatroomBinding
     private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(author) }

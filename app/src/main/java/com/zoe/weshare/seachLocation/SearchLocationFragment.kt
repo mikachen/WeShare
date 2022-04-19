@@ -31,7 +31,7 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.R
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.util.Util.author
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
@@ -40,11 +40,6 @@ import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
-    val author = Author(
-        name = "Zoe Lo",
-        uid = "zoe1018",
-        image = "https://www.computerhope.com/jargon/a/android.png"
-    )
 
     private lateinit var searchView: SearchView
     private lateinit var map: GoogleMap

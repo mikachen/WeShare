@@ -15,13 +15,9 @@ import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentPostEventBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.util.Util.author
 
 class PostEventFragment : Fragment() {
-    val author = Author(
-        name = "Zoe Lo",
-        uid = "zoe1018",
-        image = "https://www.computerhope.com/jargon/a/android.png"
-    )
 
     private lateinit var binding: FragmentPostEventBinding
     val viewModel by viewModels<PostEventViewModel> { getVmFactory(author) }

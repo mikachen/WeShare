@@ -2,6 +2,7 @@ package com.zoe.weshare
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
@@ -14,6 +15,7 @@ import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
 import com.zoe.weshare.util.Logger
+
 
 class MainActivity : AppCompatActivity() {
 // TODO 處理user點開fab main卻沒有實際點擊按鈕的情況，應該要關閉fab, 從刊登頁面返回也會壞掉
@@ -28,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.toolbar.inflateMenu(R.menu.toolbar_menu)
 
         // lottie animation
         loginAnimate()
@@ -41,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.currentFragmentType.observe(
             this
         ) {
-            binding.toolbarTitle.text = it.value
+//            binding.toolbarTitle.text = it.value
 
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Logger.i("[${viewModel.currentFragmentType.value}]")
@@ -138,6 +141,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun closeSubMenusFab() {
+        binding.subFabBackgroundView.visibility = View.GONE
+        binding.constraintView.visibility = View.GONE
 
         binding.subfabPostEvent.hide()
         binding.subfabPostGift.hide()
@@ -147,28 +152,46 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openSubMenusFab() {
+        /** view */
+        binding.constraintView.visibility = View.VISIBLE
+        binding.subFabBackgroundView.visibility = View.VISIBLE
 
-        binding.subfabPostEvent.show()
-        binding.subfabPostGift.show()
-        binding.subfabPostFavoriate.show()
-        binding.subfabPostEvent.startAnimation(
-            AnimationUtils.loadAnimation(
-                applicationContext,
-                R.anim.subfab_event_show
-            )
-        )
-        binding.subfabPostGift.startAnimation(
-            AnimationUtils.loadAnimation(
-                applicationContext,
-                R.anim.subfab_gift_show
-            )
-        )
-        binding.subfabPostFavoriate.startAnimation(
+        val animation =
             AnimationUtils.loadAnimation(
                 applicationContext,
                 R.anim.subfab_favorite_show
             )
-        )
+        binding.subFabBackgroundView.startAnimation(animation)
+        binding.subFabBackgroundView.animation.setAnimationListener(
+            object : Animation.AnimationListener {
+                override fun onAnimationStart(p0: Animation?) = Unit
+
+                override fun onAnimationEnd(p0: Animation?) {}
+
+                override fun onAnimationRepeat(p0: Animation?) = Unit
+            })
+
+        binding.subfabPostEvent.show()
+        binding.subfabPostGift.show()
+        binding.subfabPostFavoriate.show()
+//        binding.subfabPostEvent.startAnimation(
+//            AnimationUtils.loadAnimation(
+//                applicationContext,
+//                R.anim.subfab_event_show
+//            )
+//        )
+//        binding.subfabPostGift.startAnimation(
+//            AnimationUtils.loadAnimation(
+//                applicationContext,
+//                R.anim.subfab_gift_show
+//            )
+//        )
+//        binding.subfabPostFavoriate.startAnimation(
+//            AnimationUtils.loadAnimation(
+//                applicationContext,
+//                R.anim.subfab_favorite_show
+//            )
+//        )
 
         subFabsExpanded = true
     }
@@ -199,4 +222,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.fabMain.startAnimation(animRotate)
     }
+
+
 }

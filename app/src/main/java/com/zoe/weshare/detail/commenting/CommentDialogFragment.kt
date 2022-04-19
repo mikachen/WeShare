@@ -15,14 +15,9 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.Author
 import com.zoe.weshare.databinding.FragmentCommentDialogBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.util.Util.author
 
 class CommentDialogFragment : BottomSheetDialogFragment() {
-
-    val author = Author(
-        name = "Kelyie Chen",
-        uid = "kelly0808",
-        image = "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/hbz-grace-kelly-1950s-gettyimages-517423148-1569860702.jpg"
-    )
 
     lateinit var binding: FragmentCommentDialogBinding
     val viewModel by viewModels<CommentViewModel> { getVmFactory(author) }

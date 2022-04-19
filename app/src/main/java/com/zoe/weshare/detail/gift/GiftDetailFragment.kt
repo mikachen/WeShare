@@ -15,14 +15,10 @@ import com.zoe.weshare.databinding.FragmentGiftDetailBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.Util.author
 
 class GiftDetailFragment : Fragment() {
 
-    val author = Author(
-        name = "Zoe Lo",
-        uid = "zoe1018",
-        image = "https://www.computerhope.com/jargon/a/android.png"
-    )
 
     private lateinit var binding: FragmentGiftDetailBinding
     private lateinit var adapter: GiftsCommentsAdapter
@@ -98,6 +94,7 @@ class GiftDetailFragment : Fragment() {
             textPostedLocation.text = resources.getString(R.string.gift_post_location_name, selectedGift.location?.locationName)
             textCreatedTime.text = resources.getString(R.string.posted_time, selectedGift.createdTime.toDisplayFormat())
             textSort.text = resources.getString(R.string.gift_post_sort, selectedGift.sort)
+            textQuantity.text = resources.getString(R.string.gift_post_quantity,selectedGift.quantity)
             textLikedNumber.text = resources.getString(R.string.number_who_liked, selectedGift.whoLiked?.size)
             textDescription.text = selectedGift.description
         }

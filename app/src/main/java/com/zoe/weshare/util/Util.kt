@@ -9,9 +9,18 @@ import android.provider.OpenableColumns
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.zoe.weshare.WeShareApplication
+import com.zoe.weshare.data.Author
 import kotlin.reflect.KProperty1
 
 object Util {
+
+    val mainUser = "Mika0847"
+
+    val author = Author(
+        name = "Zoe Lo",
+        uid = "zoe1018",
+        image = "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1686&q=80"
+    )
 
     /**
      * Determine and monitor the connectivity status
@@ -30,6 +39,10 @@ object Util {
     }
 
     fun getStringWithIntParm(resourceId: Int, parms: Int): String {
+        return WeShareApplication.instance.getString(resourceId,parms)
+    }
+
+    fun getStringWithStrParm(resourceId: Int, parms: String): String {
         return WeShareApplication.instance.getString(resourceId,parms)
     }
 

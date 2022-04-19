@@ -7,30 +7,35 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_toolbar"
-        android:background="@color/white"
-        android:elevation="4dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:letterSpacing="0.15"
-            android:textColor="@color/black"
-            android:textSize="30sp"
-            android:textStyle="normal"
-            tools:text="Home"
-            tools:visibility="visible" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_toolbar"
+            android:background="@drawable/custom_toolbar_gradient"
+            android:elevation="4dp"
+            app:layout_scrollFlags="scroll|enterAlways">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
 
-    </androidx.appcompat.widget.Toolbar>
+                <ImageView
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/logo_weshare" />
+
+            </LinearLayout>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
 
     <fragment
         android:id="@+id/nav_host_fragment"
@@ -50,11 +55,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_bottom_app_bar"
         android:layout_gravity="bottom"
-        app:background="@color/white"
+        android:backgroundTint="@color/white"
         app:fabAnimationMode="slide"
-        app:fabCradleMargin="8dp"
-        app:fabCradleRoundedCornerRadius="30dp"
-        app:fabCradleVerticalOffset="2dp"
+        app:fabCradleMargin="5dp"
+        app:fabCradleRoundedCornerRadius="18dp"
+        app:fabCradleVerticalOffset="1dp"
         app:hideOnScroll="true">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -65,6 +70,7 @@
             android:background="@drawable/transparent_background"
             android:elevation="4dp"
             app:itemIconSize="@dimen/size_bottom_nav_icon"
+            app:itemIconTint="@color/black"
             app:labelVisibilityMode="unlabeled"
             app:menu="@menu/bottom_nav_menu" />
 
@@ -72,6 +78,7 @@
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
@@ -82,9 +89,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="110dp"
-            android:backgroundTint="#FFC0CB"
+            android:backgroundTint="@color/white"
             android:scaleType="center"
             android:src="@drawable/ic_baseline_add_business_24"
+            android:tooltipText="1"
             app:fabCustomSize="45dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -98,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="110dp"
-            android:backgroundTint="#FFC0CB"
+            android:backgroundTint="@color/white"
             android:scaleType="center"
             android:src="@drawable/ic_baseline_favorite_24"
             app:fabCustomSize="45dp"
@@ -114,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="35dp"
-            android:backgroundTint="#FFC0CB"
+            android:backgroundTint="@color/white"
             android:scaleType="center"
             android:src="@drawable/ic_baseline_card_giftcard_24"
             app:fabCustomSize="45dp"
@@ -124,6 +132,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:maxImageSize="20dp" />
 
+        <View
+            android:id="@+id/sub_fab_background_view"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:background="@color/app_work_orange3"
+            app:layout_constraintBottom_toBottomOf="@id/subfab_post_favoriate"
+            app:layout_constraintEnd_toEndOf="@id/subfab_post_favoriate"
+            app:layout_constraintStart_toStartOf="@id/subfab_post_event"
+            app:layout_constraintTop_toTopOf="@id/subfab_post_gift" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -131,12 +149,13 @@
         android:id="@+id/fab_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#6FB7B7"
+        android:backgroundTint="@color/app_work_orange1"
         android:src="@drawable/ic_baseline_add_24"
+        app:fabSize="normal"
         app:layout_anchor="@id/bottomAppBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:maxImageSize="48dp" />
+        app:maxImageSize="55dp" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

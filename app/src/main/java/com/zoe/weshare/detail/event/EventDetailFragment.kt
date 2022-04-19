@@ -15,15 +15,11 @@ import com.zoe.weshare.databinding.FragmentEventDetailBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.Util.author
 import com.zoe.weshare.util.Util.getColor
 
 class EventDetailFragment : Fragment() {
 
-    val author = Author(
-        name = "Zoe Lo",
-        uid = "zoe1018",
-        image = "https://www.computerhope.com/jargon/a/android.png"
-    )
 
     private lateinit var binding: FragmentEventDetailBinding
     private lateinit var adapter: EventCommentsAdapter

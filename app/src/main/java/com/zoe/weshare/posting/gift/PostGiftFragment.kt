@@ -15,13 +15,10 @@ import com.zoe.weshare.data.Author
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.util.Util.author
 
 class PostGiftFragment : Fragment() {
-    val author = Author(
-        name = "Zoe Lo",
-        uid = "zoe1018",
-        image = "https://www.computerhope.com/jargon/a/android.png"
-    )
+
 
     private lateinit var binding: FragmentPostGiftBinding
     val viewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }

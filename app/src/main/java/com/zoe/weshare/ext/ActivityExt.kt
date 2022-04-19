@@ -2,6 +2,8 @@ package com.zoe.weshare.ext
 
 import android.app.Activity
 import android.view.Gravity
+import android.view.View
+import android.view.animation.Animation
 import android.widget.Toast
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.factory.ViewModelFactory
@@ -19,4 +21,5 @@ fun Activity?.showToast(message: String) {
         setGravity(Gravity.CENTER, 0, 0)
         show()
     }
+
 }
