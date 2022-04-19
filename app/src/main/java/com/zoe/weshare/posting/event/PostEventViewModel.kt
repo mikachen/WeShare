@@ -36,13 +36,9 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         get() = _status
 
     // error: The internal MutableLiveData that stores the error of the most recent request
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?>
         get() = _error
-
-    private val _leave = MutableLiveData<Boolean>()
-    val leave: LiveData<Boolean>
-        get() = _leave
 
     fun newPost(event: EventPost) {
         coroutineScope.launch {
@@ -53,7 +49,6 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    leave(true)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -83,11 +78,4 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         }
     }
 
-    fun leave(needRefresh: Boolean = false) {
-        _leave.value = needRefresh
-    }
-
-    fun onLeft() {
-        _leave.value = null
-    }
 }

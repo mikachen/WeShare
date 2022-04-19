@@ -1,6 +1,5 @@
 package com.zoe.weshare.ext
 
-import android.content.res.Resources
 import android.icu.text.SimpleDateFormat
 import android.widget.ImageView
 import androidx.core.net.toUri

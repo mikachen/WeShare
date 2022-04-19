@@ -38,13 +38,9 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
         get() = _status
 
     // error: The internal MutableLiveData that stores the error of the most recent request
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?>
         get() = _error
-
-    private val _leave = MutableLiveData<Boolean>()
-    val leave: LiveData<Boolean>
-        get() = _leave
 
     private var _onProfileSearching = MutableLiveData<Int>()
     val onProfileSearching: LiveData<Int>

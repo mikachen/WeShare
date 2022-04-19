@@ -38,13 +38,9 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
         get() = _status
 
     // error: The internal MutableLiveData that stores the error of the most recent request
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String>
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?>
         get() = _error
-
-    private val _leave = MutableLiveData<Boolean>()
-    val leave: LiveData<Boolean>
-        get() = _leave
 
     fun newPost(gift: GiftPost) {
         coroutineScope.launch {
@@ -55,7 +51,6 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    leave(true)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -83,13 +78,5 @@ class PostGiftViewModel(private val repository: WeShareRepository, private val a
                 longitude = point.longitude.toString()
             )
         }
-    }
-
-    fun leave(needRefresh: Boolean = false) {
-        _leave.value = needRefresh
-    }
-
-    fun onLeft() {
-        _leave.value = null
     }
 }
