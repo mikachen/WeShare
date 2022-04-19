@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.toolbar.inflateMenu(R.menu.toolbar_menu)
+//        binding.toolbar.inflateMenu(R.menu.toolbar_menu)
 
         // lottie animation
         loginAnimate()

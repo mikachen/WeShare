@@ -6,20 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".home.HomeFragment">
 
-
-    <com.yuyakaido.android.cardstackview.CardStackView
-        android:id="@+id/card_stack_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingHorizontal="30dp"
-        android:paddingBottom="80dp"
-        android:paddingTop="40dp"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_card_gallery_view" />
-
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    android:layout_margin="100dp"
+    android:textSize="50sp"
+    android:text="HOME"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

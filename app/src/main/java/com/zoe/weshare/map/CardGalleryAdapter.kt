@@ -45,6 +45,7 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
 
     override fun onBindViewHolder(holder: CardsViewHolder, position: Int) {
         val data = list?.get(position)
+
         data?.let {
             holder.bind(data)
             holder.itemView.setOnClickListener {
@@ -55,7 +56,6 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
 
     override fun getItemCount(): Int {
         return list.size
-
 //        return list?.let { Int.MAX_VALUE } ?: 0
     }
 
