@@ -8,7 +8,6 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +19,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnFlingListener
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.*
@@ -36,20 +37,22 @@ import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.FragmentMapBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.requestPermissions
+import kotlin.math.abs
+import kotlin.math.sign
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentMapBinding
     private lateinit var map: GoogleMap
-
     private lateinit var currentLocation: LatLng
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CardGalleryAdapter
-    private val markersRef = mutableListOf<Marker>()
-    val viewModel by viewModels<MapViewModel> { getVmFactory() }
 
+    private val markersRef = mutableListOf<Marker>()
+
+    val viewModel by viewModels<MapViewModel> { getVmFactory() }
 
     private var isPermissionGranted: Boolean = false
 
@@ -90,6 +93,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     LatLng(location.latitude.toDouble(), location.longitude.toDouble())
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 13F))
             }
+
+
         }
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
@@ -244,11 +249,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             getLastLocation()
             true
         }
+
+        map.setOnMarkerClickListener { p0 ->
+
+            p0.showInfoWindow()
+            val position = markersRef.indexOf(p0)
+            recyclerView.smoothScrollToPosition(position)
+            true
+        }
     }
 
     private fun setupCardGallery() {
 
-        val recyclerView = binding.cardsRecycleview
+        recyclerView = binding.cardsRecycleview
 
         adapter = CardGalleryAdapter(
             CardGalleryAdapter.CardOnClickListener { selectedCard ->

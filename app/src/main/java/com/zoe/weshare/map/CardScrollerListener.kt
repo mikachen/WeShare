@@ -14,6 +14,7 @@ class CardScrollerListener(private val itemWith: Int) : RecyclerView.OnScrollLis
 
                 val position = offset.toInt()
 
+                //取得位置、移動量百分比後，就可以 render View 的變化量了
                 val percent = offset - position
             }
 

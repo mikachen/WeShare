@@ -2,6 +2,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_marginBottom="@dimen/height_bottom_app_bar"
     android:layout_height="match_parent">
@@ -30,17 +31,17 @@
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
+            android:backgroundTint="@color/white"
             android:src="@drawable/ic_baseline_settings_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/base_user_avatar"
-        android:layout_width="100dp"
-        android:elevation="6dp"
-        android:layout_height="100dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_marginTop="-50dp"
         app:cardCornerRadius="90dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,9 +49,10 @@
         app:layout_constraintTop_toBottomOf="@id/layout_user_header">
 
         <ImageView
+            android:id="@+id/image_profile_avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitCenter"
+            android:scaleType="centerCrop"
             android:src="@drawable/ic_profile" />
 
     </androidx.cardview.widget.CardView>
@@ -69,19 +71,19 @@
             android:id="@+id/text_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Zoe Lo"
+            tools:text="Zoe Lo"
             android:textColor="@color/black"
-            android:textSize="36sp"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/text_custom_intro"
+            android:id="@+id/text_intro_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:text="大家好，我是自地球的一名人類"
+            tools:text="大家好，我是自地球的一名人類"
             android:textColor="@color/black"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -118,6 +120,7 @@
         app:layout_constraintTop_toBottomOf="@id/base_info_text" />
 
     <LinearLayout
+        android:id="@+id/linear_base_social_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -146,7 +149,7 @@
                 android:textSize="24sp" />
 
             <TextView
-                android:id="@+id/text_contribution_hint"
+                android:id="@+id/title_contribution_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -177,7 +180,7 @@
                 android:textSize="24sp" />
 
             <TextView
-                android:id="@+id/text_follower_hint"
+                android:id="@+id/title_follower_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="粉絲數"
@@ -208,7 +211,7 @@
                 android:textSize="24sp" />
 
             <TextView
-                android:id="@+id/text_following_hint"
+                android:id="@+id/title_following_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="追蹤中"
@@ -219,56 +222,55 @@
         </LinearLayout>
     </LinearLayout>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_user_records"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <Button
+        android:id="@+id/button_product_upload"
+        style="@style/ProfileButton"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:drawableTop="@drawable/ic_baseline_settings_24"
+        android:text="領取贈品"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/button_product_update"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_user_header">
+        app:layout_constraintTop_toBottomOf="@id/linear_base_social_status"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+    <Button
+        android:id="@+id/button_product_update"
+        style="@style/ProfileButton"
+        android:layout_marginStart="8dp"
+        android:drawableTop="@drawable/ic_baseline_settings_24"
+        android:text="派發贈品"
+        app:layout_constraintEnd_toStartOf="@+id/button_coupon_manage"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_product_upload"
+        app:layout_constraintTop_toTopOf="@+id/button_product_upload"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="刊登過的贈品"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+    <Button
+        android:id="@+id/button_coupon_manage"
+        style="@style/ProfileButton"
+        android:layout_marginStart="8dp"
+        android:drawableTop="@drawable/ic_baseline_settings_24"
+        android:text="活動參與"
+        app:layout_constraintEnd_toStartOf="@+id/button_chart_anayalsis"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_product_update"
+        app:layout_constraintTop_toTopOf="@+id/button_product_update"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="領取過的贈品"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+    <Button
+        android:id="@+id/button_chart_anayalsis"
+        style="@style/ProfileButton"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="發起過的活動"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+        android:drawableTop="@drawable/ic_baseline_settings_24"
+        android:text="志工任務"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/button_coupon_manage"
+        app:layout_constraintTop_toTopOf="@+id/button_coupon_manage"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="參與過的活動"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
-        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>

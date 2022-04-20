@@ -31,7 +31,13 @@
         android:id="@+id/profileFragment"
         android:name="com.zoe.weshare.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <argument
+            android:name="weshareUser"
+            app:argType="com.zoe.weshare.data.Author"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@+id/postEventFragment"
         android:name="com.zoe.weshare.posting.event.PostEventFragment"

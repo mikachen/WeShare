@@ -20,5 +20,6 @@
     <color name="yellowTestColor">#f8dca5</color>
     <color name="lightBlueTestColor">#64cae3</color>
     <color name="greyTestColor">#A9A9A9</color>
+    <color name="purple_voyage">#7830b8</color>
 
 </resources>

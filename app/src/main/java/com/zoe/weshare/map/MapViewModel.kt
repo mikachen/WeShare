@@ -191,6 +191,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
         layoutManager: RecyclerView.LayoutManager?,
         linearSnapHelper: LinearSnapHelper
     ) {
+
         val snapView = linearSnapHelper.findSnapView(layoutManager)
         snapView?.let {
             layoutManager?.getPosition(snapView)?.let {
