@@ -13,7 +13,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentPostEventBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.Util.author
+import com.zoe.weshare.util.UserManager.author
 
 class PostEventFragment : Fragment() {
 

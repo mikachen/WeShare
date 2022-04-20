@@ -11,7 +11,7 @@ import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.Util.author
+import com.zoe.weshare.util.UserManager.author
 
 class ChatRoomFragment : Fragment() {
 

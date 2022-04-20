@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/custom_toolbar_gradient">
+        android:background="@drawable/custom_theme_gradient">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout

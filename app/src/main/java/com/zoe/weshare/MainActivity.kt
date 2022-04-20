@@ -15,21 +15,24 @@ import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
 import com.zoe.weshare.util.Logger
+import com.zoe.weshare.util.UserManager
 
 class MainActivity : AppCompatActivity() {
 // TODO 處理user點開fab main卻沒有實際點擊按鈕的情況，應該要關閉fab, 從刊登頁面返回也會壞掉
 
-    var subFabsExpanded: Boolean = false
+    private var subFabsExpanded: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        UserManager.init(this)
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//        binding.toolbar.inflateMenu(R.menu.toolbar_menu)
+        binding.toolbar.inflateMenu(R.menu.toolbar_menu)
 
         // lottie animation
         loginAnimate()
@@ -48,6 +51,11 @@ class MainActivity : AppCompatActivity() {
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            when(it){
+                CurrentFragmentType.PROFILE -> binding.topAppbar.visibility = View.GONE
+
+                else -> { binding.topAppbar.visibility = View.VISIBLE }
+            }
 
             if (it == CurrentFragmentType.POSTGIFT || it == CurrentFragmentType.POSTEVENT || it == CurrentFragmentType.MAP) {
                 binding.fabMain.hide()

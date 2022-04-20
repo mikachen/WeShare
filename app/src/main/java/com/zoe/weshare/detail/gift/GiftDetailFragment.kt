@@ -14,7 +14,8 @@ import com.zoe.weshare.databinding.FragmentGiftDetailBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
-import com.zoe.weshare.util.Util.author
+import com.zoe.weshare.util.UserManager.author
+import com.zoe.weshare.util.Util.getColor
 
 class GiftDetailFragment : Fragment() {
 
@@ -71,10 +72,10 @@ class GiftDetailFragment : Fragment() {
         viewModel.isUserPressedLike.observe(viewLifecycleOwner) {
             if (it) {
                 binding.buttonPressLike.text = "已點讚 <3"
-                binding.buttonPressLike.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.yellowTestColor))
+                binding.buttonPressLike.backgroundTintList = ColorStateList.valueOf(getColor(R.color.yellowTestColor))
             } else {
                 binding.buttonPressLike.text = "感恩讚"
-                binding.buttonPressLike.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.lightBlueTestColor))
+                binding.buttonPressLike.backgroundTintList = ColorStateList.valueOf(getColor(R.color.lightBlueTestColor))
             }
         }
 

@@ -37,7 +37,7 @@ import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
-import com.zoe.weshare.util.Util.author
+import com.zoe.weshare.util.UserManager.author
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 

@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -15,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_toolbar"
-            android:background="@drawable/custom_toolbar_gradient"
+            android:background="@drawable/custom_theme_gradient"
             android:elevation="4dp"
             app:layout_scrollFlags="scroll|enterAlways">
 
@@ -42,7 +43,6 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/height_toolbar"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

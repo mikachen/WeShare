@@ -14,7 +14,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.Util.author
+import com.zoe.weshare.util.UserManager.author
 
 class PostGiftFragment : Fragment() {
 
