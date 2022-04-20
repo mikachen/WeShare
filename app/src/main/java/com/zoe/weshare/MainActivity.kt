@@ -51,20 +51,34 @@ class MainActivity : AppCompatActivity() {
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            when(it){
+            when (it) {
                 CurrentFragmentType.PROFILE -> binding.topAppbar.visibility = View.GONE
+                CurrentFragmentType.CHATROOM -> {
+                    binding.topAppbar.visibility = View.GONE
+                    hideBottom()
+                }
 
-                else -> { binding.topAppbar.visibility = View.VISIBLE }
-            }
+                CurrentFragmentType.POSTGIFT -> hideBottom()
+                CurrentFragmentType.POSTEVENT -> hideBottom()
+                CurrentFragmentType.MAP -> hideBottom()
 
-            if (it == CurrentFragmentType.POSTGIFT || it == CurrentFragmentType.POSTEVENT || it == CurrentFragmentType.MAP) {
-                binding.fabMain.hide()
-                binding.bottomAppBar.performHide()
-            } else {
-                binding.fabMain.show()
-                binding.bottomAppBar.performShow()
+
+                else -> {
+                    binding.topAppbar.visibility = View.VISIBLE
+                    showBottom()
+                }
             }
         }
+    }
+
+    private fun hideBottom() {
+        binding.fabMain.hide()
+        binding.bottomAppBar.performHide()
+    }
+
+    private fun showBottom() {
+        binding.fabMain.show()
+        binding.bottomAppBar.performShow()
     }
 
     private fun loginAnimate() {
@@ -81,7 +95,8 @@ class MainActivity : AppCompatActivity() {
             viewModel.currentFragmentType.value = when (navController.currentDestination?.id) {
                 R.id.homeFragment -> CurrentFragmentType.HOME
                 R.id.mapFragment -> CurrentFragmentType.MAP
-                R.id.roomListFragment -> CurrentFragmentType.CHATROOM
+                R.id.roomListFragment -> CurrentFragmentType.ROOMLIST
+                R.id.chatRoomFragment -> CurrentFragmentType.CHATROOM
                 R.id.profileFragment -> CurrentFragmentType.PROFILE
                 R.id.postEventFragment -> CurrentFragmentType.POSTEVENT
                 R.id.postGiftFragment -> CurrentFragmentType.POSTGIFT
@@ -136,12 +151,17 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.subfabPostEvent.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToPostEventFragment())
+            findNavController(R.id.nav_host_fragment)
+                .navigate(NavGraphDirections.navigateToPostEventFragment())
+
             closeSubMenusFab()
             rotateFabMain()
         }
+
         binding.subfabPostGift.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToPostGiftFragment())
+            findNavController(R.id.nav_host_fragment)
+                .navigate(NavGraphDirections.navigateToPostGiftFragment())
+
             closeSubMenusFab()
             rotateFabMain()
         }

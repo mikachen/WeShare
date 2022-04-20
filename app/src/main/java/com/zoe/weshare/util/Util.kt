@@ -1,15 +1,11 @@
 package com.zoe.weshare.util
 
 import android.content.ContentResolver
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Author
 import kotlin.reflect.KProperty1
 
 object Util {

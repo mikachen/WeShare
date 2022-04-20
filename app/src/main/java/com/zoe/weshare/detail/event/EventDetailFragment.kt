@@ -14,7 +14,7 @@ import com.zoe.weshare.databinding.FragmentEventDetailBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
-import com.zoe.weshare.util.UserManager.author
+import com.zoe.weshare.util.UserManager.userZoe
 import com.zoe.weshare.util.Util.getColor
 
 class EventDetailFragment : Fragment() {
@@ -22,7 +22,7 @@ class EventDetailFragment : Fragment() {
     private lateinit var binding: FragmentEventDetailBinding
     private lateinit var adapter: EventCommentsAdapter
 
-    val viewModel by viewModels<EventDetailViewModel> { getVmFactory(author) }
+    val viewModel by viewModels<EventDetailViewModel> { getVmFactory(userZoe) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

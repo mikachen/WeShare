@@ -13,12 +13,12 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentPostEventBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.author
+import com.zoe.weshare.util.UserManager.userZoe
 
 class PostEventFragment : Fragment() {
 
     private lateinit var binding: FragmentPostEventBinding
-    val viewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
+    val viewModel by viewModels<PostEventViewModel> { getVmFactory(userZoe) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,7 +70,7 @@ class PostEventFragment : Fragment() {
             ).show()
 
             else -> viewModel._event.value = EventPost(
-                author = author,
+                author = userZoe,
                 title = title,
                 sort = sort,
                 volunteerNeeds = volunteerNeeds.toInt(),

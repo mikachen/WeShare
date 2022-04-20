@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.PostLocation
 import com.zoe.weshare.data.Result
@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class PostGiftViewModel(private val repository: WeShareRepository, private val authorD: Author?) :
+class PostGiftViewModel(private val repository: WeShareRepository, private val userInfoD: UserInfo?) :
     ViewModel() {
 
     var _gift = MutableLiveData<GiftPost>()

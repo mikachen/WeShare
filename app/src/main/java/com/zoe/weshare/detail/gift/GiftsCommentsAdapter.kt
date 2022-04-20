@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.R
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
@@ -18,7 +18,7 @@ import com.zoe.weshare.util.Util.readInstanceProperty
 class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
     ListAdapter<Comment, GiftsCommentsAdapter.GiftCommentsViewHolder>(DiffCall()) {
 
-    val author = readInstanceProperty<Author>(viewModel, "author")
+    val author = readInstanceProperty<UserInfo>(viewModel, "author")
 
     override fun onCreateViewHolder(
         parent: ViewGroup,

@@ -14,12 +14,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentCommentDialogBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.author
+import com.zoe.weshare.util.UserManager.userZoe
 
 class CommentDialogFragment : BottomSheetDialogFragment() {
 
     lateinit var binding: FragmentCommentDialogBinding
-    val viewModel by viewModels<CommentViewModel> { getVmFactory(author) }
+    val viewModel by viewModels<CommentViewModel> { getVmFactory(userZoe) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

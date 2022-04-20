@@ -24,7 +24,7 @@
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_ask_for_gift.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_card_swipe.xml" value="0.1876870457460453" />
-        <entry key="app/src/main/res/layout/fragment_chatroom.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/fragment_chatroom.xml" value="0.36026490066225164" />
         <entry key="app/src/main/res/layout/fragment_comment_dialog.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/fragment_commenting.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.33" />
@@ -35,13 +35,13 @@
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_room_list.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/fragment_room_list.xml" value="0.28762135922330095" />
         <entry key="app/src/main/res/layout/fragment_search_location.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_card_gallery_view.xml" value="0.39273049645390073" />
         <entry key="app/src/main/res/layout/item_comment_board.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_event_bulletin_board.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/item_event_cards_view.xml" value="0.2" />
-        <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.375" />
         <entry key="app/src/main/res/layout/item_message_send.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/item_related_room_list.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />

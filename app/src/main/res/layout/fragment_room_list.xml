@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_marginTop="@dimen/height_bottom_app_bar"
     android:layout_height="match_parent"
     tools:context=".message.roomlist.RoomListFragment">
 

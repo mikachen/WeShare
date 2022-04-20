@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GiftDetailViewModel(private val repository: WeShareRepository, val author: Author?) :
+class GiftDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
 
     private var _comments = MutableLiveData<List<Comment>?>()
@@ -131,7 +131,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.likeGiftPost(docId = doc, uid = author!!.uid)) {
+            when (val result = repository.likeGiftPost(docId = doc, uid = userInfo!!.uid)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -159,7 +159,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.cancelLikeGiftPost(docId = doc, uid = author!!.uid)) {
+            when (val result = repository.cancelLikeGiftPost(docId = doc, uid = userInfo!!.uid)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -191,7 +191,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
                 val result = repository.likeGiftComment(
                     docId = onViewDisplaying.value!!.id,
                     subDocId = subDoc,
-                    uid = author!!.uid
+                    uid = userInfo!!.uid
                 )
             ) {
                 is Result.Success -> {
@@ -222,7 +222,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
                 val result = repository.cancelLikeGiftComment(
                     docId = onViewDisplaying.value!!.id,
                     subDocId = subDoc,
-                    uid = author!!.uid
+                    uid = userInfo!!.uid
                 )
             ) {
                 is Result.Success -> {
@@ -248,7 +248,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
     fun onViewPrepare(gift: GiftPost) {
         _onViewDisplaying.value = gift
         _currentLikedNumber.value = gift.whoLiked?.size
-        _isUserPressedLike.value = gift.whoLiked?.contains(author?.uid) == true
+        _isUserPressedLike.value = gift.whoLiked?.contains(userInfo?.uid) == true
     }
 
     fun onPostLikePressed(doc: String) {
@@ -266,11 +266,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val author:
         if (!isUserLiked) {
             sendLikeOnComment(comment.id)
 
-            whoLikedList.add(author!!.uid)
+            whoLikedList.add(userInfo!!.uid)
         } else {
             cancelLikeOnComment(comment.id)
 
-            whoLikedList.remove(author!!.uid)
+            whoLikedList.remove(userInfo!!.uid)
         }
     }
 }

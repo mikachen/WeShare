@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class RoomListViewModel(private val repository: WeShareRepository, private val author: Author?) : ViewModel() {
+class RoomListViewModel(private val repository: WeShareRepository, private val userInfo: UserInfo?) : ViewModel() {
 
     private var _rooms = MutableLiveData<List<ChatRoom>>()
     val room: LiveData<List<ChatRoom>>
@@ -25,13 +25,11 @@ class RoomListViewModel(private val repository: WeShareRepository, private val a
     val navigateToSelectedRoom: LiveData<ChatRoom?>
         get() = _navigateToSelectedRoom
 
-    // Create a Coroutine scope using a job to be able to cancel when needed
-    private var viewModelJob = Job()
 
-    // the Coroutine runs using the Main (UI) dispatcher
+
+    private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
@@ -42,7 +40,7 @@ class RoomListViewModel(private val repository: WeShareRepository, private val a
         get() = _error
 
     init {
-        author?.let { getRelatedChatRooms(it.uid) }
+        userInfo?.let { getRelatedChatRooms(it.uid) }
     }
 
     private fun getRelatedChatRooms(uid: String) {

@@ -6,8 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.data.ChatRoom
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemRelatedRoomListBinding
+import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.util.ChatRoomType
+import com.zoe.weshare.util.UserManager
 
 class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
     ListAdapter<ChatRoom, RoomListAdapter.RoomListViewHolder>(DiffCall()) {
@@ -22,7 +26,13 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
     override fun onBindViewHolder(holder: RoomListViewHolder, position: Int) {
         val room = getItem(position)
 
-        holder.bind(room)
+        val targetObj = room.usersInfo?.single { it.uid != UserManager.userZoe.uid }
+
+
+        //TODO 對方如果離開可能null
+        if (targetObj != null) {
+            holder.bind(room, targetObj)
+        }
 
         holder.itemView.setOnClickListener {
             onClickListener.onClick(room)
@@ -35,10 +45,12 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
 
     class RoomListViewHolder(private val binding: ItemRelatedRoomListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(room: ChatRoom) {
+        fun bind(room: ChatRoom, targetObj: UserInfo) {
+
 
             binding.apply {
-                textRoomTitle.text = room.title
+                bindImage(imageRoomImage, targetObj.image)
+                textRoomTargetTitle.text = targetObj.name
                 textLastMessage.text = room.lastMsg
                 textLastSentTime.text = room.lastMsgSentTime.toDisplaySentTime()
             }

@@ -8,12 +8,13 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ChatRoomViewModel(private val repository: WeShareRepository, private val author: Author?) :
+class ChatRoomViewModel(private val repository: WeShareRepository, private val userInfo: UserInfo?) :
     ViewModel() {
 
     val profileList = mutableListOf<UserProfile>()
@@ -21,6 +22,14 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
     private var _messageItems = MutableLiveData<List<MessageItem>>()
     val messageItems: LiveData<List<MessageItem>>
         get() = _messageItems
+
+    private var _chatRoom = MutableLiveData<ChatRoom>()
+    val chatRoom: LiveData<ChatRoom>
+        get() = _chatRoom
+
+    private var _targetInfo = MutableLiveData<UserInfo>()
+    val targetInfo: LiveData<UserInfo>
+        get() = _targetInfo
 
     var _newMessage = MutableLiveData<Comment>()
     val newMessage: LiveData<Comment>
@@ -48,7 +57,7 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
 
     fun onSending(inputMsg: String) {
         _newMessage.value = Comment(
-            uid = author!!.uid,
+            uid = userInfo!!.uid,
             content = inputMsg,
         )
     }
@@ -144,5 +153,13 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val a
             }
             _onProfileSearching.value = _onProfileSearching.value?.minus(1)
         }
+    }
+
+    fun saveLastMsgRecord(docId: String, lastMsg: Comment) {
+
+    }
+
+    fun onChatRoomDisplay(chatRoom: ChatRoom) {
+        _targetInfo.value = chatRoom.usersInfo?.single { it.uid != UserManager.userZoe.uid }
     }
 }

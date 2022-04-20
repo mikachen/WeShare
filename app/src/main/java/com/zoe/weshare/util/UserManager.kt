@@ -2,13 +2,13 @@ package com.zoe.weshare.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 
 object UserManager {
 
     val mockUserUid = "lora0987"
 
-    val author = Author(
+    val userZoe = UserInfo(
         name = "Zoe Lo",
         uid = "zoe1018",
         image = "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1686&q=80"

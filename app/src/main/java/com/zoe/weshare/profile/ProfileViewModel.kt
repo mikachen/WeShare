@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.data.source.WeShareRepository
@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val repository: WeShareRepository, val author: Author?) :
+class ProfileViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
 
 
@@ -37,7 +37,7 @@ class ProfileViewModel(private val repository: WeShareRepository, val author: Au
         get() = _error
 
     init {
-        getUserInfo(author!!.uid)
+        getUserInfo(userInfo!!.uid)
     }
 
     private fun getUserInfo(uid: String) {

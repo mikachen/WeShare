@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.zoe.weshare.R
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentProfileBinding
 import com.zoe.weshare.ext.bindImage
@@ -19,7 +19,7 @@ class ProfileFragment : Fragment() {
 
     lateinit var binding : FragmentProfileBinding
 
-    lateinit var userArg: Author
+    lateinit var userArg: UserInfo
 
     val viewModel: ProfileViewModel by viewModels { getVmFactory(userArg)  }
 
@@ -31,7 +31,7 @@ class ProfileFragment : Fragment() {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        userArg = arguments?.let { ProfileFragmentArgs.fromBundle(it).weshareUser } ?: Author(uid = UserManager.mockUserUid)
+        userArg = arguments?.let { ProfileFragmentArgs.fromBundle(it).weshareUser } ?: UserInfo(uid = UserManager.mockUserUid)
 
 
         viewModel.user.observe(viewLifecycleOwner) {

@@ -6,7 +6,8 @@ import com.zoe.weshare.util.Util.getString
 enum class CurrentFragmentType(val value: String) {
     HOME(getString(R.string.home)),
     MAP(getString(R.string.map)),
-    CHATROOM(getString(R.string.message)),
+    ROOMLIST(getString(R.string.message)),
+    CHATROOM("聊天室標題？"),
     PROFILE(getString(R.string.profile)),
     POSTEVENT(getString(R.string.post_event)),
     POSTGIFT(getString(R.string.post_gift)),
@@ -28,4 +29,10 @@ enum class GiftStatusType(val code: Int, val tag: String) {
     OPENING(0,"開放中"),
     CLOSED(1,"已送出"),
     ABANDONED(2, "已下架"),
+}
+
+
+enum class ChatRoomType(val value: Int) {
+    PRIVATE(0),
+    MUTILCHAT(1)
 }

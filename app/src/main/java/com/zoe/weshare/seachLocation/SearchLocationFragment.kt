@@ -37,7 +37,7 @@ import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
-import com.zoe.weshare.util.UserManager.author
+import com.zoe.weshare.util.UserManager.userZoe
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
@@ -63,7 +63,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
         if (newEvent != null) {
-            val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
+            val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(userZoe) }
             setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
 
             eventViewModel._event.value = newEvent
@@ -74,7 +74,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 eventViewModel.event.value?.let { event -> eventViewModel.newPost(event) }
             }
         } else {
-            val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
+            val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(userZoe) }
 
             setUpAutoCompleteSearchPlace(giftVm = giftViewModel, eventVm = null)
 

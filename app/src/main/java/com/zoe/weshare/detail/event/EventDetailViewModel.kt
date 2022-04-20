@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class EventDetailViewModel(private val repository: WeShareRepository, val author: Author?) :
+class EventDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
 
     private var _comments = MutableLiveData<List<Comment>?>()
@@ -133,7 +133,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.likeEventPost(docId = doc, uid = author!!.uid)) {
+            when (val result = repository.likeEventPost(docId = doc, uid = userInfo!!.uid)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -161,7 +161,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.cancelLikeEventPost(docId = doc, uid = author!!.uid)) {
+            when (val result = repository.cancelLikeEventPost(docId = doc, uid = userInfo!!.uid)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -206,11 +206,11 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
         if (!isUserLiked) {
             sendLikeOnComment(comment.id)
 
-            whoLikedList.add(author!!.uid)
+            whoLikedList.add(userInfo!!.uid)
         } else {
             cancelLikeOnComment(comment.id)
 
-            whoLikedList.remove(author!!.uid)
+            whoLikedList.remove(userInfo!!.uid)
         }
     }
 
@@ -222,7 +222,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
                 val result = repository.likeEventComment(
                     docId = onViewDisplaying.value!!.id,
                     subDocId = subDoc,
-                    uid = author!!.uid
+                    uid = userInfo!!.uid
                 )
             ) {
                 is Result.Success -> {
@@ -253,7 +253,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val author
                 val result = repository.cancelLikeEventComment(
                     docId = onViewDisplaying.value!!.id,
                     subDocId = subDoc,
-                    uid = author!!.uid
+                    uid = userInfo!!.uid
                 )
             ) {
                 is Result.Success -> {

@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class GiftPost(
     var id: String = "",
-    var author: Author? = null,
+    var author: UserInfo? = null,
     var title: String = "",
     var sort: String = "",
     var condition: String = "",

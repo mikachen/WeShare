@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.PostLocation
 import com.zoe.weshare.data.Result
@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class PostEventViewModel(private val repository: WeShareRepository, private val authorD: Author?) :
+class PostEventViewModel(private val repository: WeShareRepository, private val userInfoD: UserInfo?) :
     ViewModel() {
 
     val _event = MutableLiveData<EventPost>()

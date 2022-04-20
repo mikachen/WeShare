@@ -11,12 +11,13 @@ import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.author
+import com.zoe.weshare.util.UserManager.userZoe
 
 class ChatRoomFragment : Fragment() {
 
+    lateinit var chatRoom: ChatRoom
     lateinit var binding: FragmentChatroomBinding
-    private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(author) }
+    private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(userZoe) }
     lateinit var adapter: ChatRoomAdapter
 
     override fun onCreateView(
@@ -25,15 +26,15 @@ class ChatRoomFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        val selectedRoom = ChatRoomFragmentArgs.fromBundle(requireArguments()).selectedRoom
+        chatRoom = ChatRoomFragmentArgs.fromBundle(requireArguments()).selectedRoom
 
         binding = FragmentChatroomBinding.inflate(inflater, container, false)
 
-        viewModel.getHistoryMessage(selectedRoom.id)
+        viewModel.getHistoryMessage(chatRoom.id)
+        viewModel.onChatRoomDisplay(chatRoom)
 
-        selectedRoom.participants?.let { viewModel.getUserList(it) }
 
-        adapter = ChatRoomAdapter(viewModel)
+        adapter = ChatRoomAdapter(viewModel, chatRoom)
         binding.messagesRecyclerView.adapter = adapter
 
         viewModel.messageItems.observe(viewLifecycleOwner) {
@@ -41,25 +42,18 @@ class ChatRoomFragment : Fragment() {
             binding.messagesRecyclerView.scrollToPosition(adapter.itemCount - 1)
         }
 
-        // drawing the user avatar image and nickName after searching user's profile docs
-        viewModel.onProfileSearching.observe(viewLifecycleOwner) {
-            if (it == 0) {
-                adapter.notifyDataSetChanged()
-            }
+        viewModel.targetInfo.observe(viewLifecycleOwner){
+            binding.textRoomTargetTitle.text = it.name
         }
 
         viewModel.newMessage.observe(viewLifecycleOwner) {
-            viewModel.sendNewMessage(selectedRoom.id, it)
+            viewModel.sendNewMessage(chatRoom.id, it)
         }
 
-        setUpTitle(selectedRoom)
         setUpBtn()
         return binding.root
     }
 
-    private fun setUpTitle(room: ChatRoom) {
-        binding.textRoomTitle.text = room.title
-    }
 
     private fun setUpBtn() {
         binding.buttonSend.setOnClickListener {
@@ -87,4 +81,10 @@ class ChatRoomFragment : Fragment() {
             }
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveLastMsgRecord(chatRoom.id, Comment())
+    }
+
 }

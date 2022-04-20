@@ -7,25 +7,33 @@
     android:layout_margin="8dp"
     android:padding="2dp">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/base_roomList_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="90dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
     <ImageView
         android:id="@+id/image_room_image"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:src="@drawable/add_image_holder"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/add_image_holder" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/text_room_title"
+        android:id="@+id/text_room_target_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:padding="2dp"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@id/image_room_image"
+        app:layout_constraintBottom_toTopOf="@id/text_last_message"
+        app:layout_constraintStart_toEndOf="@id/base_roomList_image"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="標題/如果私聊show username" />
 
@@ -35,8 +43,9 @@
         android:layout_height="wrap_content"
         android:padding="2dp"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@id/text_room_title"
-        app:layout_constraintTop_toBottomOf="@id/text_room_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/text_room_target_title"
+        app:layout_constraintTop_toBottomOf="@id/text_room_target_title"
         tools:text="晚安 明天見！" />
 
     <TextView
@@ -46,7 +55,7 @@
         android:padding="2dp"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/text_room_title"
+        app:layout_constraintTop_toTopOf="@id/text_room_target_title"
         tools:text="9:57" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

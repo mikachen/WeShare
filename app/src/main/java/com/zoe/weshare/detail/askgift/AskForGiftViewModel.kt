@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class AskForGiftViewModel(
     private val repository: WeShareRepository,
-    private val author: Author?,
+    private val userInfo: UserInfo?,
 ) : ViewModel() {
 
     private var _newRequest = MutableLiveData<Comment?>()
@@ -70,7 +70,7 @@ class AskForGiftViewModel(
 
     fun onSendNewRequest(message: String) {
         _newRequest.value = Comment(
-            uid = author!!.uid,
+            uid = userInfo!!.uid,
             content = message
         )
     }

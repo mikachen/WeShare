@@ -14,12 +14,12 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.author
+import com.zoe.weshare.util.UserManager.userZoe
 
 class PostGiftFragment : Fragment() {
 
     private lateinit var binding: FragmentPostGiftBinding
-    val viewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
+    val viewModel by viewModels<PostGiftViewModel> { getVmFactory(userZoe) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +65,7 @@ class PostGiftFragment : Fragment() {
             description.isEmpty() -> Toast.makeText(requireContext(), "description.isEmpty", Toast.LENGTH_SHORT).show()
 
             else -> viewModel._gift.value = GiftPost(
-                author = author,
+                author = userZoe,
                 title = title,
                 sort = sort,
                 condition = condition,

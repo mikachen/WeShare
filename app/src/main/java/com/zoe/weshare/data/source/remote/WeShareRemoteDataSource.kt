@@ -145,7 +145,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
                 .collection(PATH_USER_INFO)
-                .whereEqualTo("uid", uid)
+                .whereArrayContains("participants",uid)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {

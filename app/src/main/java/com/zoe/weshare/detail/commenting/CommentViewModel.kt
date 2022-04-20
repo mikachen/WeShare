@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Author
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class CommentViewModel(private val repository: WeShareRepository, private val author: Author?,) : ViewModel() {
+class CommentViewModel(private val repository: WeShareRepository, private val userInfo: UserInfo?,) : ViewModel() {
 
     private var _newComment = MutableLiveData<Comment?>()
     val newComment: LiveData<Comment?>
@@ -67,7 +67,7 @@ class CommentViewModel(private val repository: WeShareRepository, private val au
 
     fun onSendNewComment(message: String) {
         _newComment.value = Comment(
-            uid = author!!.uid,
+            uid = userInfo!!.uid,
             content = message
         )
     }

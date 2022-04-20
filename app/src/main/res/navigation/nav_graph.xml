@@ -34,7 +34,7 @@
         tools:layout="@layout/fragment_profile" >
         <argument
             android:name="weshareUser"
-            app:argType="com.zoe.weshare.data.Author"
+            app:argType="com.zoe.weshare.data.UserInfo"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>

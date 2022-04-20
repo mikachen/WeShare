@@ -5,15 +5,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.MessageItem
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemMessageReceiveBinding
 import com.zoe.weshare.databinding.ItemMessageSendBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.util.UserManager
 
-class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
+class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
     ListAdapter<MessageItem, RecyclerView.ViewHolder>(DiffCallback) {
+
+    val target = chatRoom.usersInfo?.single { it.uid != UserManager.userZoe.uid }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -43,17 +48,17 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
         val itemType = getItem(position)
         when (holder) {
             is SendViewHolder -> {
-                (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it, viewModel) }
+                (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it) }
             }
             is ReceiveViewHolder -> {
-                (itemType as MessageItem.OnReceiveSide).message?.let { holder.bind(it, viewModel) }
+                (itemType as MessageItem.OnReceiveSide).message?.let { holder.bind(it, viewModel, target) }
             }
         }
     }
 
     class SendViewHolder(private var binding: ItemMessageSendBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, viewModel: ChatRoomViewModel) {
+        fun bind(comment: Comment) {
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
         }
@@ -61,18 +66,12 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
 
     class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, viewModel: ChatRoomViewModel) {
+        fun bind(comment: Comment, viewModel: ChatRoomViewModel, targetInfo: UserInfo?) {
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
 
-            if (viewModel.onProfileSearching.value == 0) {
-                if (viewModel.profileList.isNotEmpty()) {
-                    val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
-                    speaker?.let {
-                        bindImage(binding.imageAvatar, speaker.image)
-                        binding.textSpeakerName.text = speaker.name
-                    }
-                }
+            if (targetInfo != null) {
+                bindImage(binding.imageTargeImage, targetInfo.image)
             }
         }
     }

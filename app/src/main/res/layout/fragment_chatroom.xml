@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginBottom="60dp"
     android:layout_height="match_parent"
     tools:context=".message.ChatRoomFragment">
 
     <TextView
-        android:id="@+id/text_room_title"
+        android:id="@+id/text_room_target_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="28sp"
+        android:textSize="24sp"
         android:padding="3dp"
-        android:background="@color/yellowTestColor"
+        android:background="@color/chat_room_blue"
         android:gravity="center"
+        android:textColor="@color/black"
         tools:text="聊天室標題"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,6 +23,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/messages_recycler_view"
         android:layout_width="match_parent"
+        android:background="@color/chat_room_blue"
         tools:listitem="@layout/item_message_send"
         tools:itemCount="4"
         android:layout_height="0dp"
@@ -30,7 +31,7 @@
         app:layout_constraintBottom_toTopOf="@id/layout_send_tool"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_room_title" />
+        app:layout_constraintTop_toBottomOf="@id/text_room_target_title" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_send_tool"

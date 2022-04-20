@@ -14,7 +14,7 @@ import com.zoe.weshare.databinding.FragmentGiftDetailBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
-import com.zoe.weshare.util.UserManager.author
+import com.zoe.weshare.util.UserManager.userZoe
 import com.zoe.weshare.util.Util.getColor
 
 class GiftDetailFragment : Fragment() {
@@ -22,7 +22,7 @@ class GiftDetailFragment : Fragment() {
     private lateinit var binding: FragmentGiftDetailBinding
     private lateinit var adapter: GiftsCommentsAdapter
 
-    val viewModel by viewModels<GiftDetailViewModel> { getVmFactory(author) }
+    val viewModel by viewModels<GiftDetailViewModel> { getVmFactory(userZoe) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
