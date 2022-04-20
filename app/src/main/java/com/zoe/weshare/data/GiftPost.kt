@@ -1,7 +1,8 @@
 package com.zoe.weshare.data
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.zoe.weshare.util.GiftStatusType
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class GiftPost(
@@ -15,5 +16,6 @@ data class GiftPost(
     var createdTime: Long = -1,
     var quantity: Int = 1,
     var location: PostLocation? = null,
+    var status : Int = GiftStatusType.OPENING.code,
     var whoLiked: List<String>? = null
 ) : Parcelable

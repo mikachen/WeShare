@@ -1,5 +1,6 @@
 package com.zoe.weshare.map
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -77,6 +78,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     fun onCardPrepare(gifts: List<GiftPost>?, events: List<EventPost>?) {
+
         if (gifts != null) {
             for (element in gifts) {
                 val newCard = Cards(
@@ -109,7 +111,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     private fun getGiftsResult() {
-
+        Log.d("Map ViewModel", "getGiftsResult")
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
             val result = repository.getGifts()
@@ -142,7 +144,6 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     private fun getEventsResult() {
-
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
             val result = repository.getEvents()
@@ -194,7 +195,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
         snapView?.let {
             layoutManager?.getPosition(snapView)?.let {
                 if (it != snapPosition.value) {
-                    _snapPosition.value = it
+                    _snapPosition.value = it % cards.value!!.size
                 }
             }
         }

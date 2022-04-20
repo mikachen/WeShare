@@ -13,7 +13,7 @@ import com.zoe.weshare.util.Util.getStringWithStrParm
 class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
     RecyclerView.Adapter<CardGalleryAdapter.CardsViewHolder>() {
 
-    private var list: List<Cards> = emptyList()
+    private var list: List<Cards>? = null
 
     class CardsViewHolder(val binding: ItemCardGalleryViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -23,7 +23,8 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
 
                 textTitle.text = data.title
                 textPostedLocation.text =
-                    getStringWithStrParm(R.string.post_location_name, data.postLocation?.locationName?: "")
+                    getStringWithStrParm(R.string.post_location_name,
+                        data.postLocation?.locationName ?: "")
                 textDiscontinuedCountdown.text = getStringWithStrParm(R.string.card_posted_time,
                     data.createdTime.toDisplayFormat())
                 bindImage(image, data.image)
@@ -44,7 +45,7 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
     }
 
     override fun onBindViewHolder(holder: CardsViewHolder, position: Int) {
-        val data = list?.get(position)
+        val data = list?.get(getRealPosition(position))
 
         data?.let {
             holder.bind(data)
@@ -55,8 +56,7 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
     }
 
     override fun getItemCount(): Int {
-        return list.size
-//        return list?.let { Int.MAX_VALUE } ?: 0
+        return list?.let { Int.MAX_VALUE } ?: 0
     }
 
     private fun getRealPosition(position: Int): Int = list?.let {

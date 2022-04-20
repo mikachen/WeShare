@@ -12,6 +12,7 @@ import com.zoe.weshare.message.ChatRoomViewModel
 import com.zoe.weshare.message.roomlist.RoomListViewModel
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
+import com.zoe.weshare.profile.ProfileViewModel
 
 /**
  * Factory for all ViewModels which need [Author].
@@ -54,6 +55,10 @@ class AuthorViewModelFactory(
 
         if (modelClass.isAssignableFrom(GiftDetailViewModel::class.java)) {
             return GiftDetailViewModel(repository, author) as T
+        }
+
+        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            return ProfileViewModel(repository, author) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

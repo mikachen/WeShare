@@ -47,10 +47,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var adapter: CardGalleryAdapter
-
     private val markersRef = mutableListOf<Marker>()
-
     val viewModel by viewModels<MapViewModel> { getVmFactory() }
+
 
     private var isPermissionGranted: Boolean = false
 
@@ -62,12 +61,58 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         binding = FragmentMapBinding.inflate(inflater, container, false)
 
+        viewModel.gifts.observe(viewLifecycleOwner) {
+            viewModel.onCardPrepare(gifts = it, events = null)
+        }
+
+        viewModel.events.observe(viewLifecycleOwner) {
+            viewModel.onCardPrepare(gifts = null, events = it)
+        }
+
+        viewModel.cards.observe(viewLifecycleOwner) {
+            if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
+                //markers on map
+                createMarker(it)
+
+                //cards recycler view
+                adapter.submitCards(it)
+            }
+        }
+
+        viewModel.snapPosition.observe(viewLifecycleOwner) {
+
+            //trigger marker showInfoWindow
+            markersRef[it].showInfoWindow()
+
+            //move camera
+            viewModel.cardsViewList[it].postLocation?.let { location ->
+                val point =
+                    LatLng(location.latitude.toDouble(), location.longitude.toDouble())
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 13F))
+            }
+        }
+
+        viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
+
+                viewModel.displayCardDetailsComplete()
+            }
+        }
+
+        viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController()
+                    .navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
+                viewModel.displayCardDetailsComplete()
+            }
+        }
+
 
         getLocationPermission()
         // TODO 當user同意location權限後，檢查user是否有啟用GooglePlayService
 
         if (!isPermissionGranted) {
-
             //TODO 這邊用call back判斷 重寫
             AlertDialog.Builder(requireContext())
                 .setTitle("開啟位置權限")
@@ -78,67 +123,19 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 }
                 .setNegativeButton("取消") { _, _ -> getLocationPermission() }
                 .show()
+
         } else {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
             binding.mapView.onCreate(savedInstanceState)
             binding.mapView.getMapAsync(this)
 
-
             setupCardGallery()
-
-            viewModel.gifts.observe(viewLifecycleOwner) {
-                viewModel.onCardPrepare(gifts = it, events = null)
-            }
-
-            viewModel.events.observe(viewLifecycleOwner) {
-                viewModel.onCardPrepare(gifts = null, events = it)
-            }
-
-            viewModel.cards.observe(viewLifecycleOwner) {
-                //cards recycler view
-                adapter.submitCards(it)
-
-                //markers on map
-                if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
-                    createMarker(it)
-                }
-            }
-
-            viewModel.snapPosition.observe(viewLifecycleOwner) {
-                Log.d("snapPosition CHANGE!", "$it")
-
-                //trigger marker showInfoWindow
-                markersRef[it].showInfoWindow()
-
-                //move camera
-                viewModel.cardsViewList[it].postLocation?.let { location ->
-                    val point =
-                        LatLng(location.latitude.toDouble(), location.longitude.toDouble())
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 13F))
-                }
-            }
-
-
-            viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
-                it?.let {
-                    findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
-
-                    viewModel.displayCardDetailsComplete()
-                }
-            }
-
-            viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
-                it?.let {
-                    findNavController()
-                        .navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
-                    viewModel.displayCardDetailsComplete()
-                }
-            }
         }
 
         return binding.root
     }
+
 
     private fun createMarker(cards: List<Cards>?) {
         cards?.forEach {
@@ -278,9 +275,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 recyclerView.layoutManager, linearSnapHelper
             )
         }
-//        val currentPosition = recyclerView.adapter!!.itemCount / 2
-//        manager.scrollToPosition(currentPosition)
-
     }
 
     override fun onStart() {
