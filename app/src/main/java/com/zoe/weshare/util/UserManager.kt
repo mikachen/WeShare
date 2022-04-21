@@ -34,9 +34,6 @@ object UserManager {
 
     private const val USER_UID = "user_uid"
 
-
-
-
     var userToken: String?
         get() = preferences.getString(USER_UID, null)
         set(token) = preferences.edit {

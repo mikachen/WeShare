@@ -27,7 +27,6 @@ class ChatRoomFragment : Fragment() {
 
     private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(userZoe) }
 
-
     private val db = FirebaseFirestore.getInstance()
     lateinit var newMsgQuery: Query
 
@@ -43,12 +42,15 @@ class ChatRoomFragment : Fragment() {
         viewModel.getHistoryMessage(chatRoom.id)
         viewModel.onUserInfoDisplay(chatRoom)
 
+        val recyclerView = binding.messagesRecyclerView
+
         adapter = ChatRoomAdapter(viewModel, chatRoom)
-        binding.messagesRecyclerView.adapter = adapter
+        recyclerView.adapter = adapter
 
         viewModel.messageItems.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-            binding.messagesRecyclerView.scrollToPosition(adapter.itemCount - 1)
+            adapter.submitList(it){
+                recyclerView.post { recyclerView.scrollToPosition(adapter.itemCount - 1) }
+            }
         }
 
         viewModel.targetInfo.observe(viewLifecycleOwner) {
@@ -98,7 +100,7 @@ class ChatRoomFragment : Fragment() {
 
             if (newMessage.isNotEmpty()) {
                 viewModel.onSending(newMessage)
-                binding.editBox.text?.clear()
+                    binding.editBox.text?.clear()
             }
         }
 

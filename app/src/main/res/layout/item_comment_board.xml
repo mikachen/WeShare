@@ -6,19 +6,24 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/base_profile_avatar"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        app:cardCornerRadius="90dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
         android:id="@+id/image_profile_avatar"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_profile"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/ic_profile"/>
+    </androidx.cardview.widget.CardView>
 
     <LinearLayout
         android:id="@+id/layout_main_content"
@@ -28,7 +33,7 @@
         android:paddingVertical="4dp"
         android:paddingHorizontal="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@+id/image_profile_avatar"
+        app:layout_constraintStart_toEndOf="@+id/base_profile_avatar"
         app:layout_constraintTop_toTopOf="parent"
         android:orientation="vertical" >
 

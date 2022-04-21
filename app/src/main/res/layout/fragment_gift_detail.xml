@@ -54,17 +54,24 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="萬能不沾鍋" />
 
-                <ImageView
-                    android:id="@+id/image_profile_avatar"
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/base_user_avatar"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_profile"
-                    app:layout_constraintDimensionRatio="1:1"
+                    app:cardCornerRadius="90dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_gift_title" />
+                    app:layout_constraintTop_toBottomOf="@id/text_gift_title">
+
+                <ImageView
+                    android:id="@+id/image_profile_avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_profile" />
+                </androidx.cardview.widget.CardView>
+
 
                 <TextView
                     android:id="@+id/text_profile_name"
@@ -74,8 +81,8 @@
                     android:layout_marginEnd="16dp"
                     android:maxLines="1"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toEndOf="@+id/image_profile_avatar"
-                    app:layout_constraintTop_toTopOf="@id/image_profile_avatar"
+                    app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
+                    app:layout_constraintTop_toTopOf="@id/base_user_avatar"
                     app:layout_constraintVertical_chainStyle="packed"
                     tools:text="Zoelo" />
 
@@ -99,8 +106,8 @@
                     android:layout_marginEnd="16dp"
                     android:letterSpacing="0.15"
                     android:maxLines="1"
-                    app:layout_constraintBottom_toBottomOf="@+id/image_profile_avatar"
-                    app:layout_constraintStart_toEndOf="@+id/image_profile_avatar"
+                    app:layout_constraintBottom_toBottomOf="@+id/base_user_avatar"
+                    app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
                     tools:text="還有3小時結束" />
 
                 <TextView
@@ -112,8 +119,8 @@
                     android:letterSpacing="0.15"
                     android:maxLines="1"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/image_profile_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/image_profile_avatar"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/base_user_avatar"
                     tools:text="刊登位置：台北西門" />
 
 

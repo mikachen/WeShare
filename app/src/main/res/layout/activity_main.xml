@@ -59,8 +59,7 @@
         app:fabAnimationMode="slide"
         app:fabCradleMargin="5dp"
         app:fabCradleRoundedCornerRadius="18dp"
-        app:fabCradleVerticalOffset="1dp"
-        app:hideOnScroll="true">
+        app:fabCradleVerticalOffset="1dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
