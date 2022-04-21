@@ -1,5 +1,6 @@
 package com.zoe.weshare.message
 
+import android.icu.util.Calendar
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,10 +18,10 @@ import kotlinx.coroutines.launch
 class ChatRoomViewModel(private val repository: WeShareRepository, private val userInfo: UserInfo?) :
     ViewModel() {
 
-    val profileList = mutableListOf<UserProfile>()
+    private var messageRecords = mutableListOf<MessageItem>()
 
-    private var _messageItems = MutableLiveData<List<MessageItem>>()
-    val messageItems: LiveData<List<MessageItem>>
+    private var _messageItems = MutableLiveData<List<MessageItem>?>()
+    val messageItems: LiveData<List<MessageItem>?>
         get() = _messageItems
 
     private var _chatRoom = MutableLiveData<ChatRoom>()
@@ -51,44 +52,42 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val u
     val error: LiveData<String?>
         get() = _error
 
-    private var _onProfileSearching = MutableLiveData<Int>()
-    val onProfileSearching: LiveData<Int>
-        get() = _onProfileSearching
 
     fun onSending(inputMsg: String) {
         _newMessage.value = Comment(
             uid = userInfo!!.uid,
             content = inputMsg,
+            createdTime = Calendar.getInstance().timeInMillis
         )
     }
+
 
     fun getHistoryMessage(docId: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            val result = repository.getChatsHistory(docId)
-
-            _messageItems.value = when (result) {
+            when (val result = repository.getChatsHistory(docId)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data
+                    _messageItems.value =  result.data
+                    messageRecords = result.data as MutableList<MessageItem>
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    null
+                    _messageItems.value = null
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    null
+                    _messageItems.value = null
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                    null
+                    _messageItems.value = null
                 }
             }
         }
@@ -100,6 +99,34 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val u
             _status.value = LoadApiStatus.LOADING
 
             when (val result = repository.sendMessage(docId, comment)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+
+                    saveLastMsgRecord(docId) //發成功才執行保存對話
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    private fun saveLastMsgRecord(docId: String) {
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.saveLastMsgRecord(docId, newMessage.value!!)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -120,46 +147,13 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val u
         }
     }
 
-    fun getUserList(participants: List<String>) {
-        _onProfileSearching.value = participants.size
-        for (element in participants) {
-            getUserInfo(element)
-        }
-    }
-
-    private fun getUserInfo(uid: String) {
-        coroutineScope.launch {
-            _status.value = LoadApiStatus.LOADING
-
-            when (val result = repository.getUserInfo(uid)) {
-                is Result.Success -> {
-                    _error.value = null
-                    _status.value = LoadApiStatus.DONE
-                    profileList.add(result.data)
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                }
-                else -> {
-                    _error.value =
-                        WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
-                }
-            }
-            _onProfileSearching.value = _onProfileSearching.value?.minus(1)
-        }
-    }
-
-    fun saveLastMsgRecord(docId: String, lastMsg: Comment) {
-
-    }
-
-    fun onChatRoomDisplay(chatRoom: ChatRoom) {
+    fun onUserInfoDisplay(chatRoom: ChatRoom) {
         _targetInfo.value = chatRoom.usersInfo?.single { it.uid != UserManager.userZoe.uid }
+    }
+
+    fun onNewMsgListened(list: MutableList<Comment>) {
+        val newMsgItem = ChatsHistory(list).toMessageItem()
+        messageRecords.addAll(newMsgItem)
+        _messageItems.value = messageRecords
     }
 }

@@ -104,4 +104,8 @@ class DefaultWeShareRepository(
     ): Result<Boolean> {
         return remoteDataSource.cancelLikeEventComment(docId, subDocId, uid)
     }
+
+    override suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean> {
+        return remoteDataSource.saveLastMsgRecord(docId, message)
+    }
 }

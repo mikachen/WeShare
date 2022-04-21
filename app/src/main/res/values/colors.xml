@@ -16,9 +16,10 @@
     <color name="app_work_dark_grey">#55617a</color>
     <color name="app_work_light_grey">#dadde2</color>
     <color name="app_work_light_green">#c8d1ae</color>
-    <color name="chat_room_blue">#8eb1df</color>
 
-    <color name="message_sender_green">#64e09c</color>
+    <color name="chatroom_background_blue">#8eb1df</color>
+    <color name="chatroom_edit_grey">#f5f5f5</color>
+    <color name="message_sender_green">#6fe67a</color>
 
     <color name="greenTestColor">#3c73a8</color>
     <color name="yellowTestColor">#f8dca5</color>

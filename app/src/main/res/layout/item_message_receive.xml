@@ -3,7 +3,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
@@ -12,7 +12,7 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         app:cardCornerRadius="90dp"
-        app:layout_constraintEnd_toStartOf="@id/base_message_content"
+        app:layout_constraintEnd_toStartOf="@id/text_message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -24,33 +24,15 @@
             android:src="@drawable/add_image_holder" />
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/base_message_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        android:layout_marginStart="8dp"
+    <TextView
+        android:id="@+id/text_message"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/base_target_image"
-        app:layout_constraintTop_toTopOf="@id/base_target_image">
+        app:layout_constraintTop_toTopOf="@id/base_target_image"
+        tools:text="message content here.message content here."
+        android:background="@drawable/shape_receive_message_round"
+        style="@style/chatroom_message_textview" />
 
-        <TextView
-            android:id="@+id/text_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="start"
-            android:maxEms="8"
-            android:singleLine="false"
-            android:paddingHorizontal="16sp"
-            android:paddingVertical="8dp"
-            android:scrollHorizontally="false"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            tools:text="message content here.message content here." />
-
-
-    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/text_sent_time"
@@ -58,8 +40,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/base_message_content"
-        app:layout_constraintStart_toEndOf="@id/base_message_content"
+        app:layout_constraintBottom_toBottomOf="@id/text_message"
+        app:layout_constraintStart_toEndOf="@id/text_message"
         tools:text="9:11" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

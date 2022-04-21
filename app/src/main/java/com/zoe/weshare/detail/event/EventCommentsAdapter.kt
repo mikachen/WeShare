@@ -16,7 +16,7 @@ import com.zoe.weshare.util.Util
 class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
     ListAdapter<Comment, EventCommentsAdapter.EventCommentsViewHolder>(DiffCall()) {
 
-    val author = Util.readInstanceProperty<UserInfo>(viewModel, "author")
+    val userInfo = Util.readInstanceProperty<UserInfo>(viewModel, "userInfo")
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -30,7 +30,7 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
         holderEvent.bind(comment, viewModel)
 
         val whoLikedList = viewModel.updateCommentLike[position].whoLiked
-        val isUserLiked: Boolean = whoLikedList?.contains(author.uid) == true
+        val isUserLiked: Boolean = whoLikedList?.contains(userInfo.uid) == true
 
         holderEvent.binding.apply {
 

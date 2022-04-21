@@ -1,5 +1,6 @@
 package com.zoe.weshare.profile
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -41,6 +42,8 @@ class ProfileViewModel(private val repository: WeShareRepository, val userInfo: 
     }
 
     private fun getUserInfo(uid: String) {
+        Log.d("_status","$uid")
+
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
@@ -66,5 +69,7 @@ class ProfileViewModel(private val repository: WeShareRepository, val userInfo: 
                 }
             }
         }
+
+        Log.d("_status","${_status.value}")
     }
 }

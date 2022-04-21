@@ -1,5 +1,6 @@
 package com.zoe.weshare.message.roomlist
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class RoomListViewModel(private val repository: WeShareRepository, private val userInfo: UserInfo?) : ViewModel() {
+class RoomListViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) : ViewModel() {
 
     private var _rooms = MutableLiveData<List<ChatRoom>>()
     val room: LiveData<List<ChatRoom>>
@@ -39,9 +40,10 @@ class RoomListViewModel(private val repository: WeShareRepository, private val u
     val error: LiveData<String?>
         get() = _error
 
-    init {
+    fun initChatRoom(){
         userInfo?.let { getRelatedChatRooms(it.uid) }
     }
+
 
     private fun getRelatedChatRooms(uid: String) {
         coroutineScope.launch {

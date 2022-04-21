@@ -8,12 +8,15 @@ import android.view.animation.AnimationUtils
 import android.view.animation.RotateAnimation
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
+import com.zoe.weshare.util.FabBehavior
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager
 
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         setupNavController()
         setupBottomNav()
         setupFab()
+//        setUpFabBehavior()
 
         // observe current fragment change, only for show info
         viewModel.currentFragmentType.observe(
@@ -70,6 +74,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun setUpFabBehavior(){
+        val params = binding.bottomAppBar.layoutParams as CoordinatorLayout.LayoutParams
+        params.behavior = object : FabBehavior() {
+            override fun onSlideDown() {
+//                scan_button.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_top))
+                binding.fabMain.hide()
+            }
+
+            override fun onSlideUp() {
+                binding.fabMain.show()
+
+//                scan_button.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_add))
+            }
+        }
+    }
+
+
 
     private fun hideBottom() {
         binding.fabMain.hide()

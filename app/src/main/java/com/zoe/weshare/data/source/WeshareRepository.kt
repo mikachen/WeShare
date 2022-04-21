@@ -25,7 +25,5 @@ interface WeShareRepository {
     suspend fun cancelLikeGiftComment(docId: String, subDocId: String, uid: String): Result<Boolean>
     suspend fun cancelLikeEventComment(docId: String, subDocId: String, uid: String): Result<Boolean>
 
-    suspend fun saveLastMsgRecord(){
-
-    }
+    suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean>
 }

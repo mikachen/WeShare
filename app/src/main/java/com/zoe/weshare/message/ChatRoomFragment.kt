@@ -1,5 +1,6 @@
 package com.zoe.weshare.message
 
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,32 +8,40 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.util.Const.PATH_CHATROOM
+import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
+import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.userZoe
 
 class ChatRoomFragment : Fragment() {
 
-    lateinit var chatRoom: ChatRoom
-    lateinit var binding: FragmentChatroomBinding
+    private lateinit var chatRoom: ChatRoom
+    private lateinit var binding: FragmentChatroomBinding
+    private lateinit var adapter: ChatRoomAdapter
+
     private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(userZoe) }
-    lateinit var adapter: ChatRoomAdapter
+
+
+    private val db = FirebaseFirestore.getInstance()
+    lateinit var newMsgQuery: Query
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        binding = FragmentChatroomBinding.inflate(inflater, container, false)
 
         chatRoom = ChatRoomFragmentArgs.fromBundle(requireArguments()).selectedRoom
 
-        binding = FragmentChatroomBinding.inflate(inflater, container, false)
-
         viewModel.getHistoryMessage(chatRoom.id)
-        viewModel.onChatRoomDisplay(chatRoom)
-
+        viewModel.onUserInfoDisplay(chatRoom)
 
         adapter = ChatRoomAdapter(viewModel, chatRoom)
         binding.messagesRecyclerView.adapter = adapter
@@ -42,7 +51,7 @@ class ChatRoomFragment : Fragment() {
             binding.messagesRecyclerView.scrollToPosition(adapter.itemCount - 1)
         }
 
-        viewModel.targetInfo.observe(viewLifecycleOwner){
+        viewModel.targetInfo.observe(viewLifecycleOwner) {
             binding.textRoomTargetTitle.text = it.name
         }
 
@@ -50,20 +59,46 @@ class ChatRoomFragment : Fragment() {
             viewModel.sendNewMessage(chatRoom.id, it)
         }
 
-        setUpBtn()
+        newMsgQuery = db.collection(PATH_CHATROOM).document(chatRoom.id)
+            .collection(SUB_PATH_CHATROOM_MESSAGE)
+            .orderBy("createdTime", Query.Direction.DESCENDING).limit(1)
+
+        newMsgQuery.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Logger.d("SnapshotListen failed: $error")
+                return@addSnapshotListener
+            }
+            if (snapshot != null) {
+                val list = mutableListOf<Comment>()
+
+                for (document in snapshot.documents) {
+                    Logger.d(document.id + " => " + document.data)
+
+                    document.toObject(Comment::class.java)?.let {
+                        list.add(it)
+                    }
+                }
+
+                viewModel.onNewMsgListened(list)
+
+            } else {
+                Logger.d("SnapshotListen Current data: null")
+            }
+        }
+
+
+        setupSendBtn()
         return binding.root
     }
 
 
-    private fun setUpBtn() {
+    private fun setupSendBtn() {
         binding.buttonSend.setOnClickListener {
             val newMessage = binding.editBox.text.toString()
 
             if (newMessage.isNotEmpty()) {
                 viewModel.onSending(newMessage)
                 binding.editBox.text?.clear()
-            } else {
-                Toast.makeText(requireContext(), "Msg is empty", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -73,7 +108,9 @@ class ChatRoomFragment : Fragment() {
             if (mockMessage.isNotEmpty()) {
                 viewModel._newMessage.value = Comment(
                     uid = "Ken1123",
-                    content = mockMessage
+                    content = mockMessage,
+                    createdTime = Calendar.getInstance().timeInMillis
+
                 )
                 binding.editBox.text?.clear()
             } else {
@@ -81,10 +118,4 @@ class ChatRoomFragment : Fragment() {
             }
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.saveLastMsgRecord(chatRoom.id, Comment())
-    }
-
 }

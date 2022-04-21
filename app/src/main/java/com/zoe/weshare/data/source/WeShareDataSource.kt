@@ -27,4 +27,6 @@ interface WeShareDataSource {
     suspend fun likeEventComment(docId: String, subDocId: String, uid: String): Result<Boolean>
     suspend fun cancelLikeGiftComment(docId: String, subDocId: String, uid: String): Result<Boolean>
     suspend fun cancelLikeEventComment(docId: String, subDocId: String, uid: String): Result<Boolean>
+    suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean>
+
 }

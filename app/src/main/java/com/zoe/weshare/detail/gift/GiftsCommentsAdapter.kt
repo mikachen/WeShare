@@ -18,7 +18,7 @@ import com.zoe.weshare.util.Util.readInstanceProperty
 class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
     ListAdapter<Comment, GiftsCommentsAdapter.GiftCommentsViewHolder>(DiffCall()) {
 
-    val author = readInstanceProperty<UserInfo>(viewModel, "author")
+    val userInfo = readInstanceProperty<UserInfo>(viewModel, "userInfo")
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -32,7 +32,7 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
         holderGift.bind(comment, viewModel)
 
         val whoLikedList = viewModel.updateCommentLike[position].whoLiked
-        val isUserLiked: Boolean = whoLikedList?.contains(author.uid) == true
+        val isUserLiked: Boolean = whoLikedList?.contains(userInfo.uid) == true
 
         holderGift.binding.apply {
 
