@@ -14,12 +14,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager
 
 class AskForGiftFragment : BottomSheetDialogFragment() {
 
     lateinit var binding: FragmentAskForGiftBinding
-    val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(userZoe) }
+    private val currentUser = UserManager.userLora
+    val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(currentUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

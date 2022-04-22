@@ -20,7 +20,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnFlingListener
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.*
@@ -37,8 +36,6 @@ import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.FragmentMapBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.requestPermissions
-import kotlin.math.abs
-import kotlin.math.sign
 
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -74,11 +71,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         viewModel.cards.observe(viewLifecycleOwner) {
             if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
+
                 //markers on map
-                createMarker(it)
+                createMarker(it.shuffled())
 
                 //cards recycler view
-                adapter.submitCards(it)
+                adapter.submitCards(it.shuffled())
             }
         }
 
@@ -145,10 +143,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun createMarker(cards: List<Cards>?) {
         cards?.forEach {
-            it.postLocation?.let { location ->
+            it.postLocation.let { location ->
 
-                val point =
-                    LatLng(location.latitude.toDouble(), location.longitude.toDouble())
+                val point = location!!.getLocation
 
                 val options = MarkerOptions().position(point).title(it.title)
 

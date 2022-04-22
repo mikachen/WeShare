@@ -62,7 +62,8 @@
     <string name="number_volunteer_needs">需求志工數: %1$d人</string>
 
     <string name="request_leave_intro_message">留個自我介紹給大家吧！</string>
-
+    <string name="request_gift">登記索取</string>
+    <string name="already_requested_gift">您已經登記索取</string>
 
 
 </resources>

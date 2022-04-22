@@ -19,13 +19,15 @@ import com.zoe.weshare.util.Const.PATH_USER_INFO
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
 import com.zoe.weshare.util.Const.SUB_PATH_EVENT_USER_WHO_COMMENT
 import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
+import com.zoe.weshare.util.Const.SUB_PATH_USER_GIFTPOSTS
+import com.zoe.weshare.util.Const.SUB_PATH_USER_REQUESTEDGIFTS
 import com.zoe.weshare.util.Logger
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 object WeShareRemoteDataSource : WeShareDataSource {
 
-    override suspend fun postNewEvent(event: EventPost): Result<Boolean> =
+    override suspend fun postNewEvent(event: EventPost): Result<String> =
         suspendCoroutine { continuation ->
 
             val eventPost = FirebaseFirestore.getInstance().collection(PATH_EVENT_POST)
@@ -43,7 +45,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     if (task.isSuccessful) {
                         Logger.i("Publish: $event")
 
-                        continuation.resume(Result.Success(true))
+                        continuation.resume(Result.Success(document.id))
                     } else {
                         task.exception?.let {
 
@@ -58,14 +60,13 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun postNewGift(gift: GiftPost): Result<Boolean> =
+    override suspend fun postNewGift(gift: GiftPost): Result<String> =
         suspendCoroutine { continuation ->
 
             val eventPost = FirebaseFirestore.getInstance().collection(PATH_GIFT_POST)
             val document = eventPost.document()
 
             gift.id = document.id
-            gift.createdTime = Calendar.getInstance().timeInMillis
             gift.whoLiked = listOf()
             gift.image =
                 "https://cs-a.ecimg.tw/items/DBAB08A39148142/000001_1553076513.jpg"
@@ -76,7 +77,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     if (task.isSuccessful) {
                         Logger.i("Publish: $gift")
 
-                        continuation.resume(Result.Success(true))
+                        continuation.resume(Result.Success(document.id))
                     } else {
                         task.exception?.let {
 
@@ -668,4 +669,62 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
+
+    override suspend fun saveGiftPostLog(log: PostLog, uid: String): Result<Boolean> =
+        suspendCoroutine { continuation ->
+
+            val path = FirebaseFirestore.getInstance().collection(PATH_USER_INFO)
+            val document = path.document(uid).collection(SUB_PATH_USER_GIFTPOSTS).document(log.id)
+
+
+            document
+                .set(log)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("saveGiftPostLog: $log")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}]" +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(
+                            WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+    }
+
+    override suspend fun saveGiftRequestLog(log: PostLog, uid: String): Result<Boolean> =
+        suspendCoroutine { continuation ->
+
+            val path = FirebaseFirestore.getInstance().collection(PATH_USER_INFO)
+            val document = path.document(uid).collection(SUB_PATH_USER_REQUESTEDGIFTS).document(log.id)
+
+
+            document
+                .set(log)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("saveGiftRequestLog: $log")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}]" +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(
+                            WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+    }
 }

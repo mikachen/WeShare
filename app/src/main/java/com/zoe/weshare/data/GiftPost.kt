@@ -19,3 +19,16 @@ data class GiftPost(
     var status : Int = GiftStatusType.OPENING.code,
     var whoLiked: List<String>? = null
 ) : Parcelable
+
+
+val dataqw = GiftPost(
+    title = "123"
+)
+
+
+val location = PostLocation(
+
+)
+fun pr(){
+    dataqw.location = location
+}

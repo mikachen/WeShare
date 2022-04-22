@@ -17,10 +17,12 @@
         <entry key="app/src/main/res/drawable/shape_comment_box_roundconer.xml" value="0.3625" />
         <entry key="app/src/main/res/drawable/shape_main_fab.xml" value="0.345" />
         <entry key="app/src/main/res/drawable/shape_message_round_corner.xml" value="0.3115" />
+        <entry key="app/src/main/res/drawable/shape_receive_message_round.xml" value="0.317" />
         <entry key="app/src/main/res/drawable/shape_send_message_round.xml" value="0.3115" />
         <entry key="app/src/main/res/drawable/shape_view_roundconer.xml" value="0.3625" />
         <entry key="app/src/main/res/drawable/sl_profile_follow_button.xml" value="0.125" />
         <entry key="app/src/main/res/drawable/sl_profile_message_button.xml" value="0.1165" />
+        <entry key="app/src/main/res/drawable/sl_request_gift_button.xml" value="0.317" />
         <entry key="app/src/main/res/drawable/transparent_background.xml" value="0.243" />
         <entry key="app/src/main/res/font/graffiti.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_logo.xml" value="0.37604166666666666" />
@@ -38,10 +40,10 @@
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_room_list.xml" value="0.28762135922330095" />
         <entry key="app/src/main/res/layout/fragment_search_location.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/item_card_gallery_view.xml" value="0.39273049645390073" />
+        <entry key="app/src/main/res/layout/item_card_gallery_view.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_comment_board.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_event_bulletin_board.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/item_event_cards_view.xml" value="0.2" />

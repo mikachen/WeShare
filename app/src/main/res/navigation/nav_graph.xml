@@ -9,7 +9,7 @@
         android:id="@+id/homeFragment"
         android:name="com.zoe.weshare.home.HomeFragment"
         android:label="home_fragment"
-        tools:layout="@layout/fragment_card_swipe" />
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.zoe.weshare.map.MapFragment"
@@ -57,7 +57,7 @@
 
     <fragment
         android:id="@+id/searchLocationFragment"
-        android:name="com.zoe.weshare.seachLocation.SearchLocationFragment"
+        android:name="com.zoe.weshare.posting.SearchLocationFragment"
         android:label="fragment_search_location"
         tools:layout="@layout/fragment_search_location">
         <argument

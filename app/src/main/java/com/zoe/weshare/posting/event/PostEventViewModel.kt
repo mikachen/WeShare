@@ -40,7 +40,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     val error: LiveData<String?>
         get() = _error
 
-    fun newPost(event: EventPost) {
+    fun newEventPost(event: EventPost) {
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING

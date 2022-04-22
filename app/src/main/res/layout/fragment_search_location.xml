@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/height_bottom_app_bar"
-    tools:context=".seachLocation.SearchLocationFragment">
+    tools:context=".posting.SearchLocationFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/nest_searchview"

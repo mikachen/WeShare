@@ -2,7 +2,6 @@ package com.zoe.weshare.detail.gift
 
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
+import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftDetailBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.UserManager.userLora
+import com.zoe.weshare.util.Util
 import com.zoe.weshare.util.Util.getColor
 
 class GiftDetailFragment : Fragment() {
@@ -36,7 +37,7 @@ class GiftDetailFragment : Fragment() {
 
         val selectedGift = GiftDetailFragmentArgs.fromBundle(requireArguments()).selectedGift
 
-        viewModel.onViewPrepare(selectedGift)
+        viewModel.onGiftDisplay(selectedGift)
         viewModel.getAskForGiftComments(selectedGift.id)
 
         adapter = GiftsCommentsAdapter(viewModel)
@@ -53,6 +54,10 @@ class GiftDetailFragment : Fragment() {
 
         viewModel.comments.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+
+            if (it != null) {
+                checkIfUserRequested(it)
+            }
 
             if (it != null) {
                 binding.textRegistrantsNumber.text =
@@ -93,7 +98,7 @@ class GiftDetailFragment : Fragment() {
                 if (it.isNotEmpty()) {
                     viewModel.checkIfPrivateRoomExist(it)
                 } else {
-                    viewModel.onRoomCreate()
+                    viewModel.onNewRoomPrepare()
                 }
             }
         }
@@ -122,15 +127,15 @@ class GiftDetailFragment : Fragment() {
             textGiftTitle.text = selectedGift.title
             textProfileName.text = selectedGift.author?.name
             bindImage(this.imageProfileAvatar, selectedGift.author?.image)
-            textPostedLocation.text = resources.getString(R.string.gift_post_location_name,
+            textPostedLocation.text = getString(R.string.gift_post_location_name,
                 selectedGift.location?.locationName)
-            textCreatedTime.text = resources.getString(R.string.posted_time,
+            textCreatedTime.text = getString(R.string.posted_time,
                 selectedGift.createdTime.toDisplayFormat())
-            textSort.text = resources.getString(R.string.gift_post_sort, selectedGift.sort)
+            textSort.text = getString(R.string.gift_post_sort, selectedGift.sort)
             textQuantity.text =
-                resources.getString(R.string.gift_post_quantity, selectedGift.quantity)
+                getString(R.string.gift_post_quantity, selectedGift.quantity)
             textLikedNumber.text =
-                resources.getString(R.string.number_who_liked, selectedGift.whoLiked?.size)
+                getString(R.string.number_who_liked, selectedGift.whoLiked?.size)
             textDescription.text = selectedGift.description
         }
     }
@@ -140,6 +145,10 @@ class GiftDetailFragment : Fragment() {
         binding.buttonPressLike.setOnClickListener {
             viewModel.onPostLikePressed(selectedGift.id)
         }
+        binding.buttonSendPmToAuthor.setOnClickListener {
+            viewModel.searchOnPrivateRoom(currentUser)
+        }
+
 
         // author he/herself hide the button
         if (selectedGift.author!!.uid == currentUser.uid) {
@@ -152,9 +161,12 @@ class GiftDetailFragment : Fragment() {
                         .actionGiftDetailFragmentToAskForGiftFragment(selectedGift.id)
                 )
             }
-            binding.buttonSendPmToAuthor.setOnClickListener {
-                viewModel.searchOnPrivateRoom(currentUser)
-            }
+
         }
+    }
+
+    private fun checkIfUserRequested(comments: List<Comment>){
+        binding.buttonAskForGift.isEnabled = comments.none { it.uid == currentUser.uid }
+        binding.buttonAskForGift.text = Util.getString(R.string.already_requested_gift)
     }
 }

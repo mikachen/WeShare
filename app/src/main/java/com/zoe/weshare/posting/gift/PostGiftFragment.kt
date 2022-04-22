@@ -36,7 +36,6 @@ class PostGiftFragment : Fragment() {
                     newEvent = null
                 )
             )
-            Log.d("giftObs", "$it")
         }
 
         setupNextBtn()
@@ -64,13 +63,7 @@ class PostGiftFragment : Fragment() {
             condition.isEmpty() -> Toast.makeText(requireContext(), "condition.isEmpty", Toast.LENGTH_SHORT).show()
             description.isEmpty() -> Toast.makeText(requireContext(), "description.isEmpty", Toast.LENGTH_SHORT).show()
 
-            else -> viewModel._gift.value = GiftPost(
-                author = userZoe,
-                title = title,
-                sort = sort,
-                condition = condition,
-                description = description
-            )
+            else -> viewModel.onSaveUserInput(title,sort,condition,description)
         }
     }
 

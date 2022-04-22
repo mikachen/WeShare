@@ -9,11 +9,11 @@ class DefaultWeShareRepository(
     private val localDataSource: WeShareDataSource,
 ) : WeShareRepository {
 
-    override suspend fun postNewEvent(event: EventPost): Result<Boolean> {
+    override suspend fun postNewEvent(event: EventPost): Result<String> {
         return remoteDataSource.postNewEvent(event)
     }
 
-    override suspend fun postNewGift(gift: GiftPost): Result<Boolean> {
+    override suspend fun postNewGift(gift: GiftPost): Result<String> {
         return remoteDataSource.postNewGift(gift)
     }
 
@@ -111,5 +111,13 @@ class DefaultWeShareRepository(
 
     override suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean> {
         return remoteDataSource.saveLastMsgRecord(docId, message)
+    }
+
+    override suspend fun saveGiftPostLog(log: PostLog, uid: String): Result<Boolean> {
+        return remoteDataSource.saveGiftPostLog(log, uid)
+    }
+
+    override suspend fun saveGiftRequestLog(log: PostLog, uid: String): Result<Boolean> {
+        return remoteDataSource.saveGiftRequestLog(log, uid)
     }
 }

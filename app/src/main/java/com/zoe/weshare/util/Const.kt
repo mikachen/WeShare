@@ -9,6 +9,14 @@ object Const {
      const val SUB_PATH_GIFT_USER_WHO_ASK_FOR = "UserWhoRequest"
      const val SUB_PATH_EVENT_USER_WHO_COMMENT = "UserWhoComment"
      const val SUB_PATH_CHATROOM_MESSAGE = "Messages"
+
+     const val SUB_PATH_USER_GIFTPOSTS = "MyGiftPosts"
+     const val SUB_PATH_USER_REQUESTEDGIFTS = "MyRequestedGifts"
+     const val SUB_PATH_USER_EVENTPOSTS = "MyEventPosts"
+     const val SUB_PATH_USER_REGISTEREDEVENTS = "MyRegisteredEvents"
+
+
+
      const val FIELD_WHO_LIKED = "whoLiked"
      const val FIELD_ROOM_LAST_MEG = "lastMsg"
      const val FIELD_ROOM_LAST_SENT_TIME = "lastMsgSentTime"

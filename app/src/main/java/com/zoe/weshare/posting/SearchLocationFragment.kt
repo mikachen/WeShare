@@ -1,4 +1,4 @@
-package com.zoe.weshare.seachLocation
+package com.zoe.weshare.posting
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -8,9 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.Status
@@ -30,22 +30,25 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.zoe.weshare.MainActivity
+import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import com.zoe.weshare.util.UserManager.userZoe
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
-    private lateinit var searchView: SearchView
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentSearchLocationBinding
 
     var isPermissionGranted: Boolean = false
+
+    val author = userZoe
 
     private val defaultTaiwan = LatLng(23.897879, 121.063772)
 
@@ -63,7 +66,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
         if (newEvent != null) {
-            val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(userZoe) }
+            val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
             setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
 
             eventViewModel._event.value = newEvent
@@ -71,10 +74,10 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             setUpUserPreview(gift = null, event = newEvent)
 
             binding.nextButton.setOnClickListener {
-                eventViewModel.event.value?.let { event -> eventViewModel.newPost(event) }
+                eventViewModel.event.value?.let { event -> eventViewModel.newEventPost(event) }
             }
         } else {
-            val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(userZoe) }
+            val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
 
             setUpAutoCompleteSearchPlace(giftVm = giftViewModel, eventVm = null)
 
@@ -87,8 +90,14 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             }
 
             binding.nextButton.setOnClickListener {
-                giftViewModel.gift.value?.let { gift -> giftViewModel.newPost(gift) }
+                giftViewModel.gift.value?.let { gift -> giftViewModel.newGiftPost(gift) }
             }
+
+            giftViewModel.saveLogComplete.observe(viewLifecycleOwner){
+                Toast.makeText(requireContext(),"Success save Log",Toast.LENGTH_SHORT).show()
+                findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+            }
+
         }
 
         // 檢查、要求user啟用ACCESS_FINE_LOCATION權限

@@ -4,16 +4,14 @@ import android.content.Context
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 
-/*
- * Concrete implementation of a WeShare source as a db.
- */
+
 class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
 
-    override suspend fun postNewEvent(event: EventPost): Result<Boolean> {
+    override suspend fun postNewEvent(event: EventPost): Result<String> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun postNewGift(gift: GiftPost): Result<Boolean> {
+    override suspend fun postNewGift(gift: GiftPost): Result<String> {
         TODO("Not yet implemented")
     }
 
@@ -104,6 +102,14 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     }
 
     override suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveGiftPostLog(log: PostLog, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun saveGiftRequestLog(log: PostLog, uid: String): Result<Boolean> {
         TODO("Not yet implemented")
     }
 }
