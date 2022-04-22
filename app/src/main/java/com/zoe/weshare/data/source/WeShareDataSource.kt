@@ -18,7 +18,7 @@ interface WeShareDataSource {
     suspend fun getEventComments(docId: String): Result<List<Comment>>
     suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean>
     suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>
-    suspend fun getRelatedChatRooms(uid: String): Result<List<ChatRoom>>
+    suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>>
     suspend fun likeEventPost(docId: String, uid: String): Result<Boolean>
     suspend fun likeGiftPost(docId: String, uid: String): Result<Boolean>
     suspend fun cancelLikeEventPost(docId: String, uid: String): Result<Boolean>
@@ -28,5 +28,7 @@ interface WeShareDataSource {
     suspend fun cancelLikeGiftComment(docId: String, subDocId: String, uid: String): Result<Boolean>
     suspend fun cancelLikeEventComment(docId: String, subDocId: String, uid: String): Result<Boolean>
     suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean>
+    suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String>
+
 
 }

@@ -26,8 +26,6 @@ class RoomListViewModel(private val repository: WeShareRepository, val userInfo:
     val navigateToSelectedRoom: LiveData<ChatRoom?>
         get() = _navigateToSelectedRoom
 
-
-
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -40,16 +38,17 @@ class RoomListViewModel(private val repository: WeShareRepository, val userInfo:
     val error: LiveData<String?>
         get() = _error
 
-    fun initChatRoom(){
-        userInfo?.let { getRelatedChatRooms(it.uid) }
+    fun searchChatRooms(){
+        userInfo?.let { getUserChatRooms(it.uid) }
     }
 
 
-    private fun getRelatedChatRooms(uid: String) {
+    private fun getUserChatRooms(uid: String) {
+        Log.d("getUserChatRooms","getUserChatRooms")
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            val result = repository.getRelatedChatRooms(uid)
+            val result = repository.getUserChatRooms(uid)
 
             _rooms.value = when (result) {
                 is Result.Success -> {

@@ -6,7 +6,7 @@
     <!-- Strings used for fragments for navigation -->
     <string name="home">首頁</string>
     <string name="map">地圖</string>
-    <string name="message">訊息</string>
+    <string name="message">聊天</string>
     <string name="profile">個人</string>
     <string name="post_event">刊登活動</string>
     <string name="post_gift">刊登贈品</string>
@@ -54,6 +54,7 @@
 
     <string name="gift_post_sort">物品分類: %1$s</string>
     <string name="event_post_sort">活動分類: %1$s</string>
+    <string name="gift_registrants_number">已有%1$d人登記索取</string>
 
     <string name="gift_post_quantity">提供數量: %1$d</string>
 
@@ -61,5 +62,7 @@
     <string name="number_volunteer_needs">需求志工數: %1$d人</string>
 
     <string name="request_leave_intro_message">留個自我介紹給大家吧！</string>
+
+
 
 </resources>

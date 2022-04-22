@@ -42,8 +42,6 @@ class ProfileViewModel(private val repository: WeShareRepository, val userInfo: 
     }
 
     private fun getUserInfo(uid: String) {
-        Log.d("_status","$uid")
-
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
@@ -69,7 +67,5 @@ class ProfileViewModel(private val repository: WeShareRepository, val userInfo: 
                 }
             }
         }
-
-        Log.d("_status","${_status.value}")
     }
 }

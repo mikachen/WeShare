@@ -31,7 +31,9 @@ class ProfileFragment : Fragment() {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        userArg = arguments?.let { ProfileFragmentArgs.fromBundle(it).weshareUser } ?: UserInfo(uid = UserManager.mockUserUid)
+        userArg = arguments?.let {
+            ProfileFragmentArgs.fromBundle(it).weshareUser } ?:
+            UserInfo(uid = UserManager.userLora.uid)
 
 
         viewModel.user.observe(viewLifecycleOwner) {

@@ -86,7 +86,7 @@ class EventDetailFragment : Fragment() {
         binding.buttonPressLike.setOnClickListener {
             viewModel.onPostLikePressed(event.id)
         }
-        binding.buttonLeaveAComment.setOnClickListener {
+        binding.buttonLeaveComment.setOnClickListener {
             findNavController().navigate(
                 EventDetailFragmentDirections.actionEventDetailFragmentToCommentDialogFragment(
                     event.id

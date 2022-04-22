@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
@@ -54,7 +55,8 @@ class ChatRoomFragment : Fragment() {
         }
 
         viewModel.targetInfo.observe(viewLifecycleOwner) {
-            binding.textRoomTargetTitle.text = it.name
+//            binding.textRoomTargetTitle.text = it.name
+            (activity as MainActivity).binding.toolbarFragmentTitleText.text = it.name
         }
 
         viewModel.newMessage.observe(viewLifecycleOwner) {

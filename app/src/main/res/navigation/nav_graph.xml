@@ -19,11 +19,7 @@
         android:id="@+id/roomListFragment"
         android:name="com.zoe.weshare.message.roomlist.RoomListFragment"
         android:label="fragment_room_list"
-        tools:layout="@layout/fragment_room_list">
-        <action
-            android:id="@+id/action_roomListFragment_to_chatRoomFragment"
-            app:destination="@id/chatRoomFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_room_list"/>
 
 
 
@@ -174,6 +170,9 @@
             android:name="documentId"
             app:argType="string" />
     </dialog>
+    <action
+        android:id="@+id/action_global_chatRoomFragment"
+        app:destination="@id/chatRoomFragment" />
 
 
 </navigation>

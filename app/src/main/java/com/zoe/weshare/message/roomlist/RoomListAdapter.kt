@@ -10,7 +10,6 @@ import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemRelatedRoomListBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
-import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager
 
 class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
@@ -53,6 +52,7 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
                 textRoomTargetTitle.text = targetObj.name
                 textLastMessage.text = room.lastMsg
                 textLastSentTime.text = room.lastMsgSentTime.toDisplaySentTime()
+
             }
         }
 

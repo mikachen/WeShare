@@ -11,7 +11,7 @@
         android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/layout_attend_buttons"
+        app:layout_constraintBottom_toTopOf="@id/layout_askforgift_buttons"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,9 +26,9 @@
             <ImageView
                 android:id="@+id/images"
                 android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:scaleType="fitCenter"
+                android:layout_height="300dp"
                 android:src="@drawable/tiger_pngrepo_com"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -199,12 +199,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="點讚活動"
-                    app:layout_constraintEnd_toStartOf="@id/button_leave_a_comment"
+                    app:layout_constraintEnd_toStartOf="@id/button_leave_comment"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/text_liked_number" />
 
                 <Button
-                    android:id="@+id/button_leave_a_comment"
+                    android:id="@+id/button_leave_comment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="分享留言"
@@ -218,7 +218,7 @@
                     android:layout_height="wrap_content"
                     android:text="分享活動"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/button_leave_a_comment"
+                    app:layout_constraintStart_toEndOf="@id/button_leave_comment"
                     app:layout_constraintTop_toTopOf="@id/button_press_like"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -267,7 +267,7 @@
 
     <!-- layout attend btns-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_attend_buttons"
+        android:id="@+id/layout_askforgift_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"

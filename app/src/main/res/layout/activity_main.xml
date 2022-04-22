@@ -12,28 +12,60 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_toolbar"
             android:background="@drawable/custom_theme_gradient"
-            android:elevation="4dp"
-            app:layout_scrollFlags="scroll|enterAlways">
+            android:elevation="4dp">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:id="@+id/toolbar_logo_image"
                     android:layout_width="150dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/logo_weshare" />
+                    android:visibility="invisible"
+                    android:src="@drawable/logo_weshare"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
 
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/layout_toolbar_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
 
-        </androidx.appcompat.widget.Toolbar>
+                <ImageView
+                    android:id="@+id/toolbar_arrow_back_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_baseline_arrow_back_ios_new_24" />
+
+                <TextView
+                    android:id="@+id/toolbar_fragment_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/white"
+                    tools:text="選擇地點"
+                    android:textSize="24sp"
+                    android:layout_marginStart="16dp"/>
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

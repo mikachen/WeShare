@@ -49,8 +49,12 @@ class DefaultWeShareRepository(
         return remoteDataSource.getChatsHistory(docId)
     }
 
-    override suspend fun getRelatedChatRooms(uid: String): Result<List<ChatRoom>> {
-        return remoteDataSource.getRelatedChatRooms(uid)
+    override suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>> {
+        return remoteDataSource.getUserChatRooms(uid)
+    }
+
+    override suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String> {
+        return remoteDataSource.createNewChatRoom(newRoom)
     }
 
     override suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean> {

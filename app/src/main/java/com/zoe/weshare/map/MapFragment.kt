@@ -99,7 +99,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
+                findNavController().navigate(
+                    NavGraphDirections.actionGlobalGiftDetailFragment(it))
 
                 viewModel.displayCardDetailsComplete()
             }

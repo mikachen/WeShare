@@ -6,7 +6,11 @@ import com.zoe.weshare.data.UserInfo
 
 object UserManager {
 
-    val mockUserUid = "lora0987"
+    val userLora = UserInfo(
+        name = "蘿拉卡芙特",
+        uid = "lora0987",
+        image = "https://images2.gamme.com.tw/news2/2016/26/12/q52SpaablqCbqA.jpeg")
+
 
     val userZoe = UserInfo(
         name = "Zoe Lo",

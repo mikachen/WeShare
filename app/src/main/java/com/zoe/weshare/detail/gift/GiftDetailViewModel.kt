@@ -8,6 +8,7 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.ChatRoomType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,9 +21,9 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     val comments: LiveData<List<Comment>?>
         get() = _comments
 
-    private var _onViewDisplaying = MutableLiveData<GiftPost>()
-    val onViewDisplaying: LiveData<GiftPost>
-        get() = _onViewDisplaying
+    private var _selectedGiftDisplay = MutableLiveData<GiftPost>()
+    val selectedGiftDisplay: LiveData<GiftPost>
+        get() = _selectedGiftDisplay
 
     private var _currentLikedNumber = MutableLiveData<Int>()
     val currentLikedNumber: LiveData<Int>
@@ -39,6 +40,19 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     private var _onCommentLikePressed = MutableLiveData<Int>()
     val onCommentLikePressed: LiveData<Int>
         get() = _onCommentLikePressed
+
+    private var _userChatRooms = MutableLiveData<List<ChatRoom>>()
+    val userChatRooms: LiveData<List<ChatRoom>>
+        get() = _userChatRooms
+
+    private val _navigateToFormerRoom = MutableLiveData<ChatRoom?>()
+    val navigateToFormerRoom: LiveData<ChatRoom?>
+        get() = _navigateToFormerRoom
+
+    private val _navigateToNewRoom = MutableLiveData<ChatRoom?>()
+    val navigateToNewRoom: LiveData<ChatRoom?>
+        get() = _navigateToNewRoom
+
 
     val profileList = mutableListOf<UserProfile>()
     var updateCommentLike = mutableListOf<Comment>()
@@ -189,7 +203,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
             when (
                 val result = repository.likeGiftComment(
-                    docId = onViewDisplaying.value!!.id,
+                    docId = selectedGiftDisplay.value!!.id,
                     subDocId = subDoc,
                     uid = userInfo!!.uid
                 )
@@ -220,7 +234,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
             when (
                 val result = repository.cancelLikeGiftComment(
-                    docId = onViewDisplaying.value!!.id,
+                    docId = selectedGiftDisplay.value!!.id,
                     subDocId = subDoc,
                     uid = userInfo!!.uid
                 )
@@ -246,7 +260,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     }
 
     fun onViewPrepare(gift: GiftPost) {
-        _onViewDisplaying.value = gift
+        _selectedGiftDisplay.value = gift
         _currentLikedNumber.value = gift.whoLiked?.size
         _isUserPressedLike.value = gift.whoLiked?.contains(userInfo?.uid) == true
     }
@@ -265,12 +279,104 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
         if (!isUserLiked) {
             sendLikeOnComment(comment.id)
-
             whoLikedList.add(userInfo!!.uid)
         } else {
             cancelLikeOnComment(comment.id)
-
             whoLikedList.remove(userInfo!!.uid)
         }
+    }
+
+    fun checkIfPrivateRoomExist(rooms: List<ChatRoom>) {
+
+        val result = rooms.filter {
+            it.participants?.contains(selectedGiftDisplay.value!!.author!!.uid) == true
+                    && it.type == ChatRoomType.PRIVATE.value }
+
+        if (result.isNotEmpty()) {
+            // there was chat room history with author & ChatRoomType is PRIVATE
+            _navigateToFormerRoom.value = result.single()
+
+        } else {
+            //no private chat with author before
+            onRoomCreate()
+        }
+    }
+
+
+    fun onRoomCreate() {
+        val room = ChatRoom(
+            type = ChatRoomType.PRIVATE.value,
+            participants = listOf(userInfo!!.uid,selectedGiftDisplay.value!!.author!!.uid),
+            usersInfo = listOf(userInfo, selectedGiftDisplay.value!!.author!!)
+        )
+        createRoom(room)
+    }
+
+    private fun createRoom(room: ChatRoom){
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.createNewChatRoom(room)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    _navigateToNewRoom.value = room.apply {
+                        id = result.data
+                    }
+
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    fun searchOnPrivateRoom(user: UserInfo) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            val result = repository.getUserChatRooms(user.uid)
+
+            _userChatRooms.value = when (result) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    result.data
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+        }
+    }
+
+    fun navigateToRoomComplete() {
+        _userChatRooms.value = null
+        _navigateToFormerRoom.value = null
+        _navigateToNewRoom.value = null
     }
 }

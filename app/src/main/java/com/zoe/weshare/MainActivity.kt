@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         // view setup
         setupNavController()
+        setUpNavigateUpIcon()
         setupBottomNav()
         setupFab()
 //        setUpFabBehavior()
@@ -50,17 +51,36 @@ class MainActivity : AppCompatActivity() {
         viewModel.currentFragmentType.observe(
             this
         ) {
-//            binding.toolbarTitle.text = it.value
-
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+
+            binding.apply {
+                toolbarLogoImage.visibility = View.INVISIBLE
+                layoutToolbarSubtitle.visibility = View.VISIBLE
+                toolbarFragmentTitleText.text = it.value
+
+
             when (it) {
-                CurrentFragmentType.PROFILE -> binding.topAppbar.visibility = View.GONE
+                // 完全隱藏上方
+                CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
+
                 CurrentFragmentType.CHATROOM -> {
-                    binding.topAppbar.visibility = View.GONE
                     hideBottom()
                 }
+
+                //顯示副標題+倒退鍵
+                CurrentFragmentType.SEARCHLOCATION -> toolbarFragmentTitleText.text = it.value
+
+                //大主頁
+                CurrentFragmentType.HOME -> {
+                    toolbar.navigationIcon = null
+                    toolbarLogoImage.visibility = View.VISIBLE
+                    layoutToolbarSubtitle.visibility = View.INVISIBLE
+                }
+
+                CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
+
 
                 CurrentFragmentType.POSTGIFT -> hideBottom()
                 CurrentFragmentType.POSTEVENT -> hideBottom()
@@ -68,9 +88,10 @@ class MainActivity : AppCompatActivity() {
 
 
                 else -> {
-                    binding.topAppbar.visibility = View.VISIBLE
+                    topAppbar.visibility = View.VISIBLE
                     showBottom()
                 }
+            }
             }
         }
     }
@@ -128,6 +149,12 @@ class MainActivity : AppCompatActivity() {
 
                 else -> viewModel.currentFragmentType.value
             }
+        }
+    }
+
+    private fun setUpNavigateUpIcon() {
+        binding.toolbarArrowBackIcon.setOnClickListener {
+            findNavController(R.id.nav_host_fragment).navigateUp()
         }
     }
 

@@ -369,7 +369,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun getRelatedChatRooms(uid: String): Result<List<ChatRoom>> =
+    override suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>> =
         suspendCoroutine { continuation ->
 
             FirebaseFirestore.getInstance()
@@ -628,6 +628,36 @@ object WeShareRemoteDataSource : WeShareDataSource {
                         task.exception?.let {
 
                             Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(
+                            WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String> =
+        suspendCoroutine { continuation ->
+
+            val room = FirebaseFirestore.getInstance().collection(PATH_CHATROOM)
+            val document = room.document()
+
+            newRoom.id = document.id
+
+            document
+                .set(newRoom)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("createNewChatRoom: $newRoom")
+
+                        continuation.resume(Result.Success(document.id))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}]" +
                                     "Error getting documents. ${it.message}")
 
                             continuation.resume(Result.Error(it))
