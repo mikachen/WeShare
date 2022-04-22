@@ -17,18 +17,5 @@ data class GiftPost(
     var quantity: Int = 1,
     var location: PostLocation? = null,
     var status : Int = GiftStatusType.OPENING.code,
-    var whoLiked: List<String>? = null
+    var whoLiked: List<String> = emptyList()
 ) : Parcelable
-
-
-val dataqw = GiftPost(
-    title = "123"
-)
-
-
-val location = PostLocation(
-
-)
-fun pr(){
-    dataqw.location = location
-}

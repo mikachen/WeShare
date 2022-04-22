@@ -115,8 +115,8 @@
         android:label="fragment_ask_for_gift"
         tools:layout="@layout/fragment_ask_for_gift">
         <argument
-            android:name="documentId"
-            app:argType="string" />
+            android:name="selectedGift"
+            app:argType="com.zoe.weshare.data.GiftPost" />
     </dialog>
 
 
@@ -160,7 +160,9 @@
 
     <action
         android:id="@+id/action_global_giftDetailFragment"
-        app:destination="@id/giftDetailFragment" />
+        app:destination="@id/giftDetailFragment"
+        app:popUpTo="@id/giftDetailFragment"
+        app:popUpToInclusive="true" />
     <dialog
         android:id="@+id/commentDialogFragment"
         android:name="com.zoe.weshare.detail.commenting.CommentDialogFragment"

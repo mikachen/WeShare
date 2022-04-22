@@ -18,6 +18,7 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.Const.PATH_CHATROOM
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
 import com.zoe.weshare.util.Logger
+import com.zoe.weshare.util.UserManager.userLora
 import com.zoe.weshare.util.UserManager.userZoe
 
 class ChatRoomFragment : Fragment() {
@@ -26,7 +27,9 @@ class ChatRoomFragment : Fragment() {
     private lateinit var binding: FragmentChatroomBinding
     private lateinit var adapter: ChatRoomAdapter
 
-    private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(userZoe) }
+    val currentUser = userZoe
+
+    private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(currentUser) }
 
     private val db = FirebaseFirestore.getInstance()
     lateinit var newMsgQuery: Query
@@ -111,7 +114,8 @@ class ChatRoomFragment : Fragment() {
 
             if (mockMessage.isNotEmpty()) {
                 viewModel._newMessage.value = Comment(
-                    uid = "Ken1123",
+                    //TODO
+                    uid = userLora.uid,
                     content = mockMessage,
                     createdTime = Calendar.getInstance().timeInMillis
 

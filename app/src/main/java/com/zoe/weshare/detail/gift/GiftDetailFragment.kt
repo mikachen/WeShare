@@ -158,7 +158,7 @@ class GiftDetailFragment : Fragment() {
             binding.buttonAskForGift.setOnClickListener {
                 findNavController().navigate(
                     GiftDetailFragmentDirections
-                        .actionGiftDetailFragmentToAskForGiftFragment(selectedGift.id)
+                        .actionGiftDetailFragmentToAskForGiftFragment(selectedGift)
                 )
             }
 

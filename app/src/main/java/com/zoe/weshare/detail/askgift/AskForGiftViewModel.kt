@@ -5,11 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.UserInfo
-import com.zoe.weshare.data.Comment
-import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,9 +19,13 @@ class AskForGiftViewModel(
     private val userInfo: UserInfo?,
 ) : ViewModel() {
 
-    private var _newRequest = MutableLiveData<Comment?>()
-    val newRequest: LiveData<Comment?>
-        get() = _newRequest
+    private val _newRequestComment = MutableLiveData<Comment>()
+    val newRequestComment: LiveData<Comment>
+        get() = _newRequestComment
+
+    private val _saveLogComplete = MutableLiveData<PostLog>()
+    val saveLogComplete: LiveData<PostLog>
+        get() = _saveLogComplete
 
     // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()
@@ -40,17 +43,25 @@ class AskForGiftViewModel(
     val error: LiveData<String?>?
         get() = _error
 
+    fun onSendNewRequest(message: String, gift: GiftPost) {
+        val comment = Comment(
+            uid = userInfo!!.uid,
+            content = message
+        )
+        _newRequestComment.value = comment
+    }
 
-
-    fun askForGift(docId: String, comment: Comment) {
+    fun askForGiftRequest(gift: GiftPost, comment: Comment) {
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.askForGift(docId, comment)) {
+            when (val result = repository.askForGift(gift.id, comment)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
+                    onSaveGiftRequestLog(gift)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -68,14 +79,40 @@ class AskForGiftViewModel(
         }
     }
 
-    fun onSendNewRequest(message: String) {
-        _newRequest.value = Comment(
-            uid = userInfo!!.uid,
-            content = message
+    private fun onSaveGiftRequestLog(gift: GiftPost) {
+        val log = PostLog(
+            id = gift.id,
+            title = gift.title,
+            type = LogType.GIFT.value
         )
-    }
-    fun onNavigateBackToGiftDetail() {
-        _newRequest.value = null
+        saveGiftRequestLog(log, userInfo!!.uid)
     }
 
+    private fun saveGiftRequestLog(log: PostLog, uid: String) {
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.saveGiftRequestLog(log, uid)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+
+                    _saveLogComplete.value = log
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
 }
