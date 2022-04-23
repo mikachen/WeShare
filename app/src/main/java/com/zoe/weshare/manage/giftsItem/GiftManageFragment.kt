@@ -71,6 +71,13 @@ class GiftManageFragment : Fragment() {
             viewModel.log.value?.let { it1 -> viewModel.onSearchGiftsDetail(it1) } //refresh View
         }
 
+        viewModel.onCommentsShowing.observe(viewLifecycleOwner){
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalDistributeFragment(it))
+                viewModel.showCommentsComplete()
+            }
+        }
+
 
 
 

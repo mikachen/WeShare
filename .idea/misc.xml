@@ -41,6 +41,7 @@
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_home_cards.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_new.xml" value="0.25908507909362977" />
         <entry key="app/src/main/res/layout/fragment_pager.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fragment_pager_filter.xml" value="0.1393758016246259" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />
@@ -52,6 +53,8 @@
         <entry key="app/src/main/res/layout/item_comment_board.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_event_bulletin_board.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/item_event_cards_view.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/item_gift_distrubution_comment_list.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/item_gift_distrubution_list.xml" value="0.30867892261650276" />
         <entry key="app/src/main/res/layout/item_gift_manage.xml" value="0.67" />
         <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.375" />
         <entry key="app/src/main/res/layout/item_message_send.xml" value="0.37604166666666666" />

@@ -32,7 +32,7 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
         holderGift.bind(comment, viewModel)
 
         val whoLikedList = viewModel.updateCommentLike[position].whoLiked
-        val isUserLiked: Boolean = whoLikedList?.contains(userInfo.uid) == true
+        val isUserLiked: Boolean = whoLikedList.contains(userInfo.uid)
 
         holderGift.binding.apply {
 

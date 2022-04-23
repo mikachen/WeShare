@@ -2,82 +2,114 @@ package com.zoe.weshare.manage.distribution
 
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.WindowManager
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zoe.weshare.R
-import com.zoe.weshare.databinding.FragmentCommentDialogBinding
-import com.zoe.weshare.detail.commenting.CommentDialogFragmentArgs
-import com.zoe.weshare.detail.commenting.CommentViewModel
+import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.userZoe
 
 class DistributeFragment : BottomSheetDialogFragment() {
 
-        lateinit var binding: FragmentCommentDialogBinding
-        val viewModel by viewModels<CommentViewModel> { getVmFactory(UserManager.userZoe) }
+    val currentUser = userZoe
 
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?,
-        ): View? {
-            val docId = CommentDialogFragmentArgs.fromBundle(requireArguments()).documentId
+    lateinit var binding: FragmentDistributeBinding
+    val viewModel by viewModels<DistributeViewModel> { getVmFactory(currentUser) }
 
-            binding = FragmentCommentDialogBinding.inflate(inflater, container, false)
+    lateinit var layoutList: LinearLayout
 
-            viewModel.newComment.observe(viewLifecycleOwner) {
-                if (it != null) {
-                    viewModel.sendComment(docId, it)
-                    viewModel.onNavigateBackToEventDetail()
-                } else {
-                    findNavController().navigateUp()
-                }
-            }
 
-            setUpBtn()
-            return binding.root
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        binding = FragmentDistributeBinding.inflate(inflater, container, false)
 
-        // expanded all dialog view when keyboard pop up
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-            val dialog = super.onCreateDialog(savedInstanceState)
+        val selectedGift = DistributeFragmentArgs.fromBundle(requireArguments()).selectedGift
+        viewModel.getAskForGiftComments(selectedGift.id)
 
-            if (dialog is BottomSheetDialog) {
-                dialog.behavior.skipCollapsed = true
-                dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            }
-            return dialog
-        }
+        val adapter = DistributeAdapter(viewModel)
+        val manager = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.VERTICAL, false)
 
-        private fun setUpBtn() {
-            binding.buttonSendComment.setOnClickListener {
-                // TODO 判斷是否登入
+        binding.recyclerview.adapter = adapter
+        binding.recyclerview.layoutManager = manager
 
-                val message = binding.editLeaveComment.text
+        viewModel.comments.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
 
-                if (message != null) {
-                    if (message.isNotEmpty()) {
-                        viewModel.onSendNewComment(message.toString())
-                        message.clear()
-                    } else {
-                        Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            // make sure it only run at first time
+            if (viewModel.onProfileSearchComplete.value == null) {
+                viewModel.searchUsersProfile(it)
             }
         }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-
-            // 鍵盤彈出後，畫面拉長上推畫面 android:windowSoftInputMode = adjustResize
-            setStyle(STYLE_NORMAL, R.style.DialogStyle)
+        viewModel.onProfileSearchComplete.observe(viewLifecycleOwner) {
+            if (it == 0) {
+                adapter.notifyDataSetChanged()
+            }
         }
+
+
+        return binding.root
     }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogBg)
+    }
+
+//    override fun onStart() {
+//        super.onStart()
+//        //拿到系统的 bottom_sheet
+//        val view: ConstraintLayout = binding.sheetLayout
+//        //设置view高度
+//        view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+//        //获取behavior
+//        val behavior = BottomSheetBehavior.from(view)
+//        //设置弹出高度
+//        behavior.peekHeight = 3000
+//        //设置展开状态
+//        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+//    }
+
+    // expanded all dialog view when keyboard pop up
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+
+
+        dialog.setOnShowListener {
+
+            val bottomSheetDialog = it as BottomSheetDialog
+            val parentLayout =
+                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            parentLayout?.let { it ->
+                val behaviour = BottomSheetBehavior.from(it)
+                setupFullHeight(it)
+                behaviour.isFitToContents = false
+                behaviour.expandedOffset = 300
+                behaviour.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+
+        return dialog
+    }
+
+    private fun setupFullHeight(bottomSheet: View) {
+        val layoutParams = bottomSheet.layoutParams
+        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
+        bottomSheet.layoutParams = layoutParams
+    }
+}

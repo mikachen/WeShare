@@ -261,8 +261,8 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
     fun onGiftDisplay(gift: GiftPost) {
         _selectedGiftDisplay.value = gift
-        _currentLikedNumber.value = gift.whoLiked?.size
-        _isUserPressedLike.value = gift.whoLiked?.contains(userInfo?.uid) == true
+        _currentLikedNumber.value = gift.whoLiked.size
+        _isUserPressedLike.value = gift.whoLiked.contains(userInfo?.uid) == true
     }
 
     fun onPostLikePressed(doc: String) {

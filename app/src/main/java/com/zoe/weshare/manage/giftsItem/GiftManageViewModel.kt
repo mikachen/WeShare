@@ -48,6 +48,10 @@ class GiftManageViewModel(
     val onAlterMsgShowing: LiveData<GiftPost>
         get() = _onAlterMsgShowing
 
+    private val _onCommentsShowing = MutableLiveData<GiftPost?>()
+    val onCommentsShowing: LiveData<GiftPost?>
+        get() = _onCommentsShowing
+
     private val _allGifts = MutableLiveData<List<GiftPost>>()
     val allGifts: LiveData<List<GiftPost>>
         get() = _allGifts
@@ -152,7 +156,11 @@ class GiftManageViewModel(
     }
 
     fun userCheckWhoRequest(gift: GiftPost) {
+        _onCommentsShowing.value = gift
+    }
 
+    fun showCommentsComplete(){
+        _onCommentsShowing.value = null
     }
 
     fun abandonGift(selectedGift: GiftPost) {
