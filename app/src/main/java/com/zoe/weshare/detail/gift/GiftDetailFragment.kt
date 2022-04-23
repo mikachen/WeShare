@@ -2,9 +2,14 @@ package com.zoe.weshare.detail.gift
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.BounceInterpolator
+import android.view.animation.ScaleAnimation
+import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,6 +21,7 @@ import com.zoe.weshare.databinding.FragmentGiftDetailBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.UserManager.userLora
 import com.zoe.weshare.util.Util
 import com.zoe.weshare.util.Util.getColor
@@ -82,15 +88,7 @@ class GiftDetailFragment : Fragment() {
         }
 
         viewModel.isUserPressedLike.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.buttonPressLike.text = "已點讚 <3"
-                binding.buttonPressLike.backgroundTintList =
-                    ColorStateList.valueOf(getColor(R.color.yellowTestColor))
-            } else {
-                binding.buttonPressLike.text = "感恩讚"
-                binding.buttonPressLike.backgroundTintList =
-                    ColorStateList.valueOf(getColor(R.color.lightBlueTestColor))
-            }
+            binding.buttonPressLike.isChecked = it
         }
 
         viewModel.userChatRooms.observe(viewLifecycleOwner) {
@@ -117,6 +115,7 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
+        setupLikeBtn(selectedGift)
         setupBtn(selectedGift)
         return binding.root
     }
@@ -124,36 +123,58 @@ class GiftDetailFragment : Fragment() {
     private fun setupView(selectedGift: GiftPost) {
         binding.apply {
             bindImage(this.images, selectedGift.image)
+
             textGiftTitle.text = selectedGift.title
+
             textProfileName.text = selectedGift.author?.name
+
             bindImage(this.imageProfileAvatar, selectedGift.author?.image)
-            textPostedLocation.text = getString(R.string.gift_post_location_name,
-                selectedGift.location?.locationName)
+
+            textPostedLocation.text = selectedGift.location?.locationName
+
             textCreatedTime.text = getString(R.string.posted_time,
                 selectedGift.createdTime.toDisplayFormat())
-            textSort.text = getString(R.string.gift_post_sort, selectedGift.sort)
-            textQuantity.text =
-                getString(R.string.gift_post_quantity, selectedGift.quantity)
+
+            textSort.text = selectedGift.sort
+
             textLikedNumber.text =
-                getString(R.string.number_who_liked, selectedGift.whoLiked?.size)
+                getString(R.string.number_who_liked, selectedGift.whoLiked.size)
+
             textDescription.text = selectedGift.description
+
+            when (selectedGift.status) {
+                GiftStatusType.OPENING.code -> {
+                    binding.textStatus.text = GiftStatusType.OPENING.tag
+                    binding.textStatus.setBackgroundResource(R.color.message_sender_green)
+                }
+                GiftStatusType.CLOSED.code -> {
+                    binding.imageLogoStatus.visibility = View.VISIBLE
+                    binding.imageLogoStatus.setBackgroundResource(R.drawable.status_close_title_logo)
+                    binding.textStatus.text = GiftStatusType.CLOSED.tag
+                    binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
+                }
+                GiftStatusType.ABANDONED.code -> {
+                    binding.textStatus.text = GiftStatusType.ABANDONED.tag
+                    binding.textStatus.setBackgroundResource(R.color.app_work_light_grey)
+                }
+            }
         }
     }
 
     private fun setupBtn(selectedGift: GiftPost) {
+        binding.buttonSendPmToAuthor.setOnClickListener {
+            viewModel.searchOnPrivateRoom(currentUser)
+        }
 
         binding.buttonPressLike.setOnClickListener {
             viewModel.onPostLikePressed(selectedGift.id)
-        }
-        binding.buttonSendPmToAuthor.setOnClickListener {
-            viewModel.searchOnPrivateRoom(currentUser)
         }
 
 
         // author he/herself hide the button
         if (selectedGift.author!!.uid == currentUser.uid) {
             binding.buttonSendPmToAuthor.visibility = View.GONE
-            binding.layoutAskforgiftButtons.visibility = View.GONE
+            binding.layoutAskForGift.visibility = View.GONE
         } else {
             binding.buttonAskForGift.setOnClickListener {
                 findNavController().navigate(
@@ -177,5 +198,30 @@ class GiftDetailFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun setupLikeBtn(selectedGift: GiftPost) {
+        val scaleAnimation = ScaleAnimation(0.7f,
+            1.0f,
+            0.7f,
+            1.0f,
+            Animation.RELATIVE_TO_SELF,
+            0.7f,
+            Animation.RELATIVE_TO_SELF,
+            0.7f)
+        scaleAnimation.duration = 500
+        val bounceInterpolator = BounceInterpolator()
+        scaleAnimation.interpolator = bounceInterpolator
+
+        binding.buttonPressLike.setOnCheckedChangeListener(object : View.OnClickListener,
+            CompoundButton.OnCheckedChangeListener {
+
+            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
+                p0?.startAnimation(scaleAnimation)
+            }
+
+            override fun onClick(p0: View?) {
+            }
+        })
     }
 }

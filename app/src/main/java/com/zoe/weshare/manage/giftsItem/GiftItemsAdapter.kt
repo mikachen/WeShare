@@ -1,6 +1,7 @@
 package com.zoe.weshare.manage.giftsItem
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -25,7 +26,7 @@ class GiftItemsAdapter(
             binding.apply {
                 bindImage(imageGift, gift.image)
                 textTitle.text = gift.title
-                textDiscontinuedCountdown.text = gift.sort
+                textDiscontinuedCountdown.text = gift.description
                 textPostedLocation.text = gift.location!!.locationName
             }
 
@@ -36,15 +37,18 @@ class GiftItemsAdapter(
                     binding.textStatus.setBackgroundResource(R.color.message_sender_green)
                 }
                 GiftStatusType.CLOSED.code -> {
+                    binding.btnAbandoned.visibility = View.GONE
+                    binding.btnCheckWhoRequest.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.CLOSED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
                 }
                 GiftStatusType.ABANDONED.code -> {
+                    binding.btnAbandoned.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.ABANDONED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_light_grey)
                 }
 
-                else -> Logger.d("unknow status")
+                else -> Logger.d("unKnow status")
             }
 
         }

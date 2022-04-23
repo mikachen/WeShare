@@ -45,18 +45,16 @@
         <item>其他</item>
     </string-array>
 
-    <string name="posted_time">%s 刊登\t</string>
+    <string name="posted_time">%s 刊登</string>
     <string name="card_posted_time">刊登時間:%1$s</string>
 
-    <string name="gift_post_location_name">取物地點: %1$s</string>
-    <string name="event_post_location_name">活動地點: %1$s</string>
+    <string name="gift_post_location_name">地點: %1$s</string>
+    <string name="event_post_location_name">地點: %1$s</string>
     <string name="post_location_name">刊登地點:%1$s</string>
 
     <string name="gift_post_sort">物品分類: %1$s</string>
     <string name="event_post_sort">活動分類: %1$s</string>
     <string name="gift_registrants_number">已有%1$d人登記索取</string>
-
-    <string name="gift_post_quantity">提供數量: %1$d</string>
 
     <string name="number_who_liked">%1$d 人說讚</string>
     <string name="number_volunteer_needs">需求志工數: %1$d人</string>
@@ -84,6 +82,7 @@
     <string name="send_gift_message">注意：一次只能送出一人，確認送出贈品將結案，不可再作修改!</string>
     <string name="send_gift_yes">確認</string>
     <string name="send_gift_no">取消</string>
+    <string name="title_who_requested">當前索取人</string>
 
 
 </resources>

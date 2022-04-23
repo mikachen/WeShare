@@ -1,5 +1,6 @@
 package com.zoe.weshare.detail.gift
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -60,12 +61,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    // error: The internal MutableLiveData that stores the error of the most recent request
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
@@ -138,6 +137,15 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                 }
             }
             _onProfileSearchComplete.value = _onProfileSearchComplete.value?.minus(1)
+        }
+    }
+
+    fun onPostLikePressed(doc: String) {
+
+        if (isUserPressedLike.value == false) {
+            sendLike(doc)
+        } else {
+            cancelLike(doc)
         }
     }
 
@@ -265,13 +273,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         _isUserPressedLike.value = gift.whoLiked.contains(userInfo?.uid) == true
     }
 
-    fun onPostLikePressed(doc: String) {
-        if (_isUserPressedLike.value == false) {
-            sendLike(doc)
-        } else {
-            cancelLike(doc)
-        }
-    }
 
     fun onCommentsLikePressed(comment: Comment, isUserLiked: Boolean, position: Int) {
         _onCommentLikePressed.value = position

@@ -14,8 +14,9 @@ data class GiftPost(
     var description: String = "",
     var image: String = "",
     var createdTime: Long = -1,
-    var quantity: Int = 1,
     var location: PostLocation? = null,
     var status : Int = GiftStatusType.OPENING.code,
-    var whoLiked: List<String> = emptyList()
-) : Parcelable
+    var whoLiked: List<String> = emptyList(),
+    var whoGetGift: String = "",
+
+    ) : Parcelable

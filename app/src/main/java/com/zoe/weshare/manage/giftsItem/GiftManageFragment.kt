@@ -1,13 +1,12 @@
 package com.zoe.weshare.manage.giftsItem
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +16,6 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftManageBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.UserManager.userZoe
-
 
 class GiftManageFragment : Fragment() {
 
@@ -31,17 +29,12 @@ class GiftManageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        Log.d("GiftManageFragment","onCreateView")
-
         binding = FragmentGiftManageBinding.inflate(inflater, container, false)
-
-        //refresh current filter view whenever return back from any dialog fragment
-//        viewModel.log.value?.let { it1 -> viewModel.onSearchGiftsDetail(it1) }
 
         //everytime when tabs position change, the index change
         index = requireArguments().getInt(INDEX_VALUE)
 
-        val adapter = GiftItemsAdapter(viewModel, GiftItemsAdapter.OnClickListener{
+        val adapter = GiftItemsAdapter(viewModel, GiftItemsAdapter.OnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
         })
         val manager = LinearLayoutManager(requireContext(),
@@ -51,31 +44,31 @@ class GiftManageFragment : Fragment() {
         binding.recyclerview.layoutManager = manager
 
 
-        viewModel.log.observe(viewLifecycleOwner){
+        viewModel.log.observe(viewLifecycleOwner) {
             it?.let {
                 viewModel.onSearchGiftsDetail(it)
             }
         }
 
-        viewModel.onDocSearch.observe(viewLifecycleOwner){
-            if(it == 0){
+        viewModel.onDocSearch.observe(viewLifecycleOwner) {
+            if (it == 0) {
                 viewModel.filteringGift(index)
             }
         }
 
-        viewModel.allGifts.observe(viewLifecycleOwner){
+        viewModel.allGifts.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
 
-        viewModel.onAlterMsgShowing.observe(viewLifecycleOwner){
+        viewModel.onAlterMsgShowing.observe(viewLifecycleOwner) {
             abandonedEvent(it)
         }
 
-        viewModel.abandonStatus.observe(viewLifecycleOwner){
-            Toast.makeText(requireContext(),"下架成功",Toast.LENGTH_SHORT).show()
+        viewModel.abandonStatus.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), "下架成功", Toast.LENGTH_SHORT).show()
         }
 
-        viewModel.onCommentsShowing.observe(viewLifecycleOwner){
+        viewModel.onCommentsShowing.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(NavGraphDirections.actionGlobalDistributeFragment(it))
                 viewModel.showCommentsComplete()
@@ -88,17 +81,11 @@ class GiftManageFragment : Fragment() {
         return binding.root
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d("GiftManageFragment","onPause")
-    }
-
-
-    private fun abandonedEvent(gift: GiftPost){
+    private fun abandonedEvent(gift: GiftPost) {
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {
-            setTitle(getString(R.string.abandoned_title,gift.title))
+            setTitle(getString(R.string.abandoned_title, gift.title))
             setMessage(getString(R.string.abandoned_message))
             setPositiveButton(getString(R.string.abandoned_yes)) { dialog, id ->
                 viewModel.abandonGift(gift)

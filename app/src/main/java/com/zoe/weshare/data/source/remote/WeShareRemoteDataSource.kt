@@ -37,10 +37,8 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
             event.id = document.id
             event.createdTime = Calendar.getInstance().timeInMillis
-            event.whoLiked = listOf()
-
             event.image =
-                "https://img.ltn.com.tw/Upload/news/600/2019/09/29/2930967_2_1.jpg"
+                "https://images.chinatimes.com/newsphoto/2021-05-05/656/20210505003488.jpg"
             document
                 .set(event)
                 .addOnCompleteListener { task ->
@@ -68,10 +66,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
             val eventPost = FirebaseFirestore.getInstance().collection(PATH_GIFT_POST)
             val document = eventPost.document()
 
+            gift.createdTime = Calendar.getInstance().timeInMillis
             gift.id = document.id
-            gift.whoLiked = listOf()
             gift.image =
-                "https://cs-a.ecimg.tw/items/DBAB08A39148142/000001_1553076513.jpg"
+                "https://cdn01.pinkoi.com/product/sFbz5ZnF/6/800x0.jpg"
 
             document
                 .set(gift)

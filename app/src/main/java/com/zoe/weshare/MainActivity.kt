@@ -58,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                 toolbarLogoImage.visibility = View.INVISIBLE
                 layoutToolbarSubtitle.visibility = View.VISIBLE
                 toolbarFragmentTitleText.text = it.value
+                showBottom()
 
 
             when (it) {
@@ -69,7 +70,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 //顯示副標題+倒退鍵
-                CurrentFragmentType.SEARCHLOCATION -> toolbarFragmentTitleText.text = it.value
+                CurrentFragmentType.SEARCHLOCATION -> {
+                    toolbarFragmentTitleText.text = it.value
+                    hideBottom()
+                }
 
                 //大主頁
                 CurrentFragmentType.HOME -> {
@@ -78,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                     layoutToolbarSubtitle.visibility = View.INVISIBLE
                 }
 
-                CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
+                CurrentFragmentType.GIFTDETAIL -> hideBottom()
 
 
                 CurrentFragmentType.POSTGIFT -> hideBottom()
@@ -88,25 +92,8 @@ class MainActivity : AppCompatActivity() {
 
                 else -> {
                     topAppbar.visibility = View.VISIBLE
-                    showBottom()
                 }
             }
-            }
-        }
-    }
-
-    private fun setUpFabBehavior(){
-        val params = binding.bottomAppBar.layoutParams as CoordinatorLayout.LayoutParams
-        params.behavior = object : FabBehavior() {
-            override fun onSlideDown() {
-//                scan_button.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_top))
-                binding.fabMain.hide()
-            }
-
-            override fun onSlideUp() {
-                binding.fabMain.show()
-
-//                scan_button.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_add))
             }
         }
     }

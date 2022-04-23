@@ -84,11 +84,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    tools:text="進行中"
                     android:padding="3dp"
                     android:textColor="@color/black"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    tools:text="進行中" />
 
                 <TextView
                     android:id="@+id/btn_abandoned"
@@ -96,8 +96,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:text="下架"
-                    android:textSize="16sp"
                     android:textColor="@color/gift_abandoned_red"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
 
@@ -108,8 +108,8 @@
                     android:layout_marginVertical="8dp"
                     android:layout_marginEnd="16dp"
                     android:text="查看索取情況"
-                    android:textSize="16sp"
                     android:textColor="@color/greenTestColor"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/btn_abandoned" />
 
