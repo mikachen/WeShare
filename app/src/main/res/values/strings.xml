@@ -77,5 +77,13 @@
     <string name="abandoned_yes">確認下架</string>
     <string name="abandoned_no">取消下架</string>
 
+    <string name="give_away_gift">派發此人</string>
+
+    //送禮物Alert窗
+    <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
+    <string name="send_gift_message">注意：一次只能送出一人，確認送出贈品將結案，不可再作修改!</string>
+    <string name="send_gift_yes">確認</string>
+    <string name="send_gift_no">取消</string>
+
 
 </resources>

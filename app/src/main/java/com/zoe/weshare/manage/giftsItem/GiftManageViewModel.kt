@@ -151,16 +151,16 @@ class GiftManageViewModel(
 
     }
 
-    fun userPressAbandon(gift: GiftPost) {
-        _onAlterMsgShowing.value = gift
-    }
-
     fun userCheckWhoRequest(gift: GiftPost) {
         _onCommentsShowing.value = gift
     }
 
     fun showCommentsComplete(){
         _onCommentsShowing.value = null
+    }
+
+    fun userPressAbandon(gift: GiftPost) {
+        _onAlterMsgShowing.value = gift
     }
 
     fun abandonGift(selectedGift: GiftPost) {

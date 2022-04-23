@@ -11,6 +11,7 @@ import com.zoe.weshare.data.source.WeShareDataSource
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_SENT_TIME
 import com.zoe.weshare.util.Const.FIELD_STATUS
+import com.zoe.weshare.util.Const.FIELD_WHO_GET_GIFT
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.KEY_CREATED_TIME
 import com.zoe.weshare.util.Const.PATH_CHATROOM
@@ -795,36 +796,68 @@ object WeShareRemoteDataSource : WeShareDataSource {
     override suspend fun searchGiftDocument(doc: String): Result<GiftPost> =
         suspendCoroutine { continuation ->
 
-        FirebaseFirestore.getInstance()
-            .collection(PATH_GIFT_POST).document(doc)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
+            FirebaseFirestore.getInstance()
+                .collection(PATH_GIFT_POST).document(doc)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
 
-                    val gift = task.result.toObject(GiftPost::class.java)
-                    Logger.d("searchGiftDocument: $gift")
+                        val gift = task.result.toObject(GiftPost::class.java)
+                        Logger.d("searchGiftDocument: $gift")
 
 
-                    continuation.resume(Result.Success(gift!!))
-                } else {
-                    task.exception?.let {
+                        continuation.resume(Result.Success(gift!!))
+                    } else {
+                        task.exception?.let {
 
-                        Logger.w("[${this::class.simpleName}] " +
-                                "Error getting documents. ${it.message}")
+                            Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
 
-                        continuation.resume(Result.Error(it))
-                        return@addOnCompleteListener
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                     }
-                    continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                 }
-            }
-    }
+        }
 
     override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
                 .update(mapOf(
                     FIELD_STATUS to statusCode))
+
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("updateGiftStatus: $statusCode")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(
+                            WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun sendAwayGift(
+        docId: String,
+        statusCode: Int,
+        uid: String,
+    ): Result<Boolean> =
+        suspendCoroutine { continuation ->
+
+            FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
+                .update(mapOf(
+                    FIELD_STATUS to statusCode,
+                    FIELD_WHO_GET_GIFT to uid))
 
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {

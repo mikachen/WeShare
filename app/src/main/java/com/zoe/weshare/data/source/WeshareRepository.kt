@@ -22,15 +22,17 @@ interface WeShareRepository {
     suspend fun likeGiftComment(docId: String, subDocId: String, uid: String): Result<Boolean>
     suspend fun likeEventComment(docId: String, subDocId: String, uid: String): Result<Boolean>
     suspend fun cancelLikeGiftComment(docId: String, subDocId: String, uid: String): Result<Boolean>
-    suspend fun cancelLikeEventComment(docId: String, subDocId: String, uid: String): Result<Boolean>
+    suspend fun cancelLikeEventComment(docId: String, subDocId: String, uid: String, ): Result<Boolean>
+
     suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean>
     suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String>
     suspend fun saveGiftPostLog(log: PostLog, uid: String): Result<Boolean>
     suspend fun saveGiftRequestLog(log: PostLog, uid: String): Result<Boolean>
 
-    suspend fun getUsersGiftLog(uid:String): Result<List<PostLog>>
-    suspend fun getUsersRequestLog(uid:String): Result<List<PostLog>>
+    suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>>
+    suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>>
 
     suspend fun searchGiftDocument(doc: String): Result<GiftPost>
     suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean>
+    suspend fun sendAwayGift(docId: String, statusCode: Int, uid: String, ): Result<Boolean>
 }

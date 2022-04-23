@@ -72,15 +72,16 @@
         app:layout_constraintTop_toBottomOf="@id/layout_main_content"
         tools:text="3 hrs ago" />
 
-    <RadioButton
-        android:id="@+id/block_btn"
+    <Button
+        android:id="@+id/button_send_gift"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:letterSpacing="0.15"
-        android:maxLines="1"
-        android:textColor="#A9A9A9"
+        android:text="@string/give_away_gift"
+        android:textColor="@color/white"
+        android:background="@drawable/sl_profile_follow_button"
         android:layout_marginEnd="16dp"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@id/layout_main_content" />

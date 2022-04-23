@@ -1,6 +1,7 @@
 package com.zoe.weshare.manage.giftsItem
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +31,12 @@ class GiftManageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        Log.d("GiftManageFragment","onCreateView")
+
         binding = FragmentGiftManageBinding.inflate(inflater, container, false)
+
+        //refresh current filter view whenever return back from any dialog fragment
+//        viewModel.log.value?.let { it1 -> viewModel.onSearchGiftsDetail(it1) }
 
         //everytime when tabs position change, the index change
         index = requireArguments().getInt(INDEX_VALUE)
@@ -67,8 +73,6 @@ class GiftManageFragment : Fragment() {
 
         viewModel.abandonStatus.observe(viewLifecycleOwner){
             Toast.makeText(requireContext(),"下架成功",Toast.LENGTH_SHORT).show()
-
-            viewModel.log.value?.let { it1 -> viewModel.onSearchGiftsDetail(it1) } //refresh View
         }
 
         viewModel.onCommentsShowing.observe(viewLifecycleOwner){
@@ -84,9 +88,13 @@ class GiftManageFragment : Fragment() {
         return binding.root
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.d("GiftManageFragment","onPause")
+    }
+
 
     private fun abandonedEvent(gift: GiftPost){
-
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {

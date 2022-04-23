@@ -6,15 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
+import com.zoe.weshare.data.GiftPost
+import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.UserManager.userZoe
@@ -23,11 +27,11 @@ class DistributeFragment : BottomSheetDialogFragment() {
 
     val currentUser = userZoe
 
-    lateinit var binding: FragmentDistributeBinding
     val viewModel by viewModels<DistributeViewModel> { getVmFactory(currentUser) }
 
+    lateinit var binding: FragmentDistributeBinding
     lateinit var layoutList: LinearLayout
-
+    lateinit var selectedGift: GiftPost
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +40,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
     ): View? {
         binding = FragmentDistributeBinding.inflate(inflater, container, false)
 
-        val selectedGift = DistributeFragmentArgs.fromBundle(requireArguments()).selectedGift
+        selectedGift = DistributeFragmentArgs.fromBundle(requireArguments()).selectedGift
         viewModel.getAskForGiftComments(selectedGift.id)
 
         val adapter = DistributeAdapter(viewModel)
@@ -61,8 +65,37 @@ class DistributeFragment : BottomSheetDialogFragment() {
             }
         }
 
+        viewModel.onConfirmMsgShowing.observe(viewLifecycleOwner){
+            sendGiftEvent(it)
+        }
+
+        viewModel.sendGiftStatus.observe(viewLifecycleOwner){
+            Toast.makeText(requireContext(),"送出成功",Toast.LENGTH_SHORT).show()
+            findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
+        }
+
 
         return binding.root
+    }
+
+    private fun sendGiftEvent(target: UserProfile?) {
+        val builder = AlertDialog.Builder(requireActivity())
+
+        builder.apply {
+            setTitle(getString(R.string.send_gift_title,selectedGift.title,target!!.uid))
+            setMessage(getString(R.string.send_gift_message))
+            setPositiveButton(getString(R.string.send_gift_yes)) { dialog, id ->
+                viewModel.sendGift(selectedGift,target)
+                dialog.cancel()
+            }
+
+            setNegativeButton(getString(R.string.send_gift_no)) { dialog, id ->
+                dialog.cancel()
+            }
+        }
+
+        val alter: AlertDialog = builder.create()
+        alter.show()
     }
 
 
@@ -71,19 +104,6 @@ class DistributeFragment : BottomSheetDialogFragment() {
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialogBg)
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//        //拿到系统的 bottom_sheet
-//        val view: ConstraintLayout = binding.sheetLayout
-//        //设置view高度
-//        view.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-//        //获取behavior
-//        val behavior = BottomSheetBehavior.from(view)
-//        //设置弹出高度
-//        behavior.peekHeight = 3000
-//        //设置展开状态
-//        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-//    }
 
     // expanded all dialog view when keyboard pop up
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

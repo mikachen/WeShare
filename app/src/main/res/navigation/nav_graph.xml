@@ -180,7 +180,9 @@
         android:label="PagerFilterFragment" />
     <action
         android:id="@+id/action_global_pagerFilterFragment"
-        app:destination="@id/pagerFilterFragment" />
+        app:destination="@id/pagerFilterFragment"
+        app:popUpTo="@id/distributeFragment"
+        app:popUpToInclusive="true" />
     <dialog
         android:id="@+id/distributeFragment"
         android:name="com.zoe.weshare.manage.distribution.DistributeFragment"

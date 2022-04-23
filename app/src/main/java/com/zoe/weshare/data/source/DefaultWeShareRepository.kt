@@ -136,4 +136,12 @@ class DefaultWeShareRepository(
     override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> {
         return remoteDataSource.updateGiftStatus(docId,statusCode)
     }
+
+    override suspend fun sendAwayGift(
+        docId: String,
+        statusCode: Int,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.sendAwayGift(docId,statusCode,uid)
+    }
 }

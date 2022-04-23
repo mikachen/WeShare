@@ -28,7 +28,6 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
     override fun onBindViewHolder(holderGift: DistributionViewHolder, position: Int) {
         val comment = getItem(position)
         holderGift.bind(comment, viewModel)
-        Log.d("onBindViewHolder","onBindViewHolder")
     }
 
     class DistributionViewHolder(val binding: ItemGiftDistrubutionListBinding) :
@@ -47,6 +46,10 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
                         binding.textProfileName.text = sender.name
                     }
                 }
+            }
+
+            binding.buttonSendGift.setOnClickListener{
+                viewModel.userPressSendGift(comment)
             }
         }
 
