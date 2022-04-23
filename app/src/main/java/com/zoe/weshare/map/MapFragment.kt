@@ -73,10 +73,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
 
                 //markers on map
-                createMarker(it.shuffled())
+                createMarker(it)
 
                 //cards recycler view
-                adapter.submitCards(it.shuffled())
+                adapter.submitCards(it)
             }
         }
 

@@ -223,7 +223,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_product_upload"
+        android:id="@+id/button_gifts_manage"
         style="@style/ProfileButton"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
@@ -242,8 +242,8 @@
         android:text="贈.已索取"
         app:layout_constraintEnd_toStartOf="@+id/button_coupon_manage"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_product_upload"
-        app:layout_constraintTop_toTopOf="@+id/button_product_upload"/>
+        app:layout_constraintStart_toEndOf="@+id/button_gifts_manage"
+        app:layout_constraintTop_toTopOf="@+id/button_gifts_manage"/>
 
     <Button
         android:id="@+id/button_coupon_manage"

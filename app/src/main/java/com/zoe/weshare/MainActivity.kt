@@ -21,7 +21,6 @@ import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager
 
 class MainActivity : AppCompatActivity() {
-// TODO 處理user點開fab main卻沒有實際點擊按鈕的情況，應該要關閉fab, 從刊登頁面返回也會壞掉
 
     private var subFabsExpanded: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
@@ -146,6 +145,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.eventDetailFragment -> CurrentFragmentType.EVENTDETAIL
                 R.id.giftDetailFragment -> CurrentFragmentType.GIFTDETAIL
                 R.id.searchLocationFragment -> CurrentFragmentType.SEARCHLOCATION
+                R.id.pagerFilterFragment -> CurrentFragmentType.GIFTMANAGE
 
                 else -> viewModel.currentFragmentType.value
             }

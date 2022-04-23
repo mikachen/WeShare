@@ -120,4 +120,20 @@ class DefaultWeShareRepository(
     override suspend fun saveGiftRequestLog(log: PostLog, uid: String): Result<Boolean> {
         return remoteDataSource.saveGiftRequestLog(log, uid)
     }
+
+    override suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>> {
+        return remoteDataSource.getUsersGiftLog(uid)
+    }
+
+    override suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>> {
+        return remoteDataSource.getUsersRequestLog(uid)
+    }
+
+    override suspend fun searchGiftDocument(doc: String): Result<GiftPost> {
+        return remoteDataSource.searchGiftDocument(doc)
+    }
+
+    override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> {
+        return remoteDataSource.updateGiftStatus(docId,statusCode)
+    }
 }

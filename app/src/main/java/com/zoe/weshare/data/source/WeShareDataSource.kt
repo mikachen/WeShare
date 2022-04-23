@@ -32,4 +32,10 @@ interface WeShareDataSource {
     suspend fun saveGiftPostLog(log: PostLog, uid: String): Result<Boolean>
     suspend fun saveGiftRequestLog(log: PostLog, uid: String): Result<Boolean>
 
+    suspend fun getUsersGiftLog(uid:String): Result<List<PostLog>>
+    suspend fun getUsersRequestLog(uid:String): Result<List<PostLog>>
+
+    suspend fun searchGiftDocument(doc: String): Result<GiftPost>
+    suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean>
+
 }

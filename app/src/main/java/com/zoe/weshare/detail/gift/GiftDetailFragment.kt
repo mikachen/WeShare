@@ -161,12 +161,21 @@ class GiftDetailFragment : Fragment() {
                         .actionGiftDetailFragmentToAskForGiftFragment(selectedGift)
                 )
             }
-
         }
     }
 
-    private fun checkIfUserRequested(comments: List<Comment>){
-        binding.buttonAskForGift.isEnabled = comments.none { it.uid == currentUser.uid }
-        binding.buttonAskForGift.text = Util.getString(R.string.already_requested_gift)
+    private fun checkIfUserRequested(comments: List<Comment>) {
+        binding.buttonAskForGift.apply {
+            when (comments.none { it.uid == currentUser.uid }) {
+                true -> {
+                    isEnabled = true
+                    text = Util.getString(R.string.request_gift)
+                }
+                false -> {
+                    isEnabled = false
+                    text = Util.getString(R.string.already_requested_gift)
+                }
+            }
+        }
     }
 }

@@ -175,6 +175,10 @@
     <action
         android:id="@+id/action_global_chatRoomFragment"
         app:destination="@id/chatRoomFragment" />
+    <fragment
+        android:id="@+id/pagerFilterFragment"
+        android:name="com.zoe.weshare.manage.PagerFilterFragment"
+        android:label="PagerFilterFragment" /><action android:id="@+id/action_global_pagerFilterFragment" app:destination="@id/pagerFilterFragment"/>
 
 
 </navigation>

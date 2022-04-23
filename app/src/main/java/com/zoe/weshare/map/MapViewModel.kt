@@ -107,7 +107,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
             }
             isEventCardsComplete = true
         }
-        _cards.value = cardsViewList
+        _cards.value = cardsViewList.shuffled()
     }
 
     private fun getGiftsResult() {
