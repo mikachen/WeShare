@@ -35,8 +35,10 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_home_buttons"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginVertical="8dp"
+                android:layout_height="wrap_content"
+                android:paddingVertical="4dp"
+                android:elevation="4dp"
+                android:layout_marginBottom="4dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@id/title_current_hot_gifts"

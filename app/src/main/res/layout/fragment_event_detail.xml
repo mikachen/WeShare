@@ -207,12 +207,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="分享留言"
-                    app:layout_constraintEnd_toStartOf="@id/button_share_event"
+                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart2"
                     app:layout_constraintStart_toEndOf="@id/button_press_like"
                     app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
                 <Button
-                    android:id="@+id/button_share_event"
+                    android:id="@+id/button_addition_heart2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="分享活動"

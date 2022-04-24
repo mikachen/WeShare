@@ -16,7 +16,6 @@ class LogoActivity : AppCompatActivity() {
         binding = ActivityLogoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        binding.lottieMain.repeatCount = 1
         binding.lottieMain.playAnimation()
         binding.lottieMain.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {

@@ -106,6 +106,9 @@
         <action
             android:id="@+id/action_giftDetailFragment_to_askForGiftFragment"
             app:destination="@id/askForGiftFragment" />
+        <action
+            android:id="@+id/action_giftDetailFragment_to_creditFragment"
+            app:destination="@id/creditFragment" />
     </fragment>
 
     <dialog
@@ -195,6 +198,10 @@
     <action
         android:id="@+id/action_global_distributeFragment"
         app:destination="@id/distributeFragment" />
+    <dialog
+        android:id="@+id/creditFragment"
+        android:name="com.zoe.weshare.CreditFragment"
+        android:label="CreditFragment" />
 
 
 </navigation>

@@ -1,15 +1,12 @@
 package com.zoe.weshare.detail.gift
 
-import android.content.res.ColorStateList
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
-import android.widget.CompoundButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -24,7 +21,6 @@ import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.UserManager.userLora
 import com.zoe.weshare.util.Util
-import com.zoe.weshare.util.Util.getColor
 
 class GiftDetailFragment : Fragment() {
 
@@ -162,16 +158,14 @@ class GiftDetailFragment : Fragment() {
     }
 
     private fun setupBtn(selectedGift: GiftPost) {
-        binding.buttonSendPmToAuthor.setOnClickListener {
+        binding.lottieBtnChatMe.setOnClickListener {
             viewModel.searchOnPrivateRoom(currentUser)
         }
 
 
-
-
         // author he/herself hide the button
         if (selectedGift.author!!.uid == currentUser.uid) {
-            binding.buttonSendPmToAuthor.visibility = View.GONE
+            binding.lottieBtnChatMe.visibility = View.GONE
             binding.layoutAskForGift.visibility = View.GONE
         } else {
             binding.buttonAskForGift.setOnClickListener {
@@ -198,6 +192,7 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
+
     private fun setupLikeBtn(selectedGift: GiftPost) {
         val scaleAnimation = ScaleAnimation(0.7f,
             1.0f,
@@ -211,11 +206,31 @@ class GiftDetailFragment : Fragment() {
         val bounceInterpolator = BounceInterpolator()
         scaleAnimation.interpolator = bounceInterpolator
 
-
         binding.buttonPressLike.setOnClickListener {
+
             it.startAnimation(scaleAnimation)
 
             viewModel.onPostLikePressed(selectedGift.id)
+            playCreditScene()
+        }
+
+        binding.buttonAdditionHeart1.setOnClickListener {
+            playCreditScene()
+        }
+
+        binding.buttonAdditionHeart2.setOnClickListener {
+            playCreditScene()
+        }
+    }
+
+
+    private fun playCreditScene() {
+        if (binding.buttonAdditionHeart2.isChecked &&
+            binding.buttonAdditionHeart1.isChecked &&
+            binding.buttonPressLike.isChecked
+        ) {
+            findNavController().navigate(
+                GiftDetailFragmentDirections.actionGiftDetailFragmentToCreditFragment())
         }
     }
 }

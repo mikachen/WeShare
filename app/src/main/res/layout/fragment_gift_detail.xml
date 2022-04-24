@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <ImageView
                 android:id="@+id/images"
                 android:layout_width="match_parent"
@@ -56,13 +55,12 @@
                 app:layout_constraintTop_toTopOf="@id/translucent_view"
                 tools:text="萬能不沾鍋" />
 
-
             <!-- header information : title, user's image, name, locations-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_gift_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/images">
@@ -71,6 +69,8 @@
                     android:id="@+id/base_user_avatar"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     app:cardCornerRadius="90dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -79,7 +79,7 @@
                         android:id="@+id/image_profile_avatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="centerCrop" />
                 </androidx.cardview.widget.CardView>
 
 
@@ -95,6 +95,20 @@
                     app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
                     app:layout_constraintTop_toTopOf="@id/base_user_avatar"
                     tools:text="Zoelo" />
+
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottie_btn_chat_me"
+                    android:layout_width="50dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
+                    app:layout_constraintStart_toEndOf="@id/text_profile_name"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="chat_hint_robot.json"
+                    app:lottie_loop="true"
+                    app:lottie_speed="1" />
 
 
                 <TextView
@@ -144,7 +158,7 @@
                     android:text="分類："
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
 
                 <TextView
@@ -154,7 +168,7 @@
                     android:layout_marginTop="4dp"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/title_sort"
                     tools:text="生活用品" />
 
@@ -167,7 +181,7 @@
                     android:text="詳細說明："
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/text_sort" />
 
                 <TextView
@@ -178,20 +192,9 @@
                     android:gravity="start"
                     android:textColor="@color/black"
                     android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/title_description"
                     tools:text="鈦極不沾無毒塗層。" />
-
-                <TextView
-                    android:id="@+id/text_liked_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/button_press_like"
-                    tools:text="3人說讚" />
 
                 <ToggleButton
                     android:id="@+id/button_press_like"
@@ -202,39 +205,50 @@
                     android:text=""
                     android:textOff=""
                     android:textOn=""
-                    app:layout_constraintEnd_toStartOf="@id/button_send_pm_to_author"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart1"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/text_gift_description" />
 
                 <ToggleButton
-                    android:id="@+id/button_send_pm_to_author"
+                    android:id="@+id/button_addition_heart1"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/button_favorite_like"
                     android:text=""
                     android:textOff=""
                     android:textOn=""
-                    app:layout_constraintEnd_toStartOf="@id/button_share_event"
+                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart2"
                     app:layout_constraintStart_toEndOf="@id/button_press_like"
                     app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
                 <ToggleButton
-                    android:id="@+id/button_share_event"
+                    android:id="@+id/button_addition_heart2"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/button_favorite_like"
                     android:text=""
                     android:textOff=""
                     android:textOn=""
-                    app:layout_constraintStart_toEndOf="@id/button_send_pm_to_author"
+                    app:layout_constraintStart_toEndOf="@id/button_addition_heart1"
                     app:layout_constraintTop_toTopOf="@id/button_press_like" />
+
+                <TextView
+                    android:id="@+id/text_liked_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/button_press_like"
+                    tools:text="3人說讚" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/layout_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:cardCornerRadius="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
@@ -254,10 +268,10 @@
                     android:id="@+id/image_logo_status"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:layout_marginHorizontal="30dp"
                     android:layout_marginBottom="30dp"
                     android:rotation="-15"
                     android:scaleType="fitCenter"
-                    android:layout_marginHorizontal="30dp"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="@id/title_description"
                     app:layout_constraintEnd_toEndOf="parent"
