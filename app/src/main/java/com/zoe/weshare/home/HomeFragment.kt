@@ -7,26 +7,26 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
-
 import com.zoe.weshare.databinding.FragmentHomeBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.map.CardGalleryAdapter
-import com.zoe.weshare.map.GalleryDecoration
-import com.zoe.weshare.map.MapViewModel
+import java.util.*
 
-//TODO TEMP
 
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: CardGalleryAdapter
+    private lateinit var headerRv: RecyclerView
+    private lateinit var headerAdapter: HeaderAdapter
 
-    val viewModel by viewModels<MapViewModel> { getVmFactory() }
+    private lateinit var hotGiftsRv: RecyclerView
+    private lateinit var hotGiftAdapter: HotGiftsAdapter
+
+    val viewModel by viewModels<HomeViewModel> { getVmFactory() }
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,25 +38,20 @@ class HomeFragment : Fragment() {
 
 
         viewModel.gifts.observe(viewLifecycleOwner) {
-            viewModel.onCardPrepare(gifts = it, events = null)
+            hotGiftAdapter.submitList(it)
         }
 
         viewModel.events.observe(viewLifecycleOwner) {
-            viewModel.onCardPrepare(gifts = null, events = it)
+            headerAdapter.submitEvents(it)
         }
 
-        viewModel.cards.observe(viewLifecycleOwner) {
-            if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
-                adapter.submitCards(it.shuffled())
-            }
-        }
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
                     NavGraphDirections.actionGlobalGiftDetailFragment(it))
 
-                viewModel.displayCardDetailsComplete()
+                viewModel.displayGiftDetailsComplete()
             }
         }
 
@@ -64,46 +59,64 @@ class HomeFragment : Fragment() {
             it?.let {
                 findNavController()
                     .navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
-                viewModel.displayCardDetailsComplete()
+
+                viewModel.displayEventDetailsComplete()
             }
         }
 
-        setupCardGallery()
 
+        setupHeaderGallery()
+        setupHotGiftsGallery()
 
         return binding.root
     }
 
-    private fun setupCardGallery() {
+    private fun setupHeaderGallery() {
 
-        recyclerView = binding.recyclerview
+        headerRv = binding.headerEventRv
 
-        adapter = CardGalleryAdapter(
-            CardGalleryAdapter.CardOnClickListener { selectedCard ->
-                viewModel.displayCardDetails(selectedCard)
+        headerAdapter = HeaderAdapter(
+            HeaderAdapter.HeaderOnClickListener { selectedEvent ->
+                viewModel.displayEventDetails(selectedEvent)
             }
         )
 
         val manager = LinearLayoutManager(requireContext(),
             LinearLayoutManager.HORIZONTAL, false)
 
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = manager
+        headerRv.adapter = headerAdapter
+        headerRv.layoutManager = manager
 
-        val linearSnapHelper = LinearSnapHelper().apply {
-            attachToRecyclerView(recyclerView)
-        }
+        val linearSnapHelper = LinearSnapHelper()
+        linearSnapHelper.attachToRecyclerView(headerRv)
 
-        val marginDecoration = GalleryDecoration()
-        recyclerView.addItemDecoration(marginDecoration)
-
-
-        recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
-            viewModel.onGalleryScrollChange(
-                recyclerView.layoutManager, linearSnapHelper
-            )
-        }
+        val timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+                    manager.smoothScrollToPosition(headerRv,
+                        RecyclerView.State(),
+                        manager.findLastVisibleItemPosition() + 1)
+                } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+                    manager.smoothScrollToPosition(headerRv,
+                        RecyclerView.State(), 0)
+                }
+            }
+        }, 0, 3000)
     }
 
-}
+    private fun setupHotGiftsGallery() {
 
+        hotGiftsRv = binding.hotGiftRv
+
+        hotGiftAdapter = HotGiftsAdapter(HotGiftsAdapter.HotGiftsOnClickListener { selectedGift ->
+            viewModel.displayGiftDetails(selectedGift)
+        })
+
+        val manager = GridLayoutManager(requireContext(), 2)
+
+        hotGiftsRv.adapter = hotGiftAdapter
+        hotGiftsRv.layoutManager = manager
+
+    }
+}

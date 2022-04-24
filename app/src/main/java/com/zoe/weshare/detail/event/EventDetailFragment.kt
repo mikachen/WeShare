@@ -98,17 +98,25 @@ class EventDetailFragment : Fragment() {
     private fun setupView(event: EventPost) {
         binding.apply {
             bindImage(this.images, event.image)
+
             textEventTitle.text = event.title
+
             textProfileName.text = event.author?.name
+
             bindImage(this.imageProfileAvatar, event.author?.image)
+
             textPostedLocation.text =
                 resources.getString(R.string.gift_post_location_name, event.location?.locationName)
+
             textCreatedTime.text =
                 resources.getString(R.string.posted_time, event.createdTime.toDisplayFormat())
+
             textSort.text = resources.getString(R.string.gift_post_sort, event.sort)
+
             textVolunteerNeeds.text =
                 resources.getString(R.string.number_volunteer_needs, event.volunteerNeeds)
-            textDescription.text = event.description
+
+            textEventDescription.text = event.description
         }
     }
 }

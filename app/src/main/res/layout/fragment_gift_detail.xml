@@ -29,7 +29,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/tiger_pngrepo_com"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -80,8 +79,7 @@
                         android:id="@+id/image_profile_avatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_profile" />
+                        android:scaleType="centerCrop"/>
                 </androidx.cardview.widget.CardView>
 
 
@@ -173,7 +171,7 @@
                     app:layout_constraintTop_toBottomOf="@id/text_sort" />
 
                 <TextView
-                    android:id="@+id/text_description"
+                    android:id="@+id/text_gift_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -206,7 +204,7 @@
                     android:textOn=""
                     app:layout_constraintEnd_toStartOf="@id/button_send_pm_to_author"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_description" />
+                    app:layout_constraintTop_toBottomOf="@id/text_gift_description" />
 
                 <ToggleButton
                     android:id="@+id/button_send_pm_to_author"
@@ -328,10 +326,12 @@
     </androidx.core.widget.NestedScrollView>
 
     <!-- layout attend button-->
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_ask_for_gift"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -341,7 +341,8 @@
             android:id="@+id/button_ask_for_gift"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
             android:background="@drawable/sl_request_gift_button"
             android:enabled="true"
             android:text="@string/request_gift"
@@ -350,7 +351,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

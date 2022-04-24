@@ -140,7 +140,7 @@ class GiftDetailFragment : Fragment() {
             textLikedNumber.text =
                 getString(R.string.number_who_liked, selectedGift.whoLiked.size)
 
-            textDescription.text = selectedGift.description
+            textGiftDescription.text = selectedGift.description
 
             when (selectedGift.status) {
                 GiftStatusType.OPENING.code -> {
@@ -166,9 +166,7 @@ class GiftDetailFragment : Fragment() {
             viewModel.searchOnPrivateRoom(currentUser)
         }
 
-        binding.buttonPressLike.setOnClickListener {
-            viewModel.onPostLikePressed(selectedGift.id)
-        }
+
 
 
         // author he/herself hide the button
@@ -213,15 +211,11 @@ class GiftDetailFragment : Fragment() {
         val bounceInterpolator = BounceInterpolator()
         scaleAnimation.interpolator = bounceInterpolator
 
-        binding.buttonPressLike.setOnCheckedChangeListener(object : View.OnClickListener,
-            CompoundButton.OnCheckedChangeListener {
 
-            override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
-                p0?.startAnimation(scaleAnimation)
-            }
+        binding.buttonPressLike.setOnClickListener {
+            it.startAnimation(scaleAnimation)
 
-            override fun onClick(p0: View?) {
-            }
-        })
+            viewModel.onPostLikePressed(selectedGift.id)
+        }
     }
 }

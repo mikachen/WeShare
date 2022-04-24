@@ -2,6 +2,7 @@ package com.zoe.weshare.manage.distribution
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -11,6 +12,7 @@ import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemGiftDistrubutionListBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.Util
 
 class DistributeAdapter(val viewModel: DistributeViewModel) :
@@ -48,9 +50,14 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
                 }
             }
 
-            binding.buttonSendGift.setOnClickListener{
-                viewModel.userPressSendGift(comment)
+            if(viewModel.gift.status == GiftStatusType.OPENING.code){
+                binding.buttonSendGift.visibility = View.VISIBLE
+
+                binding.buttonSendGift.setOnClickListener{
+                    viewModel.userPressSendGift(comment)
+                }
             }
+
         }
 
         companion object {

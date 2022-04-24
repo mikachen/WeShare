@@ -10,8 +10,10 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.ItemGiftManageBinding
 import com.zoe.weshare.ext.bindImage
+import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.Logger
+import com.zoe.weshare.util.Util.getStringWithStrParm
 
 class GiftItemsAdapter(
     val viewModel: GiftManageViewModel,
@@ -26,7 +28,8 @@ class GiftItemsAdapter(
             binding.apply {
                 bindImage(imageGift, gift.image)
                 textTitle.text = gift.title
-                textDiscontinuedCountdown.text = gift.description
+                textGiftPostedTime.text =
+                    getStringWithStrParm(R.string.posted_time, gift.createdTime.toDisplayFormat())
                 textPostedLocation.text = gift.location!!.locationName
             }
 
@@ -44,8 +47,9 @@ class GiftItemsAdapter(
                 }
                 GiftStatusType.ABANDONED.code -> {
                     binding.btnAbandoned.visibility = View.GONE
+                    binding.btnAbandoned.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.ABANDONED.tag
-                    binding.textStatus.setBackgroundResource(R.color.app_work_light_grey)
+                    binding.textStatus.setBackgroundResource(R.color.app_work_dark_grey)
                 }
 
                 else -> Logger.d("unKnow status")

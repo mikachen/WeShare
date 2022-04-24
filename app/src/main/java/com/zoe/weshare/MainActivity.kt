@@ -5,24 +5,34 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.animation.RotateAnimation
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
-import com.zoe.weshare.util.FabBehavior
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager
 
 class MainActivity : AppCompatActivity() {
 
-    private var subFabsExpanded: Boolean = false
+    private val rotateOpen: Animation by lazy { AnimationUtils.loadAnimation(this,
+            R.anim.fab_rotate_open)
+    }
+    private val rotateClose: Animation by lazy { AnimationUtils.loadAnimation(this,
+            R.anim.fab_rotate_close)
+    }
+    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(this,
+            R.anim.sub_fab_slide_from_bottom)
+    }
+    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(this,
+            R.anim.sub_fab_slide_to_bottom)
+    }
+
+
+    private var isFabExpend: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
     lateinit var binding: ActivityMainBinding
@@ -55,49 +65,49 @@ class MainActivity : AppCompatActivity() {
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
             binding.apply {
+                topAppbar.visibility = View.VISIBLE
                 toolbarLogoImage.visibility = View.INVISIBLE
                 layoutToolbarSubtitle.visibility = View.VISIBLE
                 toolbarFragmentTitleText.text = it.value
                 showBottom()
 
 
-            when (it) {
-                // 完全隱藏上方
-                CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
+                when (it) {
+                    // 完全隱藏上方
+                    CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
 
-                CurrentFragmentType.CHATROOM -> {
-                    hideBottom()
+                    CurrentFragmentType.CHATROOM -> {
+                        hideBottom()
+                    }
+
+                    //顯示副標題+倒退鍵
+                    CurrentFragmentType.SEARCHLOCATION -> {
+                        toolbarFragmentTitleText.text = it.value
+                        hideBottom()
+                    }
+
+                    //大主頁
+                    CurrentFragmentType.HOME -> {
+                        toolbar.navigationIcon = null
+                        toolbarLogoImage.visibility = View.VISIBLE
+                        layoutToolbarSubtitle.visibility = View.INVISIBLE
+                    }
+
+                    CurrentFragmentType.GIFTDETAIL -> hideBottom()
+
+
+                    CurrentFragmentType.POSTGIFT -> hideBottom()
+                    CurrentFragmentType.POSTEVENT -> hideBottom()
+                    CurrentFragmentType.MAP -> hideBottom()
+
+
+                    else -> {
+                        topAppbar.visibility = View.VISIBLE
+                    }
                 }
-
-                //顯示副標題+倒退鍵
-                CurrentFragmentType.SEARCHLOCATION -> {
-                    toolbarFragmentTitleText.text = it.value
-                    hideBottom()
-                }
-
-                //大主頁
-                CurrentFragmentType.HOME -> {
-                    toolbar.navigationIcon = null
-                    toolbarLogoImage.visibility = View.VISIBLE
-                    layoutToolbarSubtitle.visibility = View.INVISIBLE
-                }
-
-                CurrentFragmentType.GIFTDETAIL -> hideBottom()
-
-
-                CurrentFragmentType.POSTGIFT -> hideBottom()
-                CurrentFragmentType.POSTEVENT -> hideBottom()
-                CurrentFragmentType.MAP -> hideBottom()
-
-
-                else -> {
-                    topAppbar.visibility = View.VISIBLE
-                }
-            }
             }
         }
     }
-
 
 
     private fun hideBottom() {
@@ -174,115 +184,73 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupFab() {
-        // default close
-        closeSubMenusFab()
-
         binding.fabMain.setOnClickListener {
-            if (subFabsExpanded) {
-                closeSubMenusFab()
-            } else {
-                openSubMenusFab()
-            }
-            rotateFabMain()
+            onMainFabClick()
         }
 
         binding.subfabPostEvent.setOnClickListener {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostEventFragment())
-
-            closeSubMenusFab()
-            rotateFabMain()
         }
 
         binding.subfabPostGift.setOnClickListener {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostGiftFragment())
+        }
+    }
+    private fun onMainFabClick() {
+        setVisibility(isFabExpend)
+        setAnimation(isFabExpend)
 
-            closeSubMenusFab()
-            rotateFabMain()
+        isFabExpend = !isFabExpend
+    }
+
+    private fun setAnimation(isFabExpend: Boolean) {
+
+        if(!isFabExpend){
+            binding.subfabPostGift.startAnimation(fromBottom)
+            binding.subfabPostEvent.startAnimation(fromBottom)
+            binding.fabMain.startAnimation(rotateOpen)
+
+        }else{
+            binding.subfabPostGift.startAnimation(toBottom)
+            binding.subfabPostEvent.startAnimation(toBottom)
+            binding.fabMain.startAnimation(rotateClose)
+        }
+    }
+
+    private fun setVisibility(isFabExpend: Boolean) {
+        if(!isFabExpend){
+            binding.subfabPostGift.visibility = View.VISIBLE
+            binding.subfabPostEvent.visibility = View.VISIBLE
+        }
+        if(!isFabExpend){
+            binding.subfabPostGift.visibility = View.INVISIBLE
+            binding.subfabPostEvent.visibility = View.INVISIBLE
         }
     }
 
     private fun closeSubMenusFab() {
-        binding.subFabBackgroundView.visibility = View.GONE
         binding.constraintView.visibility = View.GONE
 
         binding.subfabPostEvent.hide()
         binding.subfabPostGift.hide()
-        binding.subfabPostFavoriate.hide()
 
-        subFabsExpanded = false
+        isFabExpend = false
     }
 
     private fun openSubMenusFab() {
         /** view */
-        binding.constraintView.visibility = View.VISIBLE
-        binding.subFabBackgroundView.visibility = View.VISIBLE
 
         val animation =
             AnimationUtils.loadAnimation(
                 applicationContext,
                 R.anim.subfab_favorite_show
             )
-        binding.subFabBackgroundView.startAnimation(animation)
-        binding.subFabBackgroundView.animation.setAnimationListener(
-            object : Animation.AnimationListener {
-                override fun onAnimationStart(p0: Animation?) = Unit
-
-                override fun onAnimationEnd(p0: Animation?) {}
-
-                override fun onAnimationRepeat(p0: Animation?) = Unit
-            })
 
         binding.subfabPostEvent.show()
         binding.subfabPostGift.show()
-        binding.subfabPostFavoriate.show()
-//        binding.subfabPostEvent.startAnimation(
-//            AnimationUtils.loadAnimation(
-//                applicationContext,
-//                R.anim.subfab_event_show
-//            )
-//        )
-//        binding.subfabPostGift.startAnimation(
-//            AnimationUtils.loadAnimation(
-//                applicationContext,
-//                R.anim.subfab_gift_show
-//            )
-//        )
-//        binding.subfabPostFavoriate.startAnimation(
-//            AnimationUtils.loadAnimation(
-//                applicationContext,
-//                R.anim.subfab_favorite_show
-//            )
-//        )
-
-        subFabsExpanded = true
+        isFabExpend = true
     }
 
-    private fun rotateFabMain() {
-        // 點選+後，旋轉變成x
-        val fromDegree: Float
-        val toDegree: Float
-
-        if (subFabsExpanded) {
-            // 旋轉由0度到-45度。狀態(+) -> 狀態(x)
-            fromDegree = 0.0f
-            toDegree = -45.0f
-        } else {
-            // 旋轉由-45度到0度。狀態(x) -> 狀態(+)
-            fromDegree = -45.0f
-            toDegree = 0.0f
-        }
-
-        val animRotate = RotateAnimation(
-            fromDegree, toDegree,
-            Animation.RELATIVE_TO_SELF, 0.5f,
-            Animation.RELATIVE_TO_SELF, 0.5f
-        )
-
-        animRotate.duration = 300
-        animRotate.fillAfter = true
-
-        binding.fabMain.startAnimation(animRotate)
-    }
 }

@@ -41,7 +41,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
         binding = FragmentDistributeBinding.inflate(inflater, container, false)
 
         selectedGift = DistributeFragmentArgs.fromBundle(requireArguments()).selectedGift
-        viewModel.getAskForGiftComments(selectedGift.id)
+        viewModel.getAskForGiftComments(selectedGift)
 
         val adapter = DistributeAdapter(viewModel)
         val manager = LinearLayoutManager(requireContext(),

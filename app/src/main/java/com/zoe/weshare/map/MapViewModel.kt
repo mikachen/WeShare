@@ -1,6 +1,5 @@
 package com.zoe.weshare.map
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -111,7 +110,6 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     private fun getGiftsResult() {
-        Log.d("Map ViewModel", "getGiftsResult")
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
             val result = repository.getGifts()
@@ -189,7 +187,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     fun onGalleryScrollChange(
         layoutManager: RecyclerView.LayoutManager?,
-        linearSnapHelper: LinearSnapHelper
+        linearSnapHelper: LinearSnapHelper,
     ) {
 
         val snapView = linearSnapHelper.findSnapView(layoutManager)

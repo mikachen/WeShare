@@ -50,17 +50,19 @@ class DistributeViewModel(
     val sendGiftStatus: LiveData<LoadApiStatus>
         get() = _sendGiftStatus
 
+    lateinit var gift: GiftPost
 
 
-    fun getAskForGiftComments(docId: String) {
+    fun getAskForGiftComments(selectedGift: GiftPost) {
+        gift = selectedGift
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getGiftAskForComments(docId)) {
+            when (val result = repository.getGiftAskForComments(selectedGift.id)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    _comments.value = result.data?: emptyList()
+                    _comments.value = result.data ?: emptyList()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -130,7 +132,8 @@ class DistributeViewModel(
         coroutineScope.launch {
             _sendGiftStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.sendAwayGift(gift.id, GiftStatusType.CLOSED.code, user.uid)) {
+            when (val result =
+                repository.sendAwayGift(gift.id, GiftStatusType.CLOSED.code, user.uid)) {
                 is Result.Success -> {
                     _error.value = null
                     _sendGiftStatus.value = LoadApiStatus.DONE

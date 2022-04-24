@@ -25,8 +25,7 @@
                 android:id="@+id/image"
                 android:layout_width="140dp"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/tiger_pngrepo_com"/>
+                android:scaleType="centerCrop"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_text"
@@ -45,7 +44,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/text_discontinued_countdown"
+                    android:id="@+id/text_posted_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -65,7 +64,7 @@
                     android:textSize="14sp"
                     android:textColor="@color/white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_discontinued_countdown"
+                    app:layout_constraintTop_toBottomOf="@id/text_posted_time"
                     tools:text="刊登位置：台北西門" />
 
                 <TextView

@@ -4,37 +4,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_marginBottom="@dimen/height_bottom_app_bar"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/height_bottom_app_bar">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_user_header"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:elevation="1dp"
         android:background="@drawable/custom_theme_gradient"
+        android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/logo_weshare"
-            android:scaleType="fitCenter"
             android:layout_marginHorizontal="40dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="40dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logo_weshare"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            />
+
         <ImageView
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:backgroundTint="@color/white"
             android:src="@drawable/ic_baseline_settings_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -52,8 +55,7 @@
             android:id="@+id/image_profile_avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_profile" />
+            android:scaleType="centerCrop" />
 
     </androidx.cardview.widget.CardView>
 
@@ -71,24 +73,24 @@
             android:id="@+id/text_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Zoe Lo"
             android:textColor="@color/black"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Zoe Lo" />
 
         <TextView
             android:id="@+id/text_intro_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            tools:text="大家好，我是自地球的一名人類"
             android:textColor="@color/black"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_profile_name" />
+            app:layout_constraintTop_toBottomOf="@id/text_profile_name"
+            tools:text="大家好，我是自地球的一名人類" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -111,10 +113,10 @@
         android:layout_width="142dp"
         android:layout_height="48dp"
         android:layout_marginTop="30dp"
-        android:text="message"
         android:background="@drawable/sl_profile_message_button"
-        android:textSize="18sp"
+        android:text="message"
         android:textColor="@color/app_work_orange1"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/button_follow"
         app:layout_constraintTop_toBottomOf="@id/base_info_text" />
@@ -183,8 +185,8 @@
                 android:id="@+id/title_follower_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="粉絲數"
                 android:layout_gravity="center"
+                android:text="粉絲數"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
@@ -214,63 +216,62 @@
                 android:id="@+id/title_following_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="追蹤中"
                 android:textColor="@color/black"
-                android:layout_gravity="center"
                 android:textSize="18sp" />
 
         </LinearLayout>
     </LinearLayout>
 
     <Button
-        android:id="@+id/button_gifts_manage"
+        android:id="@+id/button_gift_manage"
         style="@style/ProfileButton"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:drawableTop="@drawable/ic_baseline_settings_24"
         android:text="贈.已刊登"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toStartOf="@+id/button_product_update"
+        app:layout_constraintEnd_toStartOf="@+id/button_check_my_request"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_base_social_status"/>
+        app:layout_constraintTop_toBottomOf="@id/linear_base_social_status" />
 
     <Button
-        android:id="@+id/button_product_update"
+        android:id="@+id/button_check_my_request"
         style="@style/ProfileButton"
         android:layout_marginStart="8dp"
         android:drawableTop="@drawable/ic_baseline_settings_24"
         android:text="贈.已索取"
-        app:layout_constraintEnd_toStartOf="@+id/button_coupon_manage"
+        app:layout_constraintEnd_toStartOf="@+id/button_check_my_events"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_gifts_manage"
-        app:layout_constraintTop_toTopOf="@+id/button_gifts_manage"/>
+        app:layout_constraintStart_toEndOf="@+id/button_gift_manage"
+        app:layout_constraintTop_toTopOf="@+id/button_gift_manage" />
 
     <Button
-        android:id="@+id/button_coupon_manage"
+        android:id="@+id/button_check_my_events"
         style="@style/ProfileButton"
         android:layout_marginStart="8dp"
         android:drawableTop="@drawable/ic_baseline_settings_24"
         android:text="活動參與"
-        app:layout_constraintEnd_toStartOf="@+id/button_chart_anayalsis"
+        app:layout_constraintEnd_toStartOf="@+id/button_my_event_job"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_product_update"
-        app:layout_constraintTop_toTopOf="@+id/button_product_update"/>
+        app:layout_constraintStart_toEndOf="@+id/button_check_my_request"
+        app:layout_constraintTop_toTopOf="@+id/button_check_my_request" />
 
     <Button
-        android:id="@+id/button_chart_anayalsis"
+        android:id="@+id/button_my_event_job"
         style="@style/ProfileButton"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
-
         android:drawableTop="@drawable/ic_baseline_settings_24"
         android:text="志工任務"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_coupon_manage"
-        app:layout_constraintTop_toTopOf="@+id/button_coupon_manage"/>
+        app:layout_constraintStart_toEndOf="@+id/button_check_my_events"
+        app:layout_constraintTop_toTopOf="@+id/button_check_my_events" />
 
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

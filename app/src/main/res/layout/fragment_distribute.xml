@@ -14,7 +14,7 @@
         android:layout_marginVertical="8dp"
         android:layout_marginStart="16dp"
         android:gravity="center_vertical"
-        android:text="當前索取人"
+        android:text="@string/title_who_requested"
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@id/divider"

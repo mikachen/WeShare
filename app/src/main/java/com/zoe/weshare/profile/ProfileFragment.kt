@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavGraph
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
@@ -15,19 +14,18 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentProfileBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.userZoe
 
 
 class ProfileFragment : Fragment() {
 
-    lateinit var binding : FragmentProfileBinding
+    lateinit var binding: FragmentProfileBinding
 
     lateinit var userArg: UserInfo
 
     val currentUser = userZoe
 
-    val viewModel: ProfileViewModel by viewModels { getVmFactory(userArg)  }
+    val viewModel: ProfileViewModel by viewModels { getVmFactory(userArg) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,8 +38,8 @@ class ProfileFragment : Fragment() {
 
         //TODO 看看要不要重做一夜分開user
         userArg = arguments?.let {
-            ProfileFragmentArgs.fromBundle(it).weshareUser } ?:
-            UserInfo(uid = currentUser.uid)
+            ProfileFragmentArgs.fromBundle(it).weshareUser
+        } ?: UserInfo(uid = currentUser.uid)
 
 
         viewModel.user.observe(viewLifecycleOwner) {
@@ -55,21 +53,21 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupBtn() {
-        binding.buttonGiftsManage.setOnClickListener {
+        binding.buttonGiftManage.setOnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
         }
     }
 
 
-    private fun setUpView(user: UserProfile){
+    private fun setUpView(user: UserProfile) {
 
         binding.apply {
-            bindImage(imageProfileAvatar,user.image)
+            bindImage(imageProfileAvatar, user.image)
             textProfileName.text = user.name
-            textFollowerNumber.text = (user.follower?.size?: 0).toString()
-            textFollowingNumber.text = (user.following?.size?: 0).toString()
+            textFollowerNumber.text = (user.follower.size).toString()
+            textFollowingNumber.text = (user.following.size).toString()
             textIntroMessage.text =
-                when (user.introMsg.isBlank()){
+                when (user.introMsg.isBlank()) {
                     true -> getString(R.string.request_leave_intro_message)
                     false -> user.introMsg
                 }
