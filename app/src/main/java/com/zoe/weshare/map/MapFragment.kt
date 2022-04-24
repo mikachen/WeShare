@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -80,6 +81,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         viewModel.cards.observe(viewLifecycleOwner) {
             if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
 
+                Log.d("shuffled1","$it")
                 //markers on map
                 createMarker(it)
 
@@ -150,6 +152,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
 
     private fun createMarker(cards: List<Cards>?) {
+        Log.d("shuffled2","$cards")
+
         cards?.forEach {
             it.postLocation.let { location ->
 
@@ -255,7 +259,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             getLastLocation()
             true
         }
-        
+
         map.setOnMarkerClickListener(this)
 
     }

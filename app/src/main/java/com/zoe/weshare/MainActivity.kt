@@ -188,14 +188,16 @@ class MainActivity : AppCompatActivity() {
             onMainFabClick()
         }
 
-        binding.subfabPostEvent.setOnClickListener {
+        binding.layoutFabEvent.setOnClickListener {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostEventFragment())
+            onMainFabClick()
         }
 
-        binding.subfabPostGift.setOnClickListener {
+        binding.layoutFabGift.setOnClickListener {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostGiftFragment())
+            onMainFabClick()
         }
     }
     private fun onMainFabClick() {
@@ -208,49 +210,25 @@ class MainActivity : AppCompatActivity() {
     private fun setAnimation(isFabExpend: Boolean) {
 
         if(!isFabExpend){
-            binding.subfabPostGift.startAnimation(fromBottom)
-            binding.subfabPostEvent.startAnimation(fromBottom)
+            binding.layoutFabGift.startAnimation(fromBottom)
+            binding.layoutFabEvent.startAnimation(fromBottom)
             binding.fabMain.startAnimation(rotateOpen)
 
         }else{
-            binding.subfabPostGift.startAnimation(toBottom)
-            binding.subfabPostEvent.startAnimation(toBottom)
+            binding.layoutFabGift.startAnimation(toBottom)
+            binding.layoutFabEvent.startAnimation(toBottom)
             binding.fabMain.startAnimation(rotateClose)
         }
     }
 
     private fun setVisibility(isFabExpend: Boolean) {
         if(!isFabExpend){
-            binding.subfabPostGift.visibility = View.VISIBLE
-            binding.subfabPostEvent.visibility = View.VISIBLE
+            binding.layoutFabGift.visibility = View.VISIBLE
+            binding.layoutFabEvent.visibility = View.VISIBLE
         }
         if(!isFabExpend){
-            binding.subfabPostGift.visibility = View.INVISIBLE
-            binding.subfabPostEvent.visibility = View.INVISIBLE
+            binding.layoutFabGift.visibility = View.INVISIBLE
+            binding.layoutFabEvent.visibility = View.INVISIBLE
         }
     }
-
-    private fun closeSubMenusFab() {
-        binding.constraintView.visibility = View.GONE
-
-        binding.subfabPostEvent.hide()
-        binding.subfabPostGift.hide()
-
-        isFabExpend = false
-    }
-
-    private fun openSubMenusFab() {
-        /** view */
-
-        val animation =
-            AnimationUtils.loadAnimation(
-                applicationContext,
-                R.anim.subfab_favorite_show
-            )
-
-        binding.subfabPostEvent.show()
-        binding.subfabPostGift.show()
-        isFabExpend = true
-    }
-
 }

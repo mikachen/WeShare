@@ -41,7 +41,7 @@
         <entry key="app/src/main/res/drawable/transparent_background.xml" value="0.243" />
         <entry key="app/src/main/res/font/graffiti.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_logo.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.6847960444993819" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fab_btn_add_gift_resize.xml" value="0.23728088926891835" />
         <entry key="app/src/main/res/layout/fragment_ask_for_gift.xml" value="0.33" />
