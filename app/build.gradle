@@ -57,8 +57,9 @@ android {
 
 dependencies {
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.20")
+    implementation 'com.google.firebase:firebase-storage:20.0.1'
 
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.20")
 
     implementation "com.google.android.libraries.places:places:2.6.0"
 

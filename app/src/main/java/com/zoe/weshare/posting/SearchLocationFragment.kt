@@ -36,7 +36,6 @@ import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import com.zoe.weshare.util.UserManager.userZoe
@@ -73,9 +72,20 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
             setUpUserPreview(gift = null, event = newEvent)
 
+            eventViewModel.locationChoice.observe(viewLifecycleOwner) {
+                binding.locationTitle.text
+            }
+
             binding.nextButton.setOnClickListener {
                 eventViewModel.event.value?.let { event -> eventViewModel.newEventPost(event) }
             }
+
+
+            eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
+                Toast.makeText(requireContext(), "Success save Log", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+            }
+
         } else {
             val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
 
@@ -93,8 +103,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 giftViewModel.gift.value?.let { gift -> giftViewModel.newGiftPost(gift) }
             }
 
-            giftViewModel.saveLogComplete.observe(viewLifecycleOwner){
-                Toast.makeText(requireContext(),"Success save Log",Toast.LENGTH_SHORT).show()
+            giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
+                Toast.makeText(requireContext(), "Success save Log", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
             }
 

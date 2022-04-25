@@ -3,7 +3,6 @@ package com.zoe.weshare.data.source
 import com.zoe.weshare.data.*
 
 
-
 class DefaultWeShareRepository(
     private val remoteDataSource: WeShareDataSource,
     private val localDataSource: WeShareDataSource,
@@ -134,7 +133,7 @@ class DefaultWeShareRepository(
     }
 
     override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> {
-        return remoteDataSource.updateGiftStatus(docId,statusCode)
+        return remoteDataSource.updateGiftStatus(docId, statusCode)
     }
 
     override suspend fun sendAwayGift(
@@ -142,6 +141,10 @@ class DefaultWeShareRepository(
         statusCode: Int,
         uid: String,
     ): Result<Boolean> {
-        return remoteDataSource.sendAwayGift(docId,statusCode,uid)
+        return remoteDataSource.sendAwayGift(docId, statusCode, uid)
+    }
+
+    override suspend fun saveEventPostLog(log: PostLog, uid: String): Result<Boolean> {
+        return remoteDataSource.saveGiftPostLog(log, uid)
     }
 }

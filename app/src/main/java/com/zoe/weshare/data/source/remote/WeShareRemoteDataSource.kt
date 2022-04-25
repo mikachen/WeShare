@@ -21,6 +21,7 @@ import com.zoe.weshare.util.Const.PATH_USERS
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
 import com.zoe.weshare.util.Const.SUB_PATH_EVENT_USER_WHO_COMMENT
 import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
+import com.zoe.weshare.util.Const.SUB_PATH_USER_EVENTPOSTS
 import com.zoe.weshare.util.Const.SUB_PATH_USER_GIFTPOSTS
 import com.zoe.weshare.util.Const.SUB_PATH_USER_REQUESTEDGIFTS
 import com.zoe.weshare.util.Logger
@@ -37,8 +38,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
             event.id = document.id
             event.createdTime = Calendar.getInstance().timeInMillis
-            event.image =
-                "https://images.chinatimes.com/newsphoto/2021-05-05/656/20210505003488.jpg"
+
             document
                 .set(event)
                 .addOnCompleteListener { task ->
@@ -68,8 +68,6 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
             gift.createdTime = Calendar.getInstance().timeInMillis
             gift.id = document.id
-            gift.image =
-                "https://cdn01.pinkoi.com/product/sFbz5ZnF/6/800x0.jpg"
 
             document
                 .set(gift)
@@ -849,23 +847,50 @@ object WeShareRemoteDataSource : WeShareDataSource {
         docId: String,
         statusCode: Int,
         uid: String,
-    ): Result<Boolean> =
+    ): Result<Boolean> = suspendCoroutine { continuation ->
+
+        FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
+            .update(mapOf(
+                FIELD_STATUS to statusCode,
+                FIELD_WHO_GET_GIFT to uid))
+
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Logger.i("updateGiftStatus: $statusCode")
+
+                    continuation.resume(Result.Success(true))
+                } else {
+                    task.exception?.let {
+
+                        Logger.w("[${this::class.simpleName}] " +
+                                "Error getting documents. ${it.message}")
+
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail(
+                        WeShareApplication.instance.getString(R.string.result_fail)))
+                }
+            }
+    }
+
+    override suspend fun saveEventPostLog(log: PostLog, uid: String): Result<Boolean> =
         suspendCoroutine { continuation ->
 
-            FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
-                .update(mapOf(
-                    FIELD_STATUS to statusCode,
-                    FIELD_WHO_GET_GIFT to uid))
+            val path = FirebaseFirestore.getInstance().collection(PATH_USERS)
+            val document = path.document(uid).collection(SUB_PATH_USER_EVENTPOSTS).document(log.id)
 
+            document
+                .set(log)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Logger.i("updateGiftStatus: $statusCode")
+                        Logger.i("saveEventPostLog: $log")
 
                         continuation.resume(Result.Success(true))
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
+                            Logger.w("[${this::class.simpleName}]" +
                                     "Error getting documents. ${it.message}")
 
                             continuation.resume(Result.Error(it))
@@ -876,5 +901,6 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
+
 
 }

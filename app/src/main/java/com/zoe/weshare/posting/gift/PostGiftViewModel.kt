@@ -1,5 +1,6 @@
 package com.zoe.weshare.posting.gift
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,12 +20,13 @@ import kotlinx.coroutines.launch
 class PostGiftViewModel(
     private val repository: WeShareRepository,
     private val author: UserInfo?,
-) :
-    ViewModel() {
+) : ViewModel() {
 
     var _gift = MutableLiveData<GiftPost>()
     val gift: LiveData<GiftPost>
         get() = _gift
+
+    var imageUri : String = ""
 
     val locationChoice = MutableLiveData<LatLng>()
 
@@ -133,6 +135,7 @@ class PostGiftViewModel(
             title = title,
             sort = sort,
             condition = condition,
+            image = imageUri,
             description = description
         )
     }

@@ -133,6 +133,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun saveEventPostLog(log: PostLog, uid: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>> {
         TODO("Not yet implemented")
     }

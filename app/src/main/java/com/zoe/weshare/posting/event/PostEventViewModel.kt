@@ -6,36 +6,36 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.maps.model.LatLng
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.UserInfo
-import com.zoe.weshare.data.EventPost
-import com.zoe.weshare.data.PostLocation
-import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class PostEventViewModel(private val repository: WeShareRepository, private val userInfoD: UserInfo?) :
+class PostEventViewModel(private val repository: WeShareRepository, private val author: UserInfo?) :
     ViewModel() {
 
     val _event = MutableLiveData<EventPost>()
     val event: LiveData<EventPost>
         get() = _event
 
-    // Create a Coroutine scope using a job to be able to cancel when needed
-    private var viewModelJob = Job()
+    val locationChoice = MutableLiveData<LatLng>()
 
-    // the Coroutine runs using the Main (UI) dispatcher
+
+    private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // status: The internal MutableLiveData that stores the status of the most recent request
+    private val _saveLogComplete = MutableLiveData<PostLog>()
+    val saveLogComplete: LiveData<PostLog>
+        get() = _saveLogComplete
+
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    // error: The internal MutableLiveData that stores the error of the most recent request
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
@@ -49,6 +49,9 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
+                    //save log only when Status.DONE
+//                    onSaveEventPostLog(event, docId = result.data)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -65,6 +68,44 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             }
         }
     }
+
+    private fun onSaveEventPostLog(event: EventPost, docId: String) {
+        val log = PostLog(
+            id = docId,
+            title = event.title,
+            type = LogType.GIFT.value
+        )
+        saveEventPostLog(log,author!!.uid)
+    }
+
+    private fun saveEventPostLog(log: PostLog, uid: String) {
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.saveEventPostLog(log, uid)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+
+                    _saveLogComplete.value = log
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
 
     // update user's location choice
     fun updateLocation(locationName: String, point: LatLng) {

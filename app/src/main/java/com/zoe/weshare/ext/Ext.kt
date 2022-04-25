@@ -14,7 +14,7 @@ import java.util.*
 
 
 fun Long.toDisplayFormat(): String {
-    return SimpleDateFormat("yyyy.MM.dd hh:mm", Locale.TAIWAN).format(this)
+    return SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.TAIWAN).format(this)
 }
 
 fun Long.toDisplaySentTime(): String {
