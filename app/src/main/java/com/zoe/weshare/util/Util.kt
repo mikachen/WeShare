@@ -1,6 +1,7 @@
 package com.zoe.weshare.util
 
 import android.content.ContentResolver
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.view.View

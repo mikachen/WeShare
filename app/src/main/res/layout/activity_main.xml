@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/transparent"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -29,37 +30,36 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="fitCenter"
-                    android:visibility="invisible"
                     android:src="@drawable/logo_weshare"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/layout_toolbar_subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:id="@+id/toolbar_arrow_back_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/ic_baseline_arrow_back_ios_new_24" />
+                    <ImageView
+                        android:id="@+id/toolbar_arrow_back_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_baseline_arrow_back_ios_new_24" />
 
-                <TextView
-                    android:id="@+id/toolbar_fragment_title_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@color/white"
-                    tools:text="選擇地點"
-                    android:textSize="24sp"
-                    android:layout_marginStart="16dp"/>
+                    <TextView
+                        android:id="@+id/toolbar_fragment_title_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/white"
+                        android:textSize="24sp"
+                        tools:text="選擇地點" />
                 </LinearLayout>
 
 
@@ -87,19 +87,18 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_bottom_app_bar"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/white"
-        app:fabAnimationMode="slide"
+        android:backgroundTint="@color/transparent"
+        app:fabAlignmentMode="end"
+        app:fabAnimationMode="scale"
         app:fabCradleMargin="5dp"
         app:fabCradleRoundedCornerRadius="18dp"
-        app:fabCradleVerticalOffset="1dp">
+        app:fabCradleVerticalOffset="0dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:background="@drawable/transparent_background"
-            android:elevation="4dp"
             app:itemIconSize="@dimen/size_bottom_nav_icon"
             app:itemIconTint="@color/black"
             app:labelVisibilityMode="unlabeled"
@@ -116,78 +115,117 @@
         android:layout_marginBottom="@dimen/height_bottom_app_bar">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/subfab_post_event"
+            android:id="@+id/fab_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="110dp"
-            android:backgroundTint="@color/white"
-            android:scaleType="center"
-            android:src="@drawable/ic_baseline_add_business_24"
-            android:tooltipText="1"
-            app:fabCustomSize="45dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/app_work_orange3"
+            android:src="@drawable/ic_baseline_add_24"
+            app:borderWidth="0dp"
+            app:elevation="2dp"
+            app:fabCustomSize="50dp"
+            app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:maxImageSize="20dp" />
+            app:maxImageSize="48dp" />
 
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/subfab_post_favoriate"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layout_fab_gift"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="110dp"
-            android:backgroundTint="@color/white"
-            android:scaleType="center"
-            android:src="@drawable/ic_baseline_favorite_24"
-            app:fabCustomSize="45dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="-4dp"
+            android:layout_marginBottom="2dp"
+            app:cardCornerRadius="30dp"
+            tools:visibility="visible"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/layout_fab_event"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:maxImageSize="20dp" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/subfab_post_gift"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_theme_gradient"
+                android:orientation="horizontal">
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/subfab_post_gift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/white"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_fab_gift"
+                    app:borderWidth="0dp"
+                    app:fabSize="mini"
+                    app:elevation="2dp"
+                    app:maxImageSize="45dp"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="刊登贈品"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layout_fab_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="35dp"
-            android:backgroundTint="@color/white"
-            android:scaleType="center"
-            android:src="@drawable/ic_baseline_card_giftcard_24"
-            app:fabCustomSize="45dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="invisible"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="-4dp"
+            tools:visibility="visible"
+            app:cardCornerRadius="30dp"
+            app:layout_constraintBottom_toTopOf="@id/fab_main"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:maxImageSize="20dp" />
+            app:layout_constraintTop_toBottomOf="@id/layout_fab_gift">
 
-        <View
-            android:id="@+id/sub_fab_background_view"
-            android:layout_width="200dp"
-            android:layout_height="100dp"
-            android:background="@color/app_work_orange3"
-            app:layout_constraintBottom_toBottomOf="@id/subfab_post_favoriate"
-            app:layout_constraintEnd_toEndOf="@id/subfab_post_favoriate"
-            app:layout_constraintStart_toStartOf="@id/subfab_post_event"
-            app:layout_constraintTop_toTopOf="@id/subfab_post_gift" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_theme_gradient"
+                android:orientation="horizontal">
 
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/subfab_post_event"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginStart="4dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_fab_event"
+                    android:tooltipText="1"
+                    app:borderWidth="0dp"
+                    app:elevation="2dp"
+                    app:fabSize="mini"
+                    app:maxImageSize="28dp"
+                    tools:visibility="visible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginHorizontal="8dp"
+                    android:text="刊登活動"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_main"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/app_work_orange1"
-        android:src="@drawable/ic_baseline_add_24"
-        app:fabSize="normal"
-        app:layout_anchor="@id/bottomAppBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:maxImageSize="55dp" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

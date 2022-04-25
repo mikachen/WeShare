@@ -17,5 +17,5 @@ data class EventPost(
     var location: PostLocation? = null,
     var createdTime: Long = -1,
     var status : Int = EventStatusType.WAITING.code,
-    var whoLiked: List<String>? = null
+    var whoLiked: List<String> = emptyList()
 ) : Parcelable

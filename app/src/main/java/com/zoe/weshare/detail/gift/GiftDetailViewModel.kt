@@ -1,5 +1,6 @@
 package com.zoe.weshare.detail.gift
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,8 +18,8 @@ import kotlinx.coroutines.launch
 class GiftDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
 
-    private var _comments = MutableLiveData<List<Comment>?>()
-    val comments: LiveData<List<Comment>?>
+    private var _comments = MutableLiveData<List<Comment>>()
+    val comments: LiveData<List<Comment>>
         get() = _comments
 
     private var _selectedGiftDisplay = MutableLiveData<GiftPost>()
@@ -41,8 +42,8 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     val onCommentLikePressed: LiveData<Int>
         get() = _onCommentLikePressed
 
-    private var _userChatRooms = MutableLiveData<List<ChatRoom>>()
-    val userChatRooms: LiveData<List<ChatRoom>>
+    private var _userChatRooms = MutableLiveData<List<ChatRoom>?>()
+    val userChatRooms: LiveData<List<ChatRoom>?>
         get() = _userChatRooms
 
     private val _navigateToFormerRoom = MutableLiveData<ChatRoom?>()
@@ -60,12 +61,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    // error: The internal MutableLiveData that stores the error of the most recent request
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
@@ -78,24 +77,24 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    _comments.value = result.data
+                    _comments.value = result.data?: emptyList()
                     updateCommentLike = result.data as MutableList<Comment>
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    _comments.value = null
+                    _comments.value = emptyList()
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    _comments.value = null
+                    _comments.value = emptyList()
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                    _comments.value = null
+                    _comments.value = emptyList()
                 }
             }
         }
@@ -138,6 +137,15 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                 }
             }
             _onProfileSearchComplete.value = _onProfileSearchComplete.value?.minus(1)
+        }
+    }
+
+    fun onPostLikePressed(doc: String) {
+
+        if (isUserPressedLike.value == false) {
+            sendLike(doc)
+        } else {
+            cancelLike(doc)
         }
     }
 
@@ -259,19 +267,12 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         }
     }
 
-    fun onViewPrepare(gift: GiftPost) {
+    fun onGiftDisplay(gift: GiftPost) {
         _selectedGiftDisplay.value = gift
-        _currentLikedNumber.value = gift.whoLiked?.size
-        _isUserPressedLike.value = gift.whoLiked?.contains(userInfo?.uid) == true
+        _currentLikedNumber.value = gift.whoLiked.size
+        _isUserPressedLike.value = gift.whoLiked.contains(userInfo?.uid) == true
     }
 
-    fun onPostLikePressed(doc: String) {
-        if (_isUserPressedLike.value == false) {
-            sendLike(doc)
-        } else {
-            cancelLike(doc)
-        }
-    }
 
     fun onCommentsLikePressed(comment: Comment, isUserLiked: Boolean, position: Int) {
         _onCommentLikePressed.value = position
@@ -298,12 +299,12 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
         } else {
             //no private chat with author before
-            onRoomCreate()
+            onNewRoomPrepare()
         }
     }
 
 
-    fun onRoomCreate() {
+    fun onNewRoomPrepare() {
         val room = ChatRoom(
             type = ChatRoomType.PRIVATE.value,
             participants = listOf(userInfo!!.uid,selectedGiftDisplay.value!!.author!!.uid),

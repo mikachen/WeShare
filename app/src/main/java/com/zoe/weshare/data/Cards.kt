@@ -13,3 +13,5 @@ data class Cards(
     val image: String,
     val postLocation: PostLocation?,
     ) : Parcelable
+
+

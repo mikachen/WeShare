@@ -4,16 +4,14 @@ import android.content.Context
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 
-/*
- * Concrete implementation of a WeShare source as a db.
- */
+
 class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
 
-    override suspend fun postNewEvent(event: EventPost): Result<Boolean> {
+    override suspend fun postNewEvent(event: EventPost): Result<String> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun postNewGift(gift: GiftPost): Result<Boolean> {
+    override suspend fun postNewGift(gift: GiftPost): Result<String> {
         TODO("Not yet implemented")
     }
 
@@ -104,6 +102,34 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     }
 
     override suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun savePostLog(log: PostLog): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun searchGiftDocument(doc: String): Result<GiftPost> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendAwayGift(
+        docId: String,
+        statusCode: Int,
+        uid: String,
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>> {
         TODO("Not yet implemented")
     }
 }

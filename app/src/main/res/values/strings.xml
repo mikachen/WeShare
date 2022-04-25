@@ -45,24 +45,50 @@
         <item>其他</item>
     </string-array>
 
-    <string name="posted_time">%s 刊登\t</string>
+    <string name="posted_time">%s 刊登</string>
     <string name="card_posted_time">刊登時間:%1$s</string>
 
-    <string name="gift_post_location_name">取物地點: %1$s</string>
-    <string name="event_post_location_name">活動地點: %1$s</string>
+    <string name="gift_post_location_name">地點: %1$s</string>
+    <string name="event_post_location_name">地點: %1$s</string>
     <string name="post_location_name">刊登地點:%1$s</string>
 
     <string name="gift_post_sort">物品分類: %1$s</string>
     <string name="event_post_sort">活動分類: %1$s</string>
     <string name="gift_registrants_number">已有%1$d人登記索取</string>
 
-    <string name="gift_post_quantity">提供數量: %1$d</string>
-
     <string name="number_who_liked">%1$d 人說讚</string>
     <string name="number_volunteer_needs">需求志工數: %1$d人</string>
 
     <string name="request_leave_intro_message">留個自我介紹給大家吧！</string>
+    <string name="request_gift">登記索取</string>
+    <string name="already_requested_gift">您已經登記索取</string>
+
+    <string name="filter_all">全部</string>
+    <string name="filter_ongoing">開放中</string>
+    <string name="filter_ended">已結案</string>
+    <string name="filter_abandoned">已下架</string>
 
 
+    //下架Alert窗
+    <string name="abandoned_title">您確定要下架\u0022%s\u0022嗎?</string>
+    <string name="abandoned_message">下架後將無法復原或操作派發!</string>
+    <string name="abandoned_yes">確認下架</string>
+    <string name="abandoned_no">取消下架</string>
+
+    <string name="give_away_gift">派發</string>
+
+    //送禮物Alert窗
+    <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
+    <string name="send_gift_message">注意：一次只能送出一人，確認送出贈品將結案，不可再作修改!</string>
+    <string name="send_gift_yes">確認</string>
+    <string name="send_gift_no">取消</string>
+    <string name="title_who_requested">當前索取人</string>
+
+    <string name="log_msg_post_gift">%1$s\t刊登了贈品:%2$1s</string>
+    <string name="log_msg_post_event">%1$s\t刊登了活動:%2$1s</string>
+    <string name="log_msg_request_gift">%1$s\t登記索取了贈品:%2$1s</string>
+
+
+    <string name="log_msg_send_away_gift">%1$s\t送出了贈品給:%2$1s</string>
 
 </resources>

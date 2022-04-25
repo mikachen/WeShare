@@ -8,8 +8,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/base_profile_avatar"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         app:cardCornerRadius="90dp"
@@ -19,10 +19,9 @@
 
     <ImageView
         android:id="@+id/image_profile_avatar"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_profile"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
     </androidx.cardview.widget.CardView>
 
     <LinearLayout

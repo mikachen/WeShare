@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/height_bottom_app_bar"
     tools:context=".posting.gift.PostGiftFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,23 +13,22 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/upload_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_margin="16dp"
-            android:padding="10dp"
-            android:src="@drawable/add_image_holder"
+            android:id="@+id/button_image_preview_holder"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_margin="8dp"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_height="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upload_image" />
+            app:layout_constraintTop_toBottomOf="@id/button_image_preview_holder" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/input_layout"
@@ -54,8 +54,8 @@
                     android:id="@+id/edit_title"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:singleLine="true"
                     android:gravity="center|start"
+                    android:singleLine="true"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -77,9 +77,9 @@
                     android:id="@+id/dropdown_menu_sort"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:textAppearance="@style/customHintLabel"
                     android:gravity="center|start"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:textAppearance="@style/customHintLabel" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,9 +99,9 @@
                     android:id="@+id/dropdown_menu_condition"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:textAppearance="@style/customHintLabel"
                     android:gravity="center|left"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:textAppearance="@style/customHintLabel" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,11 +133,11 @@
             android:id="@+id/next_button"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:layout_constraintTop_toBottomOf="@id/input_layout"
             android:layout_margin="8dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="next"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="next"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

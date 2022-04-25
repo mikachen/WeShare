@@ -3,17 +3,16 @@ package com.zoe.weshare.data.source
 import com.zoe.weshare.data.*
 
 
-
 class DefaultWeShareRepository(
     private val remoteDataSource: WeShareDataSource,
     private val localDataSource: WeShareDataSource,
 ) : WeShareRepository {
 
-    override suspend fun postNewEvent(event: EventPost): Result<Boolean> {
+    override suspend fun postNewEvent(event: EventPost): Result<String> {
         return remoteDataSource.postNewEvent(event)
     }
 
-    override suspend fun postNewGift(gift: GiftPost): Result<Boolean> {
+    override suspend fun postNewGift(gift: GiftPost): Result<String> {
         return remoteDataSource.postNewGift(gift)
     }
 
@@ -111,5 +110,34 @@ class DefaultWeShareRepository(
 
     override suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean> {
         return remoteDataSource.saveLastMsgRecord(docId, message)
+    }
+
+    override suspend fun savePostLog(log: PostLog): Result<Boolean> {
+        return remoteDataSource.savePostLog(log)
+    }
+
+
+    override suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>> {
+        return remoteDataSource.getUsersGiftLog(uid)
+    }
+
+    override suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>> {
+        return remoteDataSource.getUsersRequestLog(uid)
+    }
+
+    override suspend fun searchGiftDocument(doc: String): Result<GiftPost> {
+        return remoteDataSource.searchGiftDocument(doc)
+    }
+
+    override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> {
+        return remoteDataSource.updateGiftStatus(docId, statusCode)
+    }
+
+    override suspend fun sendAwayGift(
+        docId: String,
+        statusCode: Int,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.sendAwayGift(docId, statusCode, uid)
     }
 }

@@ -25,7 +25,7 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
                 textPostedLocation.text =
                     getStringWithStrParm(R.string.post_location_name,
                         data.postLocation?.locationName ?: "")
-                textDiscontinuedCountdown.text = getStringWithStrParm(R.string.card_posted_time,
+                textPostedTime.text = getStringWithStrParm(R.string.card_posted_time,
                     data.createdTime.toDisplayFormat())
                 bindImage(image, data.image)
             }

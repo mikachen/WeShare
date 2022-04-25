@@ -1,6 +1,5 @@
 package com.zoe.weshare.message.roomlist
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -42,9 +41,7 @@ class RoomListViewModel(private val repository: WeShareRepository, val userInfo:
         userInfo?.let { getUserChatRooms(it.uid) }
     }
 
-
     private fun getUserChatRooms(uid: String) {
-        Log.d("getUserChatRooms","getUserChatRooms")
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 

@@ -6,7 +6,6 @@ import com.zoe.weshare.MainViewModel
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.home.HomeViewModel
 import com.zoe.weshare.map.MapViewModel
-import com.zoe.weshare.seachLocation.SearchLocationViewModel
 
 /**
  * Factory for all ViewModels.
@@ -24,9 +23,6 @@ class ViewModelFactory constructor(
 
                 isAssignableFrom(HomeViewModel::class.java) ->
                     HomeViewModel(repository)
-
-                isAssignableFrom(SearchLocationViewModel::class.java) ->
-                    SearchLocationViewModel(repository)
 
                 isAssignableFrom(MapViewModel::class.java) ->
                     MapViewModel(repository)

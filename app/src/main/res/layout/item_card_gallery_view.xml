@@ -5,65 +5,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="180dp"
     android:layout_marginHorizontal="5dp"
     android:elevation="3dp"
     app:cardCornerRadius="20dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/custom_theme_gradient">
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="horizontal"
             android:layout_margin="16dp">
 
             <ImageView
                 android:id="@+id/image"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:padding="6dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/tiger_pngrepo_com"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="5:4"
-                app:layout_constraintEnd_toStartOf="@id/layout_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_width="140dp"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_text"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="bottom"
-                android:layout_marginStart="8dp"
-
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/image"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp">
 
                 <TextView
                     android:id="@+id/text_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TITEL"
+                    android:text="TITLE"
                     android:textColor="@color/white"
-                    android:textSize="25sp"
+                    android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/text_discontinued_countdown"
+                    android:id="@+id/text_posted_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:letterSpacing="0.15"
-                    android:maxLines="1"
+                    android:textSize="14sp"
                     android:textColor="@color/white"
                     app:layout_constraintStart_toStartOf="@id/text_title"
                     app:layout_constraintTop_toBottomOf="@id/text_title"
@@ -75,10 +61,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:letterSpacing="0.15"
-                    android:maxLines="1"
+                    android:textSize="14sp"
                     android:textColor="@color/white"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_discontinued_countdown"
+                    app:layout_constraintTop_toBottomOf="@id/text_posted_time"
                     tools:text="刊登位置：台北西門" />
 
                 <TextView
@@ -93,9 +79,9 @@
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

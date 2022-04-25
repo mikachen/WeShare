@@ -10,22 +10,28 @@ import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_SENT_TIME
+import com.zoe.weshare.util.Const.FIELD_STATUS
+import com.zoe.weshare.util.Const.FIELD_WHO_GET_GIFT
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.KEY_CREATED_TIME
 import com.zoe.weshare.util.Const.PATH_CHATROOM
 import com.zoe.weshare.util.Const.PATH_EVENT_POST
 import com.zoe.weshare.util.Const.PATH_GIFT_POST
-import com.zoe.weshare.util.Const.PATH_USER_INFO
+import com.zoe.weshare.util.Const.PATH_LOG
+import com.zoe.weshare.util.Const.PATH_USER
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
 import com.zoe.weshare.util.Const.SUB_PATH_EVENT_USER_WHO_COMMENT
 import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
+import com.zoe.weshare.util.Const.SUB_PATH_USER_EVENTPOSTS
+import com.zoe.weshare.util.Const.SUB_PATH_USER_GIFTPOSTS
+import com.zoe.weshare.util.Const.SUB_PATH_USER_REQUESTEDGIFTS
 import com.zoe.weshare.util.Logger
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 object WeShareRemoteDataSource : WeShareDataSource {
 
-    override suspend fun postNewEvent(event: EventPost): Result<Boolean> =
+    override suspend fun postNewEvent(event: EventPost): Result<String> =
         suspendCoroutine { continuation ->
 
             val eventPost = FirebaseFirestore.getInstance().collection(PATH_EVENT_POST)
@@ -33,17 +39,14 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
             event.id = document.id
             event.createdTime = Calendar.getInstance().timeInMillis
-            event.whoLiked = listOf()
 
-            event.image =
-                "https://img.ltn.com.tw/Upload/news/600/2019/09/29/2930967_2_1.jpg"
             document
                 .set(event)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Logger.i("Publish: $event")
 
-                        continuation.resume(Result.Success(true))
+                        continuation.resume(Result.Success(document.id))
                     } else {
                         task.exception?.let {
 
@@ -58,17 +61,14 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun postNewGift(gift: GiftPost): Result<Boolean> =
+    override suspend fun postNewGift(gift: GiftPost): Result<String> =
         suspendCoroutine { continuation ->
 
             val eventPost = FirebaseFirestore.getInstance().collection(PATH_GIFT_POST)
             val document = eventPost.document()
 
-            gift.id = document.id
             gift.createdTime = Calendar.getInstance().timeInMillis
-            gift.whoLiked = listOf()
-            gift.image =
-                "https://cs-a.ecimg.tw/items/DBAB08A39148142/000001_1553076513.jpg"
+            gift.id = document.id
 
             document
                 .set(gift)
@@ -76,7 +76,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     if (task.isSuccessful) {
                         Logger.i("Publish: $gift")
 
-                        continuation.resume(Result.Success(true))
+                        continuation.resume(Result.Success(document.id))
                     } else {
                         task.exception?.let {
 
@@ -151,7 +151,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
     override suspend fun getUserInfo(uid: String): Result<UserProfile> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
-                .collection(PATH_USER_INFO)
+                .collection(PATH_USER)
                 .whereEqualTo("uid", uid)
                 .get()
                 .addOnCompleteListener { task ->
@@ -668,4 +668,188 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
+
+    override suspend fun savePostLog(log: PostLog): Result<Boolean> =
+        suspendCoroutine { continuation ->
+
+            val logSave = FirebaseFirestore.getInstance().collection(PATH_LOG)
+            val document = logSave.document()
+
+            log.id = document.id
+            log.createdTime = Calendar.getInstance().timeInMillis
+
+            document
+                .set(log)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("saveGiftPostLog: $log")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}]" +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(
+                            WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+
+    override suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(PATH_USER).document(uid)
+                .collection(SUB_PATH_USER_GIFTPOSTS)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<PostLog>()
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val log = document.toObject(PostLog::class.java)
+                            list.add(log)
+                        }
+
+                        Logger.i("getUsersGiftLog: $list")
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(PATH_USER).document(uid)
+                .collection(SUB_PATH_USER_REQUESTEDGIFTS)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<PostLog>()
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val log = document.toObject(PostLog::class.java)
+                            list.add(log)
+                        }
+
+                        Logger.i("getUsersRequestLog: $list")
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun searchGiftDocument(doc: String): Result<GiftPost> =
+        suspendCoroutine { continuation ->
+
+            FirebaseFirestore.getInstance()
+                .collection(PATH_GIFT_POST).document(doc)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+
+                        val gift = task.result.toObject(GiftPost::class.java)
+                        Logger.d("searchGiftDocument: $gift")
+
+
+                        continuation.resume(Result.Success(gift!!))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
+                .update(mapOf(
+                    FIELD_STATUS to statusCode))
+
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("updateGiftStatus: $statusCode")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(
+                            WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun sendAwayGift(
+        docId: String,
+        statusCode: Int,
+        uid: String,
+    ): Result<Boolean> = suspendCoroutine { continuation ->
+
+        FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
+            .update(mapOf(
+                FIELD_STATUS to statusCode,
+                FIELD_WHO_GET_GIFT to uid))
+
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Logger.i("updateGiftStatus: $statusCode")
+
+                    continuation.resume(Result.Success(true))
+                } else {
+                    task.exception?.let {
+
+                        Logger.w("[${this::class.simpleName}] " +
+                                "Error getting documents. ${it.message}")
+
+                        continuation.resume(Result.Error(it))
+                        return@addOnCompleteListener
+                    }
+                    continuation.resume(Result.Fail(
+                        WeShareApplication.instance.getString(R.string.result_fail)))
+                }
+            }
+    }
+
+
+
 }

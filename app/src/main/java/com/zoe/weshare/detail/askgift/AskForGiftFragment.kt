@@ -11,62 +11,60 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
+import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.UserManager
 
 class AskForGiftFragment : BottomSheetDialogFragment() {
 
     lateinit var binding: FragmentAskForGiftBinding
-    val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(userZoe) }
+    private val currentUser = UserManager.userLora
+    lateinit var selectedGift: GiftPost
+
+
+    val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(currentUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val docId = AskForGiftFragmentArgs.fromBundle(requireArguments()).documentId
 
+        selectedGift = AskForGiftFragmentArgs.fromBundle(requireArguments()).selectedGift
         binding = FragmentAskForGiftBinding.inflate(inflater, container, false)
 
-        viewModel.newRequest.observe(viewLifecycleOwner) {
-            if (it != null) {
-                viewModel.askForGift(docId, it)
-                viewModel.onNavigateBackToGiftDetail()
-            } else {
-                findNavController().navigateUp()
-            }
-        }
 
-        setUpBtn()
+        viewModel.newRequestComment.observe(viewLifecycleOwner){
+            viewModel.askForGiftRequest(selectedGift, it)
+        }
+       viewModel.saveLogComplete.observe(viewLifecycleOwner){
+           if(it == LoadApiStatus.DONE) {
+               findNavController().navigate(
+                   NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift))
+               Toast.makeText(requireContext(),"save log success",Toast.LENGTH_SHORT).show()
+           }
+       }
+
+        setupBtn()
         return binding.root
     }
 
-    // expanded all dialog view when keyboard pop up
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
 
-        if (dialog is BottomSheetDialog) {
-            dialog.behavior.skipCollapsed = true
-            dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-        return dialog
-    }
-
-    private fun setUpBtn() {
+    private fun setupBtn() {
         binding.buttonSubmit.setOnClickListener {
             // TODO 判斷是否登入
 
-            val message = binding.editLeaveComment.text
+            val message = binding.editLeaveComment.text.toString()
 
-            if (message != null) {
-                if (message.isNotEmpty()) {
-                    viewModel.onSendNewRequest(message.toString())
-                    message.clear()
-                } else {
-                    Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()
-                }
+            if (message.isNotEmpty()) {
+                viewModel.onSendNewRequest(message , selectedGift)
+                binding.editLeaveComment.text?.clear()
+            } else {
+                Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -80,5 +78,16 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
 
         // 鍵盤彈出後，畫面拉長上推畫面 android:windowSoftInputMode = adjustResize
         setStyle(STYLE_NORMAL, R.style.DialogStyle)
+    }
+
+    // expanded all dialog view when keyboard pop up
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+
+        if (dialog is BottomSheetDialog) {
+            dialog.behavior.skipCollapsed = true
+            dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        return dialog
     }
 }

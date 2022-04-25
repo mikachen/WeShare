@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/height_bottom_app_bar"
     tools:context=".posting.gift.PostGiftFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/upload_image"
+            android:id="@+id/button_select_image_holder"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_margin="16dp"
@@ -28,7 +29,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/upload_image" />
+            app:layout_constraintTop_toBottomOf="@id/button_select_image_holder" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/input_layout"

@@ -6,11 +6,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.BounceInterpolator
+import android.view.animation.ScaleAnimation
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -20,7 +26,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnFlingListener
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.*
@@ -33,15 +38,15 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
+import com.zoe.weshare.R
 import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.FragmentMapBinding
+import com.zoe.weshare.ext.generateSmallIcon
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.requestPermissions
-import kotlin.math.abs
-import kotlin.math.sign
 
 
-class MapFragment : Fragment(), OnMapReadyCallback {
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var binding: FragmentMapBinding
     private lateinit var map: GoogleMap
@@ -50,6 +55,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CardGalleryAdapter
 
+    private var lastSelectedMarker: Marker? = null
     private val markersRef = mutableListOf<Marker>()
 
     val viewModel by viewModels<MapViewModel> { getVmFactory() }
@@ -74,6 +80,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         viewModel.cards.observe(viewLifecycleOwner) {
             if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
+
+                Log.d("shuffled1","$it")
                 //markers on map
                 createMarker(it)
 
@@ -144,11 +152,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
 
     private fun createMarker(cards: List<Cards>?) {
-        cards?.forEach {
-            it.postLocation?.let { location ->
+        Log.d("shuffled2","$cards")
 
-                val point =
-                    LatLng(location.latitude.toDouble(), location.longitude.toDouble())
+        cards?.forEach {
+            it.postLocation.let { location ->
+
+                val point = location!!.getLocation
 
                 val options = MarkerOptions().position(point).title(it.title)
 
@@ -156,10 +165,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
                 if (newMarker != null) {
                     when (it.postType) {
-                        GIFT_TYPE -> newMarker.setIcon(BitmapDescriptorFactory.defaultMarker(
-                            BitmapDescriptorFactory.HUE_RED))
-                        EVENT_TYPE -> newMarker.setIcon(BitmapDescriptorFactory.defaultMarker(
-                            BitmapDescriptorFactory.HUE_YELLOW))
+                        GIFT_TYPE -> newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
+                            generateSmallIcon(requireContext(), R.drawable.ic_map_event_marker)))
+                        EVENT_TYPE -> newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
+                            generateSmallIcon(requireContext(), R.drawable.ic_map_gift_marker)))
                     }
                     markersRef.add(newMarker)
                 }
@@ -251,13 +260,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             true
         }
 
-        map.setOnMarkerClickListener { p0 ->
+        map.setOnMarkerClickListener(this)
 
-            p0.showInfoWindow()
-            val position = markersRef.indexOf(p0)
-            recyclerView.smoothScrollToPosition(position)
-            true
-        }
     }
 
     private fun setupCardGallery() {
@@ -363,4 +367,33 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             (activity as MainActivity).requestPermissions()
         }
     }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+
+        val position = markersRef.indexOf(marker)
+        recyclerView.smoothScrollToPosition(position)
+
+        val handler = Handler(Looper.getMainLooper())
+        val start = SystemClock.uptimeMillis()
+        val duration = 1800
+
+        val interpolator = BounceInterpolator()
+
+        handler.post(object : Runnable {
+            override fun run() {
+                val elapsed = SystemClock.uptimeMillis() - start
+                val t = Math.max(
+                    1 - interpolator.getInterpolation(elapsed.toFloat() / duration), 0f)
+
+                marker.setAnchor(0.5f, 1f + 2 * t)
+
+                // Post again 16ms later.
+                if (t > 0.0) {
+                    handler.postDelayed(this, 16)
+                }
+            }
+        })
+
+    return false
+}
 }
