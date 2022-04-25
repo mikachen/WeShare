@@ -1,9 +1,9 @@
 package com.zoe.weshare
 
 import android.animation.Animator
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.zoe.weshare.databinding.ActivityLogoBinding
 
 class LogoActivity : AppCompatActivity() {
@@ -16,7 +16,6 @@ class LogoActivity : AppCompatActivity() {
         binding = ActivityLogoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.lottieMain.repeatCount = 5
         binding.lottieMain.playAnimation()
         binding.lottieMain.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {

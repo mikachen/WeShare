@@ -3,26 +3,215 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.zoe.weshare.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/homeFragment"
+        android:name="com.zoe.weshare.home.HomeFragment"
+        android:label="home_fragment"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.zoe.weshare.map.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
+    <fragment
+        android:id="@+id/roomListFragment"
+        android:name="com.zoe.weshare.message.roomlist.RoomListFragment"
+        android:label="fragment_room_list"
+        tools:layout="@layout/fragment_room_list" />
 
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+
+    <fragment
+        android:id="@+id/selfFragment"
+        android:name="com.zoe.weshare.profile.userself.SelfFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_self">
+
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.zoe.weshare.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
+        android:id="@+id/postEventFragment"
+        android:name="com.zoe.weshare.posting.event.PostEventFragment"
+        android:label="post_event_fragment"
+        tools:layout="@layout/fragment_post_event">
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_postEventFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/postGiftFragment"
+        android:name="com.zoe.weshare.posting.gift.PostGiftFragment"
+        android:label="fragment_post_gift"
+        tools:layout="@layout/fragment_post_gift">
+        <action
+            android:id="@+id/action_postGiftFragment_to_searchLocationFragment"
+            app:destination="@id/searchLocationFragment" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/searchLocationFragment"
+        android:name="com.zoe.weshare.posting.SearchLocationFragment"
+        android:label="fragment_search_location"
+        tools:layout="@layout/fragment_search_location">
+        <argument
+            android:name="newGift"
+            app:argType="com.zoe.weshare.data.GiftPost"
+            app:nullable="true" />
+        <argument
+            android:name="newEvent"
+            app:argType="com.zoe.weshare.data.EventPost"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatRoomFragment"
+        android:name="com.zoe.weshare.message.ChatRoomFragment"
+        android:label="fragment_chat_room"
+        tools:layout="@layout/fragment_chatroom">
+        <argument
+            android:name="selectedRoom"
+            app:argType="com.zoe.weshare.data.ChatRoom" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/eventDetailFragment"
+        android:name="com.zoe.weshare.detail.event.EventDetailFragment"
+        android:label="EventDetailFragment"
+        tools:layout="@layout/fragment_event_detail">
+
+        <argument
+            android:name="selectedEvent"
+            app:argType="com.zoe.weshare.data.EventPost" />
+        <action
+            android:id="@+id/action_eventDetailFragment_to_commentDialogFragment"
+            app:destination="@id/commentDialogFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/giftDetailFragment"
+        android:name="com.zoe.weshare.detail.gift.GiftDetailFragment"
+        android:label="GiftDetailFragment"
+        tools:layout="@layout/fragment_gift_detail">
+        <argument
+            android:name="selectedGift"
+            app:argType="com.zoe.weshare.data.GiftPost" />
+        <action
+            android:id="@+id/action_giftDetailFragment_to_askForGiftFragment"
+            app:destination="@id/askForGiftFragment" />
+        <action
+            android:id="@+id/action_giftDetailFragment_to_creditFragment"
+            app:destination="@id/creditFragment" />
+    </fragment>
+
+    <dialog
+        android:id="@+id/askForGiftFragment"
+        android:name="com.zoe.weshare.detail.askgift.AskForGiftFragment"
+        android:label="fragment_ask_for_gift"
+        tools:layout="@layout/fragment_ask_for_gift">
+        <argument
+            android:name="selectedGift"
+            app:argType="com.zoe.weshare.data.GiftPost" />
+    </dialog>
+
+
+    <!--    Actions   -->
+    <action
+        android:id="@+id/navigate_to_home_fragment"
+        app:destination="@id/homeFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+    <action
+        android:id="@+id/navigate_to_map_fragment"
+        app:destination="@id/mapFragment" />
+
+    <action
+        android:id="@+id/navigate_to_roomlist_fragment"
+        app:destination="@id/roomListFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/navigate_to_self_fragment"
+        app:destination="@id/selfFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/navigate_to_post_event_fragment"
+        app:destination="@id/postEventFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="false" />
+
+    <action
+        android:id="@+id/navigate_to_post_gift_fragment"
+        app:destination="@id/postGiftFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="false" />
+
+    <action
+        android:id="@+id/action_global_eventDetailFragment"
+        app:destination="@id/eventDetailFragment" />
+
+    <action
+        android:id="@+id/action_global_giftDetailFragment"
+        app:destination="@id/giftDetailFragment"
+        app:popUpTo="@id/giftDetailFragment"
+        app:popUpToInclusive="true" />
+    <dialog
+        android:id="@+id/commentDialogFragment"
+        android:name="com.zoe.weshare.detail.commenting.CommentDialogFragment"
+        android:label="fragment_comment_dialog"
+        tools:layout="@layout/fragment_comment_dialog">
+        <argument
+            android:name="documentId"
+            app:argType="string" />
+    </dialog>
+    <action
+        android:id="@+id/action_global_chatRoomFragment"
+        app:destination="@id/chatRoomFragment" />
+    <fragment
+        android:id="@+id/pagerFilterFragment"
+        android:name="com.zoe.weshare.manage.PagerFilterFragment"
+        android:label="PagerFilterFragment" />
+    <action
+        android:id="@+id/action_global_pagerFilterFragment"
+        app:destination="@id/pagerFilterFragment"
+        app:popUpTo="@id/distributeFragment"
+        app:popUpToInclusive="true" />
+    <dialog
+        android:id="@+id/distributeFragment"
+        android:name="com.zoe.weshare.manage.distribution.DistributeFragment"
+        android:label="fragment_distribute"
+        tools:layout="@layout/fragment_distribute">
+        <argument
+            android:name="selectedGift"
+            app:argType="com.zoe.weshare.data.GiftPost" />
+    </dialog>
+    <action
+        android:id="@+id/action_global_distributeFragment"
+        app:destination="@id/distributeFragment" />
+    <dialog
+        android:id="@+id/creditFragment"
+        android:name="com.zoe.weshare.CreditFragment"
+        android:label="CreditFragment" />
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.zoe.weshare.profile.UsersFragment"
+        android:label="UsersFragment">
+
+        <argument
+            android:name="weshareUser"
+            android:defaultValue="@null"
+            app:argType="com.zoe.weshare.data.UserInfo"
+            app:nullable="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_usersFragment"
+        app:destination="@id/usersFragment" />
+
+
 </navigation>

@@ -1,3 +1,15 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Toolbar -->
+    <dimen name="height_toolbar">56dp</dimen>
+    <dimen name="height_status_bar_origin">24dp</dimen>
+
+    <!-- Bottom Navigation -->
+    <dimen name="height_bottom_app_bar">56dp</dimen>
+    <dimen name="size_bottom_nav_icon">36dp</dimen>
+
+    <dimen name="appBarRadius">16dp</dimen>
+
+    <dimen name="custom_peek_height">400dp</dimen>
 </resources>

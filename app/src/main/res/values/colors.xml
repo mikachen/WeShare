@@ -5,6 +5,35 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="transparent">#0000ffff</color>
+    <color name="translucent">#80000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="app_work_orange1">#ff7100</color>
+    <color name="app_work_orange2">#ff8d33</color>
+    <color name="app_work_orange3">#ff9c4d</color>
+
+    <color name="app_work_black">#222222</color>
+    <color name="app_work_dark_grey">#b1b6c1</color>
+    <color name="app_work_light_grey">#dadde2</color>
+    <color name="app_work_light_green">#c8d1ae</color>
+    <color name="button_heart_shape_red">#df1533</color>
+
+
+    <color name="chatroom_background_blue">#8eb1df</color>
+    <color name="chatroom_edit_grey">#f5f5f5</color>
+    <color name="message_sender_green">#6fe67a</color>
+    <color name="button_disable">#999999</color>
+    <color name="gift_abandoned_red">#FF0000</color>
+    <color name="home_background_grey">#f5f5f5</color>
+
+
+
+
+    <color name="greenTestColor">#3c73a8</color>
+    <color name="yellowTestColor">#f8dca5</color>
+    <color name="lightBlueTestColor">#64cae3</color>
+    <color name="greyTestColor">#A9A9A9</color>
+    <color name="purple_voyage">#7830b8</color>
+
 </resources>
