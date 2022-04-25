@@ -1,8 +1,10 @@
 package com.zoe.weshare.data
 
 data class PostLog(
-    val id: String ="",
-    val title: String ="",
-    val type: Int = -1
+    var id: String ="",
+    var postDocId: String = "",
+    var logType: Int = -1 ,
+    var operatorUid : String, //uid
+    var logMsg: String ="",
+    var createdTime: Long = -1,
     )
-

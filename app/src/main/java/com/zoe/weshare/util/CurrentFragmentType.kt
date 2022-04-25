@@ -8,7 +8,8 @@ enum class CurrentFragmentType(val value: String) {
     MAP(getString(R.string.map)),
     ROOMLIST(getString(R.string.message)),
     CHATROOM(""), // 預期後面assign
-    PROFILE(getString(R.string.profile)),
+    SELFPROFILE(getString(R.string.profile)),
+    USERPROFILE(getString(R.string.profile)),
     POSTEVENT(getString(R.string.post_event)),
     POSTGIFT(getString(R.string.post_gift)),
     GIFTDETAIL("贈品詳情"),

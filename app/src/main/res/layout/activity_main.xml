@@ -148,6 +148,21 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_theme_gradient"
                 android:orientation="horizontal">
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/subfab_post_gift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/white"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_fab_gift"
+                    app:borderWidth="0dp"
+                    app:fabSize="mini"
+                    app:elevation="2dp"
+                    app:maxImageSize="45dp"
+                    tools:visibility="visible" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -158,21 +173,7 @@
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/subfab_post_gift"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginVertical="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="@color/white"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_fab_gift"
-                    app:borderWidth="0dp"
-                    app:fabSize="mini"
-                    app:elevation="2dp"
-                    app:maxImageSize="45dp"
-                    tools:visibility="visible" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -195,6 +196,23 @@
                 android:background="@drawable/custom_theme_gradient"
                 android:orientation="horizontal">
 
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/subfab_post_event"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginStart="4dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_fab_event"
+                    android:tooltipText="1"
+                    app:borderWidth="0dp"
+                    app:elevation="2dp"
+                    app:fabSize="mini"
+                    app:maxImageSize="28dp"
+                    tools:visibility="visible" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -204,22 +222,7 @@
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/subfab_post_event"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:backgroundTint="@color/white"
-                    android:layout_marginVertical="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_fab_event"
-                    android:tooltipText="1"
-                    app:borderWidth="0dp"
-                    app:elevation="2dp"
-                    app:fabSize="mini"
-                    app:maxImageSize="28dp"
-                    tools:visibility="visible" />
+
             </LinearLayout>
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

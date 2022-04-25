@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
                 when (it) {
                     // 完全隱藏上方
-                    CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
+                    CurrentFragmentType.SELFPROFILE -> topAppbar.visibility = View.GONE
 
                     CurrentFragmentType.CHATROOM -> {
                         hideBottom()
@@ -94,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     CurrentFragmentType.GIFTDETAIL -> hideBottom()
+                    CurrentFragmentType.EVENTDETAIL -> hideBottom()
 
 
                     CurrentFragmentType.POSTGIFT -> hideBottom()
@@ -111,12 +112,12 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun hideBottom() {
-        binding.fabMain.hide()
+        binding.fabMain.visibility = View.GONE
         binding.bottomAppBar.performHide()
     }
 
     private fun showBottom() {
-        binding.fabMain.show()
+        binding.fabMain.visibility = View.VISIBLE
         binding.bottomAppBar.performShow()
     }
 
@@ -136,7 +137,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.mapFragment -> CurrentFragmentType.MAP
                 R.id.roomListFragment -> CurrentFragmentType.ROOMLIST
                 R.id.chatRoomFragment -> CurrentFragmentType.CHATROOM
-                R.id.profileFragment -> CurrentFragmentType.PROFILE
+                R.id.selfFragment -> CurrentFragmentType.SELFPROFILE
+                R.id.usersFragment -> CurrentFragmentType.SELFPROFILE
                 R.id.postEventFragment -> CurrentFragmentType.POSTEVENT
                 R.id.postGiftFragment -> CurrentFragmentType.POSTGIFT
                 R.id.eventDetailFragment -> CurrentFragmentType.EVENTDETAIL
@@ -175,7 +177,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_profile -> {
 
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToProfileFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToSelfFragment())
                     return@setOnItemSelectedListener true
                 }
             }

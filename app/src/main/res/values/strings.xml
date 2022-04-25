@@ -84,5 +84,11 @@
     <string name="send_gift_no">取消</string>
     <string name="title_who_requested">當前索取人</string>
 
+    <string name="log_msg_post_gift">%1$s\t刊登了贈品:%2$1s</string>
+    <string name="log_msg_post_event">%1$s\t刊登了活動:%2$1s</string>
+    <string name="log_msg_request_gift">%1$s\t登記索取了贈品:%2$1s</string>
+
+
+    <string name="log_msg_send_away_gift">%1$s\t送出了贈品給:%2$1s</string>
 
 </resources>

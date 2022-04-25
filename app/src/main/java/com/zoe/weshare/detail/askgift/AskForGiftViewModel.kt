@@ -23,20 +23,16 @@ class AskForGiftViewModel(
     val newRequestComment: LiveData<Comment>
         get() = _newRequestComment
 
-    private val _saveLogComplete = MutableLiveData<PostLog>()
-    val saveLogComplete: LiveData<PostLog>
+    private val _saveLogComplete = MutableLiveData<LoadApiStatus>()
+    val saveLogComplete: LiveData<LoadApiStatus>
         get() = _saveLogComplete
 
-    // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()
-
-    // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // status: The internal MutableLiveData that stores the status of the most recent request
-    private val _status = MutableLiveData<LoadApiStatus>()
-    val status: LiveData<LoadApiStatus>
-        get() = _status
+    private val _requestGiftStatus = MutableLiveData<LoadApiStatus>()
+    val requestGiftStatus: LiveData<LoadApiStatus>
+        get() = _requestGiftStatus
 
     // error: The internal MutableLiveData that stores the error of the most recent request
     private val _error = MutableLiveData<String?>()
@@ -54,63 +50,66 @@ class AskForGiftViewModel(
     fun askForGiftRequest(gift: GiftPost, comment: Comment) {
         coroutineScope.launch {
 
-            _status.value = LoadApiStatus.LOADING
+            _requestGiftStatus.value = LoadApiStatus.LOADING
 
             when (val result = repository.askForGift(gift.id, comment)) {
                 is Result.Success -> {
                     _error.value = null
-                    _status.value = LoadApiStatus.DONE
+                    _requestGiftStatus.value = LoadApiStatus.DONE
 
                     onSaveGiftRequestLog(gift)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
+                    _requestGiftStatus.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
+                    _requestGiftStatus.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
+                    _requestGiftStatus.value = LoadApiStatus.ERROR
                 }
             }
         }
     }
 
+
     private fun onSaveGiftRequestLog(gift: GiftPost) {
         val log = PostLog(
-            id = gift.id,
-            title = gift.title,
-            type = LogType.GIFT.value
+            postDocId = gift.id,
+            logType = LogType.REQUESTGIFT.value,
+            operatorUid = userInfo!!.uid,
+            logMsg = WeShareApplication.instance.getString(R.string.log_msg_request_gift,
+                userInfo.name,
+                gift.title
+            )
         )
-        saveGiftRequestLog(log, userInfo!!.uid)
+        saveGiftRequestLog(log)
     }
 
-    private fun saveGiftRequestLog(log: PostLog, uid: String) {
+    private fun saveGiftRequestLog(log: PostLog) {
         coroutineScope.launch {
 
-            _status.value = LoadApiStatus.LOADING
+            _saveLogComplete.value = LoadApiStatus.LOADING
 
-            when (val result = repository.saveGiftRequestLog(log, uid)) {
+            when (val result = repository.savePostLog(log)) {
                 is Result.Success -> {
                     _error.value = null
-                    _status.value = LoadApiStatus.DONE
-
-                    _saveLogComplete.value = log
+                    _saveLogComplete.value = LoadApiStatus.DONE
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
             }
         }

@@ -36,6 +36,7 @@ import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import com.zoe.weshare.util.UserManager.userZoe
@@ -76,14 +77,20 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 binding.locationTitle.text
             }
 
-            binding.nextButton.setOnClickListener {
-                eventViewModel.event.value?.let { event -> eventViewModel.newEventPost(event) }
+            eventViewModel.postEventComplete.observe(viewLifecycleOwner) {
+                eventViewModel.onSaveEventPostLog(docId = it)
             }
 
-
             eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
-                Toast.makeText(requireContext(), "Success save Log", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                if (it == LoadApiStatus.DONE) {
+                    Toast.makeText(requireContext(), "Success save event Log", Toast.LENGTH_SHORT)
+                        .show()
+                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                }
+            }
+
+            binding.nextButton.setOnClickListener {
+                eventViewModel.event.value?.let { event -> eventViewModel.newEventPost(event) }
             }
 
         } else {
@@ -99,15 +106,24 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 binding.locationTitle.text
             }
 
-            binding.nextButton.setOnClickListener {
-                giftViewModel.gift.value?.let { gift -> giftViewModel.newGiftPost(gift) }
+
+
+            giftViewModel.postGiftComplete.observe(viewLifecycleOwner) {
+                giftViewModel.onSaveGiftPostLog(docId = it)
             }
 
             giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
-                Toast.makeText(requireContext(), "Success save Log", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                if (it == LoadApiStatus.DONE) {
+                    Toast.makeText(requireContext(), "Success save gift Log", Toast.LENGTH_SHORT)
+                        .show()
+                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                }
             }
 
+
+            binding.nextButton.setOnClickListener {
+                giftViewModel.gift.value?.let { gift -> giftViewModel.newGiftPost(gift) }
+            }
         }
 
         // 檢查、要求user啟用ACCESS_FINE_LOCATION權限

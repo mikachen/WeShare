@@ -1,6 +1,7 @@
 package com.zoe.weshare.manage.giftsItem
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +35,7 @@ class GiftManageFragment : Fragment() {
         //everytime when tabs position change, the index change
         index = requireArguments().getInt(INDEX_VALUE)
 
+        Log.d("GiftManageFragment","$index")
         val adapter = GiftItemsAdapter(viewModel, GiftItemsAdapter.OnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
         })

@@ -17,7 +17,8 @@ import com.zoe.weshare.util.Const.KEY_CREATED_TIME
 import com.zoe.weshare.util.Const.PATH_CHATROOM
 import com.zoe.weshare.util.Const.PATH_EVENT_POST
 import com.zoe.weshare.util.Const.PATH_GIFT_POST
-import com.zoe.weshare.util.Const.PATH_USERS
+import com.zoe.weshare.util.Const.PATH_LOG
+import com.zoe.weshare.util.Const.PATH_USER
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
 import com.zoe.weshare.util.Const.SUB_PATH_EVENT_USER_WHO_COMMENT
 import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
@@ -150,7 +151,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
     override suspend fun getUserInfo(uid: String): Result<UserProfile> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
-                .collection(PATH_USERS)
+                .collection(PATH_USER)
                 .whereEqualTo("uid", uid)
                 .get()
                 .addOnCompleteListener { task ->
@@ -668,11 +669,14 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun saveGiftPostLog(log: PostLog, uid: String): Result<Boolean> =
+    override suspend fun savePostLog(log: PostLog): Result<Boolean> =
         suspendCoroutine { continuation ->
 
-            val path = FirebaseFirestore.getInstance().collection(PATH_USERS)
-            val document = path.document(uid).collection(SUB_PATH_USER_GIFTPOSTS).document(log.id)
+            val logSave = FirebaseFirestore.getInstance().collection(PATH_LOG)
+            val document = logSave.document()
+
+            log.id = document.id
+            log.createdTime = Calendar.getInstance().timeInMillis
 
             document
                 .set(log)
@@ -696,39 +700,11 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun saveGiftRequestLog(log: PostLog, uid: String): Result<Boolean> =
-        suspendCoroutine { continuation ->
-
-            val path = FirebaseFirestore.getInstance().collection(PATH_USERS)
-            val document =
-                path.document(uid).collection(SUB_PATH_USER_REQUESTEDGIFTS).document(log.id)
-
-            document
-                .set(log)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Logger.i("saveGiftRequestLog: $log")
-
-                        continuation.resume(Result.Success(true))
-                    } else {
-                        task.exception?.let {
-
-                            Logger.w("[${this::class.simpleName}]" +
-                                    "Error getting documents. ${it.message}")
-
-                            continuation.resume(Result.Error(it))
-                            return@addOnCompleteListener
-                        }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
-                    }
-                }
-        }
 
     override suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
-                .collection(PATH_USERS).document(uid)
+                .collection(PATH_USER).document(uid)
                 .collection(SUB_PATH_USER_GIFTPOSTS)
                 .get()
                 .addOnCompleteListener { task ->
@@ -760,7 +736,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
     override suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
-                .collection(PATH_USERS).document(uid)
+                .collection(PATH_USER).document(uid)
                 .collection(SUB_PATH_USER_REQUESTEDGIFTS)
                 .get()
                 .addOnCompleteListener { task ->
@@ -874,33 +850,6 @@ object WeShareRemoteDataSource : WeShareDataSource {
             }
     }
 
-    override suspend fun saveEventPostLog(log: PostLog, uid: String): Result<Boolean> =
-        suspendCoroutine { continuation ->
-
-            val path = FirebaseFirestore.getInstance().collection(PATH_USERS)
-            val document = path.document(uid).collection(SUB_PATH_USER_EVENTPOSTS).document(log.id)
-
-            document
-                .set(log)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Logger.i("saveEventPostLog: $log")
-
-                        continuation.resume(Result.Success(true))
-                    } else {
-                        task.exception?.let {
-
-                            Logger.w("[${this::class.simpleName}]" +
-                                    "Error getting documents. ${it.message}")
-
-                            continuation.resume(Result.Error(it))
-                            return@addOnCompleteListener
-                        }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
-                    }
-                }
-        }
 
 
 }

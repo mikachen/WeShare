@@ -1,31 +1,30 @@
-package com.zoe.weshare.profile
+package com.zoe.weshare.profile.userself
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
-import com.zoe.weshare.databinding.FragmentProfileBinding
+import com.zoe.weshare.databinding.FragmentSelfBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager
 
 
-class ProfileFragment : Fragment() {
+class SelfFragment : Fragment() {
 
-    lateinit var binding: FragmentProfileBinding
+    val currentUser = UserManager.userZoe
 
+    lateinit var binding: FragmentSelfBinding
     lateinit var userArg: UserInfo
 
-    val currentUser = userZoe
-
-    val viewModel: ProfileViewModel by viewModels { getVmFactory(userArg) }
+    val viewModel: SelfViewModel by viewModels { getVmFactory(currentUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,13 +32,8 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        binding = FragmentSelfBinding.inflate(inflater, container, false)
 
-
-        //TODO 看看要不要重做一夜分開user
-        userArg = arguments?.let {
-            ProfileFragmentArgs.fromBundle(it).weshareUser
-        } ?: UserInfo(uid = currentUser.uid)
 
 
         viewModel.user.observe(viewLifecycleOwner) {
@@ -71,9 +65,6 @@ class ProfileFragment : Fragment() {
                     true -> getString(R.string.request_leave_intro_message)
                     false -> user.introMsg
                 }
-
         }
-
     }
-
 }

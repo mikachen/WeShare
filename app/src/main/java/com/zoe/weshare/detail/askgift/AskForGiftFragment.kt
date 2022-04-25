@@ -16,6 +16,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager
 
 class AskForGiftFragment : BottomSheetDialogFragment() {
@@ -41,7 +42,7 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
             viewModel.askForGiftRequest(selectedGift, it)
         }
        viewModel.saveLogComplete.observe(viewLifecycleOwner){
-           it?.let {
+           if(it == LoadApiStatus.DONE) {
                findNavController().navigate(
                    NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift))
                Toast.makeText(requireContext(),"save log success",Toast.LENGTH_SHORT).show()

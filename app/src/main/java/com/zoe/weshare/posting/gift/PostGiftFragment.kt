@@ -20,6 +20,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager.userZoe
 
 class PostGiftFragment : Fragment() {
@@ -50,6 +51,7 @@ class PostGiftFragment : Fragment() {
                 )
             )
         }
+
 
         setupBtn()
         setupDropdownMenu()

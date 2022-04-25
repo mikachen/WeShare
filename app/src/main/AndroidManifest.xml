@@ -14,9 +14,7 @@
         android:roundIcon="@mipmap/ic_weshare_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeShare">
-        <activity
-            android:name=".CreditSceneActivity"
-            android:exported="false" />
+
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

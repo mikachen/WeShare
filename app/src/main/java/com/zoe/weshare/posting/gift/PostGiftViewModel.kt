@@ -1,6 +1,5 @@
 package com.zoe.weshare.posting.gift
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,7 +10,6 @@ import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.LogType
-import com.zoe.weshare.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -26,23 +24,24 @@ class PostGiftViewModel(
     val gift: LiveData<GiftPost>
         get() = _gift
 
-    var imageUri : String = ""
+    var imageUri: String = ""
 
     val locationChoice = MutableLiveData<LatLng>()
 
-    // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()
-
-    // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // status: The internal MutableLiveData that stores the status of the most recent request
-    private val _status = MutableLiveData<LoadApiStatus>()
-    val status: LiveData<LoadApiStatus>
-        get() = _status
 
-    private val _saveLogComplete = MutableLiveData<PostLog>()
-    val saveLogComplete: LiveData<PostLog>
+    private val _postGiftStatus = MutableLiveData<LoadApiStatus>()
+    val postGiftStatus: LiveData<LoadApiStatus>
+        get() = _postGiftStatus
+
+    private val _postGiftComplete = MutableLiveData<String>()
+    val postGiftComplete: LiveData<String>
+        get() = _postGiftComplete
+
+    private val _saveLogComplete = MutableLiveData<LoadApiStatus>()
+    val saveLogComplete: LiveData<LoadApiStatus>
         get() = _saveLogComplete
 
     // error: The internal MutableLiveData that stores the error of the most recent request
@@ -53,65 +52,66 @@ class PostGiftViewModel(
     fun newGiftPost(gift: GiftPost) {
         coroutineScope.launch {
 
-            _status.value = LoadApiStatus.LOADING
+            _postGiftStatus.value = LoadApiStatus.LOADING
 
             when (val result = repository.postNewGift(gift)) {
                 is Result.Success -> {
                     _error.value = null
-                    _status.value = LoadApiStatus.DONE
+                    _postGiftStatus.value = LoadApiStatus.DONE
 
-                    //save log only when Status.DONE
-                    onSaveGiftPostLog(gift, docId = result.data)
+                    _postGiftComplete.value = result.data!!
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
+                    _postGiftStatus.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
+                    _postGiftStatus.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
+                    _postGiftStatus.value = LoadApiStatus.ERROR
                 }
             }
         }
     }
 
 
-    private fun onSaveGiftPostLog(gift: GiftPost, docId: String) {
+    fun onSaveGiftPostLog(docId: String) {
         val log = PostLog(
-            id = docId,
-            title = gift.title,
-            type = LogType.GIFT.value
+            postDocId = docId,
+            logType = LogType.POSTGIFT.value,
+            operatorUid = author!!.uid,
+            logMsg = WeShareApplication.instance.getString(R.string.log_msg_post_gift,
+                author.name,
+                gift.value?.title?:"")
         )
-        saveGiftPostLog(log,author!!.uid)
+        saveGiftPostLog(log)
     }
 
-    private fun saveGiftPostLog(log: PostLog, uid: String) {
+    private fun saveGiftPostLog(log: PostLog) {
         coroutineScope.launch {
 
-            _status.value = LoadApiStatus.LOADING
+            _saveLogComplete.value = LoadApiStatus.LOADING
 
-            when (val result = repository.saveGiftPostLog(log, uid)) {
+            when (val result = repository.savePostLog(log)) {
                 is Result.Success -> {
                     _error.value = null
-                    _status.value = LoadApiStatus.DONE
+                    _saveLogComplete.value = LoadApiStatus.DONE
 
-                    _saveLogComplete.value = log
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
             }
         }

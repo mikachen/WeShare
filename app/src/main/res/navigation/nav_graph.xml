@@ -23,15 +23,11 @@
 
 
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.zoe.weshare.profile.ProfileFragment"
+        android:id="@+id/selfFragment"
+        android:name="com.zoe.weshare.profile.userself.SelfFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile">
-        <argument
-            android:name="weshareUser"
-            android:defaultValue="@null"
-            app:argType="com.zoe.weshare.data.UserInfo"
-            app:nullable="true" />
+        tools:layout="@layout/fragment_self">
+
     </fragment>
     <fragment
         android:id="@+id/postEventFragment"
@@ -139,8 +135,8 @@
         app:popUpToInclusive="true" />
 
     <action
-        android:id="@+id/navigate_to_profile_fragment"
-        app:destination="@id/profileFragment"
+        android:id="@+id/navigate_to_self_fragment"
+        app:destination="@id/selfFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
 
@@ -202,6 +198,20 @@
         android:id="@+id/creditFragment"
         android:name="com.zoe.weshare.CreditFragment"
         android:label="CreditFragment" />
+    <fragment
+        android:id="@+id/usersFragment"
+        android:name="com.zoe.weshare.profile.UsersFragment"
+        android:label="UsersFragment">
+
+        <argument
+            android:name="weshareUser"
+            android:defaultValue="@null"
+            app:argType="com.zoe.weshare.data.UserInfo"
+            app:nullable="true" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_usersFragment"
+        app:destination="@id/usersFragment" />
 
 
 </navigation>

@@ -1,4 +1,4 @@
-package com.zoe.weshare.profile
+package com.zoe.weshare.profile.userself
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
+class SelfViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
 
 

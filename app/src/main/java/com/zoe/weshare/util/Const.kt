@@ -4,8 +4,9 @@ object Const {
 
      const val PATH_EVENT_POST = "EventPost"
      const val PATH_GIFT_POST = "GiftPost"
-     const val PATH_USERS = "Users"
+     const val PATH_USER = "User"
      const val PATH_CHATROOM = "ChatRoom"
+     const val PATH_LOG = "Log"
 
      const val SUB_PATH_GIFT_USER_WHO_ASK_FOR = "UserWhoRequest"
      const val SUB_PATH_EVENT_USER_WHO_COMMENT = "UserWhoComment"

@@ -112,13 +112,10 @@ class DefaultWeShareRepository(
         return remoteDataSource.saveLastMsgRecord(docId, message)
     }
 
-    override suspend fun saveGiftPostLog(log: PostLog, uid: String): Result<Boolean> {
-        return remoteDataSource.saveGiftPostLog(log, uid)
+    override suspend fun savePostLog(log: PostLog): Result<Boolean> {
+        return remoteDataSource.savePostLog(log)
     }
 
-    override suspend fun saveGiftRequestLog(log: PostLog, uid: String): Result<Boolean> {
-        return remoteDataSource.saveGiftRequestLog(log, uid)
-    }
 
     override suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>> {
         return remoteDataSource.getUsersGiftLog(uid)
@@ -142,9 +139,5 @@ class DefaultWeShareRepository(
         uid: String,
     ): Result<Boolean> {
         return remoteDataSource.sendAwayGift(docId, statusCode, uid)
-    }
-
-    override suspend fun saveEventPostLog(log: PostLog, uid: String): Result<Boolean> {
-        return remoteDataSource.saveGiftPostLog(log, uid)
     }
 }
