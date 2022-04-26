@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,138 +9,133 @@
     android:layout_marginTop="@dimen/height_bottom_app_bar"
     tools:context=".posting.gift.PostGiftFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/button_image_preview_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/button_image_preview_holder"
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:layout_margin="8dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="250dp"
+        android:layout_margin="8dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_image_preview_holder" />
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_image_preview_holder" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/input_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider">
+
+        <!--    TITLE   -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_title"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:hint="贈品名稱"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider">
+            app:layout_constraintTop_toTopOf="parent">
 
-            <!--    TITLE   -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_title"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="贈品名稱"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_height="56dp"
+                android:gravity="center|start"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center|start"
-                    android:singleLine="true"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-            <!--    SORT MENU   -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_sort_menu"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="物品分類"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_title">
-
-                <AutoCompleteTextView
-                    android:id="@+id/dropdown_menu_sort"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center|start"
-                    android:inputType="none"
-                    android:textAppearance="@style/customHintLabel" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!--    condition   -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_condition_menu"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="物品狀況"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_sort_menu">
-
-                <AutoCompleteTextView
-                    android:id="@+id/dropdown_menu_condition"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:gravity="center|left"
-                    android:inputType="none"
-                    android:textAppearance="@style/customHintLabel" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!--    description   -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layout_description"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="物品詳情"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_condition_menu">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/edit_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:gravity="top|start"
-                    android:singleLine="false"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <Button
-            android:id="@+id/next_button"
+        <!--    SORT MENU   -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_sort_menu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_margin="8dp"
-            android:text="next"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="物品分類"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_layout" />
+            app:layout_constraintTop_toBottomOf="@id/layout_title">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_menu_sort"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:gravity="center|start"
+                android:inputType="none"
+                android:textAppearance="@style/customHintLabel" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--    condition   -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_condition_menu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="物品狀況"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_sort_menu">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_menu_condition"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:gravity="center|left"
+                android:inputType="none"
+                android:textAppearance="@style/customHintLabel" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!--    description   -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_description"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="物品詳情"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_condition_menu">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="top|start"
+                android:singleLine="false"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="8dp"
+        android:text="next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_layout" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
 

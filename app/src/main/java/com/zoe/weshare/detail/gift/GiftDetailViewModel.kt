@@ -1,6 +1,5 @@
 package com.zoe.weshare.detail.gift
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +9,8 @@ import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.ChatRoomType
+import com.zoe.weshare.util.Const.PATH_GIFT_POST
+import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -73,11 +74,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getGiftAskForComments(docId)) {
+            when (val result = repository.getAllComments(collection = PATH_GIFT_POST,docId, subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    _comments.value = result.data?: emptyList()
+                    _comments.value = result.data ?: emptyList()
                     updateCommentLike = result.data as MutableList<Comment>
                 }
                 is Result.Fail -> {
@@ -153,7 +154,9 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.likeGiftPost(docId = doc, uid = userInfo!!.uid)) {
+            when (val result = repository.likeOnPost(collection = PATH_GIFT_POST,
+                docId = doc,
+                uid = userInfo!!.uid)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -181,7 +184,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.cancelLikeGiftPost(docId = doc, uid = userInfo!!.uid)) {
+            when (val result = repository.cancelLikeOnPost(collection = PATH_GIFT_POST,
+                docId = doc,
+                uid = userInfo!!.uid)) {
+
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -210,8 +216,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
             _status.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.likeGiftComment(
+                val result = repository.likeOnPostComment(
+                    collection = PATH_GIFT_POST,
                     docId = selectedGiftDisplay.value!!.id,
+                    subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR,
                     subDocId = subDoc,
                     uid = userInfo!!.uid
                 )
@@ -241,8 +249,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
             _status.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.cancelLikeGiftComment(
+                val result = repository.cancelLikeOnPostComment(
+                    collection = PATH_GIFT_POST,
                     docId = selectedGiftDisplay.value!!.id,
+                    subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR,
                     subDocId = subDoc,
                     uid = userInfo!!.uid
                 )
@@ -291,7 +301,8 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
         val result = rooms.filter {
             it.participants?.contains(selectedGiftDisplay.value!!.author!!.uid) == true
-                    && it.type == ChatRoomType.PRIVATE.value }
+                    && it.type == ChatRoomType.PRIVATE.value
+        }
 
         if (result.isNotEmpty()) {
             // there was chat room history with author & ChatRoomType is PRIVATE
@@ -307,13 +318,13 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     fun onNewRoomPrepare() {
         val room = ChatRoom(
             type = ChatRoomType.PRIVATE.value,
-            participants = listOf(userInfo!!.uid,selectedGiftDisplay.value!!.author!!.uid),
+            participants = listOf(userInfo!!.uid, selectedGiftDisplay.value!!.author!!.uid),
             usersInfo = listOf(userInfo, selectedGiftDisplay.value!!.author!!)
         )
         createRoom(room)
     }
 
-    private fun createRoom(room: ChatRoom){
+    private fun createRoom(room: ChatRoom) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 

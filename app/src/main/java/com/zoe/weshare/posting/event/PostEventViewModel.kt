@@ -89,7 +89,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
 
             _saveLogComplete.value = LoadApiStatus.LOADING
 
-            when (val result = repository.savePostLog(log)) {
+            when (val result = repository.saveLog(log)) {
                 is Result.Success -> {
                     _error.value = null
                     _saveLogComplete.value = LoadApiStatus.DONE

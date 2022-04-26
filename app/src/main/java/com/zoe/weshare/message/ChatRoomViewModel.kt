@@ -61,7 +61,6 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val u
         )
     }
 
-
     fun getHistoryMessage(docId: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING

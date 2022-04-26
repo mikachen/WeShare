@@ -64,12 +64,13 @@ class MainActivity : AppCompatActivity() {
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
+            hideBottom()
+
             binding.apply {
                 topAppbar.visibility = View.VISIBLE
                 toolbarLogoImage.visibility = View.INVISIBLE
                 layoutToolbarSubtitle.visibility = View.VISIBLE
                 toolbarFragmentTitleText.text = it.value
-                showBottom()
 
 
                 when (it) {
@@ -77,29 +78,29 @@ class MainActivity : AppCompatActivity() {
                     CurrentFragmentType.SELFPROFILE -> topAppbar.visibility = View.GONE
 
                     CurrentFragmentType.CHATROOM -> {
-                        hideBottom()
+
                     }
 
                     //顯示副標題+倒退鍵
                     CurrentFragmentType.SEARCHLOCATION -> {
                         toolbarFragmentTitleText.text = it.value
-                        hideBottom()
                     }
 
                     //大主頁
                     CurrentFragmentType.HOME -> {
+                        showBottom()
                         toolbar.navigationIcon = null
                         toolbarLogoImage.visibility = View.VISIBLE
                         layoutToolbarSubtitle.visibility = View.INVISIBLE
                     }
 
-                    CurrentFragmentType.GIFTDETAIL -> hideBottom()
-                    CurrentFragmentType.EVENTDETAIL -> hideBottom()
+                    CurrentFragmentType.GIFTDETAIL -> {}
+                    CurrentFragmentType.EVENTDETAIL -> {}
 
 
-                    CurrentFragmentType.POSTGIFT -> hideBottom()
-                    CurrentFragmentType.POSTEVENT -> hideBottom()
-                    CurrentFragmentType.MAP -> hideBottom()
+                    CurrentFragmentType.POSTGIFT -> {}
+                    CurrentFragmentType.POSTEVENT -> {}
+                    CurrentFragmentType.MAP -> {}
 
 
                     else -> {
@@ -112,12 +113,12 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun hideBottom() {
-        binding.fabMain.visibility = View.GONE
+        binding.fabsLayoutView.visibility = View.GONE
         binding.bottomAppBar.performHide()
     }
 
     private fun showBottom() {
-        binding.fabMain.visibility = View.VISIBLE
+        binding.fabsLayoutView.visibility = View.VISIBLE
         binding.bottomAppBar.performShow()
     }
 

@@ -87,23 +87,20 @@
             android:id="@+id/btn_check_who_request"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:text="\u003C查看索取"
             android:textColor="@color/greenTestColor"
-            android:textSize="18sp"
+            android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_abandoned"/>
+            app:layout_constraintEnd_toStartOf="@+id/btn_abandoned" />
 
         <TextView
             android:id="@+id/btn_abandoned"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="下架"
+            android:text="    下架"
             android:textColor="@color/gift_abandoned_red"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="@id/btn_check_who_request"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/btn_check_who_request" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

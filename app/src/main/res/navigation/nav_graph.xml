@@ -85,9 +85,10 @@
         <argument
             android:name="selectedEvent"
             app:argType="com.zoe.weshare.data.EventPost" />
+
         <action
-            android:id="@+id/action_eventDetailFragment_to_commentDialogFragment"
-            app:destination="@id/commentDialogFragment" />
+            android:id="@+id/action_eventDetailFragment_to_creditFragment"
+            app:destination="@id/creditFragment" />
 
     </fragment>
 
@@ -161,22 +162,17 @@
         app:destination="@id/giftDetailFragment"
         app:popUpTo="@id/giftDetailFragment"
         app:popUpToInclusive="true" />
-    <dialog
-        android:id="@+id/commentDialogFragment"
-        android:name="com.zoe.weshare.detail.commenting.CommentDialogFragment"
-        android:label="fragment_comment_dialog"
-        tools:layout="@layout/fragment_comment_dialog">
-        <argument
-            android:name="documentId"
-            app:argType="string" />
-    </dialog>
+
     <action
         android:id="@+id/action_global_chatRoomFragment"
         app:destination="@id/chatRoomFragment" />
     <fragment
         android:id="@+id/pagerFilterFragment"
         android:name="com.zoe.weshare.manage.PagerFilterFragment"
-        android:label="PagerFilterFragment" />
+        android:label="PagerFilterFragment" >
+
+    </fragment>
+
     <action
         android:id="@+id/action_global_pagerFilterFragment"
         app:destination="@id/pagerFilterFragment"
@@ -205,9 +201,7 @@
 
         <argument
             android:name="weshareUser"
-            android:defaultValue="@null"
-            app:argType="com.zoe.weshare.data.UserInfo"
-            app:nullable="true" />
+            app:argType="com.zoe.weshare.data.UserInfo" />
     </fragment>
     <action
         android:id="@+id/action_global_usersFragment"

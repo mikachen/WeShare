@@ -12,18 +12,16 @@ object Const {
      const val SUB_PATH_EVENT_USER_WHO_COMMENT = "UserWhoComment"
      const val SUB_PATH_CHATROOM_MESSAGE = "Messages"
 
-     const val SUB_PATH_USER_GIFTPOSTS = "MyGiftPosts"
-     const val SUB_PATH_USER_REQUESTEDGIFTS = "MyRequestedGifts"
-     const val SUB_PATH_USER_EVENTPOSTS = "MyEventPosts"
-     const val SUB_PATH_USER_REGISTEREDEVENTS = "MyRegisteredEvents"
-
-
 
      const val FIELD_WHO_LIKED = "whoLiked"
      const val FIELD_ROOM_LAST_MEG = "lastMsg"
      const val FIELD_ROOM_LAST_SENT_TIME = "lastMsgSentTime"
      const val FIELD_STATUS = "status"
      const val FIELD_WHO_GET_GIFT = "whoGetGift"
+     const val FIELD_OPERATOR_UID = "operatorUid"
+
+     const val FIELD_EVENT_ATTENDEE = "whoAttended"
+     const val FIELD_EVENT_VOLUNTEER = "whoVolunteer"
 
 
 

@@ -48,6 +48,7 @@ class GiftDetailFragment : Fragment() {
         viewModel.selectedGiftDisplay.observe(viewLifecycleOwner) {
             setupView(it)
             setupBtn(it)
+            setupLikeBtn(it)
         }
 
         viewModel.onCommentLikePressed.observe(viewLifecycleOwner) {
@@ -111,8 +112,7 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
-        setupLikeBtn(selectedGift)
-        setupBtn(selectedGift)
+
         return binding.root
     }
 
@@ -163,16 +163,27 @@ class GiftDetailFragment : Fragment() {
         }
 
 
-        // author he/herself hide the button
-        if (selectedGift.author!!.uid == currentUser.uid) {
-            binding.lottieBtnChatMe.visibility = View.GONE
-            binding.layoutAskForGift.visibility = View.GONE
-        } else {
-            binding.buttonAskForGift.setOnClickListener {
-                findNavController().navigate(
-                    GiftDetailFragmentDirections
-                        .actionGiftDetailFragmentToAskForGiftFragment(selectedGift)
-                )
+        when(true){
+            // author he/herself hide the button
+            (selectedGift.author!!.uid == currentUser.uid) -> {
+                binding.lottieBtnChatMe.visibility = View.GONE
+                binding.layoutAskForGift.visibility = View.GONE
+            }
+
+            // gift status CLOSE or ABANDONED hide the button
+            (selectedGift.status == GiftStatusType.CLOSED.code) -> {
+                binding.layoutAskForGift.visibility = View.GONE
+            }
+            (selectedGift.status == GiftStatusType.ABANDONED.code) -> {
+                binding.layoutAskForGift.visibility = View.GONE
+            }
+            else -> {
+                binding.buttonAskForGift.setOnClickListener {
+                    findNavController().navigate(
+                        GiftDetailFragmentDirections
+                            .actionGiftDetailFragmentToAskForGiftFragment(selectedGift)
+                    )
+                }
             }
         }
     }

@@ -1,13 +1,14 @@
 package com.zoe.weshare.detail.gift
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.R
-import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.Comment
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
@@ -34,14 +35,13 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
         val whoLikedList = viewModel.updateCommentLike[position].whoLiked
         val isUserLiked: Boolean = whoLikedList.contains(userInfo.uid)
 
+        val userReceiveGift: Boolean =
+            viewModel.selectedGiftDisplay.value?.whoGetGift == comment.uid
+
+
         holderGift.binding.apply {
 
-            if (!whoLikedList.isNullOrEmpty()) {
-                textLikesCount.text =
-                    getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
-            } else {
-                textLikesCount.text = ""
-            }
+            textLikesCount.text = getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
 
             if (isUserLiked) {
                 buttonCommentLike.setTextColor(getColor(R.color.lightBlueTestColor))
@@ -51,6 +51,10 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
 
             buttonCommentLike.setOnClickListener {
                 viewModel.onCommentsLikePressed(comment, isUserLiked, position)
+            }
+
+            if(userReceiveGift){
+                lottieReceivedGift.visibility = View.VISIBLE
             }
         }
     }

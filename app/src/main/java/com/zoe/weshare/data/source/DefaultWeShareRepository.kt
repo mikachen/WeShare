@@ -1,5 +1,6 @@
 package com.zoe.weshare.data.source
 
+import androidx.lifecycle.MutableLiveData
 import com.zoe.weshare.data.*
 
 
@@ -28,20 +29,21 @@ class DefaultWeShareRepository(
         return remoteDataSource.getUserInfo(uid)
     }
 
-    override suspend fun getGiftAskForComments(docId: String): Result<List<Comment>> {
-        return remoteDataSource.getGiftAskForComments(docId)
+    override suspend fun sendComment(
+        collection: String,
+        docId: String,
+        comment: Comment,
+        subCollection: String,
+    ): Result<Boolean> {
+        return remoteDataSource.sendComment(collection, docId, comment, subCollection)
     }
 
-    override suspend fun askForGift(docId: String, comment: Comment): Result<Boolean> {
-        return remoteDataSource.askForGift(docId, comment)
-    }
-
-    override suspend fun sendEventComment(docId: String, comment: Comment): Result<Boolean> {
-        return remoteDataSource.sendEventComment(docId, comment)
-    }
-
-    override suspend fun getEventComments(docId: String): Result<List<Comment>> {
-        return remoteDataSource.getEventComments(docId)
+    override suspend fun getAllComments(
+        collection: String,
+        docId: String,
+        subCollection: String,
+    ): Result<List<Comment>> {
+        return remoteDataSource.getAllComments(collection, docId, subCollection)
     }
 
     override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>> {
@@ -60,84 +62,84 @@ class DefaultWeShareRepository(
         return remoteDataSource.sendMessage(docId, comment)
     }
 
-    override suspend fun likeEventPost(docId: String, uid: String): Result<Boolean> {
-        return remoteDataSource.likeEventPost(docId, uid)
-    }
-
-    override suspend fun likeGiftPost(docId: String, uid: String): Result<Boolean> {
-        return remoteDataSource.likeGiftPost(docId, uid)
-    }
-
-    override suspend fun cancelLikeEventPost(docId: String, uid: String): Result<Boolean> {
-        return remoteDataSource.cancelLikeEventPost(docId, uid)
-    }
-
-    override suspend fun cancelLikeGiftPost(docId: String, uid: String): Result<Boolean> {
-        return remoteDataSource.cancelLikeGiftPost(docId, uid)
-    }
-
-    override suspend fun likeGiftComment(
+    override suspend fun likeOnPost(
+        collection: String,
         docId: String,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.likeOnPost(collection, docId, uid)
+    }
+
+    override suspend fun cancelLikeOnPost(
+        collection: String,
+        docId: String,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.cancelLikeOnPost(collection, docId, uid)
+    }
+
+    override suspend fun likeOnPostComment(
+        collection: String,
+        docId: String,
+        subCollection: String,
         subDocId: String,
         uid: String,
     ): Result<Boolean> {
-        return remoteDataSource.likeGiftComment(docId, subDocId, uid)
+        return remoteDataSource.likeOnPostComment(collection, docId, subCollection, subDocId, uid)
     }
 
-    override suspend fun likeEventComment(
+    override suspend fun cancelLikeOnPostComment(
+        collection: String,
         docId: String,
+        subCollection: String,
         subDocId: String,
         uid: String,
     ): Result<Boolean> {
-        return remoteDataSource.likeEventComment(docId, subDocId, uid)
-    }
-
-    override suspend fun cancelLikeGiftComment(
-        docId: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.cancelLikeGiftComment(docId, subDocId, uid)
-    }
-
-    override suspend fun cancelLikeEventComment(
-        docId: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.cancelLikeEventComment(docId, subDocId, uid)
+        return remoteDataSource.cancelLikeOnPostComment(collection,
+            docId,
+            subCollection,
+            subDocId,
+            uid)
     }
 
     override suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean> {
         return remoteDataSource.saveLastMsgRecord(docId, message)
     }
 
-    override suspend fun savePostLog(log: PostLog): Result<Boolean> {
-        return remoteDataSource.savePostLog(log)
+    override suspend fun saveLog(log: PostLog): Result<Boolean> {
+        return remoteDataSource.saveLog(log)
     }
 
 
-    override suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>> {
-        return remoteDataSource.getUsersGiftLog(uid)
+    override suspend fun getUserLog(uid: String): Result<List<PostLog>> {
+        return remoteDataSource.getUserLog(uid)
     }
 
-    override suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>> {
-        return remoteDataSource.getUsersRequestLog(uid)
+    override suspend fun getUserHistoryPosts(collection: String, uid: String): Result<List<GiftPost>> {
+        return remoteDataSource.getUserHistoryPosts(collection,uid)
     }
 
-    override suspend fun searchGiftDocument(doc: String): Result<GiftPost> {
-        return remoteDataSource.searchGiftDocument(doc)
-    }
-
-    override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> {
-        return remoteDataSource.updateGiftStatus(docId, statusCode)
-    }
-
-    override suspend fun sendAwayGift(
+    override suspend fun updateGiftStatus(
         docId: String,
         statusCode: Int,
         uid: String,
     ): Result<Boolean> {
-        return remoteDataSource.sendAwayGift(docId, statusCode, uid)
+        return remoteDataSource.updateGiftStatus(docId, statusCode, uid)
+    }
+
+    override fun getLiveMessages(
+        collection: String,
+        docId: String,
+        subCollection: String,
+    ): MutableLiveData<List<Comment>> {
+        return remoteDataSource.getLiveMessages(collection, docId, subCollection)
+    }
+
+    override suspend fun updateEventAttendee(
+        docId: String,
+        field: String,
+        uid: String,
+    ): Result<Boolean> {
+        return remoteDataSource.updateEventAttendee(docId, field, uid)
     }
 }

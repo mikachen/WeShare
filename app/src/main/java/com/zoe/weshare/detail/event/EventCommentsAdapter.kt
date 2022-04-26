@@ -10,7 +10,7 @@ import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
-import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.ext.getTimeAgo
 import com.zoe.weshare.util.Util
 
 class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
@@ -29,26 +29,26 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
         val comment = getItem(position)
         holderEvent.bind(comment, viewModel)
 
-        val whoLikedList = viewModel.updateCommentLike[position].whoLiked
-        val isUserLiked: Boolean = whoLikedList?.contains(userInfo.uid) == true
+        val whoLikedThisComment = comment.whoLiked
+        val isUserLikeBefore: Boolean = whoLikedThisComment.contains(userInfo.uid)
 
         holderEvent.binding.apply {
 
-            if (!whoLikedList.isNullOrEmpty()) {
+            if (whoLikedThisComment.isNotEmpty()) {
                 textLikesCount.text =
-                    Util.getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+                    Util.getStringWithIntParm(R.string.number_who_liked, whoLikedThisComment.size)
             } else {
                 textLikesCount.text = ""
             }
 
-            if (isUserLiked) {
+            if (isUserLikeBefore) {
                 buttonCommentLike.setTextColor(Util.getColor(R.color.lightBlueTestColor))
             } else {
                 buttonCommentLike.setTextColor(Util.getColor(R.color.greyTestColor))
             }
 
             buttonCommentLike.setOnClickListener {
-                viewModel.onCommentsLikePressed(comment, isUserLiked, position)
+                viewModel.onCommentsLikePressed(comment, isUserLikeBefore)
             }
         }
     }
@@ -58,9 +58,9 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
         fun bind(comment: Comment, viewModel: EventDetailViewModel) {
 
             binding.textComment.text = comment.content
-            binding.textCreatedTime.text = comment.createdTime.toDisplaySentTime()
+            binding.textCreatedTime.text = comment.createdTime.getTimeAgo()
 
-            if (viewModel.onProfileSearchComplete.value == 0) {
+            if (viewModel.onProfileSearch.value == 0) {
                 if (viewModel.profileList.isNotEmpty()) {
                     val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
                     speaker?.let {

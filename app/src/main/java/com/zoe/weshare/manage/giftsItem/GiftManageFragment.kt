@@ -16,12 +16,14 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftManageBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager.userZoe
 
 class GiftManageFragment : Fragment() {
 
     var index = -1
     val currentUser = userZoe
+
     private lateinit var binding: FragmentGiftManageBinding
 
     private val viewModel by viewModels<GiftManageViewModel> { getVmFactory(currentUser) }
@@ -35,7 +37,6 @@ class GiftManageFragment : Fragment() {
         //everytime when tabs position change, the index change
         index = requireArguments().getInt(INDEX_VALUE)
 
-        Log.d("GiftManageFragment","$index")
         val adapter = GiftItemsAdapter(viewModel, GiftItemsAdapter.OnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
         })
@@ -46,14 +47,8 @@ class GiftManageFragment : Fragment() {
         binding.recyclerview.layoutManager = manager
 
 
-        viewModel.log.observe(viewLifecycleOwner) {
-            it?.let {
-                viewModel.onSearchGiftsDetail(it)
-            }
-        }
-
-        viewModel.onDocSearch.observe(viewLifecycleOwner) {
-            if (it == 0) {
+        viewModel.searchGiftsStatus.observe(viewLifecycleOwner) {
+            if (it == LoadApiStatus.DONE) {
                 viewModel.filteringGift(index)
             }
         }

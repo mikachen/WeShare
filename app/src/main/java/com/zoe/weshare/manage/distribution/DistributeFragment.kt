@@ -70,7 +70,10 @@ class DistributeFragment : BottomSheetDialogFragment() {
         }
 
         viewModel.sendGiftStatus.observe(viewLifecycleOwner){
+
+            viewModel.onSaveSendGiftLog()
             Toast.makeText(requireContext(),"送出成功",Toast.LENGTH_SHORT).show()
+
             findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
         }
 
@@ -120,7 +123,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
                 val behaviour = BottomSheetBehavior.from(it)
                 setupFullHeight(it)
                 behaviour.isFitToContents = false
-                behaviour.expandedOffset = 300
+                behaviour.expandedOffset = 900
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }

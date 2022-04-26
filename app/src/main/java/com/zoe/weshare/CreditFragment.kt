@@ -67,10 +67,10 @@ class CreditFragment : BottomSheetDialogFragment() {
             val parentLayout = bottomSheetDialog
                 .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
 
-            parentLayout?.let { it ->
-                val behaviour = BottomSheetBehavior.from(it)
+            parentLayout?.let { view ->
+                val behaviour = BottomSheetBehavior.from(view)
 
-                setupFullHeight(it)
+                setupFullHeight(view)
 
                 behaviour.isFitToContents = false
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED

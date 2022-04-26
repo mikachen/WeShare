@@ -16,7 +16,6 @@ class UsersFragment : Fragment() {
 
 
     lateinit var binding: FragmentUsersBinding
-
     lateinit var userArg: UserInfo
 
 
@@ -29,6 +28,9 @@ class UsersFragment : Fragment() {
     ): View? {
 
         binding = FragmentUsersBinding.inflate(inflater, container, false)
+
+        userArg = UsersFragmentArgs.fromBundle(requireArguments()).weshareUser
+
 
         return binding.root
     }

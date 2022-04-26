@@ -2,6 +2,7 @@ package com.zoe.weshare.message
 
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,13 +53,12 @@ class ChatRoomFragment : Fragment() {
         recyclerView.adapter = adapter
 
         viewModel.messageItems.observe(viewLifecycleOwner) {
-            adapter.submitList(it){
+            adapter.submitList(it) {
                 recyclerView.post { recyclerView.scrollToPosition(adapter.itemCount - 1) }
             }
         }
 
         viewModel.targetInfo.observe(viewLifecycleOwner) {
-//            binding.textRoomTargetTitle.text = it.name
             (activity as MainActivity).binding.toolbarFragmentTitleText.text = it.name
         }
 
@@ -101,12 +101,16 @@ class ChatRoomFragment : Fragment() {
 
     private fun setupSendBtn() {
         binding.buttonSend.setOnClickListener {
-            val newMessage = binding.editBox.text.toString()
+            onSendComment()
+        }
 
-            if (newMessage.isNotEmpty()) {
-                viewModel.onSending(newMessage)
-                    binding.editBox.text?.clear()
-            }
+        binding.editBox.setOnKeyListener { _, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {
+
+                onSendComment()
+
+                true
+            } else false
         }
 
         binding.btnTesting.setOnClickListener {
@@ -124,6 +128,16 @@ class ChatRoomFragment : Fragment() {
             } else {
                 Toast.makeText(requireContext(), "Msg is empty", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun onSendComment() {
+
+        val newMessage = binding.editBox.text.toString()
+
+        if (newMessage.isNotEmpty()) {
+            viewModel.onSending(newMessage)
+            binding.editBox.text?.clear()
         }
     }
 }
