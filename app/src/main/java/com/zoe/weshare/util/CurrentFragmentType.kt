@@ -17,5 +17,3 @@ enum class CurrentFragmentType(val value: String) {
     SEARCHLOCATION("選擇地點"),
     GIFTMANAGE("贈品管理")
 }
-
-

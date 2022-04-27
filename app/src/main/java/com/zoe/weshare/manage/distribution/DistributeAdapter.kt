@@ -1,6 +1,5 @@
 package com.zoe.weshare.manage.distribution
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,14 +49,13 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
                 }
             }
 
-            if(viewModel.gift.status == GiftStatusType.OPENING.code){
+            if (viewModel.gift.status == GiftStatusType.OPENING.code) {
                 binding.buttonSendGift.visibility = View.VISIBLE
 
-                binding.buttonSendGift.setOnClickListener{
+                binding.buttonSendGift.setOnClickListener {
                     viewModel.userPressSendGift(comment)
                 }
             }
-
         }
 
         companion object {

@@ -24,10 +24,9 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
         getTargetUsers(chatRoom)
     }
 
-    fun getTargetUsers(room: ChatRoom){
+    fun getTargetUsers(room: ChatRoom) {
 
         usersList = room.usersInfo.filter { it.uid != UserManager.userZoe.uid }
-
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -61,7 +60,11 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
                 (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it) }
             }
             is ReceiveViewHolder -> {
-                (itemType as MessageItem.OnReceiveSide).message?.let { holder.bind(it, viewModel, usersList) }
+                (itemType as MessageItem.OnReceiveSide).message?.let {
+                    holder.bind(it,
+                        viewModel,
+                        usersList)
+                }
             }
         }
     }
@@ -81,7 +84,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
 
             if (usersList.isNotEmpty()) {
-                val speaker = usersList.single{ it.uid == comment.uid }
+                val speaker = usersList.single { it.uid == comment.uid }
 
                 bindImage(binding.imageTargeImage, speaker.image)
             }

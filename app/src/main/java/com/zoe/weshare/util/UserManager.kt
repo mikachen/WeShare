@@ -9,15 +9,14 @@ object UserManager {
     val userLora = UserInfo(
         name = "蘿拉卡芙特",
         uid = "lora0987",
-        image = "https://images2.gamme.com.tw/news2/2016/26/12/q52SpaablqCbqA.jpeg")
-
+        image = "https://images2.gamme.com.tw/news2/2016/26/12/q52SpaablqCbqA.jpeg"
+    )
 
     val userZoe = UserInfo(
         name = "Zoe Lo",
         uid = "zoe1018",
         image = "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1686&q=80"
     )
-
 
     private const val APP_NAME = "WeShare"
     private const val MODE = Context.MODE_PRIVATE
@@ -44,6 +43,4 @@ object UserManager {
         set(token) = preferences.edit {
             it.putString(USER_UID, token)
         }
-
-
 }

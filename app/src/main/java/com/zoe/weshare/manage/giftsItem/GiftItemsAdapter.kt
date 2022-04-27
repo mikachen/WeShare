@@ -33,7 +33,6 @@ class GiftItemsAdapter(
                 textPostedLocation.text = gift.location!!.locationName
             }
 
-
             when (gift.status) {
                 GiftStatusType.OPENING.code -> {
                     binding.textStatus.text = GiftStatusType.OPENING.tag
@@ -54,15 +53,15 @@ class GiftItemsAdapter(
 
                 else -> Logger.d("unKnow status")
             }
-
         }
 
         companion object {
             fun from(parent: ViewGroup): GiftViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
 
-                return GiftViewHolder(ItemGiftManageBinding
-                    .inflate(layoutInflater, parent, false)
+                return GiftViewHolder(
+                    ItemGiftManageBinding
+                        .inflate(layoutInflater, parent, false)
                 )
             }
         }
@@ -71,7 +70,6 @@ class GiftItemsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GiftViewHolder {
         return GiftViewHolder.from(parent)
     }
-
 
     override fun onBindViewHolder(holder: GiftViewHolder, position: Int) {
         val gift = getItem(position)

@@ -31,7 +31,6 @@ class PostGiftViewModel(
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-
     private val _postGiftStatus = MutableLiveData<LoadApiStatus>()
     val postGiftStatus: LiveData<LoadApiStatus>
         get() = _postGiftStatus
@@ -77,15 +76,16 @@ class PostGiftViewModel(
         }
     }
 
-
     fun onSaveGiftPostLog(docId: String) {
         val log = PostLog(
             postDocId = docId,
             logType = LogType.POST_GIFT.value,
             operatorUid = author!!.uid,
-            logMsg = WeShareApplication.instance.getString(R.string.log_msg_post_gift,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_post_gift,
                 author.name,
-                gift.value?.title?:"")
+                gift.value?.title ?: ""
+            )
         )
         saveGiftPostLog(log)
     }
@@ -99,7 +99,6 @@ class PostGiftViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _saveLogComplete.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error

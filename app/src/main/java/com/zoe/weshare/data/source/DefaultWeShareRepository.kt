@@ -3,7 +3,6 @@ package com.zoe.weshare.data.source
 import androidx.lifecycle.MutableLiveData
 import com.zoe.weshare.data.*
 
-
 class DefaultWeShareRepository(
     private val remoteDataSource: WeShareDataSource,
     private val localDataSource: WeShareDataSource,
@@ -95,11 +94,13 @@ class DefaultWeShareRepository(
         subDocId: String,
         uid: String,
     ): Result<Boolean> {
-        return remoteDataSource.cancelLikeOnPostComment(collection,
+        return remoteDataSource.cancelLikeOnPostComment(
+            collection,
             docId,
             subCollection,
             subDocId,
-            uid)
+            uid
+        )
     }
 
     override suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean> {
@@ -110,13 +111,15 @@ class DefaultWeShareRepository(
         return remoteDataSource.saveLog(log)
     }
 
-
     override suspend fun getUserLog(uid: String): Result<List<PostLog>> {
         return remoteDataSource.getUserLog(uid)
     }
 
-    override suspend fun getUserHistoryPosts(collection: String, uid: String): Result<List<GiftPost>> {
-        return remoteDataSource.getUserHistoryPosts(collection,uid)
+    override suspend fun getUserHistoryPosts(
+        collection: String,
+        uid: String,
+    ): Result<List<GiftPost>> {
+        return remoteDataSource.getUserHistoryPosts(collection, uid)
     }
 
     override suspend fun updateGiftStatus(
@@ -145,6 +148,10 @@ class DefaultWeShareRepository(
 
     override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> {
         return remoteDataSource.updateEventRoom(roomId, user)
+    }
+
+    override suspend fun updateEventStatus(docId: String, code: Int): Result<Boolean> {
+        return remoteDataSource.updateEventStatus(docId, code)
     }
 
     override suspend fun getEventRoom(docId: String): Result<ChatRoom> {

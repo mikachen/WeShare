@@ -8,5 +8,7 @@ enum class LogType(val value: Int) {
     ATTEND_EVENT(4),
     VOLUNTEER_EVENT(5),
     COMMENT_EVENT(6),
-    ABANDONED_GIFT(7)
+    ABANDONED_GIFT(7),
+    EVENT_STARTED(8),
+    EVENT_ENDED(9)
 }

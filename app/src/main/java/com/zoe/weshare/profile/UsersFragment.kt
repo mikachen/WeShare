@@ -11,13 +11,11 @@ import com.zoe.weshare.databinding.FragmentUsersBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.profile.userself.SelfViewModel
 
-//TODO 這邊應要顯示 瀏覽其他人的profile :userArg 外部傳入
+// TODO 這邊應要顯示 瀏覽其他人的profile :userArg 外部傳入
 class UsersFragment : Fragment() {
-
 
     lateinit var binding: FragmentUsersBinding
     lateinit var userArg: UserInfo
-
 
     val viewModel: SelfViewModel by viewModels { getVmFactory(userArg) }
 
@@ -30,7 +28,6 @@ class UsersFragment : Fragment() {
         binding = FragmentUsersBinding.inflate(inflater, container, false)
 
         userArg = UsersFragmentArgs.fromBundle(requireArguments()).weshareUser
-
 
         return binding.root
     }

@@ -18,19 +18,30 @@ import com.zoe.weshare.util.UserManager
 
 class MainActivity : AppCompatActivity() {
 
-    private val rotateOpen: Animation by lazy { AnimationUtils.loadAnimation(this,
-            R.anim.fab_rotate_open)
+    private val rotateOpen: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            this,
+            R.anim.fab_rotate_open
+        )
     }
-    private val rotateClose: Animation by lazy { AnimationUtils.loadAnimation(this,
-            R.anim.fab_rotate_close)
+    private val rotateClose: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            this,
+            R.anim.fab_rotate_close
+        )
     }
-    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(this,
-            R.anim.sub_fab_slide_from_bottom)
+    private val fromBottom: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            this,
+            R.anim.sub_fab_slide_from_bottom
+        )
     }
-    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(this,
-            R.anim.sub_fab_slide_to_bottom)
+    private val toBottom: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            this,
+            R.anim.sub_fab_slide_to_bottom
+        )
     }
-
 
     private var isFabExpend: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
@@ -40,7 +51,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         UserManager.init(this)
-
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -72,21 +82,19 @@ class MainActivity : AppCompatActivity() {
                 layoutToolbarSubtitle.visibility = View.VISIBLE
                 toolbarFragmentTitleText.text = it.value
 
-
                 when (it) {
                     // 完全隱藏上方
                     CurrentFragmentType.SELFPROFILE -> topAppbar.visibility = View.GONE
 
                     CurrentFragmentType.CHATROOM -> {
-
                     }
 
-                    //顯示副標題+倒退鍵
+                    // 顯示副標題+倒退鍵
                     CurrentFragmentType.SEARCHLOCATION -> {
                         toolbarFragmentTitleText.text = it.value
                     }
 
-                    //大主頁
+                    // 大主頁
                     CurrentFragmentType.HOME -> {
                         showBottom()
                         toolbar.navigationIcon = null
@@ -97,11 +105,9 @@ class MainActivity : AppCompatActivity() {
                     CurrentFragmentType.GIFTDETAIL -> {}
                     CurrentFragmentType.EVENTDETAIL -> {}
 
-
                     CurrentFragmentType.POSTGIFT -> {}
                     CurrentFragmentType.POSTEVENT -> {}
                     CurrentFragmentType.MAP -> {}
-
 
                     else -> {
                         topAppbar.visibility = View.VISIBLE
@@ -110,7 +116,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun hideBottom() {
         binding.fabsLayoutView.visibility = View.GONE
@@ -203,6 +208,7 @@ class MainActivity : AppCompatActivity() {
             onMainFabClick()
         }
     }
+
     private fun onMainFabClick() {
         setVisibility(isFabExpend)
         setAnimation(isFabExpend)
@@ -212,12 +218,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setAnimation(isFabExpend: Boolean) {
 
-        if(!isFabExpend){
+        if (!isFabExpend) {
             binding.layoutFabGift.startAnimation(fromBottom)
             binding.layoutFabEvent.startAnimation(fromBottom)
             binding.fabMain.startAnimation(rotateOpen)
-
-        }else{
+        } else {
             binding.layoutFabGift.startAnimation(toBottom)
             binding.layoutFabEvent.startAnimation(toBottom)
             binding.fabMain.startAnimation(rotateClose)
@@ -225,11 +230,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setVisibility(isFabExpend: Boolean) {
-        if(!isFabExpend){
+        if (!isFabExpend) {
             binding.layoutFabGift.visibility = View.VISIBLE
             binding.layoutFabEvent.visibility = View.VISIBLE
         }
-        if(!isFabExpend){
+        if (!isFabExpend) {
             binding.layoutFabGift.visibility = View.INVISIBLE
             binding.layoutFabEvent.visibility = View.INVISIBLE
         }

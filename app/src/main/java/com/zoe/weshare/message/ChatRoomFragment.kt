@@ -87,17 +87,14 @@ class ChatRoomFragment : Fragment() {
                 }
 
                 viewModel.onNewMsgListened(list)
-
             } else {
                 Logger.d("SnapshotListen Current data: null")
             }
         }
 
-
         setupSendBtn()
         return binding.root
     }
-
 
     private fun setupSendBtn() {
         binding.buttonSend.setOnClickListener {
@@ -118,7 +115,7 @@ class ChatRoomFragment : Fragment() {
 
             if (mockMessage.isNotEmpty()) {
                 viewModel._newMessage.value = Comment(
-                    //TODO
+                    // TODO
                     uid = userLora.uid,
                     content = mockMessage,
                     createdTime = Calendar.getInstance().timeInMillis

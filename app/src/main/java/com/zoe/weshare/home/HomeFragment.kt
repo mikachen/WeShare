@@ -16,7 +16,6 @@ import com.zoe.weshare.databinding.FragmentHomeBinding
 import com.zoe.weshare.ext.getVmFactory
 import java.util.*
 
-
 class HomeFragment : Fragment() {
 
     private lateinit var headerRv: RecyclerView
@@ -36,7 +35,6 @@ class HomeFragment : Fragment() {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-
         viewModel.gifts.observe(viewLifecycleOwner) {
             hotGiftAdapter.submitList(it)
         }
@@ -48,11 +46,11 @@ class HomeFragment : Fragment() {
             }
         }
 
-
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    NavGraphDirections.actionGlobalGiftDetailFragment(it))
+                    NavGraphDirections.actionGlobalGiftDetailFragment(it)
+                )
 
                 viewModel.displayGiftDetailsComplete()
             }
@@ -66,7 +64,6 @@ class HomeFragment : Fragment() {
                 viewModel.displayEventDetailsComplete()
             }
         }
-
 
         setupHeaderGallery()
         setupHotGiftsGallery()
@@ -84,8 +81,10 @@ class HomeFragment : Fragment() {
             }
         )
 
-        val manager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.HORIZONTAL, false)
+        val manager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL, false
+        )
 
         headerRv.adapter = headerAdapter
         headerRv.layoutManager = manager
@@ -94,32 +93,40 @@ class HomeFragment : Fragment() {
         linearSnapHelper.attachToRecyclerView(headerRv)
 
         val timer = Timer()
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
-                    manager.smoothScrollToPosition(headerRv,
-                        RecyclerView.State(),
-                        manager.findLastVisibleItemPosition() + 1)
-                } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
-                    manager.smoothScrollToPosition(headerRv,
-                        RecyclerView.State(), 0)
+        timer.schedule(
+            object : TimerTask() {
+                override fun run() {
+                    if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+                        manager.smoothScrollToPosition(
+                            headerRv,
+                            RecyclerView.State(),
+                            manager.findLastVisibleItemPosition() + 1
+                        )
+                    } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+                        manager.smoothScrollToPosition(
+                            headerRv,
+                            RecyclerView.State(), 0
+                        )
+                    }
                 }
-            }
-        }, 0, 3000)
+            },
+            0, 3000
+        )
     }
 
     private fun setupHotGiftsGallery() {
 
         hotGiftsRv = binding.hotGiftRv
 
-        hotGiftAdapter = HotGiftsAdapter(HotGiftsAdapter.HotGiftsOnClickListener { selectedGift ->
-            viewModel.displayGiftDetails(selectedGift)
-        })
+        hotGiftAdapter = HotGiftsAdapter(
+            HotGiftsAdapter.HotGiftsOnClickListener { selectedGift ->
+                viewModel.displayGiftDetails(selectedGift)
+            }
+        )
 
         val manager = GridLayoutManager(requireContext(), 2)
 
         hotGiftsRv.adapter = hotGiftAdapter
         hotGiftsRv.layoutManager = manager
-
     }
 }

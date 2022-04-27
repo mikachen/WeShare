@@ -16,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-
 class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
@@ -129,7 +128,6 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     fun displayEventDetails(event: EventPost) {
         _navigateToSelectedEvent.value = event
-
     }
 
     fun displayEventDetailsComplete() {
@@ -138,12 +136,9 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     fun displayGiftDetails(event: GiftPost) {
         _navigateToSelectedGift.value = event
-
     }
 
     fun displayGiftDetailsComplete() {
         _navigateToSelectedGift.value = null
     }
-
-
 }

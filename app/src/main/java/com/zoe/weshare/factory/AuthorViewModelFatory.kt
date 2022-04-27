@@ -38,7 +38,6 @@ class AuthorViewModelFactory(
             return AskForGiftViewModel(repository, userInfo) as T
         }
 
-
         if (modelClass.isAssignableFrom(ChatRoomViewModel::class.java)) {
             return ChatRoomViewModel(repository, userInfo) as T
         }
@@ -59,7 +58,6 @@ class AuthorViewModelFactory(
             return SelfViewModel(repository, userInfo) as T
         }
 
-
         if (modelClass.isAssignableFrom(GiftManageViewModel::class.java)) {
             return GiftManageViewModel(repository, userInfo) as T
         }
@@ -70,5 +68,4 @@ class AuthorViewModelFactory(
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
-
 }

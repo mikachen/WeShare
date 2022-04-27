@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 
-
 class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
 
     override suspend fun postNewEvent(event: EventPost): Result<String> {
@@ -94,7 +93,8 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     }
 
     override suspend fun saveLastMsgRecord(
-        docId: String, message: Comment,
+        docId: String,
+        message: Comment,
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
@@ -138,6 +138,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateEventStatus(docId: String, code: Int): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getEventRoom(docId: String): Result<ChatRoom> {
         TODO("Not yet implemented")
     }
@@ -149,6 +153,4 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
-
-
 }

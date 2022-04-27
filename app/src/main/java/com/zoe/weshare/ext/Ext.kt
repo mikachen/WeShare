@@ -11,10 +11,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.zoe.weshare.R
 import java.util.*
-
+import java.util.concurrent.TimeUnit
 
 fun Long.toDisplayFormat(): String {
-    return SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.TAIWAN).format(this)
+    return SimpleDateFormat("yyyy.MM.dd hh:mm", Locale.TAIWAN).format(this)
 }
 
 fun Long.toDisplaySentTime(): String {
@@ -24,9 +24,11 @@ fun Long.toDisplaySentTime(): String {
 fun bindImage(imgView: ImageView, imgUrl: String?) {
 
     val drawable = CircularProgressDrawable(imgView.context)
-    drawable.setColorSchemeColors(R.color.app_work_orange1,
+    drawable.setColorSchemeColors(
+        R.color.app_work_orange1,
         R.color.app_work_orange2,
-        R.color.app_work_orange3)
+        R.color.app_work_orange3
+    )
     drawable.centerRadius = 50f
     drawable.strokeWidth = 5f
     drawable.start()
@@ -44,7 +46,6 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
     }
 }
 
-
 fun generateSmallIcon(context: Context, icon: Int): Bitmap {
     val height = 120
     val width = 120
@@ -52,8 +53,7 @@ fun generateSmallIcon(context: Context, icon: Int): Bitmap {
     return Bitmap.createScaledBitmap(bitmap, width, height, false)
 }
 
-
-fun Long.getTimeAgo(): String {
+fun Long.getTimeAgoString(): String {
 
     val calendar = Calendar.getInstance()
     calendar.time = Date(this)
@@ -64,7 +64,6 @@ fun Long.getTimeAgo(): String {
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
     val minute = calendar.get(Calendar.MINUTE)
 
-
     val currentCalendar = Calendar.getInstance()
 
     val currentYear = currentCalendar.get(Calendar.YEAR)
@@ -73,13 +72,13 @@ fun Long.getTimeAgo(): String {
     val currentHour = currentCalendar.get(Calendar.HOUR_OF_DAY)
     val currentMinute = currentCalendar.get(Calendar.MINUTE)
 
-    return if (year < currentYear ) {
+    return if (year < currentYear) {
         val interval = currentYear - year
         if (interval == 1) "$interval year ago" else "$interval years ago"
     } else if (month < currentMonth) {
         val interval = currentMonth - month
         if (interval == 1) "$interval month ago" else "$interval months ago"
-    } else  if (day < currentDay) {
+    } else if (day < currentDay) {
         val interval = currentDay - day
         if (interval == 1) "$interval day ago" else "$interval days ago"
     } else if (hour < currentHour) {
@@ -90,5 +89,47 @@ fun Long.getTimeAgo(): String {
         if (interval == 1) "$interval minute ago" else "$interval minutes ago"
     } else {
         "just now"
+    }
+}
+
+// Method to get days hours minutes seconds from milliseconds
+fun getCountDownTimeString(millisUntilFinished: Long): String {
+    var millisTillEnd: Long = millisUntilFinished
+
+    val days = TimeUnit.MILLISECONDS.toDays(millisTillEnd)
+    millisTillEnd -= TimeUnit.DAYS.toMillis(days)
+
+    val hours = TimeUnit.MILLISECONDS.toHours(millisTillEnd)
+    millisTillEnd -= TimeUnit.HOURS.toMillis(hours)
+
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(millisTillEnd)
+    millisTillEnd -= TimeUnit.MINUTES.toMillis(minutes)
+
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(millisTillEnd)
+
+    return if (days != 0L) {
+        String.format(
+            Locale.getDefault(),
+            "%02d day %02d hour %02d min %02d sec left",
+            days, hours, minutes, seconds
+        )
+    } else if (hours != 0L) {
+        String.format(
+            Locale.getDefault(),
+            "%02d hour %02d min %02d sec left",
+            hours, minutes, seconds
+        )
+    } else if (minutes != 0L) {
+        String.format(
+            Locale.getDefault(),
+            "%02d min %02d sec left",
+            minutes, seconds
+        )
+    } else {
+        String.format(
+            Locale.getDefault(),
+            "%02d sec left",
+            seconds
+        )
     }
 }

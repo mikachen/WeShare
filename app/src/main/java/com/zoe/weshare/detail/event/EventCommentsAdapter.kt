@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.R
-import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.Comment
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
-import com.zoe.weshare.ext.getTimeAgo
+import com.zoe.weshare.ext.getTimeAgoString
 import com.zoe.weshare.util.Util
 
 class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
@@ -58,7 +58,7 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
         fun bind(comment: Comment, viewModel: EventDetailViewModel) {
 
             binding.textComment.text = comment.content
-            binding.textCreatedTime.text = comment.createdTime.getTimeAgo()
+            binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
 
             if (viewModel.onProfileSearch.value == 0) {
                 if (viewModel.profileList.isNotEmpty()) {

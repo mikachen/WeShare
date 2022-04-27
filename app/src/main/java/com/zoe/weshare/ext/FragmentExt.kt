@@ -15,4 +15,3 @@ fun Fragment.getVmFactory(): ViewModelFactory {
     val repository = (requireContext().applicationContext as WeShareApplication).repository
     return ViewModelFactory(repository)
 }
-

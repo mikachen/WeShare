@@ -52,7 +52,6 @@ class GiftManageViewModel(
     val abandonStatus: LiveData<LoadApiStatus>
         get() = _abandonStatus
 
-
     var gifts = listOf<GiftPost>()
 
     init {
@@ -64,9 +63,12 @@ class GiftManageViewModel(
         coroutineScope.launch {
             _searchGiftsStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getUserHistoryPosts(
-                collection = PATH_GIFT_POST,
-                uid = userInfo!!.uid)) {
+            when (
+                val result = repository.getUserHistoryPosts(
+                    collection = PATH_GIFT_POST,
+                    uid = userInfo!!.uid
+                )
+            ) {
 
                 is Result.Success -> {
                     _error.value = null
@@ -74,7 +76,6 @@ class GiftManageViewModel(
                     gifts = result.data
 
                     _searchGiftsStatus.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -134,8 +135,10 @@ class GiftManageViewModel(
         coroutineScope.launch {
             _abandonStatus.value = LoadApiStatus.LOADING
 
-            when (val result =
-                repository.updateGiftStatus(selectedGift.id, GiftStatusType.ABANDONED.code, "")) {
+            when (
+                val result =
+                    repository.updateGiftStatus(selectedGift.id, GiftStatusType.ABANDONED.code, "")
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _abandonStatus.value = LoadApiStatus.DONE
@@ -159,13 +162,13 @@ class GiftManageViewModel(
         }
     }
 
-
-    fun onSaveAbandonGiftLog(gift:GiftPost) {
+    fun onSaveAbandonGiftLog(gift: GiftPost) {
         val log = PostLog(
             postDocId = gift.id,
             logType = LogType.ABANDONED_GIFT.value,
             operatorUid = userInfo!!.uid,
-            logMsg = WeShareApplication.instance.getString(R.string.log_msg_abandon_gift,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_abandon_gift,
                 userInfo.name,
                 gift.title
             )
@@ -176,8 +179,10 @@ class GiftManageViewModel(
     private fun saveAbandonLog(log: PostLog) {
         coroutineScope.launch {
 
-            when (val result =
-                repository.saveLog(log)) {
+            when (
+                val result =
+                    repository.saveLog(log)
+            ) {
                 is Result.Success -> {
                     _error.value = null
                 }
@@ -194,6 +199,4 @@ class GiftManageViewModel(
             }
         }
     }
-
 }
-

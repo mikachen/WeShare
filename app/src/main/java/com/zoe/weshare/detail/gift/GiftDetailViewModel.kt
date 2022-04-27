@@ -55,7 +55,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     val navigateToNewRoom: LiveData<ChatRoom?>
         get() = _navigateToNewRoom
 
-
     val profileList = mutableListOf<UserProfile>()
     var updateCommentLike = mutableListOf<Comment>()
 
@@ -74,10 +73,13 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getAllComments(
-                collection = PATH_GIFT_POST,
-                docId = docId,
-                subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR)) {
+            when (
+                val result = repository.getAllComments(
+                    collection = PATH_GIFT_POST,
+                    docId = docId,
+                    subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -157,9 +159,13 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.likeOnPost(collection = PATH_GIFT_POST,
-                docId = doc,
-                uid = userInfo!!.uid)) {
+            when (
+                val result = repository.likeOnPost(
+                    collection = PATH_GIFT_POST,
+                    docId = doc,
+                    uid = userInfo!!.uid
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -187,9 +193,13 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.cancelLikeOnPost(collection = PATH_GIFT_POST,
-                docId = doc,
-                uid = userInfo!!.uid)) {
+            when (
+                val result = repository.cancelLikeOnPost(
+                    collection = PATH_GIFT_POST,
+                    docId = doc,
+                    uid = userInfo!!.uid
+                )
+            ) {
 
                 is Result.Success -> {
                     _error.value = null
@@ -286,7 +296,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         _isUserPressedLike.value = gift.whoLiked.contains(userInfo?.uid) == true
     }
 
-
     fun onCommentsLikePressed(comment: Comment, isUserLiked: Boolean, position: Int) {
         _onCommentLikePressed.value = position
         val whoLikedList = updateCommentLike[position].whoLiked as MutableList<String>
@@ -303,20 +312,18 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     fun checkIfPrivateRoomExist(rooms: List<ChatRoom>) {
 
         val result = rooms.filter {
-            it.participants?.contains(selectedGiftDisplay.value!!.author!!.uid) == true
-                    && it.type == ChatRoomType.PRIVATE.value
+            it.participants?.contains(selectedGiftDisplay.value!!.author!!.uid) == true &&
+                it.type == ChatRoomType.PRIVATE.value
         }
 
         if (result.isNotEmpty()) {
             // there was chat room history with author & ChatRoomType is PRIVATE
             _navigateToFormerRoom.value = result.single()
-
         } else {
-            //no private chat with author before
+            // no private chat with author before
             onNewRoomPrepare()
         }
     }
-
 
     fun onNewRoomPrepare() {
         val room = ChatRoom(
@@ -338,7 +345,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                     _navigateToNewRoom.value = room.apply {
                         id = result.data
                     }
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error

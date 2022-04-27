@@ -49,8 +49,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -79,14 +81,19 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}]" +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
@@ -108,8 +115,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 } else {
                     task.exception?.let {
 
-                        Logger.w("[${this::class.simpleName}] " +
-                                "Error getting documents. ${it.message}")
+                        Logger.w(
+                            "[${this::class.simpleName}] " +
+                                "Error getting documents. ${it.message}"
+                        )
 
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
@@ -136,8 +145,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 } else {
                     task.exception?.let {
 
-                        Logger.w("[${this::class.simpleName}] " +
-                                "Error getting documents. ${it.message}")
+                        Logger.w(
+                            "[${this::class.simpleName}] " +
+                                "Error getting documents. ${it.message}"
+                        )
 
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
@@ -167,8 +178,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -178,36 +191,38 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun getAllComments(collection: String, docId: String, subCollection: String)
-            : Result<List<Comment>> = suspendCoroutine { continuation ->
-        FirebaseFirestore.getInstance()
-            .collection(collection).document(docId)
-            .collection(subCollection)
-            .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
-            .get()
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val list = mutableListOf<Comment>()
-                    for (document in task.result!!) {
-                        Logger.d(collection + document.id + " => " + document.data)
+    override suspend fun getAllComments(collection: String, docId: String, subCollection: String): Result<List<Comment>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(collection).document(docId)
+                .collection(subCollection)
+                .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<Comment>()
+                        for (document in task.result!!) {
+                            Logger.d(collection + document.id + " => " + document.data)
 
-                        val requestComments = document.toObject(Comment::class.java)
-                        list.add(requestComments)
+                            val requestComments = document.toObject(Comment::class.java)
+                            list.add(requestComments)
+                        }
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                     }
-                    continuation.resume(Result.Success(list))
-                } else {
-                    task.exception?.let {
-
-                        Logger.w("[${this::class.simpleName}] " +
-                                "Error getting documents. ${it.message}")
-
-                        continuation.resume(Result.Error(it))
-                        return@addOnCompleteListener
-                    }
-                    continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                 }
-            }
-    }
+        }
 
     override suspend fun sendComment(
         collection: String,
@@ -234,8 +249,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 } else {
                     task.exception?.let {
 
-                        Logger.w("[${this::class.simpleName}] " +
-                                "Error getting documents. ${it.message}")
+                        Logger.w(
+                            "[${this::class.simpleName}] " +
+                                "Error getting documents. ${it.message}"
+                        )
 
                         continuation.resume(Result.Error(it))
                         return@addOnCompleteListener
@@ -263,8 +280,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -273,7 +292,6 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
-
 
     override fun getLiveMessages(
         collection: String,
@@ -307,7 +325,6 @@ object WeShareRemoteDataSource : WeShareDataSource {
         return liveData
     }
 
-
     override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
@@ -332,8 +349,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -366,8 +385,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -394,8 +415,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}]" +
-                                    " Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                    " Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -405,29 +428,31 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun cancelLikeOnPost(collection: String, docId: String, uid: String)
-            : Result<Boolean> = suspendCoroutine { continuation ->
-        FirebaseFirestore.getInstance().collection(collection)
-            .document(docId)
-            .update(FIELD_WHO_LIKED, FieldValue.arrayRemove(uid))
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Logger.i("CancelLikeGiftPost: $uid")
+    override suspend fun cancelLikeOnPost(collection: String, docId: String, uid: String): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(collection)
+                .document(docId)
+                .update(FIELD_WHO_LIKED, FieldValue.arrayRemove(uid))
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("CancelLikeGiftPost: $uid")
 
-                    continuation.resume(Result.Success(true))
-                } else {
-                    task.exception?.let {
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
 
-                        Logger.w("[${this::class.simpleName}] " +
-                                "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
-                        continuation.resume(Result.Error(it))
-                        return@addOnCompleteListener
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                     }
-                    continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
                 }
-            }
-    }
+        }
 
     override suspend fun likeOnPostComment(
         collection: String,
@@ -448,8 +473,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -478,8 +505,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -489,15 +518,15 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-
     override suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance().collection(PATH_CHATROOM).document(docId)
-                .update(mapOf(
-                    FIELD_ROOM_LAST_MEG to message.content,
-                    FIELD_ROOM_LAST_SENT_TIME to message.createdTime
-                ))
-
+                .update(
+                    mapOf(
+                        FIELD_ROOM_LAST_MEG to message.content,
+                        FIELD_ROOM_LAST_SENT_TIME to message.createdTime
+                    )
+                )
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Logger.i("saveLastMsgRecord: $message")
@@ -506,14 +535,19 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
@@ -536,14 +570,19 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}]" +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
@@ -567,14 +606,19 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}]" +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
@@ -600,18 +644,22 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
-
 
     override suspend fun getUserHistoryPosts(
         collection: String,
@@ -639,19 +687,24 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
 
-    //gift -> 下架or送出贈品時
+    // gift -> 下架or送出贈品時
     override suspend fun updateGiftStatus(
         docId: String,
         statusCode: Int,
@@ -660,10 +713,12 @@ object WeShareRemoteDataSource : WeShareDataSource {
         suspendCoroutine { continuation ->
 
             FirebaseFirestore.getInstance().collection(PATH_GIFT_POST).document(docId)
-                .update(mapOf(
-                    FIELD_STATUS to statusCode,
-                    FIELD_WHO_GET_GIFT to uid))
-
+                .update(
+                    mapOf(
+                        FIELD_STATUS to statusCode,
+                        FIELD_WHO_GET_GIFT to uid
+                    )
+                )
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Logger.i("updateGiftStatus: $statusCode")
@@ -672,14 +727,19 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
@@ -701,8 +761,39 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}]" +
-                                    " Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                    " Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun updateEventStatus(
+        docId: String,
+        code: Int,
+    ): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_EVENT_POST)
+                .document(docId)
+                .update(FIELD_STATUS, code)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("updateEventStatus $code")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                    " Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -715,11 +806,12 @@ object WeShareRemoteDataSource : WeShareDataSource {
     override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance().collection(PATH_CHATROOM).document(roomId)
-                .update(mapOf(
-                    FIELD_ROOM_PARTICIPANTS to FieldValue.arrayUnion(user.uid),
-                    FIELD_ROOM_USERS_INFO to FieldValue.arrayUnion(user)
-                ))
-
+                .update(
+                    mapOf(
+                        FIELD_ROOM_PARTICIPANTS to FieldValue.arrayUnion(user.uid),
+                        FIELD_ROOM_USERS_INFO to FieldValue.arrayUnion(user)
+                    )
+                )
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Logger.i("updateEventRoom: $user")
@@ -728,14 +820,19 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
                         }
-                        continuation.resume(Result.Fail(
-                            WeShareApplication.instance.getString(R.string.result_fail)))
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
@@ -759,8 +856,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     } else {
                         task.exception?.let {
 
-                            Logger.w("[${this::class.simpleName}] " +
-                                    "Error getting documents. ${it.message}")
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
 
                             continuation.resume(Result.Error(it))
                             return@addOnCompleteListener
@@ -770,5 +869,3 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 }
-
-

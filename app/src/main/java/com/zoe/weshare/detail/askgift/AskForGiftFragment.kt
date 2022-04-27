@@ -25,7 +25,6 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
     private val currentUser = UserManager.userLora
     lateinit var selectedGift: GiftPost
 
-
     val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(currentUser) }
 
     override fun onCreateView(
@@ -37,22 +36,21 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
         selectedGift = AskForGiftFragmentArgs.fromBundle(requireArguments()).selectedGift
         binding = FragmentAskForGiftBinding.inflate(inflater, container, false)
 
-
-        viewModel.newRequestComment.observe(viewLifecycleOwner){
+        viewModel.newRequestComment.observe(viewLifecycleOwner) {
             viewModel.askForGiftRequest(selectedGift, it)
         }
-       viewModel.saveLogComplete.observe(viewLifecycleOwner){
-           if(it == LoadApiStatus.DONE) {
-               findNavController().navigate(
-                   NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift))
-               Toast.makeText(requireContext(),"save log success",Toast.LENGTH_SHORT).show()
-           }
-       }
+        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
+            if (it == LoadApiStatus.DONE) {
+                findNavController().navigate(
+                    NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift)
+                )
+                Toast.makeText(requireContext(), "save log success", Toast.LENGTH_SHORT).show()
+            }
+        }
 
         setupBtn()
         return binding.root
     }
-
 
     private fun setupBtn() {
         binding.buttonSubmit.setOnClickListener {
@@ -61,7 +59,7 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
             val message = binding.editLeaveComment.text.toString()
 
             if (message.isNotEmpty()) {
-                viewModel.onSendNewRequest(message , selectedGift)
+                viewModel.onSendNewRequest(message, selectedGift)
                 binding.editLeaveComment.text?.clear()
             } else {
                 Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()

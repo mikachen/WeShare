@@ -11,15 +11,16 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.zoe.weshare.R
-import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentPostEventBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.UserManager.userZoe
 
 class PostEventFragment : Fragment() {
 
+    val currentUser = userZoe
+
     private lateinit var binding: FragmentPostEventBinding
-    val viewModel by viewModels<PostEventViewModel> { getVmFactory(userZoe) }
+    val viewModel by viewModels<PostEventViewModel> { getVmFactory(currentUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,8 +38,9 @@ class PostEventFragment : Fragment() {
                 )
             )
         }
-        viewModel.datePick.observe(viewLifecycleOwner){
-            binding.datePicker.setText(it)
+
+        viewModel.datePick.observe(viewLifecycleOwner) {
+            binding.editDatePicker.setText(it)
         }
 
         setupNextBtn()
@@ -60,19 +62,26 @@ class PostEventFragment : Fragment() {
         val sort = binding.dropdownMenuSort.text.toString()
         val volunteerNeeds = binding.editVolunteer.text.toString()
         val description = binding.editDescription.text.toString()
+        val time = binding.editDatePicker.text.toString()
 
         when (true) {
-            title.isEmpty() -> Toast.makeText(requireContext(),
+            title.isEmpty() -> Toast.makeText(
+                requireContext(),
                 getString(R.string.error_title_isEmpty),
-                Toast.LENGTH_SHORT)
+                Toast.LENGTH_SHORT
+            )
                 .show()
-            sort.isEmpty() -> Toast.makeText(requireContext(),
+            sort.isEmpty() -> Toast.makeText(
+                requireContext(),
                 getString(R.string.error_sort_isEmpty),
-                Toast.LENGTH_SHORT)
+                Toast.LENGTH_SHORT
+            )
                 .show()
-            volunteerNeeds.isEmpty() -> Toast.makeText(requireContext(),
+            volunteerNeeds.isEmpty() -> Toast.makeText(
+                requireContext(),
                 getString(R.string.error_volunteer_need),
-                Toast.LENGTH_SHORT)
+                Toast.LENGTH_SHORT
+            )
                 .show()
             description.isEmpty() -> Toast.makeText(
                 requireContext(),
@@ -80,13 +89,13 @@ class PostEventFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            else -> viewModel._event.value = EventPost(
-                author = userZoe,
-                title = title,
-                sort = sort,
-                volunteerNeeds = volunteerNeeds.toInt(),
-                description = description
-            )
+            time.isEmpty() -> Toast.makeText(
+                requireContext(),
+                getString(R.string.error_date_pick_isEmpty),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            else -> viewModel.onNavigateSearchLocation(title, sort, volunteerNeeds, description)
         }
     }
 
@@ -100,25 +109,23 @@ class PostEventFragment : Fragment() {
         binding.dropdownMenuSort.setAdapter(sortAdapter)
     }
 
-    private fun setupDatePicker(){
+    private fun setupDatePicker() {
 
         val dateRangePicker =
             MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText("Select dates")
                 .build()
 
-        dateRangePicker.addOnPositiveButtonClickListener { datePick->
+        dateRangePicker.addOnPositiveButtonClickListener { datePick ->
 
             val startDate = datePick.first
             val secondDate = datePick.second
 
-            viewModel.onDatePickDisplay(startDate,secondDate)
+            viewModel.onDatePickDisplay(startDate, secondDate)
         }
 
-
-        binding.datePicker.setOnClickListener {
+        binding.editDatePicker.setOnClickListener {
             dateRangePicker.show(requireActivity().supportFragmentManager, "date_range_picker")
         }
     }
 }
-

@@ -20,7 +20,6 @@ import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
-import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager.userZoe
 
 class PostGiftFragment : Fragment() {
@@ -52,7 +51,6 @@ class PostGiftFragment : Fragment() {
             )
         }
 
-
         setupBtn()
         setupDropdownMenu()
 
@@ -67,19 +65,17 @@ class PostGiftFragment : Fragment() {
         binding.buttonImagePreviewHolder.setOnClickListener {
             selectImage()
         }
-
     }
 
     private fun uploadImage(imageUri: Uri) {
 
         // Code for showing progressDialog while uploading
         val progressDialog = ProgressDialog(requireContext())
-        progressDialog.setTitle("Uploading...");
-        progressDialog.show();
+        progressDialog.setTitle("Uploading...")
+        progressDialog.show()
 
         val now = Calendar.getInstance().timeInMillis
-        val formatFileName = userZoe.uid +"/"+ now.toDisplayFormat()
-
+        val formatFileName = userZoe.uid + "/" + now.toDisplayFormat()
 
         // Defining the child of storageReference
         val ref = storageReference.child("images/$formatFileName")
@@ -104,14 +100,16 @@ class PostGiftFragment : Fragment() {
     private fun selectImage() {
         // Defining Implicit Intent to mobile gallery
 
-        val intent = Intent();
-        intent.type = "image/*";
-        intent.action = Intent.ACTION_GET_CONTENT;
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(
             Intent.createChooser(
                 intent,
-                "Select Image from here..."),
-            PICK_IMAGE_REQUEST);
+                "Select Image from here..."
+            ),
+            PICK_IMAGE_REQUEST
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -128,19 +126,18 @@ class PostGiftFragment : Fragment() {
 
                 // Setting image on image view using Bitmap
                 val bitmap = MediaStore.Images.Media.getBitmap(
-                    requireActivity().contentResolver, filePath)
+                    requireActivity().contentResolver, filePath
+                )
 
                 binding.buttonImagePreviewHolder.setImageBitmap(bitmap)
 
                 uploadImage(filePath)
-
             } catch (e: Exception) {
                 // Log the exception
                 e.printStackTrace()
             }
         }
     }
-
 
     private fun dataCollecting() {
 
@@ -154,12 +151,16 @@ class PostGiftFragment : Fragment() {
                 .show()
             sort.isEmpty() -> Toast.makeText(requireContext(), "sort.isEmpty", Toast.LENGTH_SHORT)
                 .show()
-            condition.isEmpty() -> Toast.makeText(requireContext(),
+            condition.isEmpty() -> Toast.makeText(
+                requireContext(),
                 "condition.isEmpty",
-                Toast.LENGTH_SHORT).show()
-            description.isEmpty() -> Toast.makeText(requireContext(),
+                Toast.LENGTH_SHORT
+            ).show()
+            description.isEmpty() -> Toast.makeText(
+                requireContext(),
                 "description.isEmpty",
-                Toast.LENGTH_SHORT).show()
+                Toast.LENGTH_SHORT
+            ).show()
 
             else -> viewModel.onSaveUserInput(title, sort, condition, description)
         }

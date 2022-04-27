@@ -17,7 +17,6 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.UserManager
 
-
 class SelfFragment : Fragment() {
 
     val currentUser = UserManager.userZoe
@@ -34,8 +33,6 @@ class SelfFragment : Fragment() {
 
         binding = FragmentSelfBinding.inflate(inflater, container, false)
 
-
-
         viewModel.user.observe(viewLifecycleOwner) {
             setUpView(it)
         }
@@ -43,7 +40,6 @@ class SelfFragment : Fragment() {
         viewModel.userLog.observe(viewLifecycleOwner) {
             setupLogView(it)
         }
-
 
         setupBtn()
         return binding.root
@@ -64,7 +60,6 @@ class SelfFragment : Fragment() {
 
                 textEventVolunteerCount.text =
                     logs.filter { it.logType == LogType.VOLUNTEER_EVENT.value }.size.toString()
-
             }
         }
     }
@@ -74,7 +69,6 @@ class SelfFragment : Fragment() {
             findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
         }
     }
-
 
     private fun setUpView(user: UserProfile) {
         binding.apply {

@@ -24,6 +24,9 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     val event: LiveData<EventPost>
         get() = _event
 
+    var startTime: Long = -1
+    var endTime: Long = -1
+
     private val _datePick = MutableLiveData<String>()
     val datePick: LiveData<String>
         get() = _datePick
@@ -54,7 +57,6 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
-
 
     fun onNewEventPost(it: String) {
         _event.value!!.roomId = it
@@ -94,9 +96,11 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             postDocId = docId,
             logType = LogType.POST_EVENT.value,
             operatorUid = author!!.uid,
-            logMsg = WeShareApplication.instance.getString(R.string.log_msg_post_event,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_post_event,
                 author.name,
-                event.value?.title ?: "")
+                event.value?.title ?: ""
+            )
         )
         saveEventPostLog(log)
     }
@@ -177,8 +181,27 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         }
     }
 
-    fun onDatePickDisplay(startDate: Long?, secondDate: Long?) {
+    fun onDatePickDisplay(startDate: Long, secondDate: Long) {
+        startTime = startDate
+        endTime = secondDate
 
-        _datePick.value = "${startDate?.toDisplayFormat()} - ${secondDate?.toDisplayFormat()}"
+        _datePick.value = "${startDate.toDisplayFormat()} - ${secondDate.toDisplayFormat()}"
+    }
+
+    fun onNavigateSearchLocation(
+        title: String,
+        sort: String,
+        volunteerNeeds: String,
+        description: String,
+    ) {
+        _event.value = EventPost(
+            author = author,
+            title = title,
+            sort = sort,
+            volunteerNeeds = volunteerNeeds.toInt(),
+            description = description,
+            startTime = startTime,
+            endTime = endTime
+        )
     }
 }

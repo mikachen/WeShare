@@ -38,7 +38,6 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
         val userReceiveGift: Boolean =
             viewModel.selectedGiftDisplay.value?.whoGetGift == comment.uid
 
-
         holderGift.binding.apply {
 
             textLikesCount.text = getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
@@ -53,7 +52,7 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
                 viewModel.onCommentsLikePressed(comment, isUserLiked, position)
             }
 
-            if(userReceiveGift){
+            if (userReceiveGift) {
                 lottieReceivedGift.visibility = View.VISIBLE
             }
         }

@@ -53,11 +53,14 @@ class AskForGiftViewModel(
 
             _requestGiftStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.sendComment(
-                collection = PATH_GIFT_POST,
-                docId = gift.id,
-                comment = comment,
-                subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR)) {
+            when (
+                val result = repository.sendComment(
+                    collection = PATH_GIFT_POST,
+                    docId = gift.id,
+                    comment = comment,
+                    subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR
+                )
+            ) {
 
                 is Result.Success -> {
                     _error.value = null
@@ -81,13 +84,13 @@ class AskForGiftViewModel(
         }
     }
 
-
     private fun onSaveGiftRequestLog(gift: GiftPost) {
         val log = PostLog(
             postDocId = gift.id,
             logType = LogType.REQUEST_GIFT.value,
             operatorUid = userInfo!!.uid,
-            logMsg = WeShareApplication.instance.getString(R.string.log_msg_request_gift,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_request_gift,
                 userInfo.name,
                 gift.title
             )

@@ -23,10 +23,14 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
 
                 textTitle.text = data.title
                 textPostedLocation.text =
-                    getStringWithStrParm(R.string.post_location_name,
-                        data.postLocation?.locationName ?: "")
-                textPostedTime.text = getStringWithStrParm(R.string.card_posted_time,
-                    data.createdTime.toDisplayFormat())
+                    getStringWithStrParm(
+                        R.string.post_location_name,
+                        data.postLocation?.locationName ?: ""
+                    )
+                textPostedTime.text = getStringWithStrParm(
+                    R.string.card_posted_time,
+                    data.createdTime.toDisplayFormat()
+                )
                 bindImage(image, data.image)
             }
         }
@@ -62,7 +66,6 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
     private fun getRealPosition(position: Int): Int = list?.let {
         position % it.size
     } ?: 0
-
 
     fun submitCards(dataList: List<Cards>) {
         this.list = dataList

@@ -28,23 +28,28 @@ class GiftManageFragment : Fragment() {
     private val viewModel by viewModels<GiftManageViewModel> { getVmFactory(currentUser) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentGiftManageBinding.inflate(inflater, container, false)
 
-        //everytime when tabs position change, the index change
+        // everytime when tabs position change, the index change
         index = requireArguments().getInt(INDEX_VALUE)
 
-        val adapter = GiftItemsAdapter(viewModel, GiftItemsAdapter.OnClickListener {
-            findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
-        })
-        val manager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.VERTICAL, false)
+        val adapter = GiftItemsAdapter(
+            viewModel,
+            GiftItemsAdapter.OnClickListener {
+                findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
+            }
+        )
+        val manager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL, false
+        )
 
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = manager
-
 
         viewModel.searchGiftsStatus.observe(viewLifecycleOwner) {
             if (it == LoadApiStatus.DONE) {
@@ -61,7 +66,7 @@ class GiftManageFragment : Fragment() {
         }
 
         viewModel.abandonStatus.observe(viewLifecycleOwner) {
-            if(it == LoadApiStatus.DONE) {
+            if (it == LoadApiStatus.DONE) {
                 Toast.makeText(requireContext(), "下架成功", Toast.LENGTH_SHORT).show()
             }
         }
@@ -72,9 +77,6 @@ class GiftManageFragment : Fragment() {
                 viewModel.showCommentsComplete()
             }
         }
-
-
-
 
         return binding.root
     }
@@ -98,7 +100,6 @@ class GiftManageFragment : Fragment() {
         val alter: AlertDialog = builder.create()
         alter.show()
     }
-
 
     companion object {
         private const val INDEX_VALUE = "INDEX"

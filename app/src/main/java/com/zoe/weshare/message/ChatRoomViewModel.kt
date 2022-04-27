@@ -56,7 +56,6 @@ class ChatRoomViewModel(
     val error: LiveData<String?>
         get() = _error
 
-
     fun onSending(inputMsg: String) {
         _newMessage.value = Comment(
             uid = userInfo!!.uid,
@@ -106,7 +105,7 @@ class ChatRoomViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    saveLastMsgRecord(docId) //發成功才執行保存對話
+                    saveLastMsgRecord(docId) // 發成功才執行保存對話
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -160,7 +159,6 @@ class ChatRoomViewModel(
 
             else -> "unKnow chatroom type"
         }
-
     }
 
     fun onNewMsgListened(list: MutableList<Comment>) {

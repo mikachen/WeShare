@@ -18,8 +18,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-const val GIFT_TYPE = 0
-const val EVENT_TYPE = 1
+const val GIFT_CARD = 0
+const val EVENT_CARD = 1
 
 class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
 
@@ -84,7 +84,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                     id = element.id,
                     title = element.title,
                     createdTime = element.createdTime,
-                    postType = GIFT_TYPE,
+                    postType = GIFT_CARD,
                     image = element.image,
                     postLocation = element.location
                 )
@@ -98,7 +98,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                     id = element.id,
                     title = element.title,
                     createdTime = element.createdTime,
-                    postType = EVENT_TYPE,
+                    postType = EVENT_CARD,
                     image = element.image,
                     postLocation = element.location
                 )

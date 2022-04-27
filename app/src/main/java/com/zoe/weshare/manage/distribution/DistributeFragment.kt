@@ -45,8 +45,10 @@ class DistributeFragment : BottomSheetDialogFragment() {
         viewModel.getAskForGiftComments(selectedGift)
 
         val adapter = DistributeAdapter(viewModel)
-        val manager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.VERTICAL, false)
+        val manager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL, false
+        )
 
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = manager
@@ -79,7 +81,6 @@ class DistributeFragment : BottomSheetDialogFragment() {
             }
         }
 
-
         return binding.root
     }
 
@@ -103,17 +104,14 @@ class DistributeFragment : BottomSheetDialogFragment() {
         alter.show()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialogBg)
     }
 
-
     // expanded all dialog view when keyboard pop up
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
-
 
         dialog.setOnShowListener {
 

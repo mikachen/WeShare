@@ -10,11 +10,12 @@ data class EventPost(
     var author: UserInfo? = null,
     var title: String = "",
     var sort: String = "",
-    var date: Long = -1,
     var volunteerNeeds: Int = -1,
     var description: String = "",
     var image: String = "",
     var location: PostLocation? = null,
+    var endTime: Long = -1,
+    var startTime: Long = -1,
     var createdTime: Long = -1,
     var roomId: String = "",
     var status: Int = EventStatusType.WAITING.code,
@@ -22,4 +23,4 @@ data class EventPost(
     var whoAttended: List<String> = emptyList(),
     var whoVolunteer: List<String> = emptyList(),
 
-    ) : Parcelable
+) : Parcelable

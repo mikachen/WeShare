@@ -14,9 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
 import android.view.animation.BounceInterpolator
-import android.view.animation.ScaleAnimation
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -44,7 +42,6 @@ import com.zoe.weshare.databinding.FragmentMapBinding
 import com.zoe.weshare.ext.generateSmallIcon
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.requestPermissions
-
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -81,34 +78,33 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         viewModel.cards.observe(viewLifecycleOwner) {
             if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
 
-                Log.d("shuffled1","$it")
-                //markers on map
+                Log.d("shuffled1", "$it")
+                // markers on map
                 createMarker(it)
 
-                //cards recycler view
+                // cards recycler view
                 adapter.submitCards(it)
             }
         }
 
         viewModel.snapPosition.observe(viewLifecycleOwner) {
 
-            //trigger marker showInfoWindow
+            // trigger marker showInfoWindow
             markersRef[it].showInfoWindow()
 
-            //move camera
+            // move camera
             viewModel.cardsViewList[it].postLocation?.let { location ->
                 val point =
                     LatLng(location.latitude.toDouble(), location.longitude.toDouble())
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 13F))
             }
-
-
         }
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    NavGraphDirections.actionGlobalGiftDetailFragment(it))
+                    NavGraphDirections.actionGlobalGiftDetailFragment(it)
+                )
 
                 viewModel.displayCardDetailsComplete()
             }
@@ -122,12 +118,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         }
 
-
         getLocationPermission()
         // TODO 當user同意location權限後，檢查user是否有啟用GooglePlayService
 
         if (!isPermissionGranted) {
-            //TODO 這邊用call back判斷 重寫
+            // TODO 這邊用call back判斷 重寫
             AlertDialog.Builder(requireContext())
                 .setTitle("開啟位置權限")
                 .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
@@ -137,7 +132,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
                 .setNegativeButton("取消") { _, _ -> getLocationPermission() }
                 .show()
-
         } else {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
@@ -150,9 +144,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return binding.root
     }
 
-
     private fun createMarker(cards: List<Cards>?) {
-        Log.d("shuffled2","$cards")
+        Log.d("shuffled2", "$cards")
 
         cards?.forEach {
             it.postLocation.let { location ->
@@ -165,10 +158,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
                 if (newMarker != null) {
                     when (it.postType) {
-                        GIFT_TYPE -> newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
-                            generateSmallIcon(requireContext(), R.drawable.ic_map_event_marker)))
-                        EVENT_TYPE -> newMarker.setIcon(BitmapDescriptorFactory.fromBitmap(
-                            generateSmallIcon(requireContext(), R.drawable.ic_map_gift_marker)))
+                        GIFT_CARD -> newMarker.setIcon(
+                            BitmapDescriptorFactory.fromBitmap(
+                                generateSmallIcon(requireContext(), R.drawable.ic_map_event_marker)
+                            )
+                        )
+                        EVENT_CARD -> newMarker.setIcon(
+                            BitmapDescriptorFactory.fromBitmap(
+                                generateSmallIcon(requireContext(), R.drawable.ic_map_gift_marker)
+                            )
+                        )
                     }
                     markersRef.add(newMarker)
                 }
@@ -225,7 +224,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         )
     }
 
-
     private fun checkGooglePlayService(): Boolean {
 
         val googleApiAvailability = GoogleApiAvailability.getInstance()
@@ -261,7 +259,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         map.setOnMarkerClickListener(this)
-
     }
 
     private fun setupCardGallery() {
@@ -274,8 +271,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         )
 
-        val manager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.HORIZONTAL, false)
+        val manager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL, false
+        )
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = manager
@@ -286,7 +285,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         val marginDecoration = GalleryDecoration()
         recyclerView.addItemDecoration(marginDecoration)
-
 
         recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
             viewModel.onGalleryScrollChange(
@@ -352,18 +350,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun getLocationPermission() {
-        //檢查權限
+        // 檢查權限
         if (ActivityCompat.checkSelfPermission(
                 (activity as MainActivity),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            //已獲取到權限
+            // 已獲取到權限
             Toast.makeText(requireContext(), "已獲取", Toast.LENGTH_SHORT).show()
             isPermissionGranted = true
-            //todo checkGPSState()
+            // todo checkGPSState()
         } else {
-            //詢問要求獲取權限
+            // 詢問要求獲取權限
             (activity as MainActivity).requestPermissions()
         }
     }
@@ -383,7 +381,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             override fun run() {
                 val elapsed = SystemClock.uptimeMillis() - start
                 val t = Math.max(
-                    1 - interpolator.getInterpolation(elapsed.toFloat() / duration), 0f)
+                    1 - interpolator.getInterpolation(elapsed.toFloat() / duration), 0f
+                )
 
                 marker.setAnchor(0.5f, 1f + 2 * t)
 
@@ -394,6 +393,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         })
 
-    return false
-}
+        return false
+    }
 }

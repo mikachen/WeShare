@@ -26,7 +26,7 @@ class RoomListFragment : Fragment() {
 
         binding = FragmentRoomListBinding.inflate(inflater, container, false)
 
-        //update room list whenever go back to RoomListFragment
+        // update room list whenever go back to RoomListFragment
         viewModel.searchChatRooms()
 
         adapter = RoomListAdapter(
@@ -52,5 +52,4 @@ class RoomListFragment : Fragment() {
 
         return binding.root
     }
-
 }

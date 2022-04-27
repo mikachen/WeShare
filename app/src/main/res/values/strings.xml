@@ -89,6 +89,8 @@
     <string name="log_msg_send_event_comment">%1$s\t對活動:%2$1s\t發表留言</string>
     <string name="log_msg_event_attending">%1$s\t參與了活動:%2$1s</string>
     <string name="log_msg_event_volunteering">%1$s\t成為了活動:%2$1s\t的志工成員</string>
+    <string name="log_msg_event_status_ongoing">活動:%1$1s\t已經開始囉！</string>
+    <string name="log_msg_event_status_ended">活動:%1$1s\t已經結束了！</string>
 
     <string name="event_leave_a_comment">留個言吧…</string>
     <string name="chatroom_send_a_message">輸入訊息</string>
@@ -99,6 +101,7 @@
     <string name="error_sort_isEmpty">請選則分類</string>
     <string name="error_volunteer_need">請填寫志工數量</string>
     <string name="error_description_isEmpty">請填寫活動詳情</string>
+    <string name="error_date_pick_isEmpty">請選擇開始與結束時間</string>
 
 
 

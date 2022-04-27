@@ -1,6 +1,7 @@
 package com.zoe.weshare.detail.event
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventDetailBinding
 import com.zoe.weshare.ext.bindImage
+import com.zoe.weshare.ext.getCountDownTimeString
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.network.LoadApiStatus
@@ -26,9 +28,8 @@ import com.zoe.weshare.util.Const.FIELD_EVENT_ATTENDEE
 import com.zoe.weshare.util.Const.FIELD_EVENT_VOLUNTEER
 import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.userLora
-import com.zoe.weshare.util.UserManager.userZoe
-
 
 class EventDetailFragment : Fragment() {
 
@@ -56,6 +57,11 @@ class EventDetailFragment : Fragment() {
             setupBtn(it)
             setupLikeBtn(it)
         }
+        viewModel.eventStatusChanged.observe(viewLifecycleOwner) {
+            viewModel.updateEventStatus(it)
+        }
+
+        viewModel
 
         viewModel.newComment.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -65,12 +71,13 @@ class EventDetailFragment : Fragment() {
 
         viewModel.sendCommentStatus.observe(viewLifecycleOwner) {
             if (it == LoadApiStatus.DONE) {
-
                 viewModel.onSaveOperateLog(
                     event = selectedEvent,
                     logType = LogType.COMMENT_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
-                        R.string.log_msg_send_event_comment, currentUser.name, selectedEvent.title))
+                        R.string.log_msg_send_event_comment, currentUser.name, selectedEvent.title
+                    )
+                )
             }
         }
 
@@ -80,13 +87,17 @@ class EventDetailFragment : Fragment() {
                     event = selectedEvent,
                     logType = LogType.ATTEND_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
-                        R.string.log_msg_event_attending, currentUser.name, selectedEvent.title))
+                        R.string.log_msg_event_attending, currentUser.name, selectedEvent.title
+                    )
+                )
             } else if (it == FIELD_EVENT_VOLUNTEER) {
                 viewModel.onSaveOperateLog(
                     event = selectedEvent,
                     logType = LogType.VOLUNTEER_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
-                        R.string.log_msg_event_volunteering, currentUser.name, selectedEvent.title))
+                        R.string.log_msg_event_volunteering, currentUser.name, selectedEvent.title
+                    )
+                )
             }
         }
 
@@ -154,7 +165,6 @@ class EventDetailFragment : Fragment() {
         if (event.status == EventStatusType.ENDED.code) {
 
             binding.layoutAttendeeButton.visibility = View.GONE
-
         } else {
             binding.buttonAttend.setOnClickListener {
                 viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
@@ -175,7 +185,6 @@ class EventDetailFragment : Fragment() {
             viewModel.getChatRoomInfo()
         }
     }
-
 
     private fun onSendComment() {
         val message = binding.editCommentBox.text
@@ -224,6 +233,8 @@ class EventDetailFragment : Fragment() {
 
             textEventDescription.text = event.description
 
+            textStartTime.text = event.startTime.toDisplayFormat()
+
             when (event.whoAttended.contains(currentUser.uid)) {
                 true -> buttonAttend.text = "參與中"
                 false -> buttonAttend.text = "我要參加"
@@ -232,36 +243,47 @@ class EventDetailFragment : Fragment() {
             when (event.whoVolunteer.contains(currentUser.uid)) {
                 true -> buttonVolunteer.text = "已登記"
                 false -> buttonVolunteer.text = "志工參與"
+            }
 
+            when (event.status) {
+                EventStatusType.WAITING.code ->
+                    countDownTimer(event.startTime - System.currentTimeMillis()).start()
+
+                EventStatusType.ONGOING.code ->
+                    countDownTimer(event.endTime - System.currentTimeMillis()).start()
+
+                else -> binding.textCountdownTime.text = ""
             }
         }
 
-        when (event.status) {
-            EventStatusType.WAITING.code -> {
+        when (true) {
+            (event.status == EventStatusType.WAITING.code) -> {
                 binding.textStatus.text = EventStatusType.WAITING.tag
                 binding.textStatus.setBackgroundResource(R.color.message_sender_green)
             }
-            EventStatusType.ONGOING.code -> {
-
+            (event.status == EventStatusType.ONGOING.code) -> {
                 binding.textStatus.text = EventStatusType.ONGOING.tag
                 binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
             }
-            EventStatusType.ENDED.code -> {
+            (event.status == EventStatusType.ENDED.code) -> {
                 binding.textStatus.text = EventStatusType.ENDED.tag
                 binding.textStatus.setBackgroundResource(R.color.app_work_light_grey)
             }
+            else -> { Logger.d("unKnow status")}
         }
     }
 
     private fun setupLikeBtn(selectedEvent: EventPost) {
-        val scaleAnimation = ScaleAnimation(0.7f,
+        val scaleAnimation = ScaleAnimation(
+            0.7f,
             1.0f,
             0.7f,
             1.0f,
             Animation.RELATIVE_TO_SELF,
             0.7f,
             Animation.RELATIVE_TO_SELF,
-            0.7f)
+            0.7f
+        )
         scaleAnimation.duration = 500
         val bounceInterpolator = BounceInterpolator()
         scaleAnimation.interpolator = bounceInterpolator
@@ -289,7 +311,24 @@ class EventDetailFragment : Fragment() {
             binding.buttonPressLike.isChecked
         ) {
             findNavController().navigate(
-                EventDetailFragmentDirections.actionEventDetailFragmentToCreditFragment())
+                EventDetailFragmentDirections.actionEventDetailFragmentToCreditFragment()
+            )
+        }
+    }
+
+    private fun countDownTimer(millisInFuture: Long): CountDownTimer {
+
+        return object : CountDownTimer(millisInFuture, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+
+                val timeRemaining = getCountDownTimeString(millisUntilFinished)
+
+                binding.textCountdownTime.text = timeRemaining
+            }
+
+            override fun onFinish() {
+                binding.textCountdownTime.text = "活動開始"
+            }
         }
     }
 }

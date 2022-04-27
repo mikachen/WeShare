@@ -83,8 +83,7 @@ class SelfViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _userLog.value = result.data?:emptyList()
-
+                    _userLog.value = result.data ?: emptyList()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -105,5 +104,4 @@ class SelfViewModel(
             }
         }
     }
-
 }

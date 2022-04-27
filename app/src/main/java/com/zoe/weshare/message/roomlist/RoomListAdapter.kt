@@ -27,8 +27,7 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
 
         val targetObj = room.usersInfo?.single { it.uid != UserManager.userZoe.uid }
 
-
-        //TODO 對方如果離開可能null
+        // TODO 對方如果離開可能null
         if (targetObj != null) {
             holder.bind(room, targetObj)
         }
@@ -46,13 +45,11 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(room: ChatRoom, targetObj: UserInfo) {
 
-
             binding.apply {
                 bindImage(imageRoomImage, targetObj.image)
                 textRoomTargetTitle.text = targetObj.name
                 textLastMessage.text = room.lastMsg
                 textLastSentTime.text = room.lastMsgSentTime.toDisplaySentTime()
-
             }
         }
 

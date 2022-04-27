@@ -112,7 +112,6 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
-
         return binding.root
     }
 
@@ -128,8 +127,10 @@ class GiftDetailFragment : Fragment() {
 
             textPostedLocation.text = selectedGift.location?.locationName
 
-            textCreatedTime.text = getString(R.string.posted_time,
-                selectedGift.createdTime.toDisplayFormat())
+            textCreatedTime.text = getString(
+                R.string.posted_time,
+                selectedGift.createdTime.toDisplayFormat()
+            )
 
             textSort.text = selectedGift.sort
 
@@ -162,8 +163,7 @@ class GiftDetailFragment : Fragment() {
             viewModel.searchOnPrivateRoom(currentUser)
         }
 
-
-        when(true){
+        when (true) {
             // author he/herself hide the button
             (selectedGift.author!!.uid == currentUser.uid) -> {
                 binding.lottieBtnChatMe.visibility = View.GONE
@@ -203,16 +203,17 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-
     private fun setupLikeBtn(selectedGift: GiftPost) {
-        val scaleAnimation = ScaleAnimation(0.7f,
+        val scaleAnimation = ScaleAnimation(
+            0.7f,
             1.0f,
             0.7f,
             1.0f,
             Animation.RELATIVE_TO_SELF,
             0.7f,
             Animation.RELATIVE_TO_SELF,
-            0.7f)
+            0.7f
+        )
         scaleAnimation.duration = 500
         val bounceInterpolator = BounceInterpolator()
         scaleAnimation.interpolator = bounceInterpolator
@@ -234,14 +235,14 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-
     private fun playCreditScene() {
         if (binding.buttonAdditionHeart2.isChecked &&
             binding.buttonAdditionHeart1.isChecked &&
             binding.buttonPressLike.isChecked
         ) {
             findNavController().navigate(
-                GiftDetailFragmentDirections.actionGiftDetailFragmentToCreditFragment())
+                GiftDetailFragmentDirections.actionGiftDetailFragmentToCreditFragment()
+            )
         }
     }
 }

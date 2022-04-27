@@ -1,6 +1,5 @@
 package com.zoe.weshare.detail.event
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +10,10 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.Const.PATH_EVENT_POST
 import com.zoe.weshare.util.Const.SUB_PATH_EVENT_USER_WHO_COMMENT
+import com.zoe.weshare.util.EventStatusType
+import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.Util.getStringWithStrParm
+import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,6 +21,8 @@ import kotlinx.coroutines.launch
 
 class EventDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
+
+    var liveComments = MutableLiveData<List<Comment>>()
 
     private var _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>>
@@ -31,6 +36,10 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val room: LiveData<ChatRoom?>
         get() = _room
 
+    private var _eventStatusChanged = MutableLiveData<Int>()
+    val eventStatusChanged: LiveData<Int>
+        get() = _eventStatusChanged
+
     private var _onNavigateToRoom = MutableLiveData<ChatRoom?>()
     val onNavigateToRoom: LiveData<ChatRoom?>
         get() = _onNavigateToRoom
@@ -38,8 +47,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     private var _onEventDisplaying = MutableLiveData<EventPost>()
     val onEventDisplaying: LiveData<EventPost>
         get() = _onEventDisplaying
-
-    var liveComments = MutableLiveData<List<Comment>>()
 
     private val _refreshStatus = MutableLiveData<Boolean>()
     val refreshStatus: LiveData<Boolean>
@@ -61,7 +68,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
 
     private val _sendCommentStatus = MutableLiveData<LoadApiStatus>()
     val sendCommentStatus: LiveData<LoadApiStatus>
@@ -87,20 +93,22 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val error: LiveData<String?>
         get() = _error
 
-
     fun getHistoryComments(docId: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getAllComments(
-                collection = PATH_EVENT_POST,
-                docId = docId,
-                subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT)) {
+            when (
+                val result = repository.getAllComments(
+                    collection = PATH_EVENT_POST,
+                    docId = docId,
+                    subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _comments.value = result.data ?: emptyList()
+                    _comments.value = result.data!!
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -128,16 +136,14 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             val newUserUid = mutableListOf<String>()
             val filteredUser = comments.distinctBy { it.uid }
 
-
             if (profileList.isNotEmpty()) {
                 for (i in filteredUser) {
                     if (!profileList.any { it.uid == i.uid }) {
                         newUserUid.add(i.uid)
                     }
                 }
-
             }
-            //first time is empty
+            // first time is empty
             else {
                 for (i in filteredUser) {
                     newUserUid.add(i.uid)
@@ -186,9 +192,13 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.likeOnPost(collection = PATH_EVENT_POST,
-                docId = doc,
-                uid = userInfo!!.uid)) {
+            when (
+                val result = repository.likeOnPost(
+                    collection = PATH_EVENT_POST,
+                    docId = doc,
+                    uid = userInfo!!.uid
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -216,9 +226,13 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.cancelLikeOnPost(collection = PATH_EVENT_POST,
-                docId = doc,
-                uid = userInfo!!.uid)) {
+            when (
+                val result = repository.cancelLikeOnPost(
+                    collection = PATH_EVENT_POST,
+                    docId = doc,
+                    uid = userInfo!!.uid
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -247,6 +261,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         _currentLikedNumber.value = event.whoLiked.size
         _isUserPressedLike.value = event.whoLiked.contains(userInfo!!.uid) == true
 
+        checkEventStatus(event)
         getLiveCommentResult()
     }
 
@@ -270,11 +285,14 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
             _sendCommentStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.sendComment(
-                collection = PATH_EVENT_POST,
-                docId = docId,
-                comment = comment,
-                subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT)) {
+            when (
+                val result = repository.sendComment(
+                    collection = PATH_EVENT_POST,
+                    docId = docId,
+                    comment = comment,
+                    subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _sendCommentStatus.value = LoadApiStatus.DONE
@@ -314,7 +332,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 is Result.Success -> {
                     _error.value = null
                     _saveLogComplete.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -410,11 +427,13 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.updateEventAttendee(
-                docId = onEventDisplaying.value!!.id,
-                field = fieldType,
-                uid = userInfo!!.uid
-            )) {
+            when (
+                val result = repository.updateEventAttendee(
+                    docId = onEventDisplaying.value!!.id,
+                    field = fieldType,
+                    uid = userInfo!!.uid
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -441,7 +460,8 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         liveComments = repository.getLiveMessages(
             collection = PATH_EVENT_POST,
             docId = onEventDisplaying.value!!.id,
-            subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT)
+            subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
+        )
 
         _status.value = LoadApiStatus.DONE
         _refreshStatus.value = false
@@ -450,13 +470,15 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     fun getChatRoomInfo() {
         coroutineScope.launch {
 
-            when (val result = repository.getEventRoom(
-                docId = onEventDisplaying.value!!.roomId,
-            )) {
+            when (
+                val result = repository.getEventRoom(
+                    docId = onEventDisplaying.value!!.roomId,
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
 
-                    _room.value = result.data!!
+                    _room.value = result.data
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -472,18 +494,18 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     }
 
     fun updateEventRoom() {
-        Log.d("updateEventRoom","${userInfo}")
         coroutineScope.launch {
             _updateRoomStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.updateEventRoom(
-                roomId = onEventDisplaying.value!!.roomId,
-                user = userInfo!!
-            )) {
+            when (
+                val result = repository.updateEventRoom(
+                    roomId = onEventDisplaying.value!!.roomId,
+                    user = userInfo!!
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _updateRoomStatus.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -507,9 +529,8 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             if (room.participants.contains(userInfo!!.uid)) {
 
                 _onNavigateToRoom.value = room
-
             } else {
-                //a new user never been in room before
+                // a new user never been in room before
                 updateEventRoom()
             }
         } else {
@@ -521,5 +542,78 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     fun navigateToRoomComplete() {
         _onNavigateToRoom.value = null
         _room.value = null
+    }
+
+    fun checkEventStatus(event: EventPost) {
+        when (true) {
+            (event.startTime > Calendar.getInstance().timeInMillis) -> {
+                if (event.status != EventStatusType.WAITING.code) {
+                    _eventStatusChanged.value = EventStatusType.WAITING.code
+                }
+            }
+            (event.startTime < Calendar.getInstance().timeInMillis) -> {
+                if (event.endTime > Calendar.getInstance().timeInMillis) {
+                    if (event.status != EventStatusType.ONGOING.code) {
+                        _eventStatusChanged.value = EventStatusType.ONGOING.code
+                    }
+                } else {
+                    if (event.status != EventStatusType.ENDED.code) {
+                        _eventStatusChanged.value = EventStatusType.ENDED.code
+                    }
+                }
+            }
+            else -> {}
+        }
+    }
+
+    fun updateEventStatus(newStatus: Int) {
+        coroutineScope.launch {
+
+            when (
+                val result = repository.updateEventStatus(
+                    docId = onEventDisplaying.value!!.id,
+                    code = newStatus
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                    prepareLogMsg(newStatus)
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                }
+            }
+        }
+    }
+
+    private fun prepareLogMsg(status: Int) {
+
+        val log = PostLog(
+            postDocId = _onEventDisplaying.value!!.id,
+            operatorUid = userInfo!!.uid
+        )
+        when (status) {
+            EventStatusType.ONGOING.code -> {
+                log.logType = LogType.EVENT_STARTED.value
+                log.logMsg = getStringWithStrParm(
+                    R.string.log_msg_event_status_ongoing,
+                    _onEventDisplaying.value!!.title
+                )
+            }
+            EventStatusType.ENDED.code -> {
+                log.logType = LogType.EVENT_ENDED.value
+                log.logMsg = getStringWithStrParm(
+                    R.string.log_msg_event_status_ended,
+                    _onEventDisplaying.value!!.title
+                )
+            }
+        }
+        saveLog(log)
     }
 }

@@ -73,13 +73,12 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
             setUpUserPreview(gift = null, event = newEvent)
 
-
             binding.buttonSubmit.setOnClickListener {
                 eventViewModel.event.value?.let { eventViewModel.onNewRoomPrepare() }
             }
 
-            eventViewModel.roomCreateComplete.observe(viewLifecycleOwner){
-                if (it.isNotEmpty()){
+            eventViewModel.roomCreateComplete.observe(viewLifecycleOwner) {
+                if (it.isNotEmpty()) {
                     eventViewModel.onNewEventPost(it)
                 }
             }
@@ -153,8 +152,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         eventVm: PostEventViewModel?,
         giftVm: PostGiftViewModel?,
     ) {
-        val autocompleteFragment =
-            childFragmentManager.findFragmentById(R.id.autocomplete_support_fragment) as AutocompleteSupportFragment
+        val autocompleteFragment = childFragmentManager
+            .findFragmentById(R.id.autocomplete_support_fragment) as AutocompleteSupportFragment
 
         autocompleteFragment.setPlaceFields(
             listOf(

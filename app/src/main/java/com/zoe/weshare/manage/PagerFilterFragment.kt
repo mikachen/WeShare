@@ -1,7 +1,6 @@
 package com.zoe.weshare.manage
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,15 +25,11 @@ class PagerFilterFragment : Fragment() {
     ): View? {
         binding = FragmentPagerFilterBinding.inflate(inflater, container, false)
 
-
         viewPager = binding.viewpager
         tabs = binding.tabLayout
 
         pagerAdapter = PagerAdapter(this)
         viewPager.adapter = pagerAdapter
-
-
-
 
         TabLayoutMediator(tabs, viewPager) { tab, position ->
             when (position) {
@@ -47,5 +42,4 @@ class PagerFilterFragment : Fragment() {
 
         return binding.root
     }
-
 }
