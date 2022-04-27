@@ -119,7 +119,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserHistoryPosts(collection: String, uid: String): Result<List<GiftPost>>{
+    override suspend fun getUserHistoryPosts(
+        collection: String,
+        uid: String,
+    ): Result<List<GiftPost>> {
         TODO("Not yet implemented")
     }
 
@@ -128,6 +131,14 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         field: String,
         uid: String,
     ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getEventRoom(docId: String): Result<ChatRoom> {
         TODO("Not yet implemented")
     }
 

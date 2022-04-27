@@ -107,18 +107,18 @@
                     android:text="志工參與"
                     android:textSize="18dp"
                     app:layout_constraintBottom_toBottomOf="@id/button_attend"
-                    app:layout_constraintEnd_toStartOf="@id/button_more_choice"
+                    app:layout_constraintEnd_toStartOf="@id/button_enter_event_chatroom"
                     app:layout_constraintStart_toEndOf="@id/button_attend"
                     app:layout_constraintTop_toTopOf="@id/button_attend" />
 
-                <ImageButton
-                    android:id="@+id/button_more_choice"
+                <Button
+                    android:id="@+id/button_enter_event_chatroom"
                     android:layout_width="70dp"
                     android:layout_height="40dp"
                     android:layout_marginHorizontal="16dp"
                     android:background="@drawable/ripple_event_attend_button"
-                    android:src="@drawable/ic_baseline_more_horiz_24"
                     android:textSize="18dp"
+                    android:text="群聊"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/button_volunteer"
                     app:layout_constraintTop_toTopOf="@id/button_attend" />
@@ -313,20 +313,6 @@
                     app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
                     app:layout_constraintTop_toTopOf="@id/base_user_avatar"
                     tools:text="Zoelo" />
-
-
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/lottie_btn_chat_me"
-                    android:layout_width="50dp"
-                    android:layout_height="70dp"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintBottom_toBottomOf="@id/text_profile_name"
-                    app:layout_constraintStart_toEndOf="@id/text_profile_name"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:lottie_autoPlay="true"
-                    app:lottie_fileName="chat_hint_robot.json"
-                    app:lottie_loop="true"
-                    app:lottie_speed="1" />
 
 
                 <TextView

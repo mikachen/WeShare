@@ -21,6 +21,7 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager.userZoe
 
 class DistributeFragment : BottomSheetDialogFragment() {
@@ -65,16 +66,17 @@ class DistributeFragment : BottomSheetDialogFragment() {
             }
         }
 
-        viewModel.onConfirmMsgShowing.observe(viewLifecycleOwner){
+        viewModel.onConfirmMsgShowing.observe(viewLifecycleOwner) {
             sendGiftEvent(it)
         }
 
-        viewModel.sendGiftStatus.observe(viewLifecycleOwner){
+        viewModel.sendGiftStatus.observe(viewLifecycleOwner) {
+            if (it == LoadApiStatus.DONE) {
+                viewModel.onSaveSendGiftLog()
 
-            viewModel.onSaveSendGiftLog()
-            Toast.makeText(requireContext(),"送出成功",Toast.LENGTH_SHORT).show()
-
-            findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
+                Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
+                findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
+            }
         }
 
 
@@ -85,10 +87,10 @@ class DistributeFragment : BottomSheetDialogFragment() {
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {
-            setTitle(getString(R.string.send_gift_title,selectedGift.title,target!!.uid))
+            setTitle(getString(R.string.send_gift_title, selectedGift.title, target!!.uid))
             setMessage(getString(R.string.send_gift_message))
             setPositiveButton(getString(R.string.send_gift_yes)) { dialog, id ->
-                viewModel.sendGift(selectedGift,target)
+                viewModel.sendGift(selectedGift, target)
                 dialog.cancel()
             }
 

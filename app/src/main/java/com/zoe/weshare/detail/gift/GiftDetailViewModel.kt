@@ -74,7 +74,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getAllComments(collection = PATH_GIFT_POST,docId, subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR)) {
+            when (val result = repository.getAllComments(
+                collection = PATH_GIFT_POST,
+                docId = docId,
+                subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE

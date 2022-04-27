@@ -13,7 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
+import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventDetailBinding
 import com.zoe.weshare.ext.bindImage
@@ -23,6 +25,8 @@ import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.Const.FIELD_EVENT_ATTENDEE
 import com.zoe.weshare.util.Const.FIELD_EVENT_VOLUNTEER
 import com.zoe.weshare.util.EventStatusType
+import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.UserManager.userLora
 import com.zoe.weshare.util.UserManager.userZoe
 
 
@@ -32,7 +36,7 @@ class EventDetailFragment : Fragment() {
     private lateinit var adapter: EventCommentsAdapter
     private lateinit var commentsBoard: RecyclerView
 
-    val currentUser = userZoe
+    val currentUser = userLora
 
     val viewModel by viewModels<EventDetailViewModel> { getVmFactory(currentUser) }
 
@@ -49,7 +53,7 @@ class EventDetailFragment : Fragment() {
 
         viewModel.onEventDisplaying.observe(viewLifecycleOwner) {
             setupView(it)
-            setUpBtn(it)
+            setupBtn(it)
             setupLikeBtn(it)
         }
 
@@ -61,13 +65,45 @@ class EventDetailFragment : Fragment() {
 
         viewModel.sendCommentStatus.observe(viewLifecycleOwner) {
             if (it == LoadApiStatus.DONE) {
-                viewModel.onSaveCommentLog(selectedEvent)
+
+                viewModel.onSaveOperateLog(
+                    event = selectedEvent,
+                    logType = LogType.COMMENT_EVENT.value,
+                    logMsg = WeShareApplication.instance.getString(
+                        R.string.log_msg_send_event_comment, currentUser.name, selectedEvent.title))
             }
         }
 
-        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
-            if (it == LoadApiStatus.DONE) {
-                //TODO
+        viewModel.userAttendType.observe(viewLifecycleOwner) {
+            if (it == FIELD_EVENT_ATTENDEE) {
+                viewModel.onSaveOperateLog(
+                    event = selectedEvent,
+                    logType = LogType.ATTEND_EVENT.value,
+                    logMsg = WeShareApplication.instance.getString(
+                        R.string.log_msg_event_attending, currentUser.name, selectedEvent.title))
+            } else if (it == FIELD_EVENT_VOLUNTEER) {
+                viewModel.onSaveOperateLog(
+                    event = selectedEvent,
+                    logType = LogType.VOLUNTEER_EVENT.value,
+                    logMsg = WeShareApplication.instance.getString(
+                        R.string.log_msg_event_volunteering, currentUser.name, selectedEvent.title))
+            }
+        }
+
+        viewModel.room.observe(viewLifecycleOwner) {
+            it?.let {
+                viewModel.checkUserInRoomBefore(it)
+            }
+        }
+
+        viewModel.updateRoomStatus.observe(viewLifecycleOwner) {
+            viewModel.getChatRoomInfo()
+        }
+
+        viewModel.onNavigateToRoom.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalChatRoomFragment(it))
+                viewModel.navigateToRoomComplete()
             }
         }
 
@@ -100,8 +136,7 @@ class EventDetailFragment : Fragment() {
         return binding.root
     }
 
-    private fun setUpBtn(event: EventPost) {
-        binding.lottieBtnChatMe.visibility = View.GONE
+    private fun setupBtn(event: EventPost) {
 
         binding.buttonSendComment.setOnClickListener {
             onSendComment()
@@ -116,24 +151,31 @@ class EventDetailFragment : Fragment() {
             } else false
         }
 
-        when (true) {
+        if (event.status == EventStatusType.ENDED.code) {
 
-            (event.status == EventStatusType.ENDED.code) -> {
-                binding.layoutAttendeeButton.visibility = View.GONE
-            }
+            binding.layoutAttendeeButton.visibility = View.GONE
 
-            else -> {
-                binding.buttonAttend.setOnClickListener {
-                    viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
-                }
-                binding.buttonVolunteer.setOnClickListener {
-                    viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
-                }
+        } else {
+            binding.buttonAttend.setOnClickListener {
+                viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
             }
+            binding.buttonVolunteer.setOnClickListener {
+                viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
+            }
+        }
+
+        /**
+         * when user click on enter room:
+         * 1) getEventRoom
+         * 2) check if user has been in chat before
+         * 3) if true -> navigate to room
+         * 4) if false -> update room doc, return to (1~2~3 step)
+         */
+        binding.buttonEnterEventChatroom.setOnClickListener {
+            viewModel.getChatRoomInfo()
         }
     }
 
-    // TODO A. search room doc type = 1, & relatedEventId   B.if result is null, create a new one
 
     private fun onSendComment() {
         val message = binding.editCommentBox.text
@@ -181,6 +223,17 @@ class EventDetailFragment : Fragment() {
                 getString(R.string.number_who_liked, event.whoLiked.size)
 
             textEventDescription.text = event.description
+
+            when (event.whoAttended.contains(currentUser.uid)) {
+                true -> buttonAttend.text = "參與中"
+                false -> buttonAttend.text = "我要參加"
+            }
+
+            when (event.whoVolunteer.contains(currentUser.uid)) {
+                true -> buttonVolunteer.text = "已登記"
+                false -> buttonVolunteer.text = "志工參與"
+
+            }
         }
 
         when (event.status) {

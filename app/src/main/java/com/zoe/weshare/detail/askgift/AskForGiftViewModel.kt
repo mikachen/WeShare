@@ -85,7 +85,7 @@ class AskForGiftViewModel(
     private fun onSaveGiftRequestLog(gift: GiftPost) {
         val log = PostLog(
             postDocId = gift.id,
-            logType = LogType.REQUESTGIFT.value,
+            logType = LogType.REQUEST_GIFT.value,
             operatorUid = userInfo!!.uid,
             logMsg = WeShareApplication.instance.getString(R.string.log_msg_request_gift,
                 userInfo.name,

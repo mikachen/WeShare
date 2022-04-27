@@ -165,7 +165,7 @@ class DistributeViewModel(
     fun onSaveSendGiftLog() {
         val log = PostLog(
             postDocId = gift.id,
-            logType = LogType.SENDAWAYGIFT.value,
+            logType = LogType.SEND_GIFT.value,
             operatorUid = userInfo!!.uid,
             logMsg = WeShareApplication.instance.getString(R.string.log_msg_send_away_gift,
                 userInfo.name,

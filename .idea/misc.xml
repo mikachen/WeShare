@@ -56,7 +56,7 @@
         <entry key="app/src/main/res/layout/fragment_commenting.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/fragment_credit.xml" value="0.1774262505344164" />
         <entry key="app/src/main/res/layout/fragment_distribute.xml" value="0.25908507909362977" />
-        <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_gift_manage.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />

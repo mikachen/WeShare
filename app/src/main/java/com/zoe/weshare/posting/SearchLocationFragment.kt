@@ -73,8 +73,15 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
             setUpUserPreview(gift = null, event = newEvent)
 
-            eventViewModel.locationChoice.observe(viewLifecycleOwner) {
-                binding.locationTitle.text
+
+            binding.buttonSubmit.setOnClickListener {
+                eventViewModel.event.value?.let { eventViewModel.onNewRoomPrepare() }
+            }
+
+            eventViewModel.roomCreateComplete.observe(viewLifecycleOwner){
+                if (it.isNotEmpty()){
+                    eventViewModel.onNewEventPost(it)
+                }
             }
 
             eventViewModel.postEventComplete.observe(viewLifecycleOwner) {
@@ -83,16 +90,9 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
             eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
                 if (it == LoadApiStatus.DONE) {
-                    Toast.makeText(requireContext(), "Success save event Log", Toast.LENGTH_SHORT)
-                        .show()
                     findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
                 }
             }
-
-            binding.nextButton.setOnClickListener {
-                eventViewModel.event.value?.let { event -> eventViewModel.newEventPost(event) }
-            }
-
         } else {
             val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
 
@@ -102,26 +102,17 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
             setUpUserPreview(gift = newGift, event = null)
 
-            giftViewModel.locationChoice.observe(viewLifecycleOwner) {
-                binding.locationTitle.text
-            }
-
-
-
             giftViewModel.postGiftComplete.observe(viewLifecycleOwner) {
                 giftViewModel.onSaveGiftPostLog(docId = it)
             }
 
             giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
                 if (it == LoadApiStatus.DONE) {
-                    Toast.makeText(requireContext(), "Success save gift Log", Toast.LENGTH_SHORT)
-                        .show()
                     findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
                 }
             }
 
-
-            binding.nextButton.setOnClickListener {
+            binding.buttonSubmit.setOnClickListener {
                 giftViewModel.gift.value?.let { gift -> giftViewModel.newGiftPost(gift) }
             }
         }

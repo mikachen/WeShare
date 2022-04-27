@@ -9,13 +9,17 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ChatRoomViewModel(private val repository: WeShareRepository, private val userInfo: UserInfo?) :
+class ChatRoomViewModel(
+    private val repository: WeShareRepository,
+    private val userInfo: UserInfo?,
+) :
     ViewModel() {
 
     private var messageRecords = mutableListOf<MessageItem>()
@@ -28,9 +32,9 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val u
     val chatRoom: LiveData<ChatRoom>
         get() = _chatRoom
 
-    private var _targetInfo = MutableLiveData<UserInfo>()
-    val targetInfo: LiveData<UserInfo>
-        get() = _targetInfo
+    private var _roomTitle = MutableLiveData<String>()
+    val roomTitle: LiveData<String>
+        get() = _roomTitle
 
     var _newMessage = MutableLiveData<Comment>()
     val newMessage: LiveData<Comment>
@@ -69,7 +73,7 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val u
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    _messageItems.value =  result.data
+                    _messageItems.value = result.data
                     messageRecords = result.data as MutableList<MessageItem>
                 }
                 is Result.Fail -> {
@@ -147,7 +151,16 @@ class ChatRoomViewModel(private val repository: WeShareRepository, private val u
     }
 
     fun onUserInfoDisplay(chatRoom: ChatRoom) {
-        _targetInfo.value = chatRoom.usersInfo?.single { it.uid != UserManager.userZoe.uid }
+
+        _roomTitle.value = when (chatRoom.type) {
+            ChatRoomType.PRIVATE.value ->
+                chatRoom.usersInfo.single { it.uid != UserManager.userZoe.uid }.name
+
+            ChatRoomType.MULTIPLE.value -> "活動群聊"
+
+            else -> "unKnow chatroom type"
+        }
+
     }
 
     fun onNewMsgListened(list: MutableList<Comment>) {

@@ -85,9 +85,21 @@
     <string name="log_msg_post_event">%1$s\t刊登了活動:%2$1s</string>
     <string name="log_msg_request_gift">%1$s\t登記索取了贈品:%2$1s</string>
     <string name="log_msg_send_away_gift">%1$s\t送出了贈品:%2$1s給%3$1s</string>
-    <string name="log_msg_send_event_comment">%1$s\t對活動:%2$1s\t發起留言</string>
-    <string name="event_leave_a_comment">留個言吧...</string>
+    <string name="log_msg_abandon_gift">%1$s\t下架了贈品:%2$1s</string>
+    <string name="log_msg_send_event_comment">%1$s\t對活動:%2$1s\t發表留言</string>
+    <string name="log_msg_event_attending">%1$s\t參與了活動:%2$1s</string>
+    <string name="log_msg_event_volunteering">%1$s\t成為了活動:%2$1s\t的志工成員</string>
+
+    <string name="event_leave_a_comment">留個言吧…</string>
     <string name="chatroom_send_a_message">輸入訊息</string>
+
+
+    //error handle
+    <string name="error_title_isEmpty">請填寫標題</string>
+    <string name="error_sort_isEmpty">請選則分類</string>
+    <string name="error_volunteer_need">請填寫志工數量</string>
+    <string name="error_description_isEmpty">請填寫活動詳情</string>
+
 
 
 </resources>

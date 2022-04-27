@@ -1,7 +1,6 @@
 package com.zoe.weshare.manage.giftsItem
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,11 +57,13 @@ class GiftManageFragment : Fragment() {
         }
 
         viewModel.onAlterMsgShowing.observe(viewLifecycleOwner) {
-            abandonedEvent(it)
+            onAlertAbandon(it)
         }
 
         viewModel.abandonStatus.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), "下架成功", Toast.LENGTH_SHORT).show()
+            if(it == LoadApiStatus.DONE) {
+                Toast.makeText(requireContext(), "下架成功", Toast.LENGTH_SHORT).show()
+            }
         }
 
         viewModel.onCommentsShowing.observe(viewLifecycleOwner) {
@@ -78,7 +79,7 @@ class GiftManageFragment : Fragment() {
         return binding.root
     }
 
-    private fun abandonedEvent(gift: GiftPost) {
+    private fun onAlertAbandon(gift: GiftPost) {
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {

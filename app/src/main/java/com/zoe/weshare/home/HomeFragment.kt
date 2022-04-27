@@ -42,7 +42,10 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.events.observe(viewLifecycleOwner) {
-            headerAdapter.submitEvents(it)
+            // zero will cause headerAdapter crash cause i set infinity items adapter
+            if (it.isNotEmpty()) {
+                headerAdapter.submitEvents(it)
+            }
         }
 
 

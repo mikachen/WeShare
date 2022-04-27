@@ -54,19 +54,18 @@ class SelfFragment : Fragment() {
             binding.apply {
 
                 textGiftPostCount.text =
-                    logs.filter { it.logType == LogType.POSTGIFT.value }.size.toString()
+                    logs.filter { it.logType == LogType.POST_GIFT.value }.size.toString()
 
                 textGiftSentCount.text =
-                    logs.filter { it.logType == LogType.SENDAWAYGIFT.value }.size.toString()
+                    logs.filter { it.logType == LogType.SEND_GIFT.value }.size.toString()
 
                 textEventPostCount.text =
-                    logs.filter { it.logType == LogType.POSTEVENT.value }.size.toString()
+                    logs.filter { it.logType == LogType.POST_EVENT.value }.size.toString()
 
                 textEventVolunteerCount.text =
-                    logs.filter { it.logType == LogType.REGIVOLUNTEER.value }.size.toString()
+                    logs.filter { it.logType == LogType.VOLUNTEER_EVENT.value }.size.toString()
 
             }
-
         }
     }
 

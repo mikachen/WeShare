@@ -12,6 +12,8 @@ import com.zoe.weshare.data.source.WeShareDataSource
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_SENT_TIME
+import com.zoe.weshare.util.Const.FIELD_ROOM_PARTICIPANTS
+import com.zoe.weshare.util.Const.FIELD_ROOM_USERS_INFO
 import com.zoe.weshare.util.Const.FIELD_STATUS
 import com.zoe.weshare.util.Const.FIELD_WHO_GET_GIFT
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
@@ -346,7 +348,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
             FirebaseFirestore.getInstance()
                 .collection(PATH_CHATROOM)
-                .whereArrayContains("participants", uid)
+                .whereArrayContains(FIELD_ROOM_PARTICIPANTS, uid)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -611,7 +613,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
         }
 
 
-    override suspend fun getUserHistoryPosts(collection: String, uid: String): Result<List<GiftPost>> =
+    override suspend fun getUserHistoryPosts(
+        collection: String,
+        uid: String,
+    ): Result<List<GiftPost>> =
         suspendCoroutine { continuation ->
 
             FirebaseFirestore.getInstance()
@@ -690,7 +695,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 .update(field, FieldValue.arrayUnion(uid))
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Logger.i( "updateEventAttendee $field: $uid")
+                        Logger.i("updateEventAttendee $field: $uid")
 
                         continuation.resume(Result.Success(true))
                     } else {
@@ -706,4 +711,64 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
+
+    override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_CHATROOM).document(roomId)
+                .update(mapOf(
+                    FIELD_ROOM_PARTICIPANTS to FieldValue.arrayUnion(user.uid),
+                    FIELD_ROOM_USERS_INFO to FieldValue.arrayUnion(user)
+                ))
+
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("updateEventRoom: $user")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(
+                            WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
+    override suspend fun getEventRoom(docId: String): Result<ChatRoom> =
+        suspendCoroutine { continuation ->
+
+            FirebaseFirestore.getInstance()
+                .collection(PATH_CHATROOM).document(docId)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+
+                        val room = task.result.toObject(ChatRoom::class.java)
+
+                        if (room != null) {
+                            Logger.d("getEventRoom" + room.id)
+
+                            continuation.resume(Result.Success(room))
+                        }
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w("[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}")
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
 }
+
+

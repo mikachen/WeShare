@@ -58,8 +58,8 @@ class ChatRoomFragment : Fragment() {
             }
         }
 
-        viewModel.targetInfo.observe(viewLifecycleOwner) {
-            (activity as MainActivity).binding.toolbarFragmentTitleText.text = it.name
+        viewModel.roomTitle.observe(viewLifecycleOwner) {
+            (activity as MainActivity).binding.toolbarFragmentTitleText.text = it
         }
 
         viewModel.newMessage.observe(viewLifecycleOwner) {

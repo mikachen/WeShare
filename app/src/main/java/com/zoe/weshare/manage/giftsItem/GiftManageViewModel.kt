@@ -1,6 +1,5 @@
 package com.zoe.weshare.manage.giftsItem
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +10,7 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.Const.PATH_GIFT_POST
 import com.zoe.weshare.util.GiftStatusType
+import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -99,7 +99,6 @@ class GiftManageViewModel(
         }
     }
 
-
     fun filteringGift(index: Int) {
         when (index) {
 
@@ -140,6 +139,8 @@ class GiftManageViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _abandonStatus.value = LoadApiStatus.DONE
+
+                    onSaveAbandonGiftLog(selectedGift)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -157,5 +158,42 @@ class GiftManageViewModel(
             }
         }
     }
+
+
+    fun onSaveAbandonGiftLog(gift:GiftPost) {
+        val log = PostLog(
+            postDocId = gift.id,
+            logType = LogType.ABANDONED_GIFT.value,
+            operatorUid = userInfo!!.uid,
+            logMsg = WeShareApplication.instance.getString(R.string.log_msg_abandon_gift,
+                userInfo.name,
+                gift.title
+            )
+        )
+        saveAbandonLog(log)
+    }
+
+    private fun saveAbandonLog(log: PostLog) {
+        coroutineScope.launch {
+
+            when (val result =
+                repository.saveLog(log)) {
+                is Result.Success -> {
+                    _error.value = null
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                }
+                else -> {
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
+                }
+            }
+        }
+    }
+
 }
 

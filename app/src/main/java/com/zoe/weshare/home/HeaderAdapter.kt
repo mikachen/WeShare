@@ -52,5 +52,4 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
         this.list = dataList
         notifyDataSetChanged()
     }
-
 }

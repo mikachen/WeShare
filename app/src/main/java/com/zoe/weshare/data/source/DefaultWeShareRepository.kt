@@ -142,4 +142,12 @@ class DefaultWeShareRepository(
     ): Result<Boolean> {
         return remoteDataSource.updateEventAttendee(docId, field, uid)
     }
+
+    override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> {
+        return remoteDataSource.updateEventRoom(roomId, user)
+    }
+
+    override suspend fun getEventRoom(docId: String): Result<ChatRoom> {
+        return remoteDataSource.getEventRoom(docId)
+    }
 }

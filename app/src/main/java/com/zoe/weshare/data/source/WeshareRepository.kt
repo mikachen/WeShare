@@ -53,6 +53,8 @@ interface WeShareRepository {
 
 
     suspend fun updateGiftStatus(docId: String, statusCode: Int, uid: String): Result<Boolean>
-
     suspend fun updateEventAttendee(docId: String, field: String, uid: String, ): Result<Boolean>
+
+    suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean>
+    suspend fun getEventRoom(docId: String): Result<ChatRoom>
 }

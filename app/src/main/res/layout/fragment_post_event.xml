@@ -10,14 +10,14 @@
     tools:context=".posting.gift.PostGiftFragment">
 
     <ImageView
-        android:id="@+id/button_select_image_holder"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_margin="16dp"
-        android:padding="10dp"
-        android:src="@drawable/add_image_holder"
+        android:id="@+id/button_image_preview_holder"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_margin="8dp"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"
@@ -26,7 +26,8 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_select_image_holder" />
+        app:layout_constraintTop_toBottomOf="@id/button_image_preview_holder" />
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/input_layout"
@@ -58,18 +59,47 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layout_date_picker"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="選擇時間"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_title">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/date_picker"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:clickable="false"
+                android:focusableInTouchMode="false"
+                android:gravity="center|start"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <!--    SORT MENU   -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_sort_menu"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="活動分類"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_title">
+            android:layout_marginEnd="4dp"
+            app:layout_constraintEnd_toStartOf="@id/layout_volunteer"
+            app:layout_constraintTop_toBottomOf="@id/layout_date_picker">
 
             <AutoCompleteTextView
                 android:id="@+id/dropdown_menu_sort"
@@ -85,13 +115,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_volunteer"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:hint="志工需求數"
+            android:layout_marginStart="4dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_sort_menu">
+            app:layout_constraintStart_toEndOf="@id/layout_sort_menu"
+            app:layout_constraintTop_toTopOf="@id/layout_sort_menu">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_volunteer"

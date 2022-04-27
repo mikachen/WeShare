@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.zoe.weshare.R
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentPostEventBinding
@@ -36,20 +37,24 @@ class PostEventFragment : Fragment() {
                 )
             )
         }
+        viewModel.datePick.observe(viewLifecycleOwner){
+            binding.datePicker.setText(it)
+        }
 
         setupNextBtn()
         setupDropdownMenu()
+        setupDatePicker()
 
         return binding.root
     }
 
     private fun setupNextBtn() {
         binding.nextButton.setOnClickListener {
-            dataCollecting()
+            onDataChecking()
         }
     }
 
-    private fun dataCollecting() {
+    private fun onDataChecking() {
 
         val title = binding.editTitle.text.toString()
         val sort = binding.dropdownMenuSort.text.toString()
@@ -57,15 +62,21 @@ class PostEventFragment : Fragment() {
         val description = binding.editDescription.text.toString()
 
         when (true) {
-            title.isEmpty() -> Toast.makeText(requireContext(), "title.isEmpty", Toast.LENGTH_SHORT)
+            title.isEmpty() -> Toast.makeText(requireContext(),
+                getString(R.string.error_title_isEmpty),
+                Toast.LENGTH_SHORT)
                 .show()
-            sort.isEmpty() -> Toast.makeText(requireContext(), "sort.isEmpty", Toast.LENGTH_SHORT)
+            sort.isEmpty() -> Toast.makeText(requireContext(),
+                getString(R.string.error_sort_isEmpty),
+                Toast.LENGTH_SHORT)
                 .show()
-            volunteerNeeds.isEmpty() -> Toast.makeText(requireContext(), "sort.isEmpty", Toast.LENGTH_SHORT)
+            volunteerNeeds.isEmpty() -> Toast.makeText(requireContext(),
+                getString(R.string.error_volunteer_need),
+                Toast.LENGTH_SHORT)
                 .show()
             description.isEmpty() -> Toast.makeText(
                 requireContext(),
-                "description.isEmpty",
+                getString(R.string.error_description_isEmpty),
                 Toast.LENGTH_SHORT
             ).show()
 
@@ -86,7 +97,28 @@ class PostEventFragment : Fragment() {
             requireContext(),
             android.R.layout.simple_list_item_1, sortsString
         )
-
         binding.dropdownMenuSort.setAdapter(sortAdapter)
     }
+
+    private fun setupDatePicker(){
+
+        val dateRangePicker =
+            MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText("Select dates")
+                .build()
+
+        dateRangePicker.addOnPositiveButtonClickListener { datePick->
+
+            val startDate = datePick.first
+            val secondDate = datePick.second
+
+            viewModel.onDatePickDisplay(startDate,secondDate)
+        }
+
+
+        binding.datePicker.setOnClickListener {
+            dateRangePicker.show(requireActivity().supportFragmentManager, "date_range_picker")
+        }
+    }
 }
+
