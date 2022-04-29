@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Cards
-import com.zoe.weshare.data.EventPost
-import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +14,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
+
+    var allLogs = MutableLiveData<List<PostLog>>()
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>
@@ -60,6 +59,11 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     init {
         getGiftsResult()
         getEventsResult()
+        getLiveAllLogsResult()
+    }
+
+    fun getLiveAllLogsResult() {
+        allLogs = repository.getLiveLogs()
     }
 
     private fun getGiftsResult() {

@@ -112,7 +112,7 @@ class DistributeViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    profileList.add(result.data)
+                    profileList.add(result.data!!)
                 }
                 is Result.Fail -> {
                     _error.value = result.error

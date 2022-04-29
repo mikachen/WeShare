@@ -24,4 +24,9 @@ object Const {
     const val FIELD_OPERATOR_UID = "operatorUid"
     const val FIELD_EVENT_ATTENDEE = "whoAttended"
     const val FIELD_EVENT_VOLUNTEER = "whoVolunteer"
+
+
+    const val FIELD_USER_FOLLOWER = "follower"
+    const val FIELD_USER_FOLLOWING = "following"
+
 }

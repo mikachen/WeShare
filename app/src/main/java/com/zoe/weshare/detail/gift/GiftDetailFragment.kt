@@ -112,6 +112,13 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
+        viewModel.targetUser.observe(viewLifecycleOwner){
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                viewModel.navigateToProfileComplete()
+            }
+        }
+
         return binding.root
     }
 
@@ -158,33 +165,36 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-    private fun setupBtn(selectedGift: GiftPost) {
+    private fun setupBtn(gift: GiftPost) {
         binding.lottieBtnChatMe.setOnClickListener {
             viewModel.searchOnPrivateRoom(currentUser)
         }
 
         when (true) {
             // author he/herself hide the button
-            (selectedGift.author!!.uid == currentUser.uid) -> {
+            (gift.author!!.uid == currentUser.uid) -> {
                 binding.lottieBtnChatMe.visibility = View.GONE
                 binding.layoutAskForGift.visibility = View.GONE
             }
 
             // gift status CLOSE or ABANDONED hide the button
-            (selectedGift.status == GiftStatusType.CLOSED.code) -> {
+            (gift.status == GiftStatusType.CLOSED.code) -> {
                 binding.layoutAskForGift.visibility = View.GONE
             }
-            (selectedGift.status == GiftStatusType.ABANDONED.code) -> {
+            (gift.status == GiftStatusType.ABANDONED.code) -> {
                 binding.layoutAskForGift.visibility = View.GONE
             }
             else -> {
                 binding.buttonAskForGift.setOnClickListener {
                     findNavController().navigate(
                         GiftDetailFragmentDirections
-                            .actionGiftDetailFragmentToAskForGiftFragment(selectedGift)
+                            .actionGiftDetailFragmentToAskForGiftFragment(gift)
                     )
                 }
             }
+        }
+        binding.imageProfileAvatar.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(gift.author))
         }
     }
 

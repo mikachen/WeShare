@@ -45,7 +45,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/toolbar_arrow_back_icon"
+                        android:id="@+id/toolbar_arrow_back"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -85,14 +85,9 @@
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_bottom_app_bar"
+        android:layout_height="@dimen/height_toolbar"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/transparent"
-        app:fabAlignmentMode="end"
-        app:fabAnimationMode="scale"
-        app:fabCradleMargin="5dp"
-        app:fabCradleRoundedCornerRadius="18dp"
-        app:fabCradleVerticalOffset="0dp">
+        android:backgroundTint="#ffddc4">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
@@ -101,7 +96,7 @@
             android:background="@drawable/transparent_background"
             app:itemIconSize="@dimen/size_bottom_nav_icon"
             app:itemIconTint="@color/black"
-            app:labelVisibilityMode="unlabeled"
+            app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu" />
 
 
@@ -148,6 +143,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="2dp"
                 android:background="@color/white"
                 android:orientation="horizontal">
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -170,7 +166,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginHorizontal="4dp"
                     android:text="刊登贈品"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -197,6 +193,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="2dp"
                 android:background="@color/white"
                 android:orientation="horizontal">
 
@@ -221,7 +218,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginHorizontal="4dp"
                     android:text="刊登活動"
                     android:textColor="@color/black"
                     android:textSize="20sp" />

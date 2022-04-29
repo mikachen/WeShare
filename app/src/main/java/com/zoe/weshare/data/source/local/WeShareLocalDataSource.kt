@@ -2,6 +2,7 @@ package com.zoe.weshare.data.source.local
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 
@@ -23,7 +24,24 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserInfo(uid: String): Result<UserProfile> {
+    override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateFieldValue(
+        collection: String,
+        docId: String,
+        field: String,
+        value: FieldValue,
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLiveLogs(): MutableLiveData<List<PostLog>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUserInfo(uid: String): Result<UserProfile?> {
         TODO("Not yet implemented")
     }
 
@@ -33,6 +51,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         comment: Comment,
         subCollection: String,
     ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun newUserRegister(user: UserProfile): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
@@ -48,29 +70,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun likeOnPost(
-        collection: String,
-        docId: String,
-        uid: String,
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun cancelLikeOnPost(
-        collection: String,
-        docId: String,
-        uid: String,
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun likeOnPostComment(
         collection: String,
@@ -111,11 +114,15 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getLiveMessages(
+    override fun getLiveComments(
         collection: String,
         docId: String,
         subCollection: String,
     ): MutableLiveData<List<Comment>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
         TODO("Not yet implemented")
     }
 
@@ -126,13 +133,6 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun updateEventAttendee(
-        docId: String,
-        field: String,
-        uid: String,
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> {
         TODO("Not yet implemented")

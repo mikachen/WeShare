@@ -12,7 +12,7 @@ data class EventPost(
     var sort: String = "",
     var volunteerNeeds: Int = -1,
     var description: String = "",
-    var image: String = "",
+    var image: String = "https://images-platform.99static.com//uJrUDru1H4LsIwQs8XsP_XN4DDY=/fit-in/590x590/99designs-contests-attachments/28/28476/attachment_28476700",
     var location: PostLocation? = null,
     var endTime: Long = -1,
     var startTime: Long = -1,
@@ -21,6 +21,6 @@ data class EventPost(
     var status: Int = EventStatusType.WAITING.code,
     var whoLiked: List<String> = emptyList(),
     var whoAttended: List<String> = emptyList(),
-    var whoVolunteer: List<String> = emptyList(),
+    var whoVolunteer: List<String> = emptyList()
 
 ) : Parcelable

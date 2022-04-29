@@ -13,7 +13,7 @@ import com.zoe.weshare.message.ChatRoomViewModel
 import com.zoe.weshare.message.roomlist.RoomListViewModel
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
-import com.zoe.weshare.profile.userself.SelfViewModel
+import com.zoe.weshare.profile.ProfileViewModel
 
 /**
  * Factory for all ViewModels which need [UserInfo].
@@ -54,8 +54,8 @@ class AuthorViewModelFactory(
             return GiftDetailViewModel(repository, userInfo) as T
         }
 
-        if (modelClass.isAssignableFrom(SelfViewModel::class.java)) {
-            return SelfViewModel(repository, userInfo) as T
+        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            return ProfileViewModel(repository, userInfo) as T
         }
 
         if (modelClass.isAssignableFrom(GiftManageViewModel::class.java)) {

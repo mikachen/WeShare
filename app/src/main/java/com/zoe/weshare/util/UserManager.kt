@@ -37,10 +37,23 @@ object UserManager {
     }
 
     private const val USER_UID = "user_uid"
+    private const val USER_INFO = "user_info"
 
     var userToken: String?
         get() = preferences.getString(USER_UID, null)
         set(token) = preferences.edit {
             it.putString(USER_UID, token)
         }
+
+//    var currentUser: UserInfo?
+//        get() = preferences.getString(USER_INFO, UserInfo())
+//        set(UserInfo) = preferences.edit {
+//            it.putString(USER_INFO, com.zoe.weshare.data.UserInfo)
+//        }
+
+
+    var weShareUser: UserInfo? = null
+
+    val isLoggedIn: Boolean
+        get() = weShareUser != null
 }

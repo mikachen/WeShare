@@ -20,6 +20,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_add_business_24.xml" value="0.299" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_back_ios_new_24.xml" value="0.3025" />
         <entry key="app/src/main/res/drawable/ic_baseline_notifications_active_24.xml" value="0.274" />
+        <entry key="app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.1575" />
         <entry key="app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.227" />
         <entry key="app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.275" />
         <entry key="app/src/main/res/drawable/ic_favorite_like.xml" value="0.261" />
@@ -45,7 +46,7 @@
         <entry key="app/src/main/res/font/graffiti.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_credit_scene.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/activity_logo.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.2" />
         <entry key="app/src/main/res/layout/event_temp.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fab_btn_add_gift_resize.xml" value="0.23728088926891835" />
@@ -59,16 +60,19 @@
         <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_gift_manage.xml" value="0.375" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_home_cards.xml" value="0.3619791666666667" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_new.xml" value="0.25908507909362977" />
+        <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.2201795639162035" />
         <entry key="app/src/main/res/layout/fragment_pager.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fragment_pager_filter.xml" value="0.1393758016246259" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.75" />
         <entry key="app/src/main/res/layout/fragment_room_list.xml" value="0.28762135922330095" />
+        <entry key="app/src/main/res/layout/fragment_search.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/layout/fragment_search_location.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_self.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_users.xml" value="0.18896964514749892" />
@@ -80,6 +84,8 @@
         <entry key="app/src/main/res/layout/item_gift_distrubution_list.xml" value="0.30867892261650276" />
         <entry key="app/src/main/res/layout/item_gift_manage.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_header_tv.xml" value="0.13723813595553655" />
+        <entry key="app/src/main/res/layout/item_home_log_ticker.xml" value="0.231722958529286" />
+        <entry key="app/src/main/res/layout/item_home_user_logs.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/layout/item_hot_gift_grid.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.375" />
         <entry key="app/src/main/res/layout/item_message_send.xml" value="0.37604166666666666" />
@@ -91,7 +97,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

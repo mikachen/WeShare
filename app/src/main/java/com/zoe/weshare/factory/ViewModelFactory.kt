@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.zoe.weshare.MainViewModel
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.home.HomeViewModel
+import com.zoe.weshare.login.LoginViewModel
 import com.zoe.weshare.map.MapViewModel
 
 /**
@@ -26,6 +27,9 @@ class ViewModelFactory constructor(
 
                 isAssignableFrom(MapViewModel::class.java) ->
                     MapViewModel(repository)
+
+                isAssignableFrom(LoginViewModel::class.java) ->
+                    LoginViewModel(repository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

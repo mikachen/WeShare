@@ -23,12 +23,12 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getCountDownTimeString
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
-import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.Const.FIELD_EVENT_ATTENDEE
 import com.zoe.weshare.util.Const.FIELD_EVENT_VOLUNTEER
 import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.Logger
+import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.userLora
 
 class EventDetailFragment : Fragment() {
@@ -37,7 +37,7 @@ class EventDetailFragment : Fragment() {
     private lateinit var adapter: EventCommentsAdapter
     private lateinit var commentsBoard: RecyclerView
 
-    val currentUser = userLora
+    val currentUser = UserManager.weShareUser!!
 
     val viewModel by viewModels<EventDetailViewModel> { getVmFactory(currentUser) }
 
@@ -53,15 +53,16 @@ class EventDetailFragment : Fragment() {
         viewModel.onViewPrepare(selectedEvent)
 
         viewModel.onEventDisplaying.observe(viewLifecycleOwner) {
-            setupView(it)
-            setupBtn(it)
-            setupLikeBtn(it)
+            it?.let {
+                setupView(it)
+                setupBtn(it)
+                setupLikeBtn(it)
+            }
         }
+
         viewModel.eventStatusChanged.observe(viewLifecycleOwner) {
             viewModel.updateEventStatus(it)
         }
-
-        viewModel
 
         viewModel.newComment.observe(viewLifecycleOwner) {
             if (it != null) {
@@ -69,22 +70,9 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        viewModel.sendCommentStatus.observe(viewLifecycleOwner) {
-            if (it == LoadApiStatus.DONE) {
-                viewModel.onSaveOperateLog(
-                    event = selectedEvent,
-                    logType = LogType.COMMENT_EVENT.value,
-                    logMsg = WeShareApplication.instance.getString(
-                        R.string.log_msg_send_event_comment, currentUser.name, selectedEvent.title
-                    )
-                )
-            }
-        }
-
         viewModel.userAttendType.observe(viewLifecycleOwner) {
             if (it == FIELD_EVENT_ATTENDEE) {
                 viewModel.onSaveOperateLog(
-                    event = selectedEvent,
                     logType = LogType.ATTEND_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
                         R.string.log_msg_event_attending, currentUser.name, selectedEvent.title
@@ -92,7 +80,6 @@ class EventDetailFragment : Fragment() {
                 )
             } else if (it == FIELD_EVENT_VOLUNTEER) {
                 viewModel.onSaveOperateLog(
-                    event = selectedEvent,
                     logType = LogType.VOLUNTEER_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
                         R.string.log_msg_event_volunteering, currentUser.name, selectedEvent.title
@@ -144,6 +131,13 @@ class EventDetailFragment : Fragment() {
             }
         }
 
+        viewModel.targetUser.observe(viewLifecycleOwner){
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                viewModel.navigateToProfileComplete()
+            }
+        }
+
         return binding.root
     }
 
@@ -165,6 +159,7 @@ class EventDetailFragment : Fragment() {
         if (event.status == EventStatusType.ENDED.code) {
 
             binding.layoutAttendeeButton.visibility = View.GONE
+
         } else {
             binding.buttonAttend.setOnClickListener {
                 viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
@@ -175,14 +170,19 @@ class EventDetailFragment : Fragment() {
         }
 
         /**
-         * when user click on enter room:
+         * when user click on enter room :
          * 1) getEventRoom
          * 2) check if user has been in chat before
          * 3) if true -> navigate to room
-         * 4) if false -> update room doc, return to (1~2~3 step)
+         * 4) if false -> update room doc, return to (1~2~3 steps)
          */
+
         binding.buttonEnterEventChatroom.setOnClickListener {
             viewModel.getChatRoomInfo()
+        }
+
+        binding.imageProfileAvatar.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(event.author))
         }
     }
 
@@ -202,7 +202,6 @@ class EventDetailFragment : Fragment() {
     private fun setupView(event: EventPost) {
 
         commentsBoard = binding.commentsRecyclerView
-
         adapter = EventCommentsAdapter(viewModel)
         commentsBoard.adapter = adapter
 
@@ -267,9 +266,11 @@ class EventDetailFragment : Fragment() {
             }
             (event.status == EventStatusType.ENDED.code) -> {
                 binding.textStatus.text = EventStatusType.ENDED.tag
-                binding.textStatus.setBackgroundResource(R.color.app_work_light_grey)
+                binding.textStatus.setBackgroundResource(R.color.app_work_dark_grey)
             }
-            else -> { Logger.d("unKnow status")}
+            else -> {
+                Logger.d("unKnow status")
+            }
         }
     }
 

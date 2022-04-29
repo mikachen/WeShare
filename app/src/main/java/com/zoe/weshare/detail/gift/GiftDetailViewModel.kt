@@ -3,12 +3,14 @@ package com.zoe.weshare.detail.gift
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.ChatRoomType
+import com.zoe.weshare.util.Const
 import com.zoe.weshare.util.Const.PATH_GIFT_POST
 import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
 import kotlinx.coroutines.CoroutineScope
@@ -16,12 +18,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GiftDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
-    ViewModel() {
+class GiftDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?)
+    : ViewModel() {
 
     private var _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>>
         get() = _comments
+
+    private var _targetUser = MutableLiveData<UserInfo?>()
+    val targetUser: LiveData<UserInfo?>
+        get() = _targetUser
 
     private var _selectedGiftDisplay = MutableLiveData<GiftPost>()
     val selectedGiftDisplay: LiveData<GiftPost>
@@ -126,7 +132,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    profileList.add(result.data)
+                    profileList.add(result.data!!)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -160,10 +166,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
             _status.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.likeOnPost(
+                val result = repository.updateFieldValue(
                     collection = PATH_GIFT_POST,
                     docId = doc,
-                    uid = userInfo!!.uid
+                    field = Const.FIELD_WHO_LIKED,
+                    value = FieldValue.arrayUnion(userInfo!!.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -194,10 +201,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
             _status.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.cancelLikeOnPost(
+                val result = repository.updateFieldValue(
                     collection = PATH_GIFT_POST,
                     docId = doc,
-                    uid = userInfo!!.uid
+                    field = Const.FIELD_WHO_LIKED,
+                    value = FieldValue.arrayRemove(userInfo!!.uid)
                 )
             ) {
 
@@ -399,5 +407,16 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         _userChatRooms.value = null
         _navigateToFormerRoom.value = null
         _navigateToNewRoom.value = null
+    }
+
+    fun onNavigateToTargetProfile(uid: String) {
+        var target = UserInfo()
+        target.uid = uid
+
+        _targetUser.value = target
+    }
+
+    fun navigateToProfileComplete() {
+        _targetUser.value = null
     }
 }

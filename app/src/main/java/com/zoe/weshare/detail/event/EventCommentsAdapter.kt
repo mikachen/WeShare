@@ -60,6 +60,10 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
 
+            binding.imageProfileAvatar.setOnClickListener {
+                viewModel.onNavigateToTargetProfile(comment.uid)
+            }
+
             if (viewModel.onProfileSearch.value == 0) {
                 if (viewModel.profileList.isNotEmpty()) {
                     val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }

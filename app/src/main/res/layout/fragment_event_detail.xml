@@ -55,6 +55,29 @@
                 app:layout_constraintTop_toTopOf="@id/translucent_view"
                 tools:text="募款：山區浪浪需要你" />
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layout_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/images">
+
+                <TextView
+                    android:id="@+id/text_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_theme_gradient"
+                    android:gravity="center_horizontal"
+                    android:padding="4dp"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    tools:text="已結案" />
+
+            </androidx.cardview.widget.CardView>
+
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_attendee_button"
                 android:layout_width="match_parent"
@@ -246,29 +269,6 @@
                             tools:text="16"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/layout_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="4dp"
-                    android:layout_margin="4dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/text_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/custom_theme_gradient"
-                        android:gravity="center_horizontal"
-                        android:padding="4dp"
-                        android:textColor="@color/white"
-                        android:textSize="20sp"
-                        tools:text="已結案" />
-
-                </androidx.cardview.widget.CardView>
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

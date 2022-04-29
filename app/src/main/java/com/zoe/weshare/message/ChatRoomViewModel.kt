@@ -17,16 +17,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ChatRoomViewModel(
-    private val repository: WeShareRepository,
-    private val userInfo: UserInfo?,
-) :
-    ViewModel() {
+    private val repository: WeShareRepository, private val userInfo: UserInfo?) : ViewModel() {
 
-    private var messageRecords = mutableListOf<MessageItem>()
-
-    private var _messageItems = MutableLiveData<List<MessageItem>?>()
-    val messageItems: LiveData<List<MessageItem>?>
-        get() = _messageItems
+    var liveMessages = MutableLiveData<List<MessageItem>>()
 
     private var _chatRoom = MutableLiveData<ChatRoom>()
     val chatRoom: LiveData<ChatRoom>
@@ -40,21 +33,22 @@ class ChatRoomViewModel(
     val newMessage: LiveData<Comment>
         get() = _newMessage
 
-    // Create a Coroutine scope using a job to be able to cancel when needed
-    private var viewModelJob = Job()
 
-    // the Coroutine runs using the Main (UI) dispatcher
+    private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    // error: The internal MutableLiveData that stores the error of the most recent request
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
+
+
+    fun getLiveMessageResult(room: ChatRoom) {
+        liveMessages = repository.getLiveMessages(docId = room.id)
+    }
 
     fun onSending(inputMsg: String) {
         _newMessage.value = Comment(
@@ -62,37 +56,6 @@ class ChatRoomViewModel(
             content = inputMsg,
             createdTime = Calendar.getInstance().timeInMillis
         )
-    }
-
-    fun getHistoryMessage(docId: String) {
-        coroutineScope.launch {
-            _status.value = LoadApiStatus.LOADING
-
-            when (val result = repository.getChatsHistory(docId)) {
-                is Result.Success -> {
-                    _error.value = null
-                    _status.value = LoadApiStatus.DONE
-                    _messageItems.value = result.data
-                    messageRecords = result.data as MutableList<MessageItem>
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                    _messageItems.value = null
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                    _messageItems.value = null
-                }
-                else -> {
-                    _error.value =
-                        WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
-                    _messageItems.value = null
-                }
-            }
-        }
     }
 
     fun sendNewMessage(docId: String, comment: Comment) {
@@ -149,7 +112,9 @@ class ChatRoomViewModel(
         }
     }
 
-    fun onUserInfoDisplay(chatRoom: ChatRoom) {
+    fun onViewDisplay(chatRoom: ChatRoom) {
+
+        _chatRoom.value = chatRoom
 
         _roomTitle.value = when (chatRoom.type) {
             ChatRoomType.PRIVATE.value ->
@@ -159,11 +124,7 @@ class ChatRoomViewModel(
 
             else -> "unKnow chatroom type"
         }
-    }
 
-    fun onNewMsgListened(list: MutableList<Comment>) {
-        val newMsgItem = ChatsHistory(list).toMessageItem()
-        messageRecords.addAll(newMsgItem)
-        _messageItems.value = messageRecords
+        getLiveMessageResult(chatRoom)
     }
 }

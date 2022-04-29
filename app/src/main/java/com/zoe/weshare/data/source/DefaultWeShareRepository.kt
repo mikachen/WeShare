@@ -1,6 +1,7 @@
 package com.zoe.weshare.data.source
 
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.data.*
 
 class DefaultWeShareRepository(
@@ -24,8 +25,19 @@ class DefaultWeShareRepository(
         return remoteDataSource.getEvents()
     }
 
-    override suspend fun getUserInfo(uid: String): Result<UserProfile> {
+    override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>{
+        return remoteDataSource.getLiveEventDetail(docId)
+    }
+    override fun getLiveLogs(): MutableLiveData<List<PostLog>>{
+        return remoteDataSource.getLiveLogs()
+    }
+
+    override suspend fun getUserInfo(uid: String): Result<UserProfile?> {
         return remoteDataSource.getUserInfo(uid)
+    }
+
+    override suspend fun newUserRegister(user: UserProfile) : Result<Boolean>{
+        return remoteDataSource.newUserRegister(user)
     }
 
     override suspend fun sendComment(
@@ -45,12 +57,12 @@ class DefaultWeShareRepository(
         return remoteDataSource.getAllComments(collection, docId, subCollection)
     }
 
-    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>> {
-        return remoteDataSource.getChatsHistory(docId)
-    }
-
     override suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>> {
         return remoteDataSource.getUserChatRooms(uid)
+    }
+
+    override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
+        return remoteDataSource.getLiveMessages(docId)
     }
 
     override suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String> {
@@ -61,21 +73,7 @@ class DefaultWeShareRepository(
         return remoteDataSource.sendMessage(docId, comment)
     }
 
-    override suspend fun likeOnPost(
-        collection: String,
-        docId: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.likeOnPost(collection, docId, uid)
-    }
 
-    override suspend fun cancelLikeOnPost(
-        collection: String,
-        docId: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.cancelLikeOnPost(collection, docId, uid)
-    }
 
     override suspend fun likeOnPostComment(
         collection: String,
@@ -130,21 +128,14 @@ class DefaultWeShareRepository(
         return remoteDataSource.updateGiftStatus(docId, statusCode, uid)
     }
 
-    override fun getLiveMessages(
+    override fun getLiveComments(
         collection: String,
         docId: String,
         subCollection: String,
     ): MutableLiveData<List<Comment>> {
-        return remoteDataSource.getLiveMessages(collection, docId, subCollection)
+        return remoteDataSource.getLiveComments(collection, docId, subCollection)
     }
 
-    override suspend fun updateEventAttendee(
-        docId: String,
-        field: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.updateEventAttendee(docId, field, uid)
-    }
 
     override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> {
         return remoteDataSource.updateEventRoom(roomId, user)
@@ -156,5 +147,14 @@ class DefaultWeShareRepository(
 
     override suspend fun getEventRoom(docId: String): Result<ChatRoom> {
         return remoteDataSource.getEventRoom(docId)
+    }
+
+    override suspend fun updateFieldValue(
+        collection: String,
+        docId: String,
+        field: String,
+        value: FieldValue
+    ): Result<Boolean>{
+        return remoteDataSource.updateFieldValue(collection, docId, field, value)
     }
 }

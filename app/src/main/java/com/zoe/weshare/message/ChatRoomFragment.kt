@@ -16,9 +16,6 @@ import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.Const.PATH_CHATROOM
-import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
-import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.userLora
 import com.zoe.weshare.util.UserManager.userZoe
 
@@ -44,15 +41,14 @@ class ChatRoomFragment : Fragment() {
 
         chatRoom = ChatRoomFragmentArgs.fromBundle(requireArguments()).selectedRoom
 
-        viewModel.getHistoryMessage(chatRoom.id)
-        viewModel.onUserInfoDisplay(chatRoom)
+        viewModel.onViewDisplay(chatRoom)
 
         val recyclerView = binding.messagesRecyclerView
 
         adapter = ChatRoomAdapter(viewModel, chatRoom)
         recyclerView.adapter = adapter
 
-        viewModel.messageItems.observe(viewLifecycleOwner) {
+        viewModel.liveMessages.observe(viewLifecycleOwner) {
             adapter.submitList(it) {
                 recyclerView.post { recyclerView.scrollToPosition(adapter.itemCount - 1) }
             }
@@ -66,31 +62,8 @@ class ChatRoomFragment : Fragment() {
             viewModel.sendNewMessage(chatRoom.id, it)
         }
 
-        newMsgQuery = db.collection(PATH_CHATROOM).document(chatRoom.id)
-            .collection(SUB_PATH_CHATROOM_MESSAGE)
-            .orderBy("createdTime", Query.Direction.DESCENDING).limit(1)
 
-        newMsgQuery.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                Logger.d("SnapshotListen failed: $error")
-                return@addSnapshotListener
-            }
-            if (snapshot != null) {
-                val list = mutableListOf<Comment>()
 
-                for (document in snapshot.documents) {
-                    Logger.d(document.id + " => " + document.data)
-
-                    document.toObject(Comment::class.java)?.let {
-                        list.add(it)
-                    }
-                }
-
-                viewModel.onNewMsgListened(list)
-            } else {
-                Logger.d("SnapshotListen Current data: null")
-            }
-        }
 
         setupSendBtn()
         return binding.root

@@ -11,6 +11,7 @@ import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
+import com.zoe.weshare.ext.getTimeAgoString
 import com.zoe.weshare.ext.toDisplaySentTime
 import com.zoe.weshare.util.Util.getColor
 import com.zoe.weshare.util.Util.getStringWithIntParm
@@ -63,7 +64,11 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
         fun bind(comment: Comment, viewModel: GiftDetailViewModel) {
 
             binding.textComment.text = comment.content
-            binding.textCreatedTime.text = comment.createdTime.toDisplaySentTime()
+            binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
+
+            binding.imageProfileAvatar.setOnClickListener {
+                viewModel.onNavigateToTargetProfile(comment.uid)
+            }
 
             // displaying user's image and name
             if (viewModel.onProfileSearchComplete.value == 0) {

@@ -4,21 +4,21 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/sl_bottom_bar_home"
-        android:title="Home" />
+        android:title="" />
 
     <item
         android:id="@+id/navigation_map"
         android:icon="@drawable/sl_bottom_bar_map"
-        android:title="Map" />
+        android:title="" />
 
     <item
         android:id="@+id/navigation_messages"
         android:icon="@drawable/sl_bottom_bar_chat_room"
-        android:title="Message" />
+        android:title=" " />
 
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/sl_bottom_bar_user_profile"
-        android:title="Profile" />
+        android:title=" " />
 
 </menu>

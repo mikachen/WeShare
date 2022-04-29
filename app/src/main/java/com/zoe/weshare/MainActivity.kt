@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
@@ -54,17 +55,15 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.toolbar.inflateMenu(R.menu.toolbar_menu)
 
         // lottie animation
         loginAnimate()
 
         // view setup
         setupNavController()
-        setUpNavigateUpIcon()
         setupBottomNav()
+        setupToolbarMenu()
         setupFab()
-//        setUpFabBehavior()
 
         // observe current fragment change, only for show info
         viewModel.currentFragmentType.observe(
@@ -74,8 +73,7 @@ class MainActivity : AppCompatActivity() {
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-            hideBottom()
-
+            showBottom()
             binding.apply {
                 topAppbar.visibility = View.VISIBLE
                 toolbarLogoImage.visibility = View.INVISIBLE
@@ -83,31 +81,38 @@ class MainActivity : AppCompatActivity() {
                 toolbarFragmentTitleText.text = it.value
 
                 when (it) {
-                    // 完全隱藏上方
-                    CurrentFragmentType.SELFPROFILE -> topAppbar.visibility = View.GONE
 
-                    CurrentFragmentType.CHATROOM -> {
-                    }
+                    CurrentFragmentType.CHATROOM -> { hideBottom() }
 
                     // 顯示副標題+倒退鍵
                     CurrentFragmentType.SEARCHLOCATION -> {
+                        hideBottom()
                         toolbarFragmentTitleText.text = it.value
                     }
 
                     // 大主頁
                     CurrentFragmentType.HOME -> {
-                        showBottom()
                         toolbar.navigationIcon = null
                         toolbarLogoImage.visibility = View.VISIBLE
                         layoutToolbarSubtitle.visibility = View.INVISIBLE
                     }
+                    CurrentFragmentType.MAP -> {hideBottom()}
+                    CurrentFragmentType.ROOMLIST -> {}
+                    CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
 
-                    CurrentFragmentType.GIFTDETAIL -> {}
-                    CurrentFragmentType.EVENTDETAIL -> {}
 
-                    CurrentFragmentType.POSTGIFT -> {}
-                    CurrentFragmentType.POSTEVENT -> {}
-                    CurrentFragmentType.MAP -> {}
+                    CurrentFragmentType.GIFTDETAIL -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.EVENTDETAIL -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.POSTGIFT -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.POSTEVENT -> {
+                        hideBottom()
+                    }
 
                     else -> {
                         topAppbar.visibility = View.VISIBLE
@@ -143,23 +148,18 @@ class MainActivity : AppCompatActivity() {
                 R.id.mapFragment -> CurrentFragmentType.MAP
                 R.id.roomListFragment -> CurrentFragmentType.ROOMLIST
                 R.id.chatRoomFragment -> CurrentFragmentType.CHATROOM
-                R.id.selfFragment -> CurrentFragmentType.SELFPROFILE
-                R.id.usersFragment -> CurrentFragmentType.SELFPROFILE
+                R.id.profileFragment -> CurrentFragmentType.PROFILE
                 R.id.postEventFragment -> CurrentFragmentType.POSTEVENT
                 R.id.postGiftFragment -> CurrentFragmentType.POSTGIFT
                 R.id.eventDetailFragment -> CurrentFragmentType.EVENTDETAIL
                 R.id.giftDetailFragment -> CurrentFragmentType.GIFTDETAIL
                 R.id.searchLocationFragment -> CurrentFragmentType.SEARCHLOCATION
                 R.id.pagerFilterFragment -> CurrentFragmentType.GIFTMANAGE
+                R.id.notificationFragment -> CurrentFragmentType.NOTIFICATION
+                R.id.loginFragment -> CurrentFragmentType.LOGIN
 
                 else -> viewModel.currentFragmentType.value
             }
-        }
-    }
-
-    private fun setUpNavigateUpIcon() {
-        binding.toolbarArrowBackIcon.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigateUp()
         }
     }
 
@@ -182,12 +182,37 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_profile -> {
-
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToSelfFragment())
+                    if(!UserManager.isLoggedIn){
+                        findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalLoginFragment())
+                    }
+                    else{
+                        findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalProfileFragment(UserManager.weShareUser))
+                    }
                     return@setOnItemSelectedListener true
                 }
             }
             false
+        }
+    }
+
+    private fun setupToolbarMenu() {
+        binding.toolbar.inflateMenu(R.menu.toolbar_menu)
+
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_search_gifts -> findNavController(R.id.nav_host_fragment)
+                    .navigate(NavGraphDirections.actionGlobalSearchFragment())
+
+                R.id.action_notification -> findNavController(R.id.nav_host_fragment)
+                    .navigate(NavGraphDirections.actionGlobalNotificationFragment())
+
+
+            }
+            false
+        }
+
+        binding.toolbarArrowBack.setOnClickListener {
+            findNavController(R.id.nav_host_fragment).navigateUp()
         }
     }
 

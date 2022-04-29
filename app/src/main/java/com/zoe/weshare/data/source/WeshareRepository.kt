@@ -1,6 +1,7 @@
 package com.zoe.weshare.data.source
 
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.data.*
 
 interface WeShareRepository {
@@ -8,7 +9,16 @@ interface WeShareRepository {
     suspend fun postNewGift(gift: GiftPost): Result<String>
     suspend fun getGifts(): Result<List<GiftPost>>
     suspend fun getEvents(): Result<List<EventPost>>
-    suspend fun getUserInfo(uid: String): Result<UserProfile>
+
+    fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
+
+    fun getLiveLogs(): MutableLiveData<List<PostLog>>
+
+    fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>>
+
+    suspend fun getUserInfo(uid: String): Result<UserProfile?>
+    suspend fun newUserRegister(user: UserProfile) : Result<Boolean>
+
 
     suspend fun sendComment(
         collection: String,
@@ -16,21 +26,19 @@ interface WeShareRepository {
         comment: Comment,
         subCollection: String
     ): Result<Boolean>
+
     suspend fun getAllComments(collection: String, docId: String, subCollection: String): Result<List<Comment>>
 
     suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean>
 
-    fun getLiveMessages(
+    fun getLiveComments(
         collection: String,
         docId: String,
         subCollection: String,
     ): MutableLiveData<List<Comment>>
 
-    suspend fun getChatsHistory(docId: String): Result<List<MessageItem>>
-    suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>>
 
-    suspend fun likeOnPost(collection: String, docId: String, uid: String): Result<Boolean>
-    suspend fun cancelLikeOnPost(collection: String, docId: String, uid: String): Result<Boolean>
+    suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>>
 
     suspend fun likeOnPostComment(
         collection: String,
@@ -56,10 +64,18 @@ interface WeShareRepository {
     suspend fun saveLog(log: PostLog): Result<Boolean>
 
     suspend fun updateGiftStatus(docId: String, statusCode: Int, uid: String): Result<Boolean>
-    suspend fun updateEventAttendee(docId: String, field: String, uid: String,): Result<Boolean>
+
 
     suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean>
     suspend fun getEventRoom(docId: String): Result<ChatRoom>
 
     suspend fun updateEventStatus(docId: String, code: Int): Result<Boolean>
+
+
+    suspend fun updateFieldValue(
+        collection: String,
+        docId: String,
+        field: String,
+        value: FieldValue
+    ): Result<Boolean>
 }

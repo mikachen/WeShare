@@ -52,7 +52,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CardGalleryAdapter
 
-    private var lastSelectedMarker: Marker? = null
     private val markersRef = mutableListOf<Marker>()
 
     val viewModel by viewModels<MapViewModel> { getVmFactory() }
