@@ -22,13 +22,12 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class DistributeFragment : BottomSheetDialogFragment() {
 
-    val currentUser = userZoe
 
-    val viewModel by viewModels<DistributeViewModel> { getVmFactory(currentUser) }
+    val viewModel by viewModels<DistributeViewModel> { getVmFactory(weShareUser) }
 
     lateinit var binding: FragmentDistributeBinding
     lateinit var layoutList: LinearLayout

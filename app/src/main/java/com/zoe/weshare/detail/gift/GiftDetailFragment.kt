@@ -19,16 +19,15 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
-import com.zoe.weshare.util.UserManager.userLora
+import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 
 class GiftDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentGiftDetailBinding
     private lateinit var adapter: GiftsCommentsAdapter
-    private val currentUser = userLora
 
-    val viewModel by viewModels<GiftDetailViewModel> { getVmFactory(currentUser) }
+    val viewModel by viewModels<GiftDetailViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -112,7 +111,7 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
-        viewModel.targetUser.observe(viewLifecycleOwner){
+        viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
                 viewModel.navigateToProfileComplete()
@@ -167,12 +166,12 @@ class GiftDetailFragment : Fragment() {
 
     private fun setupBtn(gift: GiftPost) {
         binding.lottieBtnChatMe.setOnClickListener {
-            viewModel.searchOnPrivateRoom(currentUser)
+            viewModel.searchOnPrivateRoom(weShareUser!!)
         }
 
         when (true) {
             // author he/herself hide the button
-            (gift.author!!.uid == currentUser.uid) -> {
+            (gift.author!!.uid == weShareUser!!.uid) -> {
                 binding.lottieBtnChatMe.visibility = View.GONE
                 binding.layoutAskForGift.visibility = View.GONE
             }
@@ -200,7 +199,7 @@ class GiftDetailFragment : Fragment() {
 
     private fun checkIfUserRequested(comments: List<Comment>) {
         binding.buttonAskForGift.apply {
-            when (comments.none { it.uid == currentUser.uid }) {
+            when (comments.none { it.uid == weShareUser!!.uid }) {
                 true -> {
                     isEnabled = true
                     text = Util.getString(R.string.request_gift)

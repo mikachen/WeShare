@@ -320,8 +320,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     fun checkIfPrivateRoomExist(rooms: List<ChatRoom>) {
 
         val result = rooms.filter {
-            it.participants?.contains(selectedGiftDisplay.value!!.author!!.uid) == true &&
-                it.type == ChatRoomType.PRIVATE.value
+            it.participants.contains(selectedGiftDisplay.value!!.author!!.uid) && it.type == ChatRoomType.PRIVATE.value
         }
 
         if (result.isNotEmpty()) {

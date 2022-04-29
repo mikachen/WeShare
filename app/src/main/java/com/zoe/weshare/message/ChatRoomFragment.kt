@@ -1,23 +1,17 @@
 package com.zoe.weshare.message
 
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.data.ChatRoom
-import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.userLora
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class ChatRoomFragment : Fragment() {
 
@@ -25,12 +19,10 @@ class ChatRoomFragment : Fragment() {
     private lateinit var binding: FragmentChatroomBinding
     private lateinit var adapter: ChatRoomAdapter
 
-    val currentUser = userZoe
+    val currentUser = weShareUser
 
     private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(currentUser) }
 
-    private val db = FirebaseFirestore.getInstance()
-    lateinit var newMsgQuery: Query
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,9 +54,6 @@ class ChatRoomFragment : Fragment() {
             viewModel.sendNewMessage(chatRoom.id, it)
         }
 
-
-
-
         setupSendBtn()
         return binding.root
     }
@@ -78,26 +67,9 @@ class ChatRoomFragment : Fragment() {
             if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {
 
                 onSendComment()
-
                 true
+
             } else false
-        }
-
-        binding.btnTesting.setOnClickListener {
-            val mockMessage = binding.editBox.text.toString()
-
-            if (mockMessage.isNotEmpty()) {
-                viewModel._newMessage.value = Comment(
-                    // TODO
-                    uid = userLora.uid,
-                    content = mockMessage,
-                    createdTime = Calendar.getInstance().timeInMillis
-
-                )
-                binding.editBox.text?.clear()
-            } else {
-                Toast.makeText(requireContext(), "Msg is empty", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 

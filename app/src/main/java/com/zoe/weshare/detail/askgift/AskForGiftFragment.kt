@@ -18,14 +18,14 @@ import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class AskForGiftFragment : BottomSheetDialogFragment() {
 
     lateinit var binding: FragmentAskForGiftBinding
-    private val currentUser = UserManager.userLora
     lateinit var selectedGift: GiftPost
 
-    val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(currentUser) }
+    val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

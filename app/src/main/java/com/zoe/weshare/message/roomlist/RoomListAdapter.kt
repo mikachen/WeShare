@@ -11,6 +11,7 @@ import com.zoe.weshare.databinding.ItemRelatedRoomListBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
 import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
     ListAdapter<ChatRoom, RoomListAdapter.RoomListViewHolder>(DiffCall()) {
@@ -25,7 +26,7 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
     override fun onBindViewHolder(holder: RoomListViewHolder, position: Int) {
         val room = getItem(position)
 
-        val targetObj = room.usersInfo?.single { it.uid != UserManager.userZoe.uid }
+        val targetObj = room.usersInfo.single { it.uid != weShareUser!!.uid }
 
         // TODO 對方如果離開可能null
         if (targetObj != null) {

@@ -20,16 +20,16 @@ import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostGiftFragment : Fragment() {
 
     private val PICK_IMAGE_REQUEST = 151
-
     private lateinit var filePath: Uri
 
     private lateinit var binding: FragmentPostGiftBinding
-    val viewModel by viewModels<PostGiftViewModel> { getVmFactory(userZoe) }
+
+    val viewModel by viewModels<PostGiftViewModel> { getVmFactory(weShareUser) }
 
     val storage = FirebaseStorage.getInstance()
     val storageReference = storage.reference
@@ -75,7 +75,7 @@ class PostGiftFragment : Fragment() {
         progressDialog.show()
 
         val now = Calendar.getInstance().timeInMillis
-        val formatFileName = userZoe.uid + "/" + now.toDisplayFormat()
+        val formatFileName = weShareUser!!.uid + "/" + now.toDisplayFormat()
 
         // Defining the child of storageReference
         val ref = storageReference.child("images/$formatFileName")

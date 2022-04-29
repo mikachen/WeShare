@@ -45,6 +45,31 @@ class ProfileFragment : Fragment() {
             setupLogView(it)
         }
 
+        viewModel.userChatRooms.observe(viewLifecycleOwner) {
+            it?.let {
+                if (it.isNotEmpty()) {
+                    viewModel.checkIfPrivateRoomExist(it)
+                } else {
+                    viewModel.onNewRoomPrepare()
+                }
+            }
+        }
+
+        viewModel.navigateToFormerRoom.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalChatRoomFragment(it))
+                viewModel.navigateToRoomComplete()
+            }
+        }
+
+        viewModel.navigateToNewRoom.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalChatRoomFragment(it))
+                viewModel.navigateToRoomComplete()
+            }
+        }
+
+
         setupBtn()
         return binding.root
     }
@@ -78,7 +103,9 @@ class ProfileFragment : Fragment() {
             viewModel.updateUserFollowing(targetUser.uid)
         }
 
-        binding.buttonMessage.setOnClickListener {  }
+        binding.buttonMessage.setOnClickListener {
+            viewModel.searchOnPrivateRoom(UserManager.weShareUser!!)
+        }
     }
 
     private fun setUpView(user: UserProfile) {
@@ -96,7 +123,7 @@ class ProfileFragment : Fragment() {
             if(user.follower.contains(UserManager.weShareUser!!.uid)) {
                 buttonFollow.text = "已追蹤"
             }else{
-//                buttonFollow.text = "已追蹤"
+                buttonFollow.text = "追蹤他"
             }
         }
     }

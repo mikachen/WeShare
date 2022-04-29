@@ -13,20 +13,19 @@ import com.zoe.weshare.databinding.ItemMessageReceiveBinding
 import com.zoe.weshare.databinding.ItemMessageSendBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
     ListAdapter<MessageItem, RecyclerView.ViewHolder>(DiffCallback) {
 
-    var usersList = listOf<UserInfo>()
+    var targetUsersList = listOf<UserInfo>()
 
     init {
         getTargetUsers(chatRoom)
     }
 
     fun getTargetUsers(room: ChatRoom) {
-
-        usersList = room.usersInfo.filter { it.uid != UserManager.userZoe.uid }
+        targetUsersList = room.usersInfo.filter { it.uid != weShareUser!!.uid }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -61,9 +60,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
             }
             is ReceiveViewHolder -> {
                 (itemType as MessageItem.OnReceiveSide).message?.let {
-                    holder.bind(it,
-                        viewModel,
-                        usersList)
+                    holder.bind(it, viewModel, targetUsersList)
                 }
             }
         }

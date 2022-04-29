@@ -10,11 +10,11 @@ import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.databinding.FragmentRoomListBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class RoomListFragment : Fragment() {
 
-    private val viewModel by viewModels<RoomListViewModel> { getVmFactory(UserManager.userZoe) }
+    private val viewModel by viewModels<RoomListViewModel> { getVmFactory(weShareUser) }
     lateinit var binding: FragmentRoomListBinding
     lateinit var adapter: RoomListAdapter
 

@@ -29,7 +29,7 @@ import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager
-import com.zoe.weshare.util.UserManager.userLora
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class EventDetailFragment : Fragment() {
 
@@ -37,9 +37,8 @@ class EventDetailFragment : Fragment() {
     private lateinit var adapter: EventCommentsAdapter
     private lateinit var commentsBoard: RecyclerView
 
-    val currentUser = UserManager.weShareUser!!
 
-    val viewModel by viewModels<EventDetailViewModel> { getVmFactory(currentUser) }
+    val viewModel by viewModels<EventDetailViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,14 +74,14 @@ class EventDetailFragment : Fragment() {
                 viewModel.onSaveOperateLog(
                     logType = LogType.ATTEND_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
-                        R.string.log_msg_event_attending, currentUser.name, selectedEvent.title
+                        R.string.log_msg_event_attending, weShareUser!!.name, selectedEvent.title
                     )
                 )
             } else if (it == FIELD_EVENT_VOLUNTEER) {
                 viewModel.onSaveOperateLog(
                     logType = LogType.VOLUNTEER_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
-                        R.string.log_msg_event_volunteering, currentUser.name, selectedEvent.title
+                        R.string.log_msg_event_volunteering, weShareUser!!.name, selectedEvent.title
                     )
                 )
             }
@@ -234,12 +233,12 @@ class EventDetailFragment : Fragment() {
 
             textStartTime.text = event.startTime.toDisplayFormat()
 
-            when (event.whoAttended.contains(currentUser.uid)) {
+            when (event.whoAttended.contains(weShareUser!!.uid)) {
                 true -> buttonAttend.text = "參與中"
                 false -> buttonAttend.text = "我要參加"
             }
 
-            when (event.whoVolunteer.contains(currentUser.uid)) {
+            when (event.whoVolunteer.contains(weShareUser!!.uid)) {
                 true -> buttonVolunteer.text = "已登記"
                 false -> buttonVolunteer.text = "志工參與"
             }

@@ -13,11 +13,11 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostEventBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostEventFragment : Fragment() {
 
-    val currentUser = userZoe
+    val currentUser = weShareUser
 
     private lateinit var binding: FragmentPostEventBinding
     val viewModel by viewModels<PostEventViewModel> { getVmFactory(currentUser) }

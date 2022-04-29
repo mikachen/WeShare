@@ -39,7 +39,7 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
@@ -48,7 +48,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
     var isPermissionGranted: Boolean = false
 
-    val author = userZoe
 
     private val defaultTaiwan = LatLng(23.897879, 121.063772)
 
@@ -66,7 +65,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
         if (newEvent != null) {
-            val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(author) }
+            val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
             setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
 
             eventViewModel._event.value = newEvent
@@ -93,7 +92,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         } else {
-            val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(author) }
+            val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(weShareUser) }
 
             setUpAutoCompleteSearchPlace(giftVm = giftViewModel, eventVm = null)
 

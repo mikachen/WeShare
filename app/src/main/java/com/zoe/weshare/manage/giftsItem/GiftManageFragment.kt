@@ -16,16 +16,15 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftManageBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class GiftManageFragment : Fragment() {
 
     var index = -1
-    val currentUser = userZoe
 
     private lateinit var binding: FragmentGiftManageBinding
 
-    private val viewModel by viewModels<GiftManageViewModel> { getVmFactory(currentUser) }
+    private val viewModel by viewModels<GiftManageViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,

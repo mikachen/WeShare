@@ -11,6 +11,7 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -118,7 +119,7 @@ class ChatRoomViewModel(
 
         _roomTitle.value = when (chatRoom.type) {
             ChatRoomType.PRIVATE.value ->
-                chatRoom.usersInfo.single { it.uid != UserManager.userZoe.uid }.name
+                chatRoom.usersInfo.single { it.uid != weShareUser!!.uid }.name
 
             ChatRoomType.MULTIPLE.value -> "活動群聊"
 
