@@ -1,5 +1,6 @@
 package com.zoe.weshare.home
 
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -13,7 +14,7 @@ class TickerAdapter : ListAdapter<PostLog, TickerAdapter.TickerViewHolder>(DiffC
     class TickerViewHolder(var binding: ItemHomeLogTickerBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(log: PostLog) {
-            binding.textTicker.text = log.logMsg
+            binding.textTicker.text = Html.fromHtml(log.logMsg)
         }
 
         companion object {

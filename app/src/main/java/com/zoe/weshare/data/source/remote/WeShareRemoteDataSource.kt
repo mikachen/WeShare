@@ -1,20 +1,26 @@
 package com.zoe.weshare.data.source.remote
 
 import android.icu.util.Calendar
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
+import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_SENT_TIME
 import com.zoe.weshare.util.Const.FIELD_ROOM_PARTICIPANTS
 import com.zoe.weshare.util.Const.FIELD_ROOM_USERS_INFO
 import com.zoe.weshare.util.Const.FIELD_STATUS
+import com.zoe.weshare.util.Const.FIELD_USER_IMAGE
+import com.zoe.weshare.util.Const.FIELD_USER_INTRO_MSG
+import com.zoe.weshare.util.Const.FIELD_USER_NAME
 import com.zoe.weshare.util.Const.FIELD_WHO_GET_GIFT
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.KEY_CREATED_TIME
@@ -25,6 +31,7 @@ import com.zoe.weshare.util.Const.PATH_LOG
 import com.zoe.weshare.util.Const.PATH_USER
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
 import com.zoe.weshare.util.Logger
+import com.zoe.weshare.util.UserManager.weShareUser
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -195,7 +202,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun newUserRegister(profile: UserProfile) : Result<Boolean> =
+    override suspend fun newUserRegister(profile: UserProfile): Result<Boolean> =
         suspendCoroutine { continuation ->
 
             val newUser = FirebaseFirestore.getInstance().collection(PATH_USER)
@@ -226,7 +233,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
     override suspend fun getAllComments(
         collection: String,
         docId: String,
-        subCollection: String
+        subCollection: String,
     ): Result<List<Comment>> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
@@ -264,7 +271,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         collection: String,
         docId: String,
         comment: Comment,
-        subCollection: String
+        subCollection: String,
     ): Result<Boolean> = suspendCoroutine { continuation ->
 
         val commentPost = FirebaseFirestore.getInstance().collection(collection)
@@ -898,4 +905,70 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
+
+    override suspend fun uploadImage(imageUri: Uri): Result<String> =
+        suspendCoroutine { continuation ->
+
+            val createdTime = Calendar.getInstance().timeInMillis
+            val formatFileName = weShareUser!!.uid + "/" + createdTime.toDisplayFormat()
+
+            val storageRef = FirebaseStorage.getInstance().reference.child("images/$formatFileName")
+
+            storageRef.putFile(imageUri)
+                .addOnSuccessListener { taskSnapshot ->
+
+                    val result = taskSnapshot.metadata!!.reference!!.downloadUrl
+
+                    result.addOnSuccessListener {
+                        val downloadUrl = it.toString()
+                        continuation.resume(Result.Success(downloadUrl))
+                    }
+                }
+
+                .addOnFailureListener {
+                    Logger.w(
+                        "[${this::class.simpleName}] " +
+                                "Error getting documents. ${it.message}"
+                    )
+
+                    continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                }
+
+        }
+
+    override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_USER)
+                .document(profile.uid)
+                .update(
+                    mapOf(
+                        FIELD_USER_NAME to profile.name,
+                        FIELD_USER_INTRO_MSG to profile.introMsg,
+                        FIELD_USER_IMAGE to profile.image
+                    )
+                ).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("updateUserProfile: $profile")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                        "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
 }

@@ -13,7 +13,9 @@ import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWER
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWING
 import com.zoe.weshare.util.Const.PATH_USER
+import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -143,6 +145,7 @@ class ProfileViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
+                    onSaveFollowingLog()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -191,6 +194,40 @@ class ProfileViewModel(
                 else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    fun onSaveFollowingLog() {
+        val log = PostLog(
+            postDocId = "none",
+            logType = LogType.FOLLOWING.value,
+            operatorUid = weShareUser!!.uid,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_following_someone,
+                weShareUser!!.name,
+                targetUser!!.name
+            )
+        )
+        saveFollowingLog(log)
+    }
+
+    private fun saveFollowingLog(log: PostLog) {
+        coroutineScope.launch {
+
+            when (val result = repository.saveLog(log)) {
+                is Result.Success -> {
+                    _error.value = null
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
                 }
             }
         }

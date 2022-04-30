@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/edit_user_info"
+        android:title="基本資料"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_gifts_manage"
+        android:title="贈品管理"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_events_manage"
+        android:title="活動管理"
+        app:showAsAction="never"/>
+
+
+
+</menu>

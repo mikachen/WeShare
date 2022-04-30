@@ -1,5 +1,6 @@
 package com.zoe.weshare.data.source
 
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.data.*
@@ -156,5 +157,13 @@ class DefaultWeShareRepository(
         value: FieldValue
     ): Result<Boolean>{
         return remoteDataSource.updateFieldValue(collection, docId, field, value)
+    }
+
+    override suspend fun uploadImage(imageUri: Uri): Result<String> {
+        return remoteDataSource.uploadImage(imageUri)
+    }
+
+    override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> {
+        return remoteDataSource.updateUserProfile(profile)
     }
 }

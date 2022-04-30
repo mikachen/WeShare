@@ -28,5 +28,8 @@ object Const {
 
     const val FIELD_USER_FOLLOWER = "follower"
     const val FIELD_USER_FOLLOWING = "following"
+    const val FIELD_USER_NAME = "name"
+    const val FIELD_USER_INTRO_MSG = "introMsg"
+    const val FIELD_USER_IMAGE = "image"
 
 }

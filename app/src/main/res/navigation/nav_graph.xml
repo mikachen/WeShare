@@ -32,6 +32,9 @@
             android:name="targetUser"
             app:argType="com.zoe.weshare.data.UserInfo"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_profileFragment_to_editInfoFragment"
+            app:destination="@id/editInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/postEventFragment"
@@ -222,6 +225,15 @@
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment" />
+    <fragment
+        android:id="@+id/editInfoFragment"
+        android:name="com.zoe.weshare.profile.editmode.EditInfoFragment"
+        android:label="fragment_edit_info"
+        tools:layout="@layout/fragment_edit_info" >
+        <argument
+            android:name="userProfile"
+            app:argType="com.zoe.weshare.data.UserProfile" />
+    </fragment>
 
 
 </navigation>

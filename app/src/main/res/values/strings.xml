@@ -81,16 +81,17 @@
     <string name="send_gift_no">取消</string>
     <string name="title_who_requested">當前索取人</string>
 
-    <string name="log_msg_post_gift">%1$s\t刊登了贈品:%2$1s</string>
-    <string name="log_msg_post_event">%1$s\t刊登了活動:%2$1s</string>
-    <string name="log_msg_request_gift">%1$s\t登記了索取贈品:%2$1s</string>
-    <string name="log_msg_send_away_gift">%1$s\t送出了贈品:%2$1s給%3$1s</string>
-    <string name="log_msg_abandon_gift">%1$s\t下架了贈品:%2$1s</string>
-    <string name="log_msg_send_event_comment">%1$s\t對活動:%2$1s\t發表留言</string>
-    <string name="log_msg_event_attending">%1$s\t參與了活動:%2$1s</string>
-    <string name="log_msg_event_volunteering">%1$s\t成為了活動:%2$1s\t的志工</string>
-    <string name="log_msg_event_status_ongoing">活動:%1$1s\t已經開始囉！</string>
-    <string name="log_msg_event_status_ended">活動:%1$1s\t已經結束了！</string>
+    <string name="log_msg_post_gift">&lt;b>%1s&lt;/b> 刊登了贈品：%2s</string>
+    <string name="log_msg_post_event">&lt;b>%1s&lt;/b> 刊登了活動：%2s</string>
+    <string name="log_msg_request_gift">&lt;b>%1s&lt;/b> 登記了贈品索取：%2s</string>
+    <string name="log_msg_send_away_gift">&lt;b>%1s&lt;/b> 送出了贈品：%2s給%3s</string>
+    <string name="log_msg_abandon_gift">&lt;b>%1s&lt;/b> 下架了贈品：%2s</string>
+    <string name="log_msg_send_event_comment">&lt;b>%1s&lt;/b> 對活動：%2s 發表了留言</string>
+    <string name="log_msg_event_attending">&lt;b>%1s&lt;/b> 參與了活動：%2s</string>
+    <string name="log_msg_event_volunteering">&lt;b>%1s&lt;/b> 成為了活動：%2s 志工</string>
+    <string name="log_msg_event_status_ongoing">&lt;b>活動：%s&lt;/b> 已經開始囉！</string>
+    <string name="log_msg_event_status_ended">&lt;b>活動：%s&lt;/b> 已經結束了！</string>
+    <string name="log_msg_following_someone">&lt;b>%1s&lt;/b>追蹤了%2s！</string>
 
     <string name="event_leave_a_comment">留個言吧…</string>
     <string name="chatroom_send_a_message">輸入訊息</string>

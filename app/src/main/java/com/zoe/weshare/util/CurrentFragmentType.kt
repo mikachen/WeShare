@@ -16,6 +16,8 @@ enum class CurrentFragmentType(val value: String) {
     SEARCHLOCATION("選擇地點"),
     GIFTMANAGE("贈品管理"),
     NOTIFICATION("通知"),
-    LOGIN("登入")
+    LOGIN("登入"),
+    EDITPROFILE("會員資料更新")
+
 
 }

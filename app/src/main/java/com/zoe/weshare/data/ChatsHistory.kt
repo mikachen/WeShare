@@ -1,6 +1,5 @@
 package com.zoe.weshare.data
 
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 
 // TODO 如果要分日期就先分類好 data list 執行以下

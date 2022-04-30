@@ -128,7 +128,7 @@
                         android:id="@+id/ticker_rv"
                         android:layout_width="match_parent"
                         tools:itemCount="1"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="8dp"
                         tools:listitem="@layout/item_home_log_ticker"
                         android:layout_height="match_parent" />
 

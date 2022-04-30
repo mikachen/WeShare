@@ -113,6 +113,9 @@ class MainActivity : AppCompatActivity() {
                     CurrentFragmentType.POSTEVENT -> {
                         hideBottom()
                     }
+                    CurrentFragmentType.EDITPROFILE -> {
+                        hideBottom()
+                    }
 
                     else -> {
                         topAppbar.visibility = View.VISIBLE
@@ -157,6 +160,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.pagerFilterFragment -> CurrentFragmentType.GIFTMANAGE
                 R.id.notificationFragment -> CurrentFragmentType.NOTIFICATION
                 R.id.loginFragment -> CurrentFragmentType.LOGIN
+                R.id.editInfoFragment -> CurrentFragmentType.EDITPROFILE
 
                 else -> viewModel.currentFragmentType.value
             }

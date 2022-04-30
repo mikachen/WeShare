@@ -1,5 +1,6 @@
 package com.zoe.weshare.data.source
 
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.data.*
@@ -78,4 +79,7 @@ interface WeShareRepository {
         field: String,
         value: FieldValue
     ): Result<Boolean>
+
+    suspend fun uploadImage(imageUri: Uri): Result<String>
+    suspend fun updateUserProfile(profile: UserProfile): Result<Boolean>
 }

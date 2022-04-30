@@ -57,6 +57,7 @@
         <entry key="app/src/main/res/layout/fragment_commenting.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/fragment_credit.xml" value="0.1774262505344164" />
         <entry key="app/src/main/res/layout/fragment_distribute.xml" value="0.25908507909362977" />
+        <entry key="app/src/main/res/layout/fragment_edit_info.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_gift_manage.xml" value="0.375" />
@@ -70,7 +71,7 @@
         <entry key="app/src/main/res/layout/fragment_pager_filter.xml" value="0.1393758016246259" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.75" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_room_list.xml" value="0.28762135922330095" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/layout/fragment_search_location.xml" value="0.25" />
@@ -91,6 +92,7 @@
         <entry key="app/src/main/res/layout/item_message_send.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/item_related_room_list.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
+        <entry key="app/src/main/res/menu/profile_popup_menu.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/menu/toolbar_menu.xml" value="0.26979166666666665" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2965" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_weshare_launcher.xml" value="0.2965" />

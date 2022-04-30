@@ -1,6 +1,7 @@
 package com.zoe.weshare.data.source.local
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.data.*
@@ -20,6 +21,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getEvents(): Result<List<EventPost>> {
         TODO("Not yet implemented")
     }
@@ -34,6 +39,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         field: String,
         value: FieldValue,
     ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun uploadImage(imageUri: Uri): Result<String> {
         TODO("Not yet implemented")
     }
 
