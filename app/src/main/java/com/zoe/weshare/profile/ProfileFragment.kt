@@ -145,10 +145,14 @@ class ProfileFragment : Fragment() {
                     false -> user.introMsg
                 }
 
-            if (user.follower.contains(UserManager.weShareUser!!.uid)) {
-                buttonFollow.text = "已追蹤"
-            } else {
-                buttonFollow.text = "追蹤他"
+            if(targetUser.uid != weShareUser!!.uid){
+                layoutSocialButton.visibility = View.VISIBLE
+
+                if (user.follower.contains(weShareUser!!.uid)) {
+                    buttonFollow.text = "已追蹤"
+                } else {
+                    buttonFollow.text = "追蹤他"
+                }
             }
         }
     }
