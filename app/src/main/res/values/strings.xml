@@ -54,16 +54,17 @@
     <string name="gift_registrants_number">已有%1$d人登記索取</string>
     <string name="number_who_liked">%1$d 人說讚</string>
     <string name="event＿comments">留言</string>
-
-
     <string name="request_leave_intro_message">留個自我介紹給大家吧！</string>
     <string name="request_gift">登記索取</string>
     <string name="already_requested_gift">您已經登記索取</string>
-
     <string name="filter_all">全部</string>
     <string name="filter_ongoing">開放中</string>
     <string name="filter_ended">已結案</string>
     <string name="filter_abandoned">已下架</string>
+
+    <string name="event_leave_a_comment">留個言吧…</string>
+    <string name="chatroom_send_a_message">輸入訊息</string>
+    <string name="posting_progress">LOADING..%1$d%%</string>
 
 
     //下架Alert窗
@@ -93,10 +94,6 @@
     <string name="log_msg_event_status_ended">&lt;b>活動：%s&lt;/b> 已經結束了！</string>
     <string name="log_msg_following_someone">&lt;b>%1s&lt;/b>追蹤了%2s！</string>
 
-    <string name="event_leave_a_comment">留個言吧…</string>
-    <string name="chatroom_send_a_message">輸入訊息</string>
-    <string name="posting_progress">LOADING..%1$d%%</string>
-
 
     //error handle
     <string name="error_title_isEmpty">請填寫標題</string>
@@ -109,5 +106,22 @@
     <string name="error_event_location_isEmpty">請選擇活動地點</string>
     <string name="error_gift_location_isEmpty">請選擇取物地點</string>
 
+    //posting preview string
+    <string name="preview_detail_title">刊登預覽</string>
+    <string name="preview_location_title">地點</string>
+    <string name="preview_choose_one_location_hint">請搜尋指定一個刊登地點</string>
+    <string name="preview_gift_title_title">贈品名稱</string>
+    <string name="preview_gift_sort_title">贈品分類</string>
+    <string name="preview_gift_condition_title">贈品狀況</string>
+    <string name="preview_gift_description_title">贈品詳情</string>
+    <string name="preview_photo_title">相片預覽</string>
+    <string name="preview_submit_btn_title">提交</string>
+
+    <string name="preview_event_title_title">活動名稱</string>
+    <string name="preview_event_sort_title">活動分類</string>
+    <string name="preview_event_time_title">活動時間</string>
+    <string name="preview_event_time">%1s - %2s</string>
+    <string name="preview_event_volunteer_title">志工需求</string>
+    <string name="preview_event_description_title">活動詳情</string>
 
 </resources>

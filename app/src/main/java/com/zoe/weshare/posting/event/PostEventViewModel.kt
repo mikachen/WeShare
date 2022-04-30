@@ -23,11 +23,11 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
 
     var postingProgress = MutableLiveData<Int>()
 
-    val _event = MutableLiveData<EventPost>()
-    val event: LiveData<EventPost>
+    val _event = MutableLiveData<EventPost?>()
+    val event: LiveData<EventPost?>
         get() = _event
 
-    var imageUri: Uri? = null
+    var imageUri = MutableLiveData<Uri?>()
     var locationChoice: PostLocation? = null
 
     var onPostEvent = MutableLiveData<EventPost>()
@@ -71,8 +71,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         coroutineScope.launch {
             _postEventStatus.value = LoadApiStatus.LOADING
 
-            postingProgress.value = 80
-
+            postingProgress.value = 70
             when (val result = event.value?.let { repository.postNewEvent(it) }) {
                 is Result.Success -> {
                     _error.value = null
@@ -80,7 +79,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
 
                     onSaveEventPostLog(result.data)
 
-                    postingProgress.value = 90
+                    postingProgress.value = 80
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -116,7 +115,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         coroutineScope.launch {
 
             _saveLogComplete.value = LoadApiStatus.LOADING
-            postingProgress.value = 95
+            postingProgress.value = 90
 
             when (val result = repository.saveLog(log)) {
                 is Result.Success -> {
@@ -207,7 +206,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
 
                     _roomCreateComplete.value = result.data ?: ""
 
-                    postingProgress.value = 70
+                    postingProgress.value = 60
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -230,7 +229,9 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         startTime = startDate
         endTime = secondDate
 
-        _datePick.value = "${startDate.toDisplayFormat()} - ${secondDate.toDisplayFormat()}"
+        _datePick.value = WeShareApplication.instance.getString(R.string.preview_event_time,
+            startTime.toDisplayFormat(),
+            endTime.toDisplayFormat())
     }
 
     fun onSaveUserInput(
@@ -239,15 +240,20 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         volunteerNeeds: String,
         description: String,
     ) {
-        _event.value = EventPost(
+        onPostEvent.value = EventPost(
             author = author,
             title = title,
             sort = sort,
             volunteerNeeds = volunteerNeeds.toInt(),
             description = description,
-            image = imageUri.toString(),
+            image = imageUri.value.toString(),
             startTime = startTime,
             endTime = endTime
         )
+        _event.value = onPostEvent.value
+    }
+
+    fun navigateNextComplete() {
+        _event.value = null
     }
 }

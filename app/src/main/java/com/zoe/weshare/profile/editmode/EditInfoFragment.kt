@@ -103,15 +103,11 @@ class EditInfoFragment : Fragment() {
             data != null && data.data != null
         ) {
 
-            // Get the Uri of data
             val filePath = data.data!!
 
             try {
-                val bitmap = MediaStore.Images.Media.getBitmap(
-                    requireActivity().contentResolver, filePath)
 
-                binding.imageProfileAvatar.setImageBitmap(bitmap)
-
+                binding.imageProfileAvatar.setImageURI(filePath)
                 viewModel.newImage = filePath
 
             } catch (e: Exception) {

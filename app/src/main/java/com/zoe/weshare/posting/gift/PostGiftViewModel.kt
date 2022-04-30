@@ -23,13 +23,13 @@ class PostGiftViewModel(
 
     var postingProgress = MutableLiveData<Int>()
 
-    var _gift = MutableLiveData<GiftPost>()
-    val gift: LiveData<GiftPost>
+    var _gift = MutableLiveData<GiftPost?>()
+    val gift: LiveData<GiftPost?>
         get() = _gift
 
     var onPostGift = MutableLiveData<GiftPost>()
 
-    var imageUri: Uri? = null
+    var imageUri = MutableLiveData<Uri?>()
     var locationChoice: PostLocation? = null
 
 
@@ -128,22 +128,28 @@ class PostGiftViewModel(
 
     fun updateLocation(locationName: String, point: LatLng) {
         locationChoice = PostLocation(
-                locationName = locationName,
-                latitude = point.latitude.toString(),
-                longitude = point.longitude.toString()
-            )
+            locationName = locationName,
+            latitude = point.latitude.toString(),
+            longitude = point.longitude.toString()
+        )
         _gift.value!!.location = locationChoice
     }
 
     fun onSaveUserInput(title: String, sort: String, condition: String, description: String) {
-        _gift.value = GiftPost(
+        onPostGift.value = GiftPost(
             author = author,
             title = title,
             sort = sort,
             condition = condition,
-            image = imageUri.toString(),
+            image = imageUri.value.toString(),
             description = description
         )
+        _gift.value = onPostGift.value
+    }
+
+
+    fun navigateNextComplete() {
+        _gift.value = null
     }
 
     fun uploadImage() {

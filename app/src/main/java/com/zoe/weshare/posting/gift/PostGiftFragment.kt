@@ -41,12 +41,19 @@ class PostGiftFragment : Fragment() {
         binding = FragmentPostGiftBinding.inflate(inflater, container, false)
 
         viewModel.gift.observe(viewLifecycleOwner) {
-            findNavController().navigate(
-                PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment(
-                    newGift = it,
-                    newEvent = null
+            it?.let {
+                findNavController().navigate(
+                    PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment(
+                        newGift = it,
+                        newEvent = null
+                    )
                 )
-            )
+                viewModel.navigateNextComplete()
+            }
+        }
+
+        viewModel.imageUri.observe(viewLifecycleOwner){
+            binding.buttonImagePreviewHolder.setImageURI(it)
         }
 
         setupBtn()
@@ -89,13 +96,7 @@ class PostGiftFragment : Fragment() {
             filePath = data.data!!
 
             try {
-                 val bitmap = MediaStore.Images.Media.getBitmap(
-                    requireActivity().contentResolver, filePath)
-
-                binding.buttonImagePreviewHolder.setImageBitmap(bitmap)
-
-                viewModel.imageUri = filePath
-
+                viewModel.imageUri.value = filePath
             } catch (e: Exception) {
                 // Log the exception
                 e.printStackTrace()
@@ -123,7 +124,7 @@ class PostGiftFragment : Fragment() {
             description.isEmpty() ->
                 Toast.makeText(requireContext(), getString(R.string.error_description_isEmpty), Toast.LENGTH_SHORT).show()
 
-            (viewModel.imageUri == null) ->
+            (viewModel.imageUri.value == null) ->
                 Toast.makeText(requireContext(), getString(R.string.error_image_isEmpty), Toast.LENGTH_SHORT).show()
 
 

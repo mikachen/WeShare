@@ -72,6 +72,7 @@
                 android:layout_height="56dp"
                 android:gravity="center|start"
                 android:inputType="none"
+                android:focusable="false"
                 android:textAppearance="@style/customHintLabel" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -93,6 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:gravity="center|left"
+                android:focusable="false"
                 android:inputType="none"
                 android:textAppearance="@style/customHintLabel" />
 

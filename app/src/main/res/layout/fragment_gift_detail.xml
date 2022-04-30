@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <!-- layout main content-->
     <androidx.core.widget.NestedScrollView
@@ -126,7 +125,7 @@
 
 
                 <TextView
-                    android:id="@+id/title_posted_location"
+                    android:id="@+id/title_gift_location"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -146,12 +145,12 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/title_posted_location"
+                    app:layout_constraintTop_toBottomOf="@id/title_gift_location"
                     tools:text="台北西門" />
 
 
                 <TextView
-                    android:id="@+id/title_sort"
+                    android:id="@+id/title_gift_sort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -162,18 +161,18 @@
                     app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
 
                 <TextView
-                    android:id="@+id/text_sort"
+                    android:id="@+id/text_gift_sort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/title_sort"
+                    app:layout_constraintTop_toBottomOf="@id/title_gift_sort"
                     tools:text="生活用品" />
 
                 <TextView
-                    android:id="@+id/title_description"
+                    android:id="@+id/title_gift_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
@@ -182,7 +181,7 @@
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/text_sort" />
+                    app:layout_constraintTop_toBottomOf="@id/text_gift_sort" />
 
                 <TextView
                     android:id="@+id/text_gift_description"
@@ -193,7 +192,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/title_description"
+                    app:layout_constraintTop_toBottomOf="@id/title_gift_description"
                     tools:text="鈦極不沾無毒塗層。" />
 
                 <ToggleButton
@@ -273,7 +272,7 @@
                     android:rotation="-15"
                     android:scaleType="fitCenter"
                     android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="@id/title_description"
+                    app:layout_constraintBottom_toBottomOf="@id/title_gift_description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     tools:src="@drawable/status_close_title_logo"

@@ -138,7 +138,7 @@ class GiftDetailFragment : Fragment() {
                 selectedGift.createdTime.toDisplayFormat()
             )
 
-            textSort.text = selectedGift.sort
+            textGiftSort.text = selectedGift.sort
 
             textLikedNumber.text =
                 getString(R.string.number_who_liked, selectedGift.whoLiked.size)

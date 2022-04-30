@@ -36,16 +36,23 @@ class PostEventFragment : Fragment() {
         binding = FragmentPostEventBinding.inflate(inflater, container, false)
 
         viewModel.event.observe(viewLifecycleOwner) {
-            findNavController().navigate(
-                PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment(
-                    newEvent = it,
-                    newGift = null
+            it?.let {
+                findNavController().navigate(
+                    PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment(
+                        newEvent = it,
+                        newGift = null
+                    )
                 )
-            )
+                viewModel.navigateNextComplete()
+            }
         }
 
         viewModel.datePick.observe(viewLifecycleOwner) {
             binding.editDatePicker.setText(it)
+        }
+
+        viewModel.imageUri.observe(viewLifecycleOwner){
+            binding.buttonImagePreviewHolder.setImageURI(it)
         }
 
 
@@ -91,12 +98,8 @@ class PostEventFragment : Fragment() {
             filePath = data.data!!
 
             try {
-                val bitmap = MediaStore.Images.Media.getBitmap(
-                    requireActivity().contentResolver, filePath)
 
-                binding.buttonImagePreviewHolder.setImageBitmap(bitmap)
-
-                viewModel.imageUri = filePath
+                viewModel.imageUri.value = filePath
 
             } catch (e: Exception) {
                 // Log the exception
@@ -129,6 +132,9 @@ class PostEventFragment : Fragment() {
 
             time.isEmpty() ->
                 Toast.makeText(requireContext(), getString(R.string.error_date_pick_isEmpty), Toast.LENGTH_SHORT).show()
+
+            (viewModel.imageUri.value == null) ->
+                Toast.makeText(requireContext(), getString(R.string.error_image_isEmpty), Toast.LENGTH_SHORT).show()
 
             else -> viewModel.onSaveUserInput(title, sort, volunteerNeeds, description)
         }

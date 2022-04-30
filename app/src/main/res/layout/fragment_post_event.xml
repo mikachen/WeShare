@@ -92,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:gravity="center|start"
+            android:focusable="false"
             android:inputType="none"
             android:textAppearance="@style/customHintLabel" />
 
@@ -128,7 +129,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:hint="物品詳情"
+        android:hint="活動詳情"
         app:counterEnabled="true"
         app:counterMaxLength="200"
         app:errorEnabled="true"
