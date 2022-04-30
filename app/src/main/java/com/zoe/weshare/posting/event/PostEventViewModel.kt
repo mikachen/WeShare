@@ -1,5 +1,6 @@
 package com.zoe.weshare.posting.event
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,9 +21,16 @@ import kotlinx.coroutines.launch
 class PostEventViewModel(private val repository: WeShareRepository, private val author: UserInfo?) :
     ViewModel() {
 
+    var postingProgress = MutableLiveData<Int>()
+
     val _event = MutableLiveData<EventPost>()
     val event: LiveData<EventPost>
         get() = _event
+
+    var imageUri: Uri? = null
+    var locationChoice: PostLocation? = null
+
+    var onPostEvent = MutableLiveData<EventPost>()
 
     var startTime: Long = -1
     var endTime: Long = -1
@@ -37,10 +45,6 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     private val _postEventStatus = MutableLiveData<LoadApiStatus>()
     val postEventStatus: LiveData<LoadApiStatus>
         get() = _postEventStatus
-
-    private val _postEventComplete = MutableLiveData<String>()
-    val postEventComplete: LiveData<String>
-        get() = _postEventComplete
 
     private val _roomCreateComplete = MutableLiveData<String>()
     val roomCreateComplete: LiveData<String>
@@ -58,22 +62,25 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    fun onNewEventPost(it: String) {
-        _event.value!!.roomId = it
+    fun onNewEventPost(roomId: String) {
+        _event.value!!.roomId = roomId
         newEventPost()
     }
 
     private fun newEventPost() {
         coroutineScope.launch {
-
             _postEventStatus.value = LoadApiStatus.LOADING
+
+            postingProgress.value = 80
 
             when (val result = event.value?.let { repository.postNewEvent(it) }) {
                 is Result.Success -> {
                     _error.value = null
                     _postEventStatus.value = LoadApiStatus.DONE
 
-                    _postEventComplete.value = result.data!!
+                    onSaveEventPostLog(result.data)
+
+                    postingProgress.value = 90
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -99,7 +106,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_post_event,
                 author.name,
-                event.value?.title ?: ""
+                event.value!!.title
             )
         )
         saveEventPostLog(log)
@@ -109,10 +116,13 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         coroutineScope.launch {
 
             _saveLogComplete.value = LoadApiStatus.LOADING
+            postingProgress.value = 95
 
             when (val result = repository.saveLog(log)) {
                 is Result.Success -> {
                     _error.value = null
+                    postingProgress.value = 100
+
                     _saveLogComplete.value = LoadApiStatus.DONE
                 }
 
@@ -134,15 +144,46 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         }
     }
 
-    // update user's location choice
     fun updateLocation(locationName: String, point: LatLng) {
-        _event.value?.apply {
+        locationChoice = PostLocation(
+            locationName = locationName,
+            latitude = point.latitude.toString(),
+            longitude = point.longitude.toString()
+        )
+        _event.value!!.location = locationChoice
+    }
 
-            location = PostLocation(
-                locationName = locationName,
-                latitude = point.latitude.toString(),
-                longitude = point.longitude.toString()
-            )
+    fun uploadImage() {
+        coroutineScope.launch {
+            _postEventStatus.value = LoadApiStatus.LOADING
+
+            postingProgress.value = 10
+
+            val imageUri = Uri.parse(event.value!!.image)
+            when (val result = repository.uploadImage(imageUri)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _postEventStatus.value = LoadApiStatus.DONE
+
+                    _event.value!!.image = result.data
+
+                    onPostEvent.value = event.value
+
+                    postingProgress.value = 30
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _postEventStatus.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _postEventStatus.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _postEventStatus.value = LoadApiStatus.ERROR
+                }
+            }
         }
     }
 
@@ -157,12 +198,16 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
+            postingProgress.value = 50
+
             when (val result = repository.createNewChatRoom(room)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
                     _roomCreateComplete.value = result.data ?: ""
+
+                    postingProgress.value = 70
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -188,7 +233,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         _datePick.value = "${startDate.toDisplayFormat()} - ${secondDate.toDisplayFormat()}"
     }
 
-    fun onNavigateSearchLocation(
+    fun onSaveUserInput(
         title: String,
         sort: String,
         volunteerNeeds: String,
@@ -200,6 +245,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             sort = sort,
             volunteerNeeds = volunteerNeeds.toInt(),
             description = description,
+            image = imageUri.toString(),
             startTime = startTime,
             endTime = endTime
         )

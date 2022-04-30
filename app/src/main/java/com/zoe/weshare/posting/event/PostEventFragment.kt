@@ -1,6 +1,10 @@
 package com.zoe.weshare.posting.event
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +21,11 @@ import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostEventFragment : Fragment() {
 
-    val currentUser = weShareUser
+    private val PICK_IMAGE_REQUEST = 151
+    private lateinit var filePath: Uri
 
     private lateinit var binding: FragmentPostEventBinding
-    val viewModel by viewModels<PostEventViewModel> { getVmFactory(currentUser) }
+    val viewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,20 +48,65 @@ class PostEventFragment : Fragment() {
             binding.editDatePicker.setText(it)
         }
 
-        setupNextBtn()
+
+        setupBtn()
         setupDropdownMenu()
         setupDatePicker()
 
         return binding.root
     }
 
-    private fun setupNextBtn() {
+    private fun setupBtn() {
         binding.nextButton.setOnClickListener {
-            onDataChecking()
+            dataCollecting()
+        }
+
+        binding.buttonImagePreviewHolder.setOnClickListener {
+            selectImage()
         }
     }
 
-    private fun onDataChecking() {
+
+    private fun selectImage() {
+        // Defining Implicit Intent to mobile gallery
+
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(
+            Intent.createChooser(
+                intent,
+                "Select Image from here..."
+            ),
+            PICK_IMAGE_REQUEST
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK &&
+            data != null && data.data != null
+        ) {
+            filePath = data.data!!
+
+            try {
+                val bitmap = MediaStore.Images.Media.getBitmap(
+                    requireActivity().contentResolver, filePath)
+
+                binding.buttonImagePreviewHolder.setImageBitmap(bitmap)
+
+                viewModel.imageUri = filePath
+
+            } catch (e: Exception) {
+                // Log the exception
+                e.printStackTrace()
+            }
+        }
+    }
+
+
+    private fun dataCollecting() {
 
         val title = binding.editTitle.text.toString()
         val sort = binding.dropdownMenuSort.text.toString()
@@ -65,37 +115,22 @@ class PostEventFragment : Fragment() {
         val time = binding.editDatePicker.text.toString()
 
         when (true) {
-            title.isEmpty() -> Toast.makeText(
-                requireContext(),
-                getString(R.string.error_title_isEmpty),
-                Toast.LENGTH_SHORT
-            )
-                .show()
-            sort.isEmpty() -> Toast.makeText(
-                requireContext(),
-                getString(R.string.error_sort_isEmpty),
-                Toast.LENGTH_SHORT
-            )
-                .show()
-            volunteerNeeds.isEmpty() -> Toast.makeText(
-                requireContext(),
-                getString(R.string.error_volunteer_need),
-                Toast.LENGTH_SHORT
-            )
-                .show()
-            description.isEmpty() -> Toast.makeText(
-                requireContext(),
-                getString(R.string.error_description_isEmpty),
-                Toast.LENGTH_SHORT
-            ).show()
+            title.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_title_isEmpty), Toast.LENGTH_SHORT).show()
 
-            time.isEmpty() -> Toast.makeText(
-                requireContext(),
-                getString(R.string.error_date_pick_isEmpty),
-                Toast.LENGTH_SHORT
-            ).show()
+            sort.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_sort_isEmpty), Toast.LENGTH_SHORT).show()
 
-            else -> viewModel.onNavigateSearchLocation(title, sort, volunteerNeeds, description)
+            volunteerNeeds.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_volunteer_need), Toast.LENGTH_SHORT).show()
+
+            description.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_description_isEmpty), Toast.LENGTH_SHORT).show()
+
+            time.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_date_pick_isEmpty), Toast.LENGTH_SHORT).show()
+
+            else -> viewModel.onSaveUserInput(title, sort, volunteerNeeds, description)
         }
     }
 

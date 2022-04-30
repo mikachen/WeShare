@@ -31,8 +31,6 @@ class PostGiftFragment : Fragment() {
 
     val viewModel by viewModels<PostGiftViewModel> { getVmFactory(weShareUser) }
 
-    val storage = FirebaseStorage.getInstance()
-    val storageReference = storage.reference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,36 +65,6 @@ class PostGiftFragment : Fragment() {
         }
     }
 
-    private fun uploadImage(imageUri: Uri) {
-
-        // Code for showing progressDialog while uploading
-        val progressDialog = ProgressDialog(requireContext())
-        progressDialog.setTitle("Uploading...")
-        progressDialog.show()
-
-        val now = Calendar.getInstance().timeInMillis
-        val formatFileName = weShareUser!!.uid + "/" + now.toDisplayFormat()
-
-        // Defining the child of storageReference
-        val ref = storageReference.child("images/$formatFileName")
-
-        // adding listeners on upload
-        // or failure of image
-        ref.putFile(imageUri)
-            .addOnSuccessListener { taskSnapshot ->
-
-                val result = taskSnapshot.metadata!!.reference!!.downloadUrl
-
-                result.addOnSuccessListener {
-
-                    viewModel.imageUri = it.toString()
-                }
-
-                progressDialog.dismiss()
-                Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
-            }
-    }
-
     private fun selectImage() {
         // Defining Implicit Intent to mobile gallery
 
@@ -118,20 +86,16 @@ class PostGiftFragment : Fragment() {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK &&
             data != null && data.data != null
         ) {
-
-            // Get the Uri of data
             filePath = data.data!!
 
             try {
-
-                // Setting image on image view using Bitmap
-                val bitmap = MediaStore.Images.Media.getBitmap(
-                    requireActivity().contentResolver, filePath
-                )
+                 val bitmap = MediaStore.Images.Media.getBitmap(
+                    requireActivity().contentResolver, filePath)
 
                 binding.buttonImagePreviewHolder.setImageBitmap(bitmap)
 
-                uploadImage(filePath)
+                viewModel.imageUri = filePath
+
             } catch (e: Exception) {
                 // Log the exception
                 e.printStackTrace()
@@ -147,20 +111,21 @@ class PostGiftFragment : Fragment() {
         val description = binding.editDescription.text.toString()
 
         when (true) {
-            title.isEmpty() -> Toast.makeText(requireContext(), "title.isEmpty", Toast.LENGTH_SHORT)
-                .show()
-            sort.isEmpty() -> Toast.makeText(requireContext(), "sort.isEmpty", Toast.LENGTH_SHORT)
-                .show()
-            condition.isEmpty() -> Toast.makeText(
-                requireContext(),
-                "condition.isEmpty",
-                Toast.LENGTH_SHORT
-            ).show()
-            description.isEmpty() -> Toast.makeText(
-                requireContext(),
-                "description.isEmpty",
-                Toast.LENGTH_SHORT
-            ).show()
+            title.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_title_isEmpty), Toast.LENGTH_SHORT).show()
+
+            sort.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_sort_isEmpty), Toast.LENGTH_SHORT).show()
+
+            condition.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_condition_isEmpty), Toast.LENGTH_SHORT).show()
+
+            description.isEmpty() ->
+                Toast.makeText(requireContext(), getString(R.string.error_description_isEmpty), Toast.LENGTH_SHORT).show()
+
+            (viewModel.imageUri == null) ->
+                Toast.makeText(requireContext(), getString(R.string.error_image_isEmpty), Toast.LENGTH_SHORT).show()
+
 
             else -> viewModel.onSaveUserInput(title, sort, condition, description)
         }

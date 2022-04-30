@@ -1,12 +1,15 @@
 package com.zoe.weshare.posting
 
 import android.Manifest
+import android.animation.ObjectAnimator
+import android.app.ProgressDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -40,40 +43,51 @@ import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import com.zoe.weshare.util.UserManager.weShareUser
+import com.zoe.weshare.util.Util.getStringWithIntParm
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var map: GoogleMap
     private lateinit var binding: FragmentSearchLocationBinding
 
+    lateinit var progressBar : ProgressBar
+
+
     var isPermissionGranted: Boolean = false
-
-
-    private val defaultTaiwan = LatLng(23.897879, 121.063772)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
+        progressBar = binding.progressBar
+        progressBar.max = 100
 
         initializePlace()
 
         val newEvent = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newEvent }
         val newGift = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newGift }
 
-        binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
         if (newEvent != null) {
             val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
-            setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
-
             eventViewModel._event.value = newEvent
 
-            setUpUserPreview(gift = null, event = newEvent)
+            setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
+            setupInputPreview(gift = null, event = newEvent)
 
             binding.buttonSubmit.setOnClickListener {
-                eventViewModel.event.value?.let { eventViewModel.onNewRoomPrepare() }
+                if (eventViewModel.locationChoice != null){
+                    binding.layoutProgressLoading.visibility = View.VISIBLE
+                    eventViewModel.uploadImage()
+                }else{
+                    Toast.makeText(requireContext(),getString(R.string.error_event_location_isEmpty),Toast.LENGTH_SHORT).show()
+                }
+            }
+            eventViewModel.postingProgress.observe(viewLifecycleOwner){
+                binding.progressBarText.text = getStringWithIntParm(R.string.posting_progress,it)
+                progressBar.progress = it
             }
 
             eventViewModel.roomCreateComplete.observe(viewLifecycleOwner) {
@@ -82,27 +96,21 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
             }
 
-            eventViewModel.postEventComplete.observe(viewLifecycleOwner) {
-                eventViewModel.onSaveEventPostLog(docId = it)
-            }
-
             eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
                 if (it == LoadApiStatus.DONE) {
                     findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
                 }
             }
+
+            eventViewModel.onPostEvent.observe(viewLifecycleOwner){
+                eventViewModel.onNewRoomPrepare()
+            }
         } else {
             val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(weShareUser) }
-
-            setUpAutoCompleteSearchPlace(giftVm = giftViewModel, eventVm = null)
-
             giftViewModel._gift.value = newGift
 
-            setUpUserPreview(gift = newGift, event = null)
-
-            giftViewModel.postGiftComplete.observe(viewLifecycleOwner) {
-                giftViewModel.onSaveGiftPostLog(docId = it)
-            }
+            setUpAutoCompleteSearchPlace(giftVm = giftViewModel, eventVm = null)
+            setupInputPreview(gift = newGift, event = null)
 
             giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
                 if (it == LoadApiStatus.DONE) {
@@ -111,7 +119,21 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             }
 
             binding.buttonSubmit.setOnClickListener {
-                giftViewModel.gift.value?.let { gift -> giftViewModel.newGiftPost(gift) }
+                if (giftViewModel.locationChoice != null){
+                    binding.layoutProgressLoading.visibility = View.VISIBLE
+                    giftViewModel.uploadImage()
+                }else{
+                    Toast.makeText(requireContext(),getString(R.string.error_gift_location_isEmpty),Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            giftViewModel.postingProgress.observe(viewLifecycleOwner){
+                binding.progressBarText.text = getStringWithIntParm(R.string.posting_progress,it)
+                progressBar.progress = it
+            }
+
+            giftViewModel.onPostGift.observe(viewLifecycleOwner){
+                giftViewModel.newGiftPost(it)
             }
         }
 
@@ -193,7 +215,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         })
     }
 
-    private fun setUpUserPreview(gift: GiftPost?, event: EventPost?) {
+    private fun setupInputPreview(gift: GiftPost?, event: EventPost?) {
         if (gift != null) {
             binding.apply {
                 this.title.text = gift.title
@@ -266,6 +288,9 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun setupMapSettings() {
+
+        val defaultTaiwan = LatLng(23.897879, 121.063772)
+
         map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isCompassEnabled = true
         map.uiSettings.setAllGesturesEnabled(true)

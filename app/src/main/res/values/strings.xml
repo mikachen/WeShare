@@ -95,14 +95,19 @@
 
     <string name="event_leave_a_comment">留個言吧…</string>
     <string name="chatroom_send_a_message">輸入訊息</string>
+    <string name="posting_progress">LOADING..%1$d%%</string>
 
 
     //error handle
     <string name="error_title_isEmpty">請填寫標題</string>
-    <string name="error_sort_isEmpty">請選則分類</string>
+    <string name="error_sort_isEmpty">請選擇分類</string>
     <string name="error_volunteer_need">請填寫志工數量</string>
-    <string name="error_description_isEmpty">請填寫活動詳情</string>
+    <string name="error_description_isEmpty">請填寫詳情描述</string>
     <string name="error_date_pick_isEmpty">請選擇開始與結束時間</string>
+    <string name="error_condition_isEmpty">請選擇物品狀態</string>
+    <string name="error_image_isEmpty">請上傳一張照片</string>
+    <string name="error_event_location_isEmpty">請選擇活動地點</string>
+    <string name="error_gift_location_isEmpty">請選擇取物地點</string>
 
 
 </resources>
