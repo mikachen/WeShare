@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
-    var allLogs = MutableLiveData<List<PostLog>>()
+    var allLogs = MutableLiveData<List<OperationLog>>()
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>

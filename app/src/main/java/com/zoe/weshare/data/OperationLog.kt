@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class PostLog(
+data class OperationLog(
     var id: String = "",
     var postDocId: String = "",
     var logType: Int = -1,

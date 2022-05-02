@@ -30,6 +30,7 @@ import com.zoe.weshare.util.Const.PATH_GIFT_POST
 import com.zoe.weshare.util.Const.PATH_LOG
 import com.zoe.weshare.util.Const.PATH_USER
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
+import com.zoe.weshare.util.Const.SUB_PATH_USER_NOTIFICATION
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
 import kotlin.coroutines.resume
@@ -426,6 +427,34 @@ object WeShareRemoteDataSource : WeShareDataSource {
         return liveData
     }
 
+    override fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>> {
+
+        val liveData = MutableLiveData<List<OperationLog>>()
+
+        FirebaseFirestore.getInstance()
+            .collection(PATH_USER).document(uid).collection(SUB_PATH_USER_NOTIFICATION)
+            .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+            .addSnapshotListener { snapshot, exception ->
+
+                Logger.i("getLiveNotification detect")
+
+                exception?.let {
+                    Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                }
+
+                val list = mutableListOf<OperationLog>()
+                for (document in snapshot!!) {
+                    Logger.d(document.id + " => " + document.data)
+
+                    val message = document.toObject(OperationLog::class.java)
+                    list.add(message)
+                }
+                liveData.value = list
+            }
+
+        return liveData
+    }
+
     override suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>> =
         suspendCoroutine { continuation ->
 
@@ -595,7 +624,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun saveLog(log: PostLog): Result<Boolean> =
+    override suspend fun saveLog(log: OperationLog): Result<Boolean> =
         suspendCoroutine { continuation ->
 
             val logSave = FirebaseFirestore.getInstance().collection(PATH_LOG)
@@ -631,7 +660,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun getUserLog(uid: String): Result<List<PostLog>> =
+    override suspend fun getUserLog(uid: String): Result<List<OperationLog>> =
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
                 .collection(PATH_LOG)
@@ -639,11 +668,11 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val list = mutableListOf<PostLog>()
+                        val list = mutableListOf<OperationLog>()
                         for (document in task.result!!) {
                             Logger.d(document.id + " => " + document.data)
 
-                            val log = document.toObject(PostLog::class.java)
+                            val log = document.toObject(OperationLog::class.java)
                             list.add(log)
                         }
 
@@ -669,9 +698,9 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override fun getLiveLogs(): MutableLiveData<List<PostLog>> {
+    override fun getLiveLogs(): MutableLiveData<List<OperationLog>> {
 
-        val liveData = MutableLiveData<List<PostLog>>()
+        val liveData = MutableLiveData<List<OperationLog>>()
 
         FirebaseFirestore.getInstance()
             .collection(PATH_LOG)
@@ -685,11 +714,11 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
                 }
 
-                val list = mutableListOf<PostLog>()
+                val list = mutableListOf<OperationLog>()
                 for (document in snapshot!!) {
                     Logger.d(document.id + " => " + document.data)
 
-                    val log = document.toObject(PostLog::class.java)
+                    val log = document.toObject(OperationLog::class.java)
                     list.add(log)
                 }
                 liveData.value = list
@@ -957,6 +986,42 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
                             Logger.w(
                                 "[${this::class.simpleName}] " +
+                                        "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean> =
+        suspendCoroutine { continuation ->
+
+            val logSave = FirebaseFirestore.getInstance().collection(PATH_USER)
+            val document = logSave.document(targetUid).collection(SUB_PATH_USER_NOTIFICATION)
+
+            log.createdTime = Calendar.getInstance().timeInMillis
+            log.id = document.id
+
+            document
+                .add(log)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("sendNotifications: $log")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
                                         "Error getting documents. ${it.message}"
                             )
 

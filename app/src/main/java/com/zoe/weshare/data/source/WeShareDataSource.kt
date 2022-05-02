@@ -21,7 +21,7 @@ interface WeShareDataSource {
 
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
 
-    fun getLiveLogs(): MutableLiveData<List<PostLog>>
+    fun getLiveLogs(): MutableLiveData<List<OperationLog>>
 
     fun getLiveComments(
         collection: String,
@@ -30,6 +30,8 @@ interface WeShareDataSource {
     ): MutableLiveData<List<Comment>>
 
     fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>>
+
+    fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>>
 
     suspend fun newUserRegister(user: UserProfile): Result<Boolean>
     suspend fun getUserInfo(uid: String): Result<UserProfile?>
@@ -74,8 +76,8 @@ interface WeShareDataSource {
         uid: String,
     ): Result<Boolean>
 
-    suspend fun saveLog(log: PostLog): Result<Boolean>
-    suspend fun getUserLog(uid: String): Result<List<PostLog>>
+    suspend fun saveLog(log: OperationLog): Result<Boolean>
+    suspend fun getUserLog(uid: String): Result<List<OperationLog>>
 
 
     suspend fun updateGiftStatus(docId: String, statusCode: Int, uid: String): Result<Boolean>
@@ -91,4 +93,5 @@ interface WeShareDataSource {
 
     suspend fun uploadImage(imageUri: Uri): Result<String>
     suspend fun updateUserProfile(profile: UserProfile): Result<Boolean>
+    suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean>
 }

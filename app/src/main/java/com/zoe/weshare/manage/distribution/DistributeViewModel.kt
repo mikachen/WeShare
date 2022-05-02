@@ -53,8 +53,8 @@ class DistributeViewModel(
     val sendGiftStatus: LiveData<LoadApiStatus>
         get() = _sendGiftStatus
 
-    private val _saveLogComplete = MutableLiveData<LoadApiStatus>()
-    val saveLogComplete: LiveData<LoadApiStatus>
+    private val _saveLogComplete = MutableLiveData<OperationLog>()
+    val saveLogComplete: LiveData<OperationLog>
         get() = _saveLogComplete
 
     fun getAskForGiftComments(selectedGift: GiftPost) {
@@ -147,6 +147,8 @@ class DistributeViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _sendGiftStatus.value = LoadApiStatus.DONE
+
+                    onSaveSendGiftLog()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -166,7 +168,7 @@ class DistributeViewModel(
     }
 
     fun onSaveSendGiftLog() {
-        val log = PostLog(
+        val log = OperationLog(
             postDocId = gift.id,
             logType = LogType.SEND_GIFT.value,
             operatorUid = userInfo!!.uid,
@@ -180,30 +182,26 @@ class DistributeViewModel(
         saveSendGiftLog(log)
     }
 
-    private fun saveSendGiftLog(log: PostLog) {
+    private fun saveSendGiftLog(log: OperationLog) {
         coroutineScope.launch {
-            _sendGiftStatus.value = LoadApiStatus.LOADING
-
-            when (
-                val result =
-                    repository.saveLog(log)
-            ) {
+            when (val result = repository.saveLog(log)) {
                 is Result.Success -> {
                     _error.value = null
-                    _sendGiftStatus.value = LoadApiStatus.DONE
+
+                    _saveLogComplete.value = log
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _sendGiftStatus.value = LoadApiStatus.ERROR
+
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _sendGiftStatus.value = LoadApiStatus.ERROR
+
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
-                    _sendGiftStatus.value = LoadApiStatus.ERROR
+
                 }
             }
         }

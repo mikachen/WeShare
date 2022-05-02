@@ -163,7 +163,7 @@ class GiftManageViewModel(
     }
 
     fun onSaveAbandonGiftLog(gift: GiftPost) {
-        val log = PostLog(
+        val log = OperationLog(
             postDocId = gift.id,
             logType = LogType.ABANDONED_GIFT.value,
             operatorUid = userInfo!!.uid,
@@ -176,7 +176,7 @@ class GiftManageViewModel(
         saveAbandonLog(log)
     }
 
-    private fun saveAbandonLog(log: PostLog) {
+    private fun saveAbandonLog(log: OperationLog) {
         coroutineScope.launch {
 
             when (

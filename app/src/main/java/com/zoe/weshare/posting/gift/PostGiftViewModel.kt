@@ -40,8 +40,8 @@ class PostGiftViewModel(
     val postGiftStatus: LiveData<LoadApiStatus>
         get() = _postGiftStatus
 
-    private val _saveLogComplete = MutableLiveData<LoadApiStatus>()
-    val saveLogComplete: LiveData<LoadApiStatus>
+    private val _saveLogComplete = MutableLiveData<OperationLog>()
+    val saveLogComplete: LiveData<OperationLog>
         get() = _saveLogComplete
 
     // error: The internal MutableLiveData that stores the error of the most recent request
@@ -84,7 +84,7 @@ class PostGiftViewModel(
     }
 
     fun onSaveGiftPostLog(docId: String) {
-        val log = PostLog(
+        val log = OperationLog(
             postDocId = docId,
             logType = LogType.POST_GIFT.value,
             operatorUid = author!!.uid,
@@ -97,9 +97,8 @@ class PostGiftViewModel(
         saveGiftPostLog(log)
     }
 
-    private fun saveGiftPostLog(log: PostLog) {
+    private fun saveGiftPostLog(log: OperationLog) {
         coroutineScope.launch {
-            _saveLogComplete.value = LoadApiStatus.LOADING
 
             postingProgress.value = 90
 
@@ -108,19 +107,16 @@ class PostGiftViewModel(
                     _error.value = null
 
                     postingProgress.value = 100
-                    _saveLogComplete.value = LoadApiStatus.DONE
+                    _saveLogComplete.value = log
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
             }
         }

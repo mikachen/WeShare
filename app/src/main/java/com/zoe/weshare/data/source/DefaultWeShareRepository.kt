@@ -29,8 +29,17 @@ class DefaultWeShareRepository(
     override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>{
         return remoteDataSource.getLiveEventDetail(docId)
     }
-    override fun getLiveLogs(): MutableLiveData<List<PostLog>>{
+    override fun getLiveLogs(): MutableLiveData<List<OperationLog>>{
         return remoteDataSource.getLiveLogs()
+    }
+
+
+    override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
+        return remoteDataSource.getLiveMessages(docId)
+    }
+
+    override fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>>{
+        return remoteDataSource.getLiveNotifications(uid)
     }
 
     override suspend fun getUserInfo(uid: String): Result<UserProfile?> {
@@ -60,10 +69,6 @@ class DefaultWeShareRepository(
 
     override suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>> {
         return remoteDataSource.getUserChatRooms(uid)
-    }
-
-    override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
-        return remoteDataSource.getLiveMessages(docId)
     }
 
     override suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String> {
@@ -106,11 +111,11 @@ class DefaultWeShareRepository(
         return remoteDataSource.saveLastMsgRecord(docId, message)
     }
 
-    override suspend fun saveLog(log: PostLog): Result<Boolean> {
+    override suspend fun saveLog(log: OperationLog): Result<Boolean> {
         return remoteDataSource.saveLog(log)
     }
 
-    override suspend fun getUserLog(uid: String): Result<List<PostLog>> {
+    override suspend fun getUserLog(uid: String): Result<List<OperationLog>> {
         return remoteDataSource.getUserLog(uid)
     }
 
@@ -165,5 +170,8 @@ class DefaultWeShareRepository(
 
     override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> {
         return remoteDataSource.updateUserProfile(profile)
+    }
+    override suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean>{
+        return remoteDataSource.sendNotifications(targetUid,log)
     }
 }

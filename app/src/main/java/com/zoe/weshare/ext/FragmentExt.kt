@@ -19,7 +19,9 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener
 import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.NavGraphDirections
+import com.zoe.weshare.SendNotificationService
 import com.zoe.weshare.WeShareApplication
+import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.factory.AuthorViewModelFactory
 import com.zoe.weshare.factory.ViewModelFactory
@@ -34,8 +36,6 @@ fun Fragment.getVmFactory(): ViewModelFactory {
     val repository = (requireContext().applicationContext as WeShareApplication).repository
     return ViewModelFactory(repository)
 }
-
-
 
 fun Fragment.checkLocationPermission(): Boolean {
     // 檢查權限
@@ -55,7 +55,6 @@ fun Fragment.checkLocationPermission(): Boolean {
         false
     }
 }
-
 
 fun Fragment.requestPermissions() {
 
@@ -98,4 +97,11 @@ fun Fragment.requestPermissions() {
 
             }
         }).check()
+}
+
+fun Fragment.sendNotifications(log: OperationLog){
+    val intent = Intent(requireContext(), SendNotificationService::class.java)
+    intent.putExtra(SendNotificationService.SEND_NOTIFICATION,log)
+
+    requireContext().startService(intent)
 }

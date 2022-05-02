@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.zoe.weshare.data.PostLog
+import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.ItemHomeLogTickerBinding
 
-class TickerAdapter : ListAdapter<PostLog, TickerAdapter.TickerViewHolder>(DiffCallback) {
+class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(DiffCallback) {
 
     class TickerViewHolder(var binding: ItemHomeLogTickerBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(log: PostLog) {
+        fun bind(log: OperationLog) {
             binding.textTicker.text = Html.fromHtml(log.logMsg)
         }
 
@@ -43,12 +43,12 @@ class TickerAdapter : ListAdapter<PostLog, TickerAdapter.TickerViewHolder>(DiffC
 //        fun onClick(selectedGift: GiftPost) = doNothing(selectedGift)
 //    }
 
-    companion object DiffCallback : DiffUtil.ItemCallback<PostLog>() {
-        override fun areItemsTheSame(oldItem: PostLog, newItem: PostLog): Boolean {
+    companion object DiffCallback : DiffUtil.ItemCallback<OperationLog>() {
+        override fun areItemsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {
             return oldItem === newItem
         }
 
-        override fun areContentsTheSame(oldItem: PostLog, newItem: PostLog): Boolean {
+        override fun areContentsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {
             return oldItem.id == newItem.id
         }
     }

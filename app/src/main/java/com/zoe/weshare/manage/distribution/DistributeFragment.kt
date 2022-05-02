@@ -21,7 +21,7 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.ext.sendNotifications
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class DistributeFragment : BottomSheetDialogFragment() {
@@ -68,33 +68,32 @@ class DistributeFragment : BottomSheetDialogFragment() {
         }
 
         viewModel.onConfirmMsgShowing.observe(viewLifecycleOwner) {
-            sendGiftEvent(it)
+            onConfirmingOperation(it)
         }
 
-        viewModel.sendGiftStatus.observe(viewLifecycleOwner) {
-            if (it == LoadApiStatus.DONE) {
-                viewModel.onSaveSendGiftLog()
 
-                Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
-            }
+        viewModel.saveLogComplete.observe(viewLifecycleOwner){
+            sendNotifications(it)
+
+            Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
         }
 
         return binding.root
     }
 
-    private fun sendGiftEvent(target: UserProfile?) {
+    private fun onConfirmingOperation(target: UserProfile?) {
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {
             setTitle(getString(R.string.send_gift_title, selectedGift.title, target!!.uid))
             setMessage(getString(R.string.send_gift_message))
-            setPositiveButton(getString(R.string.send_gift_yes)) { dialog, id ->
+            setPositiveButton(getString(R.string.send_gift_yes)) { dialog, _ ->
                 viewModel.sendGift(selectedGift, target)
                 dialog.cancel()
             }
 
-            setNegativeButton(getString(R.string.send_gift_no)) { dialog, id ->
+            setNegativeButton(getString(R.string.send_gift_no)) { dialog, _ ->
                 dialog.cancel()
             }
         }

@@ -1,5 +1,6 @@
 package com.zoe.weshare.detail.event
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.KeyEvent
@@ -16,13 +17,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
+import com.zoe.weshare.SendNotificationService
+import com.zoe.weshare.SendNotificationService.Companion.SEND_NOTIFICATION
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventDetailBinding
-import com.zoe.weshare.ext.bindImage
-import com.zoe.weshare.ext.getCountDownTimeString
-import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.ext.*
 import com.zoe.weshare.util.Const.FIELD_EVENT_ATTENDEE
 import com.zoe.weshare.util.Const.FIELD_EVENT_VOLUNTEER
 import com.zoe.weshare.util.EventStatusType
@@ -36,7 +36,6 @@ class EventDetailFragment : Fragment() {
     private lateinit var binding: FragmentEventDetailBinding
     private lateinit var adapter: EventCommentsAdapter
     private lateinit var commentsBoard: RecyclerView
-
 
     val viewModel by viewModels<EventDetailViewModel> { getVmFactory(weShareUser) }
 
@@ -135,6 +134,10 @@ class EventDetailFragment : Fragment() {
                 findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
                 viewModel.navigateToProfileComplete()
             }
+        }
+
+        viewModel.saveLogComplete.observe(viewLifecycleOwner){
+            sendNotifications(it)
         }
 
         return binding.root

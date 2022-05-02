@@ -21,6 +21,14 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> {
         TODO("Not yet implemented")
     }
@@ -46,7 +54,7 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override fun getLiveLogs(): MutableLiveData<List<PostLog>> {
+    override fun getLiveLogs(): MutableLiveData<List<OperationLog>> {
         TODO("Not yet implemented")
     }
 
@@ -115,11 +123,11 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveLog(log: PostLog): Result<Boolean> {
+    override suspend fun saveLog(log: OperationLog): Result<Boolean> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserLog(uid: String): Result<List<PostLog>> {
+    override suspend fun getUserLog(uid: String): Result<List<OperationLog>> {
         TODO("Not yet implemented")
     }
 

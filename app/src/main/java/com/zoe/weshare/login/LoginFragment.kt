@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.UserInfo
@@ -43,6 +44,8 @@ class LoginFragment : Fragment() {
 
 
         viewModel.loginSuccess.observe(viewLifecycleOwner) {
+            (activity as MainActivity).viewModel.getLiveNotificationResult(it.uid)
+
             findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
         }
 

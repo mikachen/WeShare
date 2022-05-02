@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
-import com.zoe.weshare.data.PostLog
+import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentProfileBinding
@@ -74,7 +74,7 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupLogView(logs: List<PostLog>) {
+    private fun setupLogView(logs: List<OperationLog>) {
         if (logs.isNotEmpty()) {
             binding.apply {
 

@@ -1,28 +1,31 @@
-package com.zoe.weshare.login
+package com.zoe.weshare
 
+import android.app.Service
+import android.content.Intent
+import android.os.IBinder
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.zoe.weshare.R
-import com.zoe.weshare.WeShareApplication
+import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.data.Result
-import com.zoe.weshare.data.UserInfo
-import com.zoe.weshare.data.UserProfile
-import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
 
+class SendNotificationService : Service() {
 
-    private var _loginSuccess = MutableLiveData<UserInfo>()
-    val loginSuccess: LiveData<UserInfo>
-        get() = _loginSuccess
+    private var serviceJob = Job()
+    private val coroutineScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
+    companion object {
+        const val SEND_NOTIFICATION = "sendNotification"
+    }
+
+    lateinit var followers: List<String>
 
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
@@ -32,34 +35,38 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
     val error: LiveData<String?>
         get() = _error
 
-    private var viewModelJob = Job()
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+    var loopCount = -1
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        val log = intent?.getParcelableExtra<OperationLog>(SEND_NOTIFICATION)
+
+        log?.let {
+            sendNotificationToFollower(log)
+        }
+
+        return START_NOT_STICKY
+    }
 
 
-    /**
-     * 1) search User collection with uid document
-     * 2) if doc doesn't exist => create new User profile ; if exist => get user profile
-     * */
-    fun checkIfMemberExist(user: UserInfo) {
+    fun sendNotificationToFollower(log: OperationLog) {
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getUserInfo(user.uid)) {
+            when (val result =
+                WeShareApplication.instance.repository.getUserInfo(weShareUser!!.uid)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    if (result.data == null) {
-                        onCreateNewUser(user)
-                    } else {
-                        getMemberUserInfo(result.data)
-                    }
+                    followers = result.data?.follower ?: emptyList()
+
+                    taskLoop(followers, log)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
@@ -74,27 +81,25 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
-    fun onCreateNewUser(user: UserInfo) {
-        val profile = UserProfile()
 
-        profile.name = user.name
-        profile.image = user.image
-        profile.uid = user.uid
+    private fun taskLoop(follower: List<String>, log: OperationLog) {
+        loopCount = follower.size
 
-        createNewUserProfile(profile)
+        for (target in follower) {
+            onSending(target, log)
+        }
     }
 
-    fun createNewUserProfile(profile: UserProfile) {
+    private fun onSending(targetUid: String, log: OperationLog) {
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.newUserRegister(profile)) {
+            when (val result =
+                WeShareApplication.instance.repository.sendNotifications(targetUid, log)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-
-                    getMemberUserInfo(profile)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -105,23 +110,27 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
                     _status.value = LoadApiStatus.ERROR
                 }
                 else -> {
-                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
                 }
             }
+            loopCount -= 1
+
+            if (loopCount == 0) {
+                stopSelf()
+            }
         }
+
     }
 
-    private fun getMemberUserInfo(profile: UserProfile) {
-
-        val user = UserInfo(
-            name = profile.name,
-            image = profile.image,
-            uid = profile.uid
-        )
-        UserManager.weShareUser = user
-
-        _loginSuccess.value = user
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("service","onDestroy")
+        serviceJob.cancel()
     }
 
+    override fun onBind(p0: Intent?): IBinder? {
+        return null
+    }
 }

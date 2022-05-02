@@ -71,8 +71,8 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
 
-    private val _saveLogComplete = MutableLiveData<LoadApiStatus>()
-    val saveLogComplete: LiveData<LoadApiStatus>
+    private val _saveLogComplete = MutableLiveData<OperationLog>()
+    val saveLogComplete: LiveData<OperationLog>
         get() = _saveLogComplete
 
     private val _status = MutableLiveData<LoadApiStatus>()
@@ -281,7 +281,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     }
 
     fun onSaveOperateLog(logType: Int, logMsg: String) {
-        val log = PostLog(
+        val log = OperationLog(
             logType = logType,
             logMsg = logMsg,
             postDocId = onEventDisplaying.value!!.id,
@@ -290,27 +290,22 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         saveLog(log)
     }
 
-    private fun saveLog(log: PostLog) {
+    private fun saveLog(log: OperationLog) {
         coroutineScope.launch {
-
-            _saveLogComplete.value = LoadApiStatus.LOADING
 
             when (val result = repository.saveLog(log)) {
                 is Result.Success -> {
                     _error.value = null
-                    _saveLogComplete.value = LoadApiStatus.DONE
+                    _saveLogComplete.value = log
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value = getString(R.string.result_fail)
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
             }
         }
@@ -564,7 +559,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
     private fun onStatusChangedLog(status: Int) {
 
-        val log = PostLog(
+        val log = OperationLog(
             postDocId = onEventDisplaying.value!!.id,
             operatorUid = userInfo!!.uid
         )

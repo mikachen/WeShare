@@ -50,8 +50,8 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     val roomCreateComplete: LiveData<String>
         get() = _roomCreateComplete
 
-    private val _saveLogComplete = MutableLiveData<LoadApiStatus>()
-    val saveLogComplete: LiveData<LoadApiStatus>
+    private val _saveLogComplete = MutableLiveData<OperationLog>()
+    val saveLogComplete: LiveData<OperationLog>
         get() = _saveLogComplete
 
     private val _error = MutableLiveData<String?>()
@@ -98,7 +98,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     }
 
     fun onSaveEventPostLog(docId: String) {
-        val log = PostLog(
+        val log = OperationLog(
             postDocId = docId,
             logType = LogType.POST_EVENT.value,
             operatorUid = author!!.uid,
@@ -111,10 +111,8 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         saveEventPostLog(log)
     }
 
-    private fun saveEventPostLog(log: PostLog) {
+    private fun saveEventPostLog(log: OperationLog) {
         coroutineScope.launch {
-
-            _saveLogComplete.value = LoadApiStatus.LOADING
             postingProgress.value = 90
 
             when (val result = repository.saveLog(log)) {
@@ -122,22 +120,19 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
                     _error.value = null
                     postingProgress.value = 100
 
-                    _saveLogComplete.value = LoadApiStatus.DONE
+                    _saveLogComplete.value = log
                 }
 
                 is Result.Fail -> {
                     _error.value = result.error
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
 
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
 
                 else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
             }
         }

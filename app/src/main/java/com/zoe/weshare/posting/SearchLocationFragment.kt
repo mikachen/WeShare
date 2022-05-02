@@ -1,12 +1,9 @@
 package com.zoe.weshare.posting
 
-import android.Manifest
 import android.animation.ObjectAnimator
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +11,6 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.resources.Compatibility.Api18Impl.setAutoCancel
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -33,14 +27,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
@@ -50,6 +36,7 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.sendNotifications
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.posting.event.PostEventViewModel
@@ -67,7 +54,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
     lateinit var animation: ObjectAnimator
 
 
-
     private var isPermissionGranted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +68,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?,
     ): View? {
 
-        if(isPermissionGranted) {
+        if (isPermissionGranted) {
 
 
             binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
@@ -133,9 +119,9 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
-                    if (it == LoadApiStatus.DONE) {
-                        findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
-                    }
+                    sendNotifications(it)
+                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+
                 }
 
                 eventViewModel.onPostEvent.observe(viewLifecycleOwner) {
@@ -149,9 +135,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 setupInputPreview(gift = newGift, event = null)
 
                 giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
-                    if (it == LoadApiStatus.DONE) {
-                        findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
-                    }
+                    sendNotifications(it)
+                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
                 }
 
                 binding.buttonSubmit.setOnClickListener {
@@ -279,7 +264,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             binding.apply {
                 textTitle.text = event.title
                 textSort.text = event.sort
-                textEventTime.text = WeShareApplication.instance.getString(R.string.preview_event_time,
+                textEventTime.text =
+                    WeShareApplication.instance.getString(R.string.preview_event_time,
                         event.startTime.toDisplayFormat(),
                         event.endTime.toDisplayFormat())
                 textDescription.text = event.description

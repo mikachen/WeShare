@@ -30,8 +30,8 @@ class ProfileViewModel(
     val user: LiveData<UserProfile>
         get() = _user
 
-    private var _userLog = MutableLiveData<List<PostLog>>()
-    val userLog: LiveData<List<PostLog>>
+    private var _userLog = MutableLiveData<List<OperationLog>>()
+    val userLog: LiveData<List<OperationLog>>
         get() = _userLog
 
     private var _userChatRooms = MutableLiveData<List<ChatRoom>?>()
@@ -200,7 +200,7 @@ class ProfileViewModel(
     }
 
     fun onSaveFollowingLog() {
-        val log = PostLog(
+        val log = OperationLog(
             postDocId = "none",
             logType = LogType.FOLLOWING.value,
             operatorUid = weShareUser!!.uid,
@@ -213,7 +213,7 @@ class ProfileViewModel(
         saveFollowingLog(log)
     }
 
-    private fun saveFollowingLog(log: PostLog) {
+    private fun saveFollowingLog(log: OperationLog) {
         coroutineScope.launch {
 
             when (val result = repository.saveLog(log)) {

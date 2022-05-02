@@ -85,7 +85,7 @@ class AskForGiftViewModel(
     }
 
     private fun onSaveGiftRequestLog(gift: GiftPost) {
-        val log = PostLog(
+        val log = OperationLog(
             postDocId = gift.id,
             logType = LogType.REQUEST_GIFT.value,
             operatorUid = userInfo!!.uid,
@@ -98,7 +98,7 @@ class AskForGiftViewModel(
         saveGiftRequestLog(log)
     }
 
-    private fun saveGiftRequestLog(log: PostLog) {
+    private fun saveGiftRequestLog(log: OperationLog) {
         coroutineScope.launch {
 
             _saveLogComplete.value = LoadApiStatus.LOADING

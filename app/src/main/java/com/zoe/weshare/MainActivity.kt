@@ -2,6 +2,7 @@ package com.zoe.weshare
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -59,11 +60,6 @@ class MainActivity : AppCompatActivity() {
         // lottie animation
         loginAnimate()
 
-        // view setup
-        setupNavController()
-        setupBottomNav()
-        setupToolbarMenu()
-        setupFab()
 
         // observe current fragment change, only for show info
         viewModel.currentFragmentType.observe(
@@ -129,6 +125,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        viewModel.liveNotifications.observe(this){
+            Log.d("liveNotifications","$it")
+        }
+
+        // view setup
+        setupNavController()
+        setupBottomNav()
+        setupToolbarMenu()
+        setupFab()
     }
 
     private fun hideBottom() {
