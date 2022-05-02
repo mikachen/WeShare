@@ -3,15 +3,19 @@ package com.zoe.weshare
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuItemCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
@@ -62,9 +66,8 @@ class MainActivity : AppCompatActivity() {
 
 
         // observe current fragment change, only for show info
-        viewModel.currentFragmentType.observe(
-            this
-        ) {
+        viewModel.currentFragmentType.observe(this)
+        {
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -77,9 +80,6 @@ class MainActivity : AppCompatActivity() {
                 toolbarFragmentTitleText.text = it.value
 
                 when (it) {
-
-                    CurrentFragmentType.CHATROOM -> { hideBottom() }
-
                     // 顯示副標題+倒退鍵
                     CurrentFragmentType.SEARCHLOCATION -> {
                         hideBottom()
@@ -92,26 +92,17 @@ class MainActivity : AppCompatActivity() {
                         toolbarLogoImage.visibility = View.VISIBLE
                         layoutToolbarSubtitle.visibility = View.INVISIBLE
                     }
-                    CurrentFragmentType.MAP -> {hideBottom()}
+
+                    CurrentFragmentType.MAP -> { }
                     CurrentFragmentType.ROOMLIST -> {}
                     CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
 
-
-                    CurrentFragmentType.GIFTDETAIL -> {
-                        hideBottom()
-                    }
-                    CurrentFragmentType.EVENTDETAIL -> {
-                        hideBottom()
-                    }
-                    CurrentFragmentType.POSTGIFT -> {
-                        hideBottom()
-                    }
-                    CurrentFragmentType.POSTEVENT -> {
-                        hideBottom()
-                    }
-                    CurrentFragmentType.EDITPROFILE -> {
-                        hideBottom()
-                    }
+                    CurrentFragmentType.CHATROOM -> { hideBottom() }
+                    CurrentFragmentType.GIFTDETAIL -> { hideBottom() }
+                    CurrentFragmentType.EVENTDETAIL -> { hideBottom() }
+                    CurrentFragmentType.POSTGIFT -> { hideBottom() }
+                    CurrentFragmentType.POSTEVENT -> { hideBottom() }
+                    CurrentFragmentType.EDITPROFILE -> { hideBottom() }
 
                     CurrentFragmentType.LOGIN -> {
                         topAppbar.visibility = View.GONE
@@ -126,15 +117,33 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.liveNotifications.observe(this){
-            Log.d("liveNotifications","$it")
+        viewModel.reObserveNotification.observe(this) {
+            it?.let {
+                viewModel.liveNotifications.observe(this){ notifications->
+                    notifications?.let {
+                        updateBadge(notifications)
+                        viewModel.liveNotifications.value = null
+                    }
+                }
+            }
         }
 
         // view setup
         setupNavController()
         setupBottomNav()
-        setupToolbarMenu()
+        setupToolbar()
         setupFab()
+    }
+
+    private fun updateBadge(list: List<OperationLog>) {
+        val count = list.size
+
+        if (count == 0) {
+            binding.layoutBadge.visibility = View.INVISIBLE
+        }else{
+            binding.layoutBadge.visibility = View.VISIBLE
+            binding.badgeCount.text = count.toString()
+        }
     }
 
     private fun hideBottom() {
@@ -180,6 +189,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupToolbar(){
+        binding.notification.setOnClickListener {
+            findNavController(R.id.nav_host_fragment)
+                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
+        }
+
+        binding.toolbarArrowBack.setOnClickListener {
+            findNavController(R.id.nav_host_fragment).navigateUp()
+        }
+    }
+
     private fun setupBottomNav() {
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -199,33 +219,16 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_profile -> {
-                    if(!UserManager.isLoggedIn){
+                    if (!UserManager.isLoggedIn) {
                         findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalLoginFragment())
-                    }
-                    else{
-                        findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalProfileFragment(UserManager.weShareUser))
+                    } else {
+                        findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalProfileFragment(
+                            UserManager.weShareUser))
                     }
                     return@setOnItemSelectedListener true
                 }
             }
             false
-        }
-    }
-
-    private fun setupToolbarMenu() {
-        binding.toolbar.inflateMenu(R.menu.toolbar_menu)
-
-        binding.toolbar.setOnMenuItemClickListener {
-            when (it.itemId) {
-
-                R.id.action_notification -> findNavController(R.id.nav_host_fragment)
-                    .navigate(NavGraphDirections.actionGlobalNotificationFragment())
-            }
-            false
-        }
-
-        binding.toolbarArrowBack.setOnClickListener {
-            findNavController(R.id.nav_host_fragment).navigateUp()
         }
     }
 

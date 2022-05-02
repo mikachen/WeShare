@@ -2,6 +2,7 @@ package com.zoe.weshare.data.source.remote
 
 import android.icu.util.Calendar
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -428,7 +429,6 @@ object WeShareRemoteDataSource : WeShareDataSource {
     }
 
     override fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>> {
-
         val liveData = MutableLiveData<List<OperationLog>>()
 
         FirebaseFirestore.getInstance()
@@ -436,7 +436,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
             .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
             .addSnapshotListener { snapshot, exception ->
 
-                Logger.i("getLiveNotification detect")
+                Logger.i("getLiveNotifications detect")
 
                 exception?.let {
                     Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
@@ -444,14 +444,15 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
                 val list = mutableListOf<OperationLog>()
                 for (document in snapshot!!) {
-                    Logger.d(document.id + " => " + document.data)
+                    Logger.d(document.id + " notifications=> " + document.data)
 
-                    val message = document.toObject(OperationLog::class.java)
-                    list.add(message)
+                    val log = document.toObject(OperationLog::class.java)
+                    list.add(log)
                 }
                 liveData.value = list
+                Log.d("getLiveNotifications1","${liveData.value}")
             }
-
+        Log.d("getLiveNotifications2","${liveData.value}")
         return liveData
     }
 
@@ -723,7 +724,6 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
                 liveData.value = list
             }
-
         return liveData
     }
 

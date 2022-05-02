@@ -38,7 +38,7 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         viewModel.user.observe(viewLifecycleOwner) {
-            setUpView(it)
+            setupView(it)
         }
 
         viewModel.userLog.observe(viewLifecycleOwner) {
@@ -93,7 +93,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun showPopupMenu(view: View){
+    private fun showPopupMenu(view: View) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.profile_popup_menu, popupMenu.menu)
 
@@ -121,10 +121,10 @@ class ProfileFragment : Fragment() {
         }
 
         binding.buttonMessage.setOnClickListener {
-            viewModel.searchOnPrivateRoom(UserManager.weShareUser!!)
+            viewModel.searchOnPrivateRoom(weShareUser!!)
         }
 
-        if(targetUser.uid == weShareUser!!.uid) {
+        if (targetUser.uid == weShareUser!!.uid) {
             binding.buttonSettings.visibility = View.VISIBLE
 
             binding.buttonSettings.setOnClickListener {
@@ -133,7 +133,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setUpView(user: UserProfile) {
+    private fun setupView(user: UserProfile) {
         binding.apply {
             bindImage(imageProfileAvatar, user.image)
             textProfileName.text = user.name
@@ -145,14 +145,10 @@ class ProfileFragment : Fragment() {
                     false -> user.introMsg
                 }
 
-            if(targetUser.uid != weShareUser!!.uid){
+            if (targetUser.uid != weShareUser!!.uid) {
                 layoutSocialButton.visibility = View.VISIBLE
 
-                if (user.follower.contains(weShareUser!!.uid)) {
-                    buttonFollow.text = "已追蹤"
-                } else {
-                    buttonFollow.text = "追蹤他"
-                }
+                buttonFollow.isChecked = user.follower.contains(weShareUser!!.uid)
             }
         }
     }

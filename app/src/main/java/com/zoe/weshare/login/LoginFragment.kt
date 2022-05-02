@@ -44,7 +44,8 @@ class LoginFragment : Fragment() {
 
 
         viewModel.loginSuccess.observe(viewLifecycleOwner) {
-            (activity as MainActivity).viewModel.getLiveNotificationResult(it.uid)
+            /** 註冊notification listener 失效*/
+            (activity as MainActivity).viewModel.getLiveNotificationResult()
 
             findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
         }

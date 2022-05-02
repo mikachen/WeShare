@@ -17,6 +17,9 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     var allLogs = MutableLiveData<List<OperationLog>>()
 
+    var liveNotifications = MutableLiveData<List<OperationLog>>()
+
+
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>
         get() = _gifts

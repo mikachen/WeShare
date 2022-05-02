@@ -1,6 +1,7 @@
 package com.zoe.weshare.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.databinding.FragmentHomeBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -38,9 +40,8 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        requireLogIn()
-
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
 
         viewModel.gifts.observe(viewLifecycleOwner) {
             hotGiftAdapter.submitList(it)
@@ -77,6 +78,7 @@ class HomeFragment : Fragment() {
                 viewModel.displayEventDetailsComplete()
             }
         }
+
 
         setupHeaderGallery()
         setupHotGiftsGallery()

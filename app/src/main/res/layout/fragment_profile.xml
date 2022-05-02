@@ -109,14 +109,15 @@
         app:layout_constraintTop_toBottomOf="@id/base_info_text"
         tools:visibility="visible">
 
-        <Button
+        <ToggleButton
             android:id="@+id/button_follow"
             android:layout_width="142sp"
             android:layout_height="40dp"
             android:background="@drawable/sl_profile_follow_button"
-            android:text="follow"
-            android:textColor="@color/white"
+            android:textOff="追蹤"
+            android:textOn="追蹤中\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05"
             android:textSize="18sp"
+            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/button_message"
             app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +128,7 @@
             android:layout_width="142dp"
             android:layout_height="40dp"
             android:background="@drawable/sl_profile_message_button"
-            android:text="message"
+            android:text="發訊息"
             android:textColor="@color/app_work_orange1"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@id/button_follow"
