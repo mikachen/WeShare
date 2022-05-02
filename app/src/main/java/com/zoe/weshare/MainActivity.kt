@@ -211,13 +211,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.action_search_gifts -> findNavController(R.id.nav_host_fragment)
-                    .navigate(NavGraphDirections.actionGlobalSearchFragment())
 
                 R.id.action_notification -> findNavController(R.id.nav_host_fragment)
                     .navigate(NavGraphDirections.actionGlobalNotificationFragment())
-
-
             }
             false
         }

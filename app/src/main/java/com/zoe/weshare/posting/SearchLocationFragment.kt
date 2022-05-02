@@ -2,9 +2,11 @@ package com.zoe.weshare.posting
 
 import android.Manifest
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +14,9 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.resources.Compatibility.Api18Impl.setAutoCancel
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -32,8 +36,11 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
@@ -41,6 +48,7 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
+import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.network.LoadApiStatus
@@ -59,119 +67,138 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
     lateinit var animation: ObjectAnimator
 
 
-    var isPermissionGranted: Boolean = false
+
+    private var isPermissionGranted: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        isPermissionGranted = checkLocationPermission()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
-        progressBar = binding.progressBar
-        progressBar.max = 100 * 100
 
-        initializePlace()
-
-        val newEvent = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newEvent }
-        val newGift = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newGift }
+        if(isPermissionGranted) {
 
 
-        if (newEvent != null) {
-            val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
-            eventViewModel._event.value = newEvent
+            binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
+            progressBar = binding.progressBar
+            progressBar.max = 100 * 100
 
-            setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
-            setupInputPreview(gift = null, event = newEvent)
+            initializePlace()
 
-            binding.buttonSubmit.setOnClickListener {
-                if (eventViewModel.locationChoice != null) {
-                    binding.layoutProgressLoading.visibility = View.VISIBLE
-                    eventViewModel.uploadImage()
-                } else {
-                    Toast.makeText(requireContext(),
-                        getString(R.string.error_event_location_isEmpty),
-                        Toast.LENGTH_SHORT).show()
+            val newEvent = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newEvent }
+            val newGift = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newGift }
+
+
+            if (newEvent != null) {
+                val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
+                eventViewModel._event.value = newEvent
+
+                setUpAutoCompleteSearchPlace(giftVm = null, eventVm = eventViewModel)
+                setupInputPreview(gift = null, event = newEvent)
+
+                binding.buttonSubmit.setOnClickListener {
+                    if (eventViewModel.locationChoice != null) {
+                        binding.layoutProgressLoading.visibility = View.VISIBLE
+                        eventViewModel.uploadImage()
+                    } else {
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_event_location_isEmpty),
+                            Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            eventViewModel.postingProgress.observe(viewLifecycleOwner) {
-                binding.progressBarText.text = getStringWithIntParm(R.string.posting_progress, it)
+                eventViewModel.postingProgress.observe(viewLifecycleOwner) {
+                    binding.progressBarText.text =
+                        getStringWithIntParm(R.string.posting_progress, it)
 
-                animation = ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, it * 100)
-                animation.duration = 500
-                animation.interpolator = DecelerateInterpolator()
-                animation.start()
+                    animation = ObjectAnimator.ofInt(progressBar,
+                        "progress",
+                        progressBar.progress,
+                        it * 100)
+                    animation.duration = 500
+                    animation.interpolator = DecelerateInterpolator()
+                    animation.start()
 
-            }
-
-            eventViewModel.roomCreateComplete.observe(viewLifecycleOwner) {
-                if (it.isNotEmpty()) {
-                    eventViewModel.onNewEventPost(it)
                 }
-            }
 
-            eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
-                if (it == LoadApiStatus.DONE) {
-                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                eventViewModel.roomCreateComplete.observe(viewLifecycleOwner) {
+                    if (it.isNotEmpty()) {
+                        eventViewModel.onNewEventPost(it)
+                    }
                 }
-            }
 
-            eventViewModel.onPostEvent.observe(viewLifecycleOwner) {
-                eventViewModel.onNewRoomPrepare()
-            }
-        } else {
-            val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(weShareUser) }
-            giftViewModel._gift.value = newGift
-
-            setUpAutoCompleteSearchPlace(giftVm = giftViewModel, eventVm = null)
-            setupInputPreview(gift = newGift, event = null)
-
-            giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
-                if (it == LoadApiStatus.DONE) {
-                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
+                    if (it == LoadApiStatus.DONE) {
+                        findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                    }
                 }
-            }
 
-            binding.buttonSubmit.setOnClickListener {
-                if (giftViewModel.locationChoice != null) {
-                    binding.layoutProgressLoading.visibility = View.VISIBLE
-                    giftViewModel.uploadImage()
-                } else {
-                    Toast.makeText(requireContext(),
-                        getString(R.string.error_gift_location_isEmpty),
-                        Toast.LENGTH_SHORT).show()
+                eventViewModel.onPostEvent.observe(viewLifecycleOwner) {
+                    eventViewModel.onNewRoomPrepare()
                 }
-            }
-
-            giftViewModel.postingProgress.observe(viewLifecycleOwner) {
-                binding.progressBarText.text = getStringWithIntParm(R.string.posting_progress, it)
-
-                animation = ObjectAnimator.ofInt(progressBar, "progress", progressBar.progress, it * 100)
-                animation.duration = 500
-                animation.interpolator = DecelerateInterpolator()
-                animation.start()
-            }
-
-            giftViewModel.onPostGift.observe(viewLifecycleOwner) {
-                giftViewModel.newGiftPost(it)
-            }
-        }
-
-        // 檢查、要求user啟用ACCESS_FINE_LOCATION權限
-        checkUserPermissions()
-
-        // 當user同意location權限後，檢查user是否有啟用GooglePlayService
-        if (isPermissionGranted) {
-            if (checkGooglePlayService()) {
-                binding.mapView.onCreate(savedInstanceState)
-                binding.mapView.getMapAsync(this)
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "GooglePlayService Not Available",
-                    Toast.LENGTH_LONG
-                ).show()
+                val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(weShareUser) }
+                giftViewModel._gift.value = newGift
+
+                setUpAutoCompleteSearchPlace(giftVm = giftViewModel, eventVm = null)
+                setupInputPreview(gift = newGift, event = null)
+
+                giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
+                    if (it == LoadApiStatus.DONE) {
+                        findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                    }
+                }
+
+                binding.buttonSubmit.setOnClickListener {
+                    if (giftViewModel.locationChoice != null) {
+                        binding.layoutProgressLoading.visibility = View.VISIBLE
+                        giftViewModel.uploadImage()
+                    } else {
+                        Toast.makeText(requireContext(),
+                            getString(R.string.error_gift_location_isEmpty),
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                giftViewModel.postingProgress.observe(viewLifecycleOwner) {
+                    binding.progressBarText.text =
+                        getStringWithIntParm(R.string.posting_progress, it)
+
+                    animation = ObjectAnimator.ofInt(progressBar,
+                        "progress",
+                        progressBar.progress,
+                        it * 100)
+                    animation.duration = 500
+                    animation.interpolator = DecelerateInterpolator()
+                    animation.start()
+                }
+
+                giftViewModel.onPostGift.observe(viewLifecycleOwner) {
+                    giftViewModel.newGiftPost(it)
+                }
+            }
+
+
+            // 當user同意location權限後，檢查user是否有啟用GooglePlayService
+            if (isPermissionGranted) {
+                if (checkGooglePlayService()) {
+                    binding.mapView.onCreate(savedInstanceState)
+                    binding.mapView.getMapAsync(this)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "GooglePlayService Not Available",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
+
 
         return binding.root
     }
@@ -242,7 +269,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 textCondition.text = gift.condition
                 textDescription.text = gift.description
                 imagePreview.setImageURI(Uri.parse(gift.image))
-
                 titleEventTime.visibility = View.GONE
                 textEventTime.visibility = View.GONE
 
@@ -253,14 +279,11 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             binding.apply {
                 textTitle.text = event.title
                 textSort.text = event.sort
-
                 textEventTime.text = WeShareApplication.instance.getString(R.string.preview_event_time,
                         event.startTime.toDisplayFormat(),
                         event.endTime.toDisplayFormat())
-
                 textDescription.text = event.description
                 imagePreview.setImageURI(Uri.parse(event.image))
-
                 titleTitle.text = getString(R.string.preview_event_title_title)
                 titleSort.text = getString(R.string.preview_event_sort_title)
                 titleCondition.text = getString(R.string.preview_event_volunteer_title)
@@ -293,32 +316,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         return false
     }
 
-    private fun checkUserPermissions() {
-        Dexter.withContext(requireContext())
-            .withPermissions(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            .withListener(object : MultiplePermissionsListener {
-
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    report?.let {
-                        if (report.areAllPermissionsGranted()) {
-                            isPermissionGranted = true
-                        }
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: MutableList<PermissionRequest>?,
-                    token: PermissionToken?,
-                ) {
-                    token?.continuePermissionRequest()
-                }
-            }).withErrorListener {
-                Toast.makeText(requireContext(), it.name, Toast.LENGTH_SHORT).show()
-            }.check()
-    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -370,4 +367,5 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         super.onLowMemory()
         binding.mapView.onLowMemory()
     }
+
 }

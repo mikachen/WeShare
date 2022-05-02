@@ -1,23 +1,17 @@
 package com.zoe.weshare.map
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.BounceInterpolator
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -40,8 +34,8 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.FragmentMapBinding
 import com.zoe.weshare.ext.generateSmallIcon
+import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.ext.requestPermissions
 import kotlin.math.max
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -52,81 +46,72 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CardGalleryAdapter
-
     private val markersRef = mutableListOf<Marker>()
-
-    val viewModel by viewModels<MapViewModel> { getVmFactory() }
+    private val viewModel by viewModels<MapViewModel> { getVmFactory() }
 
     private var isPermissionGranted: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        isPermissionGranted = this.checkLocationPermission()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        Log.d("onCreateView", "$isPermissionGranted")
 
         binding = FragmentMapBinding.inflate(inflater, container, false)
 
-        viewModel.gifts.observe(viewLifecycleOwner) {
-            viewModel.onCardPrepare(gifts = it, events = null)
-        }
+        if (isPermissionGranted) {
 
-        viewModel.events.observe(viewLifecycleOwner) {
-            viewModel.onCardPrepare(gifts = null, events = it)
-        }
-
-        viewModel.cards.observe(viewLifecycleOwner) {
-            if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
-
-                Log.d("shuffled1", "$it")
-                // markers on map
-                createMarker(it)
-
-                // cards recycler view
-                adapter.submitCards(it)
+            viewModel.gifts.observe(viewLifecycleOwner) {
+                viewModel.onCardPrepare(gifts = it, events = null)
             }
-        }
 
-        viewModel.snapPosition.observe(viewLifecycleOwner) {
-            // when rv scroll, trigger marker showInfoWindow and move camera
-            markersRef[it].showInfoWindow()
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F))
-        }
-
-        viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
-            it?.let {
-                findNavController().navigate(
-                    NavGraphDirections.actionGlobalGiftDetailFragment(it)
-                )
-
-                viewModel.displayCardDetailsComplete()
+            viewModel.events.observe(viewLifecycleOwner) {
+                viewModel.onCardPrepare(gifts = null, events = it)
             }
-        }
 
-        viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
-            it?.let {
-                findNavController()
-                    .navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
-                viewModel.displayCardDetailsComplete()
-            }
-        }
+            viewModel.cards.observe(viewLifecycleOwner) {
+                if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
+                    // markers on map
+                    createMarker(it)
 
-        getLocationPermission()
-        // TODO 當user同意location權限後，檢查user是否有啟用GooglePlayService
-
-        if (!isPermissionGranted) {
-            // TODO 這邊用call back判斷 重寫
-            AlertDialog.Builder(requireContext())
-                .setTitle("開啟位置權限")
-                .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
-                .setPositiveButton("確定") { _, _ ->
-                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    startActivityForResult(intent, 111)
+                    // cards recycler view
+                    adapter.submitCards(it)
                 }
-                .setNegativeButton("取消") { _, _ -> getLocationPermission() }
-                .show()
-        } else {
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+            }
+
+            viewModel.snapPosition.observe(viewLifecycleOwner) {
+                // when rv scroll, trigger marker showInfoWindow and move camera
+                markersRef[it].showInfoWindow()
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F))
+            }
+
+            viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
+                it?.let {
+                    findNavController().navigate(
+                        NavGraphDirections.actionGlobalGiftDetailFragment(it)
+                    )
+
+                    viewModel.displayCardDetailsComplete()
+                }
+            }
+
+            viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
+                it?.let {
+                    findNavController()
+                        .navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
+                    viewModel.displayCardDetailsComplete()
+                }
+            }
+
+            fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(requireContext())
 
             binding.mapView.onCreate(savedInstanceState)
             binding.mapView.getMapAsync(this)
@@ -137,9 +122,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return binding.root
     }
 
-    private fun createMarker(cards: List<Cards>?) {
-        Log.d("shuffled2", "$cards")
+    override fun onMapReady(googleMap: GoogleMap) {
+        map = googleMap
 
+        setupMapSettings()
+        getLastLocation()
+    }
+
+    private fun createMarker(cards: List<Cards>?) {
         cards?.forEach {
             it.postLocation.let { location ->
 
@@ -168,13 +158,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-
-        setupMapSettings()
-        getLastLocation()
-    }
-
     // Get current location
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
@@ -189,8 +172,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 13F))
                 }
             }
-        } else {
-            getLocationPermission()
         }
     }
 
@@ -286,18 +267,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onStart() {
         super.onStart()
-
+        Log.d("onStart", "onStart")
         if (isPermissionGranted) {
             binding.mapView.onStart()
         }
     }
 
-    override fun onResume() {
-        super.onResume()
 
+    override fun onResume() {
+        Log.d("onResume", "onResume")
+        super.onResume()
         if (isPermissionGranted) {
             binding.mapView.onResume()
         }
+
     }
 
     override fun onPause() {
@@ -337,23 +320,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         if (isPermissionGranted) {
             binding.mapView.onLowMemory()
-        }
-    }
-
-    private fun getLocationPermission() {
-        // 檢查權限
-        if (ActivityCompat.checkSelfPermission(
-                (activity as MainActivity),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            // 已獲取到權限
-            Toast.makeText(requireContext(), "已獲取", Toast.LENGTH_SHORT).show()
-            isPermissionGranted = true
-            // todo checkGPSState()
-        } else {
-            // 詢問要求獲取權限
-            (activity as MainActivity).requestPermissions()
         }
     }
 
