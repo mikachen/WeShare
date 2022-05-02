@@ -48,7 +48,7 @@
         <entry key="app/src/main/res/font/graffiti.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_credit_scene.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/activity_logo.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.2" />
         <entry key="app/src/main/res/layout/event_temp.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fab_btn_add_gift_resize.xml" value="0.23728088926891835" />
@@ -72,7 +72,7 @@
         <entry key="app/src/main/res/layout/fragment_pager.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fragment_pager_filter.xml" value="0.1393758016246259" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_room_list.xml" value="0.28762135922330095" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.231722958529286" />

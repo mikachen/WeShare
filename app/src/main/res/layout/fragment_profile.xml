@@ -102,12 +102,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_social_button"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/base_info_text">
+        app:layout_constraintTop_toBottomOf="@id/base_info_text"
+        tools:visibility="visible">
 
         <Button
             android:id="@+id/button_follow"
@@ -118,8 +118,8 @@
             android:textColor="@color/white"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/button_message"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -149,35 +149,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_social_button">
 
-        <LinearLayout
-            android:id="@+id/base_contribution"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <TextView
-                android:id="@+id/text_contribution_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="43233"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
-
-            <TextView
-                android:id="@+id/title_contribution_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="貢獻數"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/base_follower"
@@ -240,128 +211,134 @@
                 android:textSize="18sp" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/base_gift_sent_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <TextView
+                android:id="@+id/text_gift_sent_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                tools:text="33" />
+
+            <TextView
+                android:id="@+id/title_gift_sent_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="贈品送出"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/base_gift_post_count"
+        android:id="@+id/linear_base_social_status2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingVertical="8dp"
-        app:layout_constraintEnd_toStartOf="@id/base_gift_sent_count"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/linear_base_social_status">
 
-        <TextView
-            android:id="@+id/text_gift_post_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            tools:text="33" />
 
-        <TextView
-            android:id="@+id/title_gift_post_count"
+        <LinearLayout
+            android:id="@+id/base_gift_post_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="贈品刊登"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <TextView
+                android:id="@+id/text_gift_post_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                tools:text="33" />
+
+            <TextView
+                android:id="@+id/title_gift_post_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="贈品刊登"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/base_event_post_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <TextView
+                android:id="@+id/text_event_post_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                tools:text="32" />
+
+            <TextView
+                android:id="@+id/title_event_post_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="發起活動"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/base_event_volunteer_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <TextView
+                android:id="@+id/text_event_volunteer_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                tools:text="32" />
+
+            <TextView
+                android:id="@+id/title_event_volunteer_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="志工參與"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/base_gift_sent_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingVertical="8dp"
-        app:layout_constraintEnd_toStartOf="@id/base_event_post_count"
-        app:layout_constraintStart_toEndOf="@id/base_gift_post_count"
-        app:layout_constraintTop_toBottomOf="@id/linear_base_social_status">
-
-        <TextView
-            android:id="@+id/text_gift_sent_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            tools:text="33" />
-
-        <TextView
-            android:id="@+id/title_gift_sent_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="贈品送出"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/base_event_post_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingVertical="8dp"
-        app:layout_constraintEnd_toStartOf="@id/base_event_volunteer_count"
-        app:layout_constraintStart_toEndOf="@id/base_gift_sent_count"
-        app:layout_constraintTop_toTopOf="@id/base_gift_post_count">
-
-        <TextView
-            android:id="@+id/text_event_post_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            tools:text="32" />
-
-        <TextView
-            android:id="@+id/title_event_post_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="發起活動"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/base_event_volunteer_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingVertical="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/base_event_post_count"
-        app:layout_constraintTop_toTopOf="@id/base_gift_post_count">
-
-        <TextView
-            android:id="@+id/text_event_volunteer_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            tools:text="32" />
-
-        <TextView
-            android:id="@+id/title_event_volunteer_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="志工參與"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-    </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

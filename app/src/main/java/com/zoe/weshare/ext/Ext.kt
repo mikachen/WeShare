@@ -24,6 +24,10 @@ fun Long.toDisplaySentTime(): String {
     return SimpleDateFormat("hh:mm", Locale.TAIWAN).format(this)
 }
 
+fun Long.toDisplayDateFormat(): String {
+    return SimpleDateFormat("yyyy.MM.dd", Locale.TAIWAN).format(this)
+}
+
 fun bindImage(imgView: ImageView, imgUrl: String?) {
 
     val drawable = CircularProgressDrawable(imgView.context)

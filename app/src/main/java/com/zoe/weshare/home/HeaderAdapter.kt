@@ -33,6 +33,8 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
         data?.let {
             bindImage(holder.binding.headerImageTv, data.image)
 
+            holder.binding.textTvTitle.text = data.title
+
             holder.itemView.setOnClickListener { onClickListener.onClick(data) }
         }
     }

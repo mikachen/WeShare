@@ -676,6 +676,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         FirebaseFirestore.getInstance()
             .collection(PATH_LOG)
             .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+            .limit(10)
             .addSnapshotListener { snapshot, exception ->
 
                 Logger.i("addSnapshotListener detect")

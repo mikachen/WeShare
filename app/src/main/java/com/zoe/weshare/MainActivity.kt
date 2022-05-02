@@ -75,8 +75,8 @@ class MainActivity : AppCompatActivity() {
 
             showBottom()
             binding.apply {
-                topAppbar.visibility = View.VISIBLE
                 toolbarLogoImage.visibility = View.INVISIBLE
+                topAppbar.visibility = View.VISIBLE
                 layoutToolbarSubtitle.visibility = View.VISIBLE
                 toolbarFragmentTitleText.text = it.value
 
@@ -117,6 +117,12 @@ class MainActivity : AppCompatActivity() {
                         hideBottom()
                     }
 
+                    CurrentFragmentType.LOGIN -> {
+                        topAppbar.visibility = View.GONE
+                        bottomAppBar.visibility = View.GONE
+                        binding.fabsLayoutView.visibility = View.GONE
+                    }
+
                     else -> {
                         topAppbar.visibility = View.VISIBLE
                     }
@@ -132,6 +138,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showBottom() {
         binding.fabsLayoutView.visibility = View.VISIBLE
+        binding.bottomAppBar.visibility = View.VISIBLE
         binding.bottomAppBar.performShow()
     }
 

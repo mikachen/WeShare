@@ -11,9 +11,12 @@
 
     <ImageView
         android:id="@+id/button_image_preview_holder"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:scaleType="centerCrop"
+        android:layout_margin="8dp"
+        android:src="@drawable/upload_image_holder"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -82,17 +85,17 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
         android:hint="活動分類"
+        app:layout_constraintBottom_toTopOf="@id/layout_description"
         app:layout_constraintEnd_toStartOf="@id/layout_volunteer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/layout_description"
         app:layout_constraintTop_toBottomOf="@id/layout_date_picker">
 
         <AutoCompleteTextView
             android:id="@+id/dropdown_menu_sort"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:gravity="center|start"
             android:focusable="false"
+            android:gravity="center|start"
             android:inputType="none"
             android:textAppearance="@style/customHintLabel" />
 
@@ -106,15 +109,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:hint="志工需求數"
+        app:layout_constraintBottom_toBottomOf="@id/layout_sort_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/layout_sort_menu"
-        app:layout_constraintBottom_toBottomOf="@id/layout_sort_menu"
         app:layout_constraintTop_toTopOf="@id/layout_sort_menu">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_volunteer"
             android:layout_width="match_parent"
             android:layout_height="56dp"
+            android:inputType="number"
             android:gravity="center|start"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
@@ -151,9 +155,15 @@
     <Button
         android:id="@+id/next_button"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_margin="8dp"
-        android:text="next"
+        android:layout_height="40dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/sl_profile_follow_button"
+        android:isScrollContainer="true"
+        android:text="@string/preview_next_step"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

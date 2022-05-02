@@ -121,31 +121,32 @@ class GiftDetailFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupView(selectedGift: GiftPost) {
+    private fun setupView(gift: GiftPost) {
         binding.apply {
-            bindImage(this.images, selectedGift.image)
+            bindImage(this.images, gift.image)
 
-            textGiftTitle.text = selectedGift.title
+            textGiftTitle.text = gift.title
 
-            textProfileName.text = selectedGift.author?.name
+            textProfileName.text = gift.author?.name
 
-            bindImage(this.imageProfileAvatar, selectedGift.author?.image)
+            bindImage(this.imageProfileAvatar, gift.author?.image)
 
-            textPostedLocation.text = selectedGift.location?.locationName
+            textPostedLocation.text = gift.location?.locationName
 
-            textCreatedTime.text = getString(
-                R.string.posted_time,
-                selectedGift.createdTime.toDisplayFormat()
+            textCreatedTime.text = getString(R.string.posted_time,
+                gift.createdTime.toDisplayFormat()
             )
 
-            textGiftSort.text = selectedGift.sort
+            textGiftSort.text = gift.sort
+
+            textGiftCondition.text = gift.condition
 
             textLikedNumber.text =
-                getString(R.string.number_who_liked, selectedGift.whoLiked.size)
+                getString(R.string.number_who_liked, gift.whoLiked.size)
 
-            textGiftDescription.text = selectedGift.description
+            textGiftDescription.text = gift.description
 
-            when (selectedGift.status) {
+            when (gift.status) {
                 GiftStatusType.OPENING.code -> {
                     binding.textStatus.text = GiftStatusType.OPENING.tag
                     binding.textStatus.setBackgroundResource(R.color.message_sender_green)

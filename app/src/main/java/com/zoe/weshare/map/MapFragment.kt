@@ -42,6 +42,7 @@ import com.zoe.weshare.databinding.FragmentMapBinding
 import com.zoe.weshare.ext.generateSmallIcon
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.requestPermissions
+import kotlin.math.max
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -87,16 +88,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         viewModel.snapPosition.observe(viewLifecycleOwner) {
-
-            // trigger marker showInfoWindow
+            // when rv scroll, trigger marker showInfoWindow and move camera
             markersRef[it].showInfoWindow()
-
-            // move camera
-            viewModel.cardsViewList[it].postLocation?.let { location ->
-                val point =
-                    LatLng(location.latitude.toDouble(), location.longitude.toDouble())
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(point, 13F))
-            }
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F))
         }
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
@@ -159,12 +153,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     when (it.postType) {
                         GIFT_CARD -> newMarker.setIcon(
                             BitmapDescriptorFactory.fromBitmap(
-                                generateSmallIcon(requireContext(), R.drawable.ic_map_event_marker)
+                                generateSmallIcon(requireContext(), R.drawable.ic_map_gift_marker)
                             )
                         )
                         EVENT_CARD -> newMarker.setIcon(
                             BitmapDescriptorFactory.fromBitmap(
-                                generateSmallIcon(requireContext(), R.drawable.ic_map_gift_marker)
+                                generateSmallIcon(requireContext(), R.drawable.ic_map_event_marker)
                             )
                         )
                     }
@@ -247,8 +241,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun setupMapSettings() {
 
-        map.uiSettings.isZoomControlsEnabled = true
-        map.uiSettings.isCompassEnabled = true
         map.uiSettings.setAllGesturesEnabled(true)
         map.uiSettings.isMyLocationButtonEnabled = true
 
@@ -379,7 +371,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         handler.post(object : Runnable {
             override fun run() {
                 val elapsed = SystemClock.uptimeMillis() - start
-                val t = Math.max(
+                val t = max(
                     1 - interpolator.getInterpolation(elapsed.toFloat() / duration), 0f
                 )
 

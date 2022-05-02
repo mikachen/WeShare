@@ -47,8 +47,6 @@
     </string-array>
 
     <string name="posted_time">%s 刊登</string>
-    <string name="card_posted_time">刊登時間:%1$s</string>
-    <string name="post_location_name">地點: %1$s</string>
     <string name="gift_post_sort">物品分類: %1$s</string>
     <string name="event_post_sort">活動分類: %1$s</string>
     <string name="gift_registrants_number">已有%1$d人登記索取</string>
@@ -115,7 +113,6 @@
     <string name="preview_gift_condition_title">贈品狀況</string>
     <string name="preview_gift_description_title">贈品詳情</string>
     <string name="preview_photo_title">相片預覽</string>
-    <string name="preview_submit_btn_title">提交</string>
 
     <string name="preview_event_title_title">活動名稱</string>
     <string name="preview_event_sort_title">活動分類</string>
@@ -123,5 +120,8 @@
     <string name="preview_event_time">%1s - %2s</string>
     <string name="preview_event_volunteer_title">志工需求</string>
     <string name="preview_event_description_title">活動詳情</string>
+    <string name="preview_next_step">下一步</string>
+    <string name="preview_submit_btn_title">確認提交</string>
+    <string name="title_posted_time">刊登時間</string>
 
 </resources>

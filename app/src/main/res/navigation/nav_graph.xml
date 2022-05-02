@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/loginFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -142,6 +142,11 @@
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
 
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/navigate_to_post_event_fragment"
@@ -214,9 +219,7 @@
     <action
         android:id="@+id/action_global_notificationFragment"
         app:destination="@id/notificationFragment" />
-    <action
-        android:id="@+id/action_global_profileFragment"
-        app:destination="@id/profileFragment" />
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.zoe.weshare.login.LoginFragment"
@@ -225,6 +228,7 @@
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment" />
+
     <fragment
         android:id="@+id/editInfoFragment"
         android:name="com.zoe.weshare.profile.editmode.EditInfoFragment"
