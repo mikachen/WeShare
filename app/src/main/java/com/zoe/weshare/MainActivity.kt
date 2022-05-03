@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                         layoutToolbarSubtitle.visibility = View.INVISIBLE
                     }
 
-                    CurrentFragmentType.MAP -> { }
+                    CurrentFragmentType.MAP -> { binding.fabsLayoutView.visibility = View.GONE }
                     CurrentFragmentType.ROOMLIST -> {}
                     CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
 

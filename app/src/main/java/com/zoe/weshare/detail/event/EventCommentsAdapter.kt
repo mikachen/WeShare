@@ -1,6 +1,7 @@
 package com.zoe.weshare.detail.event
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -38,8 +39,9 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
                 textLikesCount.text =
                     Util.getStringWithIntParm(R.string.number_who_liked, whoLikedThisComment.size)
             } else {
-                textLikesCount.text = ""
+                textLikesCount.visibility = View.INVISIBLE
             }
+
 
             if (isUserLikeBefore) {
                 buttonCommentLike.setTextColor(Util.getColor(R.color.lightBlueTestColor))

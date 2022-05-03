@@ -5,13 +5,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.zoe.weshare.R
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemRelatedRoomListBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
+import com.zoe.weshare.util.Util
 
 class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
     ListAdapter<ChatRoom, RoomListAdapter.RoomListViewHolder>(DiffCall()) {
@@ -26,11 +29,11 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
     override fun onBindViewHolder(holder: RoomListViewHolder, position: Int) {
         val room = getItem(position)
 
-        val targetObj = room.usersInfo.single { it.uid != weShareUser!!.uid }
+        val targetsObj = room.usersInfo.filter { it.uid != weShareUser!!.uid }
 
         // TODO 對方如果離開可能null
-        if (targetObj != null) {
-            holder.bind(room, targetObj)
+        if (targetsObj.isNotEmpty()) {
+            holder.bind(room, targetsObj)
         }
 
         holder.itemView.setOnClickListener {
@@ -44,11 +47,16 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
 
     class RoomListViewHolder(private val binding: ItemRelatedRoomListBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(room: ChatRoom, targetObj: UserInfo) {
+        fun bind(room: ChatRoom, targetsObj: List<UserInfo>) {
 
             binding.apply {
-                bindImage(imageRoomImage, targetObj.image)
-                textRoomTargetTitle.text = targetObj.name
+                if (room.type == ChatRoomType.MULTIPLE.value){
+                    bindImage(imageRoomImage, room.eventImage)
+                    textRoomTargetTitle.text = Util.getStringWithStrParm(R.string.room_list_event_title,room.eventTitle)
+                }else{
+                    bindImage(imageRoomImage, targetsObj.single().image)
+                    textRoomTargetTitle.text = targetsObj.single().name
+                }
                 textLastMessage.text = room.lastMsg
                 textLastSentTime.text = room.lastMsgSentTime.toDisplaySentTime()
             }

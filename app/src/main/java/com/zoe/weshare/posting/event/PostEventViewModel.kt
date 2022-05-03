@@ -154,6 +154,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             postingProgress.value = 10
 
             val imageUri = Uri.parse(event.value!!.image)
+
             when (val result = repository.uploadImage(imageUri)) {
                 is Result.Success -> {
                     _error.value = null
@@ -181,9 +182,11 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         }
     }
 
-    fun onNewRoomPrepare() {
+    fun onNewRoomPrepare(event: EventPost) {
         val eventRoom = ChatRoom(
             type = ChatRoomType.MULTIPLE.value,
+            eventTitle = event.title,
+            eventImage = event.image
         )
         createEventRoom(eventRoom)
     }

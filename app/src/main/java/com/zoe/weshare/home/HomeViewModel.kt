@@ -8,6 +8,7 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,8 +18,7 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     var allLogs = MutableLiveData<List<OperationLog>>()
 
-    var liveNotifications = MutableLiveData<List<OperationLog>>()
-
+    var filteredLogs = MutableLiveData<List<OperationLog>>()
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>
@@ -64,6 +64,10 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     fun getLiveAllLogsResult() {
         allLogs = repository.getLiveLogs()
+    }
+
+    fun onFilteringLog(list: List<OperationLog>){
+        filteredLogs.value = list.filter { it.logType != LogType.FOLLOWING.value}
     }
 
     private fun getGiftsResult() {

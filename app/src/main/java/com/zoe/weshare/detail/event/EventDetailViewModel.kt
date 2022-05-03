@@ -505,6 +505,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     }
 
     fun navigateToRoomComplete() {
+        _updateRoomStatus.value = null
         _onNavigateToRoom.value = null
         _room.value = null
     }
@@ -583,7 +584,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     }
 
     fun onNavigateToTargetProfile(uid: String) {
-        var target = UserInfo()
+        val target = UserInfo()
         target.uid = uid
 
         _targetUser.value = target

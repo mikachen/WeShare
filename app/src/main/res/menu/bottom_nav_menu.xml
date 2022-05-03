@@ -4,21 +4,21 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/sl_bottom_bar_home"
-        android:title="" />
+        android:title="主頁" />
 
     <item
         android:id="@+id/navigation_map"
         android:icon="@drawable/sl_bottom_bar_map"
-        android:title="" />
+        android:title="周邊熱點" />
 
     <item
         android:id="@+id/navigation_messages"
         android:icon="@drawable/sl_bottom_bar_chat_room"
-        android:title=" " />
+        android:title="聊天" />
 
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/sl_bottom_bar_user_profile"
-        android:title=" " />
+        android:title="個人" />
 
 </menu>

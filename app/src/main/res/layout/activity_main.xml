@@ -135,6 +135,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_background"
             app:itemIconSize="@dimen/size_bottom_nav_icon"
+            app:itemTextColor="@color/black"
+            app:itemRippleColor="@color/app_work_orange1"
             app:itemIconTint="@color/black"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu" />

@@ -1,6 +1,7 @@
 package com.zoe.weshare.message.roomlist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +39,7 @@ class RoomListFragment : Fragment() {
         binding.roomlistRecyclerView.adapter = adapter
 
         viewModel.room.observe(viewLifecycleOwner) {
+            Log.d("roomlist","$it")
             adapter.submitList(it)
         }
 

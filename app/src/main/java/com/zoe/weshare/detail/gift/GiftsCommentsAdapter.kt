@@ -41,7 +41,12 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
 
         holderGift.binding.apply {
 
-            textLikesCount.text = getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+            if (whoLikedList.isNotEmpty()) {
+                textLikesCount.text =
+                    getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+            }else{
+                textLikesCount.visibility = View.INVISIBLE
+            }
 
             if (isUserLiked) {
                 buttonCommentLike.setTextColor(getColor(R.color.lightBlueTestColor))

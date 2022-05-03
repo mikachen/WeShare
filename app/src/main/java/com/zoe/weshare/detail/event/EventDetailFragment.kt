@@ -93,7 +93,9 @@ class EventDetailFragment : Fragment() {
         }
 
         viewModel.updateRoomStatus.observe(viewLifecycleOwner) {
-            viewModel.getChatRoomInfo()
+            it?.let {
+                viewModel.getChatRoomInfo()
+            }
         }
 
         viewModel.onNavigateToRoom.observe(viewLifecycleOwner) {
@@ -234,7 +236,9 @@ class EventDetailFragment : Fragment() {
 
             textEventDescription.text = event.description
 
-            textStartTime.text = event.startTime.toDisplayFormat()
+            textStartTime.text = WeShareApplication.instance.getString(R.string.preview_event_time,
+                event.startTime.toDisplayDateFormat(),
+                event.endTime.toDisplayDateFormat())
 
             when (event.whoAttended.contains(weShareUser!!.uid)) {
                 true -> buttonAttend.text = "參與中"

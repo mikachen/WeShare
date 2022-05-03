@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.chauthai.swipereveallayout.ViewBinderHelper
 import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.ItemGiftManageBinding
@@ -18,8 +19,9 @@ import com.zoe.weshare.util.Util.getStringWithStrParm
 class GiftItemsAdapter(
     val viewModel: GiftManageViewModel,
     private val onClickListener: OnClickListener,
-) :
-    ListAdapter<GiftPost, GiftItemsAdapter.GiftViewHolder>(DiffCallback) {
+) : ListAdapter<GiftPost, GiftItemsAdapter.GiftViewHolder>(DiffCallback) {
+
+    val viewBinderHelper = ViewBinderHelper()
 
     class GiftViewHolder(var binding: ItemGiftManageBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -39,14 +41,14 @@ class GiftItemsAdapter(
                     binding.textStatus.setBackgroundResource(R.color.message_sender_green)
                 }
                 GiftStatusType.CLOSED.code -> {
-                    binding.btnAbandoned.visibility = View.GONE
+                    binding.buttonAbandon.visibility = View.GONE
                     binding.btnCheckWhoRequest.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.CLOSED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
                 }
                 GiftStatusType.ABANDONED.code -> {
-                    binding.btnAbandoned.visibility = View.GONE
-                    binding.btnAbandoned.visibility = View.GONE
+                    binding.buttonAbandon.visibility = View.GONE
+                    binding.buttonAbandon.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.ABANDONED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_dark_grey)
                 }
@@ -72,6 +74,10 @@ class GiftItemsAdapter(
     }
 
     override fun onBindViewHolder(holder: GiftViewHolder, position: Int) {
+
+        viewBinderHelper.setOpenOnlyOne(true)
+        viewBinderHelper.bind(holder.binding.swipeLayout, position.toString())
+
         val gift = getItem(position)
         gift?.let {
             holder.bind(gift)
@@ -80,7 +86,7 @@ class GiftItemsAdapter(
                 onClickListener.onClick(gift)
             }
 
-            holder.binding.btnAbandoned.setOnClickListener {
+            holder.binding.buttonAbandon.setOnClickListener {
                 viewModel.userPressAbandon(gift)
             }
 

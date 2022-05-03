@@ -125,7 +125,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 eventViewModel.onPostEvent.observe(viewLifecycleOwner) {
-                    eventViewModel.onNewRoomPrepare()
+                    eventViewModel.onNewRoomPrepare(it)
                 }
             } else {
                 val giftViewModel by viewModels<PostGiftViewModel> { getVmFactory(weShareUser) }

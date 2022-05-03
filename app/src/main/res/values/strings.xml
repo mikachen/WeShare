@@ -14,7 +14,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="result_fail">Result Fail</string>
     <string name="title_activity_maps">MapsActivity</string>
 
@@ -23,6 +22,7 @@
         <item>全新</item>
         <item>二手</item>
     </string-array>
+
     <string-array name="gift_item_sort">
         <item>食品</item>
         <item>生活用品</item>
@@ -33,6 +33,7 @@
         <item>娛樂器材</item>
         <item>其他</item>
     </string-array>
+
     <string-array name="event_type_sort">
         <item>社區服務</item>
         <item>募款拍賣</item>
@@ -59,7 +60,6 @@
     <string name="filter_ongoing">開放中</string>
     <string name="filter_ended">已結案</string>
     <string name="filter_abandoned">已下架</string>
-
     <string name="event_leave_a_comment">留個言吧…</string>
     <string name="chatroom_send_a_message">輸入訊息</string>
     <string name="posting_progress">LOADING..%1$d%%</string>
@@ -70,16 +70,16 @@
     <string name="abandoned_message">下架後將無法復原或操作派發!</string>
     <string name="abandoned_yes">確認下架</string>
     <string name="abandoned_no">取消下架</string>
-
     <string name="give_away_gift">派發</string>
 
     //送禮物Alert窗
     <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
-    <string name="send_gift_message">注意：一次只能送出一人，確認送出贈品將結案，不可再作修改!</string>
+    <string name="send_gift_message">注意：一次只能送出一人，確認送出後將不可再作修改!</string>
     <string name="send_gift_yes">確認</string>
     <string name="send_gift_no">取消</string>
     <string name="title_who_requested">當前索取人</string>
 
+    //Log Messages
     <string name="log_msg_post_gift">&lt;b>%1s&lt;/b> 刊登了贈品：%2s</string>
     <string name="log_msg_post_event">&lt;b>%1s&lt;/b> 刊登了活動：%2s</string>
     <string name="log_msg_request_gift">&lt;b>%1s&lt;/b> 登記了贈品索取：%2s</string>
@@ -113,7 +113,6 @@
     <string name="preview_gift_condition_title">贈品狀況</string>
     <string name="preview_gift_description_title">贈品詳情</string>
     <string name="preview_photo_title">相片預覽</string>
-
     <string name="preview_event_title_title">活動名稱</string>
     <string name="preview_event_sort_title">活動分類</string>
     <string name="preview_event_time_title">活動時間</string>
@@ -123,5 +122,8 @@
     <string name="preview_next_step">下一步</string>
     <string name="preview_submit_btn_title">確認提交</string>
     <string name="title_posted_time">刊登時間</string>
+
+
+    <string name="room_list_event_title">活動群聊：%1s</string>
 
 </resources>

@@ -16,7 +16,7 @@
     <View
         android:id="@+id/translucent_view"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:background="@color/translucent"
         app:layout_constraintBottom_toBottomOf="@id/header_image_tv"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         android:layout_margin="16dp"
         android:layout_marginStart="8dp"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/header_image_tv"
         app:layout_constraintStart_toStartOf="parent"

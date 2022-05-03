@@ -64,6 +64,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.3'
     implementation 'com.google.android.gms:play-services-auth:20.2.0'

@@ -31,6 +31,7 @@
         <entry key="app/src/main/res/drawable/ic_favorite_like_border.xml" value="0.261" />
         <entry key="app/src/main/res/drawable/map_marker_event_smaller.xml" value="0.299" />
         <entry key="app/src/main/res/drawable/ripple_event_attend_button.xml" value="0.3435" />
+        <entry key="app/src/main/res/drawable/shape_abandon_button_round.xml" value="0.287" />
         <entry key="app/src/main/res/drawable/shape_card_stacks.xml" value="0.3765" />
         <entry key="app/src/main/res/drawable/shape_chatroom_edittext.xml" value="0.22" />
         <entry key="app/src/main/res/drawable/shape_comment_box_roundconer.xml" value="0.3625" />
@@ -50,7 +51,7 @@
         <entry key="app/src/main/res/font/graffiti.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_credit_scene.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/activity_logo.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33979475484606614" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.2" />
         <entry key="app/src/main/res/layout/event_temp.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fab_btn_add_gift_resize.xml" value="0.23728088926891835" />
@@ -62,8 +63,8 @@
         <entry key="app/src/main/res/layout/fragment_credit.xml" value="0.1774262505344164" />
         <entry key="app/src/main/res/layout/fragment_distribute.xml" value="0.25908507909362977" />
         <entry key="app/src/main/res/layout/fragment_edit_info.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_gift_manage.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.2" />
         <entry key="app/src/main/res/layout/fragment_home_cards.xml" value="0.3619791666666667" />
@@ -87,15 +88,16 @@
         <entry key="app/src/main/res/layout/item_event_cards_view.xml" value="0.2" />
         <entry key="app/src/main/res/layout/item_gift_distrubution_comment_list.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_gift_distrubution_list.xml" value="0.30867892261650276" />
-        <entry key="app/src/main/res/layout/item_gift_manage.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/item_gift_manage.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_header_tv.xml" value="0.13723813595553655" />
         <entry key="app/src/main/res/layout/item_home_log_ticker.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/layout/item_home_user_logs.xml" value="0.231722958529286" />
-        <entry key="app/src/main/res/layout/item_hot_gift_grid.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/item_hot_gift_grid.xml" value="0.10888252148997135" />
+        <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_message_send.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/item_related_room_list.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/item_related_room_list.xml" value="0.15702479338842976" />
         <entry key="app/src/main/res/layout/notification_badge.xml" value="1.5" />
+        <entry key="app/src/main/res/layout/test_view.xml" value="0.5" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
         <entry key="app/src/main/res/menu/profile_popup_menu.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/menu/toolbar_menu.xml" value="0.26979166666666665" />

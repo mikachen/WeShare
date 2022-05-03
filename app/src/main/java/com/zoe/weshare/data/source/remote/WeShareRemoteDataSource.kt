@@ -2,7 +2,6 @@ package com.zoe.weshare.data.source.remote
 
 import android.icu.util.Calendar
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -204,13 +203,13 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun newUserRegister(profile: UserProfile): Result<Boolean> =
+    override suspend fun newUserRegister(user: UserProfile): Result<Boolean> =
         suspendCoroutine { continuation ->
 
             val newUser = FirebaseFirestore.getInstance().collection(PATH_USER)
-            val document = newUser.document(profile.uid)
+            val document = newUser.document(user.uid)
 
-            document.set(profile)
+            document.set(user)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Logger.i("newUserRegister: $newUser")
@@ -450,9 +449,8 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     list.add(log)
                 }
                 liveData.value = list
-                Log.d("getLiveNotifications1","${liveData.value}")
             }
-        Log.d("getLiveNotifications2","${liveData.value}")
+
         return liveData
     }
 
@@ -706,7 +704,6 @@ object WeShareRemoteDataSource : WeShareDataSource {
         FirebaseFirestore.getInstance()
             .collection(PATH_LOG)
             .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
-            .limit(10)
             .addSnapshotListener { snapshot, exception ->
 
                 Logger.i("addSnapshotListener detect")

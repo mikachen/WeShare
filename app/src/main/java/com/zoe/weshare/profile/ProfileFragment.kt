@@ -1,6 +1,7 @@
 package com.zoe.weshare.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,7 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.userLog.observe(viewLifecycleOwner) {
+            Log.d("userLog","$it")
             setupLogView(it)
         }
 

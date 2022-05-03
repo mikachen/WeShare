@@ -44,12 +44,9 @@ fun Fragment.checkLocationPermission(): Boolean {
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     ) {
-        // 已獲取到權限
-        Toast.makeText(requireContext(), "已獲取", Toast.LENGTH_SHORT).show()
-
+        // permission granted
         true
     } else {
-
         // 詢問要求獲取權限
         requestPermissions()
         false
