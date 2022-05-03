@@ -2,11 +2,9 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 設定 enable 顏色背景 -->
     <item android:state_enabled="true">
-
         <shape>
-            <corners android:radius="15dip" />
-            <solid android:color="@color/app_work_orange3" />
-
+            <corners android:radius="10dip" />
+            <gradient android:angle="-45" android:centerColor="@color/app_work_orange2" android:endColor="@color/app_work_orange3" android:startColor="@color/app_work_orange1" />
         </shape>
     </item>
 
@@ -14,7 +12,7 @@
     <!-- 設定預設 disable 顏色背景 -->
     <item android:state_enabled="false">
         <shape>
-            <corners android:radius="15dip" />
+            <corners android:radius="10dip" />
             <solid android:color="@color/button_disable" />
         </shape>
     </item>

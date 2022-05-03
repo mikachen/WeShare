@@ -18,15 +18,14 @@ import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class AskForGiftFragment : BottomSheetDialogFragment() {
 
     lateinit var binding: FragmentAskForGiftBinding
-    private val currentUser = UserManager.userLora
     lateinit var selectedGift: GiftPost
 
-
-    val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(currentUser) }
+    val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,31 +36,28 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
         selectedGift = AskForGiftFragmentArgs.fromBundle(requireArguments()).selectedGift
         binding = FragmentAskForGiftBinding.inflate(inflater, container, false)
 
-
-        viewModel.newRequestComment.observe(viewLifecycleOwner){
+        viewModel.newRequestComment.observe(viewLifecycleOwner) {
             viewModel.askForGiftRequest(selectedGift, it)
         }
-       viewModel.saveLogComplete.observe(viewLifecycleOwner){
-           if(it == LoadApiStatus.DONE) {
-               findNavController().navigate(
-                   NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift))
-               Toast.makeText(requireContext(),"save log success",Toast.LENGTH_SHORT).show()
-           }
-       }
+        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
+            if (it == LoadApiStatus.DONE) {
+                findNavController().navigate(
+                    NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift)
+                )
+            }
+        }
 
         setupBtn()
         return binding.root
     }
 
-
     private fun setupBtn() {
         binding.buttonSubmit.setOnClickListener {
-            // TODO 判斷是否登入
 
             val message = binding.editLeaveComment.text.toString()
 
             if (message.isNotEmpty()) {
-                viewModel.onSendNewRequest(message , selectedGift)
+                viewModel.onSendNewRequest(message, selectedGift)
                 binding.editLeaveComment.text?.clear()
             } else {
                 Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()
@@ -76,7 +72,6 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 鍵盤彈出後，畫面拉長上推畫面 android:windowSoftInputMode = adjustResize
         setStyle(STYLE_NORMAL, R.style.DialogStyle)
     }
 

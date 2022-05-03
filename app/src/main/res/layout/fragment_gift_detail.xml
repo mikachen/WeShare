@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <!-- layout main content-->
     <androidx.core.widget.NestedScrollView
@@ -126,7 +125,7 @@
 
 
                 <TextView
-                    android:id="@+id/title_posted_location"
+                    android:id="@+id/title_gift_location"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -146,12 +145,12 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/title_posted_location"
+                    app:layout_constraintTop_toBottomOf="@id/title_gift_location"
                     tools:text="台北西門" />
 
 
                 <TextView
-                    android:id="@+id/title_sort"
+                    android:id="@+id/title_gift_sort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
@@ -162,18 +161,40 @@
                     app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
 
                 <TextView
-                    android:id="@+id/text_sort"
+                    android:id="@+id/text_gift_sort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/title_sort"
+                    app:layout_constraintTop_toBottomOf="@id/title_gift_sort"
                     tools:text="生活用品" />
 
                 <TextView
-                    android:id="@+id/title_description"
+                    android:id="@+id/title_gift_condition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="狀態："
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/text_gift_sort" />
+
+                <TextView
+                    android:id="@+id/text_gift_condition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/title_gift_condition"
+                    tools:text="二手" />
+
+                <TextView
+                    android:id="@+id/title_gift_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
@@ -182,26 +203,28 @@
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/text_sort" />
+                    app:layout_constraintTop_toBottomOf="@id/text_gift_condition" />
 
                 <TextView
                     android:id="@+id/text_gift_description"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="start"
                     android:textColor="@color/black"
                     android:textSize="16sp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/title_description"
-                    tools:text="鈦極不沾無毒塗層。" />
+                    app:layout_constraintTop_toBottomOf="@id/title_gift_description"
+                    tools:text="鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。" />
 
                 <ToggleButton
                     android:id="@+id/button_press_like"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/button_favorite_like"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/button_toggle_like"
                     android:text=""
                     android:textOff=""
                     android:textOn=""
@@ -213,7 +236,7 @@
                     android:id="@+id/button_addition_heart1"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/button_favorite_like"
+                    android:background="@drawable/button_toggle_like"
                     android:text=""
                     android:textOff=""
                     android:textOn=""
@@ -225,7 +248,7 @@
                     android:id="@+id/button_addition_heart2"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/button_favorite_like"
+                    android:background="@drawable/button_toggle_like"
                     android:text=""
                     android:textOff=""
                     android:textOn=""
@@ -239,6 +262,7 @@
                     android:layout_marginTop="4dp"
                     android:textColor="@color/black"
                     android:textSize="16sp"
+                    android:layout_marginStart="2dp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/button_press_like"
                     tools:text="3人說讚" />
@@ -259,7 +283,7 @@
                         android:gravity="center_horizontal"
                         android:padding="4dp"
                         android:textColor="@color/white"
-                        android:textSize="20sp"
+                        android:textSize="18sp"
                         tools:text="已結案" />
                 </androidx.cardview.widget.CardView>
 
@@ -273,7 +297,7 @@
                     android:rotation="-15"
                     android:scaleType="fitCenter"
                     android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="@id/title_description"
+                    app:layout_constraintBottom_toBottomOf="@id/title_gift_description"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     tools:src="@drawable/status_close_title_logo"
@@ -354,11 +378,12 @@
         <Button
             android:id="@+id/button_ask_for_gift"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="8dp"
             android:background="@drawable/sl_request_gift_button"
             android:enabled="true"
+            android:textColor="@color/white"
             android:text="@string/request_gift"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -366,6 +391,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

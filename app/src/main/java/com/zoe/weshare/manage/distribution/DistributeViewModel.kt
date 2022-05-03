@@ -8,7 +8,10 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.Const.PATH_GIFT_POST
+import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
 import com.zoe.weshare.util.GiftStatusType
+import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,6 +22,8 @@ class DistributeViewModel(
     val userInfo: UserInfo?,
 ) : ViewModel() {
 
+    lateinit var gift: GiftPost
+
     private var _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>>
         get() = _comments
@@ -27,11 +32,9 @@ class DistributeViewModel(
     val onProfileSearchComplete: LiveData<Int>
         get() = _onProfileSearchComplete
 
-
     private val _onConfirmMsgShowing = MutableLiveData<UserProfile>()
     val onConfirmMsgShowing: LiveData<UserProfile>
         get() = _onConfirmMsgShowing
-
 
     val profileList = mutableListOf<UserProfile>()
 
@@ -50,18 +53,23 @@ class DistributeViewModel(
     val sendGiftStatus: LiveData<LoadApiStatus>
         get() = _sendGiftStatus
 
-    lateinit var gift: GiftPost
-
+    private val _saveLogComplete = MutableLiveData<OperationLog>()
+    val saveLogComplete: LiveData<OperationLog>
+        get() = _saveLogComplete
 
     fun getAskForGiftComments(selectedGift: GiftPost) {
         gift = selectedGift
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getGiftAskForComments(selectedGift.id)) {
+            when (val result = repository.getAllComments(
+                collection = PATH_GIFT_POST,
+                docId = selectedGift.id,
+                subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
                     _comments.value = result.data ?: emptyList()
                 }
                 is Result.Fail -> {
@@ -104,7 +112,7 @@ class DistributeViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    profileList.add(result.data)
+                    profileList.add(result.data!!)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -132,11 +140,15 @@ class DistributeViewModel(
         coroutineScope.launch {
             _sendGiftStatus.value = LoadApiStatus.LOADING
 
-            when (val result =
-                repository.sendAwayGift(gift.id, GiftStatusType.CLOSED.code, user.uid)) {
+            when (
+                val result =
+                    repository.updateGiftStatus(gift.id, GiftStatusType.CLOSED.code, user.uid)
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _sendGiftStatus.value = LoadApiStatus.DONE
+
+                    onSaveSendGiftLog()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -155,4 +167,43 @@ class DistributeViewModel(
         }
     }
 
+    fun onSaveSendGiftLog() {
+        val log = OperationLog(
+            postDocId = gift.id,
+            logType = LogType.SEND_GIFT.value,
+            operatorUid = userInfo!!.uid,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_send_away_gift,
+                userInfo.name,
+                gift.title,
+                onConfirmMsgShowing.value?.name ?: ""
+            )
+        )
+        saveSendGiftLog(log)
+    }
+
+    private fun saveSendGiftLog(log: OperationLog) {
+        coroutineScope.launch {
+            when (val result = repository.saveLog(log)) {
+                is Result.Success -> {
+                    _error.value = null
+
+                    _saveLogComplete.value = log
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+
+                }
+                else -> {
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
+
+                }
+            }
+        }
+    }
 }

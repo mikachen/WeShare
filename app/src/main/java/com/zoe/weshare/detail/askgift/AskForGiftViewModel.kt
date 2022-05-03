@@ -8,6 +8,8 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.Const.PATH_GIFT_POST
+import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
 import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +36,6 @@ class AskForGiftViewModel(
     val requestGiftStatus: LiveData<LoadApiStatus>
         get() = _requestGiftStatus
 
-    // error: The internal MutableLiveData that stores the error of the most recent request
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>?
         get() = _error
@@ -52,7 +53,15 @@ class AskForGiftViewModel(
 
             _requestGiftStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.askForGift(gift.id, comment)) {
+            when (
+                val result = repository.sendComment(
+                    collection = PATH_GIFT_POST,
+                    docId = gift.id,
+                    comment = comment,
+                    subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR
+                )
+            ) {
+
                 is Result.Success -> {
                     _error.value = null
                     _requestGiftStatus.value = LoadApiStatus.DONE
@@ -75,13 +84,13 @@ class AskForGiftViewModel(
         }
     }
 
-
     private fun onSaveGiftRequestLog(gift: GiftPost) {
-        val log = PostLog(
+        val log = OperationLog(
             postDocId = gift.id,
-            logType = LogType.REQUESTGIFT.value,
+            logType = LogType.REQUEST_GIFT.value,
             operatorUid = userInfo!!.uid,
-            logMsg = WeShareApplication.instance.getString(R.string.log_msg_request_gift,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_request_gift,
                 userInfo.name,
                 gift.title
             )
@@ -89,12 +98,12 @@ class AskForGiftViewModel(
         saveGiftRequestLog(log)
     }
 
-    private fun saveGiftRequestLog(log: PostLog) {
+    private fun saveGiftRequestLog(log: OperationLog) {
         coroutineScope.launch {
 
             _saveLogComplete.value = LoadApiStatus.LOADING
 
-            when (val result = repository.savePostLog(log)) {
+            when (val result = repository.saveLog(log)) {
                 is Result.Success -> {
                     _error.value = null
                     _saveLogComplete.value = LoadApiStatus.DONE

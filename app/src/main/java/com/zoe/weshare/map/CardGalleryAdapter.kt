@@ -8,6 +8,7 @@ import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.ItemCardGalleryViewBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithStrParm
 
 class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
@@ -22,12 +23,14 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
             binding.apply {
 
                 textTitle.text = data.title
-                textPostedLocation.text =
-                    getStringWithStrParm(R.string.post_location_name,
-                        data.postLocation?.locationName ?: "")
-                textPostedTime.text = getStringWithStrParm(R.string.card_posted_time,
-                    data.createdTime.toDisplayFormat())
+                textPostedLocation.text = data.postLocation?.locationName
+                textPostedTime.text = data.createdTime.toDisplayFormat()
                 bindImage(image, data.image)
+
+                if(data.postType == EVENT_CARD){
+                    titlePostedTime.text = getString(R.string.preview_event_time_title)
+                    textPostedTime.text = data.eventTime
+                }
             }
         }
     }
@@ -49,7 +52,7 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
 
         data?.let {
             holder.bind(data)
-            holder.itemView.setOnClickListener {
+            holder.binding.clickableView.setOnClickListener {
                 onClickListener.onClick(data)
             }
         }
@@ -62,7 +65,6 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
     private fun getRealPosition(position: Int): Int = list?.let {
         position % it.size
     } ?: 0
-
 
     fun submitCards(dataList: List<Cards>) {
         this.list = dataList

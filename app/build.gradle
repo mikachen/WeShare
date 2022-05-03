@@ -16,6 +16,14 @@ ktlint {
 }
 
 android {
+    signingConfigs {
+        upload {
+            storeFile file('/Users/zoelo/Documents/priKey/keystore.jks')
+            storePassword 'Mika7476'
+            keyAlias 'upload'
+            keyPassword 'Mika7476'
+        }
+    }
     compileSdk 32
 
     buildFeatures {
@@ -26,8 +34,8 @@ android {
         applicationId "com.zoe.weshare"
         minSdk 28
         targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,6 +64,10 @@ android {
 }
 
 dependencies {
+    implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
+
+    implementation 'com.google.firebase:firebase-auth-ktx:21.0.3'
+    implementation 'com.google.android.gms:play-services-auth:20.2.0'
 
     implementation 'com.google.firebase:firebase-storage:20.0.1'
 

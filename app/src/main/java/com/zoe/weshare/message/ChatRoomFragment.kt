@@ -1,25 +1,17 @@
 package com.zoe.weshare.message
 
-import android.icu.util.Calendar
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.data.ChatRoom
-import com.zoe.weshare.data.Comment
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.Const.PATH_CHATROOM
-import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
-import com.zoe.weshare.util.Logger
-import com.zoe.weshare.util.UserManager.userLora
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class ChatRoomFragment : Fragment() {
 
@@ -27,12 +19,10 @@ class ChatRoomFragment : Fragment() {
     private lateinit var binding: FragmentChatroomBinding
     private lateinit var adapter: ChatRoomAdapter
 
-    val currentUser = userZoe
+    val currentUser = weShareUser
 
     private val viewModel by viewModels<ChatRoomViewModel> { getVmFactory(currentUser) }
 
-    private val db = FirebaseFirestore.getInstance()
-    lateinit var newMsgQuery: Query
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,87 +33,53 @@ class ChatRoomFragment : Fragment() {
 
         chatRoom = ChatRoomFragmentArgs.fromBundle(requireArguments()).selectedRoom
 
-        viewModel.getHistoryMessage(chatRoom.id)
-        viewModel.onUserInfoDisplay(chatRoom)
+        viewModel.onViewDisplay(chatRoom)
 
         val recyclerView = binding.messagesRecyclerView
 
         adapter = ChatRoomAdapter(viewModel, chatRoom)
         recyclerView.adapter = adapter
 
-        viewModel.messageItems.observe(viewLifecycleOwner) {
-            adapter.submitList(it){
+        viewModel.liveMessages.observe(viewLifecycleOwner) {
+            adapter.submitList(it) {
                 recyclerView.post { recyclerView.scrollToPosition(adapter.itemCount - 1) }
             }
         }
 
-        viewModel.targetInfo.observe(viewLifecycleOwner) {
-//            binding.textRoomTargetTitle.text = it.name
-            (activity as MainActivity).binding.toolbarFragmentTitleText.text = it.name
+        viewModel.roomTitle.observe(viewLifecycleOwner) {
+            (activity as MainActivity).binding.toolbarFragmentTitleText.text = it
         }
 
         viewModel.newMessage.observe(viewLifecycleOwner) {
             viewModel.sendNewMessage(chatRoom.id, it)
         }
 
-        newMsgQuery = db.collection(PATH_CHATROOM).document(chatRoom.id)
-            .collection(SUB_PATH_CHATROOM_MESSAGE)
-            .orderBy("createdTime", Query.Direction.DESCENDING).limit(1)
-
-        newMsgQuery.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                Logger.d("SnapshotListen failed: $error")
-                return@addSnapshotListener
-            }
-            if (snapshot != null) {
-                val list = mutableListOf<Comment>()
-
-                for (document in snapshot.documents) {
-                    Logger.d(document.id + " => " + document.data)
-
-                    document.toObject(Comment::class.java)?.let {
-                        list.add(it)
-                    }
-                }
-
-                viewModel.onNewMsgListened(list)
-
-            } else {
-                Logger.d("SnapshotListen Current data: null")
-            }
-        }
-
-
         setupSendBtn()
         return binding.root
     }
 
-
     private fun setupSendBtn() {
         binding.buttonSend.setOnClickListener {
-            val newMessage = binding.editBox.text.toString()
-
-            if (newMessage.isNotEmpty()) {
-                viewModel.onSending(newMessage)
-                    binding.editBox.text?.clear()
-            }
+            onSendComment()
         }
 
-        binding.btnTesting.setOnClickListener {
-            val mockMessage = binding.editBox.text.toString()
+        binding.editBox.setOnKeyListener { _, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {
 
-            if (mockMessage.isNotEmpty()) {
-                viewModel._newMessage.value = Comment(
-                    //TODO
-                    uid = userLora.uid,
-                    content = mockMessage,
-                    createdTime = Calendar.getInstance().timeInMillis
+                onSendComment()
+                true
 
-                )
-                binding.editBox.text?.clear()
-            } else {
-                Toast.makeText(requireContext(), "Msg is empty", Toast.LENGTH_SHORT).show()
-            }
+            } else false
+        }
+    }
+
+    private fun onSendComment() {
+
+        val newMessage = binding.editBox.text.toString()
+
+        if (newMessage.isNotEmpty()) {
+            viewModel.onSending(newMessage)
+            binding.editBox.text?.clear()
         }
     }
 }

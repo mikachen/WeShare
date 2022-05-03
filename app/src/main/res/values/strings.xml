@@ -2,6 +2,7 @@
     <string name="app_name">WeShare</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="map_api_key_name">com.google.android.geo.API_KEY</string>
+    <string name="server_client_id">887671659324-uufihsiithrl3s0ogno5st2kikqb38mg.apps.googleusercontent.com</string>
 
     <!-- Strings used for fragments for navigation -->
     <string name="home">首頁</string>
@@ -13,7 +14,6 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="result_fail">Result Fail</string>
     <string name="title_activity_maps">MapsActivity</string>
 
@@ -22,6 +22,7 @@
         <item>全新</item>
         <item>二手</item>
     </string-array>
+
     <string-array name="gift_item_sort">
         <item>食品</item>
         <item>生活用品</item>
@@ -32,6 +33,7 @@
         <item>娛樂器材</item>
         <item>其他</item>
     </string-array>
+
     <string-array name="event_type_sort">
         <item>社區服務</item>
         <item>募款拍賣</item>
@@ -46,27 +48,21 @@
     </string-array>
 
     <string name="posted_time">%s 刊登</string>
-    <string name="card_posted_time">刊登時間:%1$s</string>
-
-    <string name="gift_post_location_name">地點: %1$s</string>
-    <string name="event_post_location_name">地點: %1$s</string>
-    <string name="post_location_name">刊登地點:%1$s</string>
-
     <string name="gift_post_sort">物品分類: %1$s</string>
     <string name="event_post_sort">活動分類: %1$s</string>
     <string name="gift_registrants_number">已有%1$d人登記索取</string>
-
     <string name="number_who_liked">%1$d 人說讚</string>
-    <string name="number_volunteer_needs">需求志工數: %1$d人</string>
-
+    <string name="event＿comments">留言</string>
     <string name="request_leave_intro_message">留個自我介紹給大家吧！</string>
     <string name="request_gift">登記索取</string>
     <string name="already_requested_gift">您已經登記索取</string>
-
     <string name="filter_all">全部</string>
     <string name="filter_ongoing">開放中</string>
     <string name="filter_ended">已結案</string>
     <string name="filter_abandoned">已下架</string>
+    <string name="event_leave_a_comment">留個言吧…</string>
+    <string name="chatroom_send_a_message">輸入訊息</string>
+    <string name="posting_progress">LOADING..%1$d%%</string>
 
 
     //下架Alert窗
@@ -74,21 +70,62 @@
     <string name="abandoned_message">下架後將無法復原或操作派發!</string>
     <string name="abandoned_yes">確認下架</string>
     <string name="abandoned_no">取消下架</string>
-
     <string name="give_away_gift">派發</string>
 
     //送禮物Alert窗
     <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
-    <string name="send_gift_message">注意：一次只能送出一人，確認送出贈品將結案，不可再作修改!</string>
+    <string name="send_gift_message">確認送出後將不可再作修改!</string>
     <string name="send_gift_yes">確認</string>
     <string name="send_gift_no">取消</string>
     <string name="title_who_requested">當前索取人</string>
 
-    <string name="log_msg_post_gift">%1$s\t刊登了贈品:%2$1s</string>
-    <string name="log_msg_post_event">%1$s\t刊登了活動:%2$1s</string>
-    <string name="log_msg_request_gift">%1$s\t登記索取了贈品:%2$1s</string>
+    //Log Messages
+    <string name="log_msg_post_gift">&lt;b>%1s&lt;/b> 刊登了贈品：%2s</string>
+    <string name="log_msg_post_event">&lt;b>%1s&lt;/b> 刊登了活動：%2s</string>
+    <string name="log_msg_request_gift">&lt;b>%1s&lt;/b> 登記了贈品索取：%2s</string>
+    <string name="log_msg_send_away_gift">&lt;b>%1s&lt;/b> 送出了贈品：%2s給%3s</string>
+    <string name="log_msg_abandon_gift">&lt;b>%1s&lt;/b> 下架了贈品：%2s</string>
+    <string name="log_msg_send_event_comment">&lt;b>%1s&lt;/b> 對活動：%2s 發表了留言</string>
+    <string name="log_msg_event_attending">&lt;b>%1s&lt;/b> 參與了活動：%2s</string>
+    <string name="log_msg_event_volunteering">&lt;b>%1s&lt;/b> 成為了活動：%2s 志工</string>
+    <string name="log_msg_event_status_ongoing">&lt;b>活動：%s&lt;/b> 已經開始囉！</string>
+    <string name="log_msg_event_status_ended">&lt;b>活動：%s&lt;/b> 已經結束了！</string>
+    <string name="log_msg_following_someone">&lt;b>%1s&lt;/b>追蹤了%2s！</string>
 
 
-    <string name="log_msg_send_away_gift">%1$s\t送出了贈品給:%2$1s</string>
+    //error handle
+    <string name="error_title_isEmpty">請填寫標題</string>
+    <string name="error_sort_isEmpty">請選擇分類</string>
+    <string name="error_volunteer_need">請填寫志工數量</string>
+    <string name="error_description_isEmpty">請填寫詳情描述</string>
+    <string name="error_date_pick_isEmpty">請選擇開始與結束時間</string>
+    <string name="error_condition_isEmpty">請選擇物品狀態</string>
+    <string name="error_image_isEmpty">請上傳一張照片</string>
+    <string name="error_event_location_isEmpty">請選擇活動地點</string>
+    <string name="error_gift_location_isEmpty">請選擇取物地點</string>
+
+    //posting preview string
+    <string name="preview_detail_title">刊登預覽</string>
+    <string name="preview_location_title">地點</string>
+    <string name="preview_choose_one_location_hint">請搜尋指定一個刊登地點</string>
+    <string name="preview_gift_title_title">贈品名稱</string>
+    <string name="preview_gift_sort_title">贈品分類</string>
+    <string name="preview_gift_condition_title">贈品狀況</string>
+    <string name="preview_gift_description_title">贈品詳情</string>
+    <string name="preview_photo_title">相片預覽</string>
+    <string name="preview_event_title_title">活動名稱</string>
+    <string name="preview_event_sort_title">活動分類</string>
+    <string name="preview_event_time_title">活動時間</string>
+    <string name="preview_event_time">%1s - %2s</string>
+    <string name="preview_event_volunteer_title">志工需求</string>
+    <string name="preview_event_description_title">活動詳情</string>
+    <string name="preview_next_step">下一步</string>
+    <string name="preview_submit_btn_title">確認提交</string>
+    <string name="title_posted_time">刊登時間</string>
+
+
+    <string name="room_list_event_title">活動群聊：%1s</string>
+    <string name="leave_ask_for_gift_comment">索取留言</string>
+    <string name="pls_leave_askforgift_comment">留言索取理由或感謝文。</string>
 
 </resources>

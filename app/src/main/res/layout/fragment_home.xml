@@ -25,7 +25,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/header_event_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -36,12 +36,10 @@
                 android:id="@+id/layout_home_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="4dp"
-                android:elevation="2dp"
                 android:layout_marginBottom="4dp"
                 android:background="@color/white"
+                android:elevation="2dp"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@id/title_current_hot_gifts"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/header_event_rv">
@@ -73,7 +71,6 @@
                     android:id="@+id/button_check_gifts"
                     style="@style/HomeButton"
                     android:layout_marginStart="8dp"
-
                     android:drawableTop="@drawable/home_btn_gift_smaller"
                     android:text="查看贈品"
                     app:layout_constraintEnd_toStartOf="@+id/button_current_heros"
@@ -94,6 +91,51 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/base_users_log"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginVertical="4dp"
+                android:background="@color/white"
+                android:elevation="2dp"
+                android:orientation="horizontal"
+                android:paddingVertical="4dp"
+                app:layout_constraintBottom_toTopOf="@id/title_current_hot_gifts"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_home_buttons">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginVertical="2dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="4dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_ticker_trumpet"/>
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:layout_width="2dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_height="match_parent"
+                        />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/ticker_rv"
+                        android:layout_width="match_parent"
+                        tools:itemCount="1"
+                        android:layout_marginStart="8dp"
+                        tools:listitem="@layout/item_home_log_ticker"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <TextView
                 android:id="@+id/title_current_hot_gifts"
                 android:layout_width="match_parent"
@@ -102,14 +144,14 @@
                 android:gravity="start"
                 android:paddingVertical="8dp"
                 android:paddingStart="8dp"
-                android:text="熱搜贈品"
+                android:text="熱門贈品"
                 android:textColor="@color/black"
-                android:textSize="24sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/hot_gift_rv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_home_buttons" />
+                app:layout_constraintTop_toBottomOf="@id/base_users_log" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/hot_gift_rv"

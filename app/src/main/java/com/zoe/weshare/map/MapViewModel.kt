@@ -1,5 +1,6 @@
 package com.zoe.weshare.map
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,14 +13,15 @@ import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
+import com.zoe.weshare.ext.toDisplayDateFormat
 import com.zoe.weshare.network.LoadApiStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-const val GIFT_TYPE = 0
-const val EVENT_TYPE = 1
+const val GIFT_CARD = 0
+const val EVENT_CARD = 1
 
 class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
 
@@ -84,7 +86,8 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                     id = element.id,
                     title = element.title,
                     createdTime = element.createdTime,
-                    postType = GIFT_TYPE,
+                    eventTime = "",
+                    postType = GIFT_CARD,
                     image = element.image,
                     postLocation = element.location
                 )
@@ -98,7 +101,10 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                     id = element.id,
                     title = element.title,
                     createdTime = element.createdTime,
-                    postType = EVENT_TYPE,
+                    eventTime = WeShareApplication.instance.getString(R.string.preview_event_time,
+                        element.startTime.toDisplayDateFormat(),
+                        element.endTime.toDisplayDateFormat()),
+                    postType = EVENT_CARD,
                     image = element.image,
                     postLocation = element.location
                 )
@@ -106,6 +112,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
             }
             isEventCardsComplete = true
         }
+        Log.d("cardsViewList", "$cardsViewList")
         _cards.value = cardsViewList.shuffled()
     }
 

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.detail.askgift.AskForGiftViewModel
-import com.zoe.weshare.detail.commenting.CommentViewModel
 import com.zoe.weshare.detail.event.EventDetailViewModel
 import com.zoe.weshare.detail.gift.GiftDetailViewModel
 import com.zoe.weshare.manage.distribution.DistributeViewModel
@@ -14,7 +13,8 @@ import com.zoe.weshare.message.ChatRoomViewModel
 import com.zoe.weshare.message.roomlist.RoomListViewModel
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
-import com.zoe.weshare.profile.userself.SelfViewModel
+import com.zoe.weshare.profile.ProfileViewModel
+import com.zoe.weshare.profile.editmode.EditInfoViewModel
 
 /**
  * Factory for all ViewModels which need [UserInfo].
@@ -22,7 +22,7 @@ import com.zoe.weshare.profile.userself.SelfViewModel
 @Suppress("UNCHECKED_CAST")
 class AuthorViewModelFactory(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo?
+    private val userInfo: UserInfo?,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -37,10 +37,6 @@ class AuthorViewModelFactory(
 
         if (modelClass.isAssignableFrom(AskForGiftViewModel::class.java)) {
             return AskForGiftViewModel(repository, userInfo) as T
-        }
-
-        if (modelClass.isAssignableFrom(CommentViewModel::class.java)) {
-            return CommentViewModel(repository, userInfo) as T
         }
 
         if (modelClass.isAssignableFrom(ChatRoomViewModel::class.java)) {
@@ -59,10 +55,9 @@ class AuthorViewModelFactory(
             return GiftDetailViewModel(repository, userInfo) as T
         }
 
-        if (modelClass.isAssignableFrom(SelfViewModel::class.java)) {
-            return SelfViewModel(repository, userInfo) as T
+        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            return ProfileViewModel(repository, userInfo) as T
         }
-
 
         if (modelClass.isAssignableFrom(GiftManageViewModel::class.java)) {
             return GiftManageViewModel(repository, userInfo) as T
@@ -72,7 +67,10 @@ class AuthorViewModelFactory(
             return DistributeViewModel(repository, userInfo) as T
         }
 
+        if (modelClass.isAssignableFrom(EditInfoViewModel::class.java)) {
+            return EditInfoViewModel(repository, userInfo) as T
+        }
+
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
     }
-
 }

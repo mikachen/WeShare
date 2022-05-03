@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import kotlinx.coroutines.CoroutineScope
@@ -15,7 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class RoomListViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) : ViewModel() {
+class RoomListViewModel(
+    private val repository: WeShareRepository,
+    val userInfo: UserInfo?)
+    : ViewModel() {
 
     private var _rooms = MutableLiveData<List<ChatRoom>>()
     val room: LiveData<List<ChatRoom>>
@@ -37,7 +40,7 @@ class RoomListViewModel(private val repository: WeShareRepository, val userInfo:
     val error: LiveData<String?>
         get() = _error
 
-    fun searchChatRooms(){
+    fun searchChatRooms() {
         userInfo?.let { getUserChatRooms(it.uid) }
     }
 

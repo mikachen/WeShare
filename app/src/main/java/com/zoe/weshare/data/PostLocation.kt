@@ -9,11 +9,10 @@ data class PostLocation(
     val locationName: String = "",
     val latitude: String = "",
     val longitude: String = ""
-) : Parcelable{
+) : Parcelable {
 
     val getLocation: LatLng
-    get() {
-        return LatLng(latitude.toDouble(), longitude.toDouble())
-    }
+        get() {
+            return LatLng(latitude.toDouble(), longitude.toDouble())
+        }
 }
-

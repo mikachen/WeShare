@@ -7,7 +7,7 @@
 
     <!-- Bottom Navigation -->
     <dimen name="height_bottom_app_bar">56dp</dimen>
-    <dimen name="size_bottom_nav_icon">36dp</dimen>
+    <dimen name="size_bottom_nav_icon">24dp</dimen>
 
     <dimen name="appBarRadius">16dp</dimen>
 

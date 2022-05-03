@@ -1,15 +1,17 @@
 package com.zoe.weshare.detail.gift
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.R
-import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.Comment
+import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
+import com.zoe.weshare.ext.getTimeAgoString
 import com.zoe.weshare.ext.toDisplaySentTime
 import com.zoe.weshare.util.Util.getColor
 import com.zoe.weshare.util.Util.getStringWithIntParm
@@ -34,13 +36,16 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
         val whoLikedList = viewModel.updateCommentLike[position].whoLiked
         val isUserLiked: Boolean = whoLikedList.contains(userInfo.uid)
 
+        val userReceiveGift: Boolean =
+            viewModel.selectedGiftDisplay.value?.whoGetGift == comment.uid
+
         holderGift.binding.apply {
 
-            if (!whoLikedList.isNullOrEmpty()) {
+            if (whoLikedList.isNotEmpty()) {
                 textLikesCount.text =
                     getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
-            } else {
-                textLikesCount.text = ""
+            }else{
+                textLikesCount.visibility = View.INVISIBLE
             }
 
             if (isUserLiked) {
@@ -52,6 +57,10 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
             buttonCommentLike.setOnClickListener {
                 viewModel.onCommentsLikePressed(comment, isUserLiked, position)
             }
+
+            if (userReceiveGift) {
+                lottieReceivedGift.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -60,7 +69,11 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel) :
         fun bind(comment: Comment, viewModel: GiftDetailViewModel) {
 
             binding.textComment.text = comment.content
-            binding.textCreatedTime.text = comment.createdTime.toDisplaySentTime()
+            binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
+
+            binding.imageProfileAvatar.setOnClickListener {
+                viewModel.onNavigateToTargetProfile(comment.uid)
+            }
 
             // displaying user's image and name
             if (viewModel.onProfileSearchComplete.value == 0) {

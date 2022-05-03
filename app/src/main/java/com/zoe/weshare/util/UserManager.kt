@@ -9,8 +9,8 @@ object UserManager {
     val userLora = UserInfo(
         name = "蘿拉卡芙特",
         uid = "lora0987",
-        image = "https://images2.gamme.com.tw/news2/2016/26/12/q52SpaablqCbqA.jpeg")
-
+        image = "https://images2.gamme.com.tw/news2/2016/26/12/q52SpaablqCbqA.jpeg"
+    )
 
     val userZoe = UserInfo(
         name = "Zoe Lo",
@@ -37,6 +37,7 @@ object UserManager {
     }
 
     private const val USER_UID = "user_uid"
+    private const val USER_INFO = "user_info"
 
     var userToken: String?
         get() = preferences.getString(USER_UID, null)
@@ -44,5 +45,15 @@ object UserManager {
             it.putString(USER_UID, token)
         }
 
+//    var currentUser: UserInfo?
+//        get() = preferences.getString(USER_INFO, UserInfo())
+//        set(UserInfo) = preferences.edit {
+//            it.putString(USER_INFO, com.zoe.weshare.data.UserInfo)
+//        }
 
+
+    var weShareUser: UserInfo? = null
+
+    val isLoggedIn: Boolean
+        get() = weShareUser != null
 }

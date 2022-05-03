@@ -3,7 +3,6 @@ package com.zoe.weshare
 import android.animation.Animator
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,10 +17,11 @@ class CreditFragment : BottomSheetDialogFragment() {
     var animationStatus: Boolean = false
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val binding = FragmentCreditBinding.inflate(inflater,container,false)
+        val binding = FragmentCreditBinding.inflate(inflater, container, false)
 
         binding.lottieMain.playAnimation()
         binding.lottieMain.addAnimatorListener(object : Animator.AnimatorListener {
@@ -49,7 +49,6 @@ class CreditFragment : BottomSheetDialogFragment() {
         )
 
         return binding.root
-
     }
 
     fun leave(view: View) {
@@ -67,10 +66,10 @@ class CreditFragment : BottomSheetDialogFragment() {
             val parentLayout = bottomSheetDialog
                 .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
 
-            parentLayout?.let { it ->
-                val behaviour = BottomSheetBehavior.from(it)
+            parentLayout?.let { view ->
+                val behaviour = BottomSheetBehavior.from(view)
 
-                setupFullHeight(it)
+                setupFullHeight(view)
 
                 behaviour.isFitToContents = false
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED
@@ -91,6 +90,3 @@ class CreditFragment : BottomSheetDialogFragment() {
         bottomSheet.layoutParams = layoutParams
     }
 }
-
-
-

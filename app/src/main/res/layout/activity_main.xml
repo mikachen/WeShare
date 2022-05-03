@@ -21,7 +21,7 @@
             android:elevation="4dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <ImageView
@@ -34,7 +34,45 @@
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible" />
+
+                <FrameLayout
+                    android:id="@+id/notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_baseline_notifications_active_24" />
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/layout_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="90dp">
+
+                        <TextView
+                            android:id="@+id/badge_count"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="start|top"
+                            android:background="@color/black"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            tools:text="12" />
+                    </androidx.cardview.widget.CardView>
+
+                </FrameLayout>
+
 
                 <LinearLayout
                     android:id="@+id/layout_toolbar_subtitle"
@@ -42,10 +80,11 @@
                     android:layout_height="match_parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="invisible">
 
                     <ImageView
-                        android:id="@+id/toolbar_arrow_back_icon"
+                        android:id="@+id/toolbar_arrow_back"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -60,6 +99,7 @@
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         tools:text="選擇地點" />
+
                 </LinearLayout>
 
 
@@ -76,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomAppBar"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
@@ -85,14 +125,9 @@
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_bottom_app_bar"
+        android:layout_height="@dimen/height_toolbar"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/transparent"
-        app:fabAlignmentMode="end"
-        app:fabAnimationMode="scale"
-        app:fabCradleMargin="5dp"
-        app:fabCradleRoundedCornerRadius="18dp"
-        app:fabCradleVerticalOffset="0dp">
+        android:backgroundTint="@color/background_material_light">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"
@@ -100,19 +135,22 @@
             android:layout_height="wrap_content"
             android:background="@drawable/transparent_background"
             app:itemIconSize="@dimen/size_bottom_nav_icon"
+            app:itemTextColor="@color/black"
+            app:itemRippleColor="@color/app_work_orange1"
             app:itemIconTint="@color/black"
-            app:labelVisibilityMode="unlabeled"
+            app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu" />
 
 
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraint_view"
+        android:id="@+id/fabs_layout_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/height_bottom_app_bar">
+        android:layout_marginBottom="@dimen/height_bottom_app_bar"
+        android:visibility="gone">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_main"
@@ -120,7 +158,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="8dp"
-            android:backgroundTint="@color/app_work_orange3"
+            android:backgroundTint="@color/app_work_orange2"
             android:src="@drawable/ic_baseline_add_24"
             app:borderWidth="0dp"
             app:elevation="2dp"
@@ -130,24 +168,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:maxImageSize="48dp" />
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/layout_fab_gift"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="-4dp"
             android:layout_marginBottom="2dp"
-            app:cardCornerRadius="30dp"
-            tools:visibility="visible"
             android:visibility="invisible"
+            app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toTopOf="@id/layout_fab_event"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="@color/app_work_orange1"
+            app:strokeWidth="2dp"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_theme_gradient"
-                android:orientation="horizontal">
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="2dp">
+
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/subfab_post_gift"
                     android:layout_width="wrap_content"
@@ -159,8 +201,8 @@
                     android:scaleType="center"
                     android:src="@drawable/ic_fab_gift"
                     app:borderWidth="0dp"
-                    app:fabSize="mini"
                     app:elevation="2dp"
+                    app:fabSize="mini"
                     app:maxImageSize="45dp"
                     tools:visibility="visible" />
 
@@ -168,42 +210,45 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginHorizontal="4dp"
                     android:text="刊登贈品"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/layout_fab_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:layout_marginBottom="2dp"
             android:layout_marginEnd="-4dp"
-            tools:visibility="visible"
+            android:layout_marginBottom="2dp"
+            android:visibility="invisible"
             app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toTopOf="@id/fab_main"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_fab_gift">
+            app:layout_constraintTop_toBottomOf="@id/layout_fab_gift"
+            app:strokeColor="@color/app_work_orange1"
+            app:strokeWidth="2dp"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/custom_theme_gradient"
-                android:orientation="horizontal">
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:padding="2dp">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/subfab_post_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:backgroundTint="@color/white"
                     android:layout_marginVertical="4dp"
                     android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/white"
                     android:scaleType="center"
                     android:src="@drawable/ic_fab_event"
                     android:tooltipText="1"
@@ -217,14 +262,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginHorizontal="4dp"
                     android:text="刊登活動"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

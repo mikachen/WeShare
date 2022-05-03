@@ -21,13 +21,13 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.ext.sendNotifications
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class DistributeFragment : BottomSheetDialogFragment() {
 
-    val currentUser = userZoe
 
-    val viewModel by viewModels<DistributeViewModel> { getVmFactory(currentUser) }
+    val viewModel by viewModels<DistributeViewModel> { getVmFactory(weShareUser) }
 
     lateinit var binding: FragmentDistributeBinding
     lateinit var layoutList: LinearLayout
@@ -44,8 +44,10 @@ class DistributeFragment : BottomSheetDialogFragment() {
         viewModel.getAskForGiftComments(selectedGift)
 
         val adapter = DistributeAdapter(viewModel)
-        val manager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.VERTICAL, false)
+        val manager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL, false
+        )
 
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = manager
@@ -65,31 +67,40 @@ class DistributeFragment : BottomSheetDialogFragment() {
             }
         }
 
-        viewModel.onConfirmMsgShowing.observe(viewLifecycleOwner){
-            sendGiftEvent(it)
+        viewModel.onConfirmMsgShowing.observe(viewLifecycleOwner) {
+            onConfirmingOperation(it)
         }
 
-        viewModel.sendGiftStatus.observe(viewLifecycleOwner){
-            Toast.makeText(requireContext(),"送出成功",Toast.LENGTH_SHORT).show()
+
+        viewModel.saveLogComplete.observe(viewLifecycleOwner){
+            sendNotifications(it)
+
+            Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
             findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
         }
 
-
+        setupBtn()
         return binding.root
     }
 
-    private fun sendGiftEvent(target: UserProfile?) {
+    private fun setupBtn(){
+        binding.buttonCloseDialog.setOnClickListener {
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun onConfirmingOperation(target: UserProfile?) {
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {
-            setTitle(getString(R.string.send_gift_title,selectedGift.title,target!!.uid))
+            setTitle(getString(R.string.send_gift_title, selectedGift.title, target!!.name))
             setMessage(getString(R.string.send_gift_message))
-            setPositiveButton(getString(R.string.send_gift_yes)) { dialog, id ->
-                viewModel.sendGift(selectedGift,target)
+            setPositiveButton(getString(R.string.send_gift_yes)) { dialog, _ ->
+                viewModel.sendGift(selectedGift, target)
                 dialog.cancel()
             }
 
-            setNegativeButton(getString(R.string.send_gift_no)) { dialog, id ->
+            setNegativeButton(getString(R.string.send_gift_no)) { dialog, _ ->
                 dialog.cancel()
             }
         }
@@ -98,17 +109,14 @@ class DistributeFragment : BottomSheetDialogFragment() {
         alter.show()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.BottomSheetDialogBg)
     }
 
-
     // expanded all dialog view when keyboard pop up
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
-
 
         dialog.setOnShowListener {
 
@@ -120,7 +128,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
                 val behaviour = BottomSheetBehavior.from(it)
                 setupFullHeight(it)
                 behaviour.isFitToContents = false
-                behaviour.expandedOffset = 300
+                behaviour.expandedOffset = 900
                 behaviour.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }

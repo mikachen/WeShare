@@ -5,13 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/height_bottom_app_bar">
+    android:orientation="vertical">
 
+    <!-- layout main content-->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/layout_askforgift_buttons"
+        app:layout_constraintBottom_toTopOf="@id/layout_edit_comment_box"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -22,277 +23,548 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <ImageView
                 android:id="@+id/images"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="400dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- header information : title, user's image, name, locations-->
+            <View
+                android:id="@+id/translucent_view"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/translucent"
+                app:layout_constraintBottom_toBottomOf="@id/images"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/text_event_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginStart="8dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/images"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/translucent_view"
+                tools:text="募款：山區浪浪需要你" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layout_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp"
+                android:layout_margin="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/images">
+
+                <TextView
+                    android:id="@+id/text_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_theme_gradient"
+                    android:gravity="center_horizontal"
+                    android:padding="4dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    tools:text="已結案" />
+
+            </androidx.cardview.widget.CardView>
+
+
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_header"
-                android:layout_width="0dp"
+                android:id="@+id/layout_attendee_button"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/images">
 
                 <TextView
-                    android:id="@+id/text_event_title"
+                    android:id="@+id/title_event_period"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginStart="16dp"
+                    android:text="活動時間"
+                    android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="淨灘活動" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/base_user_avatar"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    app:cardCornerRadius="90dp"
+                <TextView
+                    android:id="@+id/text_start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    tools:text="2022.05.07 - 2022.05.08 "
+                    android:textSize="18sp"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_event_title">
+                    app:layout_constraintTop_toBottomOf="@id/title_event_period" />
 
-                    <ImageView
-                        android:id="@+id/image_profile_avatar"
+                <TextView
+                    android:id="@+id/text_countdown_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="倒數3小時開始"
+                    android:textSize="15sp"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintStart_toStartOf="@id/text_start_time"
+                    app:layout_constraintTop_toBottomOf="@id/text_start_time"/>
+
+                <Button
+                    android:id="@+id/button_attend"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/ripple_event_attend_button"
+                    android:text="我要參加"
+                    android:textSize="18dp"
+                    app:layout_constraintEnd_toStartOf="@id/button_volunteer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_countdown_time" />
+
+                <Button
+                    android:id="@+id/button_volunteer"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@drawable/ripple_event_attend_button"
+                    android:text="志工參與"
+                    android:textSize="18dp"
+                    app:layout_constraintBottom_toBottomOf="@id/button_attend"
+                    app:layout_constraintEnd_toStartOf="@id/button_enter_event_chatroom"
+                    app:layout_constraintStart_toEndOf="@id/button_attend"
+                    app:layout_constraintTop_toTopOf="@id/button_attend" />
+
+                <Button
+                    android:id="@+id/button_enter_event_chatroom"
+                    android:layout_width="70dp"
+                    android:layout_height="40dp"
+                    android:layout_marginHorizontal="16dp"
+                    android:background="@drawable/ripple_event_attend_button"
+                    android:textSize="18dp"
+                    android:text="群聊"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/button_volunteer"
+                    app:layout_constraintTop_toTopOf="@id/button_attend" />
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@id/button_attend"/>
+
+                <TextView
+                    android:id="@+id/title_attendee_response"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="16dp"
+                    android:text="參與詳情"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider"/>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_response_attendee_count"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    app:strokeColor="@color/app_work_dark_grey"
+                    android:layout_marginTop="8dp"
+                    app:strokeWidth="1dp"
+                    app:layout_constraintTop_toBottomOf="@id/title_attendee_response"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/layout_response_volunteer_need"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="centerCrop"/>
+                        android:orientation="vertical">
 
-                </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginTop="4dp"
+                            android:text="參與人" />
 
-                <TextView
-                    android:id="@+id/text_profile_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                        <TextView
+                            android:id="@+id/text_attendee_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:layout_marginTop="4dp"
+                            tools:text="16"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_response_volunteer_need"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    app:strokeColor="@color/app_work_dark_grey"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:letterSpacing="0.15"
-                    android:maxLines="1"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
-                    app:layout_constraintTop_toTopOf="@id/base_user_avatar"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    tools:text="Zoelo" />
+                    app:strokeWidth="1dp"
+                    app:layout_constraintEnd_toStartOf="@id/layout_response_volunteer_count"
+                    app:layout_constraintTop_toTopOf="@id/layout_response_attendee_count"
+                    app:layout_constraintStart_toEndOf="@id/layout_response_attendee_count"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_response_attendee_count">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_created_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:letterSpacing="0.08"
-                    android:gravity="end"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:text="志工需求"/>
+                        <TextView
+                            android:id="@+id/text_volunteer_need"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            tools:text="16"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_response_volunteer_count"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    app:strokeColor="@color/app_work_dark_grey"
+                    android:layout_marginStart="16dp"
+                    app:strokeWidth="1dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/text_event_title"
-                    tools:text="2022-04-05刊登" />
+                    app:layout_constraintTop_toTopOf="@id/layout_response_attendee_count"
+                    app:layout_constraintStart_toEndOf="@id/layout_response_volunteer_need"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_response_attendee_count">
 
-                <TextView
-                    android:id="@+id/text_event_countdown"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="16dp"
-                    android:letterSpacing="0.15"
-                    android:maxLines="1"
-                    app:layout_constraintBottom_toBottomOf="@+id/base_user_avatar"
-                    app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
-                    tools:text="還有3小時結束" />
 
-                <TextView
-                    android:id="@+id/text_posted_location"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:letterSpacing="0.15"
-                    android:maxLines="1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/base_user_avatar"
-                    tools:text="刊登位置：龍山寺" />
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:text="志工登記"/>
+                        <TextView
+                            android:id="@+id/text_volunteer_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:textSize="18sp"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            tools:text="16"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_header" />
 
-            <!-- detail: sort, description, volunteerNeeds-->
+            <!-- header information : title, user's image, name, locations-->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_detail"
+                android:id="@+id/layout_event_description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider1">
+                app:layout_constraintTop_toBottomOf="@id/layout_attendee_button">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/base_user_avatar"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:cardCornerRadius="90dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/image_profile_avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop" />
+                </androidx.cardview.widget.CardView>
+
+
+                <TextView
+                    android:id="@+id/text_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@id/text_created_time"
+                    app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
+                    app:layout_constraintTop_toTopOf="@id/base_user_avatar"
+                    tools:text="Zoelo" />
+
+
+                <TextView
+                    android:id="@+id/text_created_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/base_user_avatar"
+                    app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/text_profile_name"
+                    tools:text="2022-04-05刊登" />
+
+
+                <TextView
+                    android:id="@+id/title_gift_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:maxLines="1"
+                    android:text="位置："
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/base_user_avatar" />
+
+                <TextView
+                    android:id="@+id/text_posted_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/title_gift_location"
+                    tools:text="台北西門" />
+
+
+                <TextView
+                    android:id="@+id/title_sort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="分類："
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
 
                 <TextView
                     android:id="@+id/text_sort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="分類：環境保護" />
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/title_sort"
+                    tools:text="生活用品" />
 
                 <TextView
-                    android:id="@+id/text_volunteer_needs"
+                    android:id="@+id/title_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/text_sort"
-                    tools:text="需求志工數4人" />
+                    android:layout_marginTop="18dp"
+                    android:gravity="start"
+                    android:text="詳細說明："
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/text_sort" />
 
                 <TextView
                     android:id="@+id/text_event_description"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
                     android:gravity="start"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_sort"
-                    tools:text=" 需求. 效果見圖: 單行時文字靠右顯示 多行時要求第二行靠左顯示. 過程. 要求圖片靠右對其,"/>
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="16dp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/title_description"
+                    tools:text="鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。鈦極不沾無毒塗層。" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <ToggleButton
+                    android:id="@+id/button_press_like"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="32dp"
+                    android:background="@drawable/button_toggle_like"
+                    android:text=""
+                    android:textOff=""
+                    android:textOn=""
+                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart1"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/text_event_description" />
 
+                <ToggleButton
+                    android:id="@+id/button_addition_heart1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_toggle_like"
+                    android:text=""
+                    android:textOff=""
+                    android:textOn=""
+                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart2"
+                    app:layout_constraintStart_toEndOf="@id/button_press_like"
+                    app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
-            <!-- layout_buttons-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_buttons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_detail">
+                <ToggleButton
+                    android:id="@+id/button_addition_heart2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/button_toggle_like"
+                    android:text=""
+                    android:textOff=""
+                    android:textOn=""
+                    app:layout_constraintStart_toEndOf="@id/button_addition_heart1"
+                    app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
                 <TextView
                     android:id="@+id/text_liked_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    tools:text="3人說讚"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <Button
-                    android:id="@+id/button_press_like"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="點讚活動"
-                    app:layout_constraintEnd_toStartOf="@id/button_leave_comment"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_liked_number" />
-
-                <Button
-                    android:id="@+id/button_leave_comment"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="分享留言"
-                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart2"
-                    app:layout_constraintStart_toEndOf="@id/button_press_like"
-                    app:layout_constraintTop_toTopOf="@id/button_press_like" />
-
-                <Button
-                    android:id="@+id/button_addition_heart2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="分享活動"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/button_leave_comment"
-                    app:layout_constraintTop_toTopOf="@id/button_press_like"/>
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:layout_marginStart="2dp"
+                    app:layout_constraintStart_toStartOf="@id/base_user_avatar"
+                    app:layout_constraintTop_toBottomOf="@id/button_press_like"
+                    tools:text="3人說讚" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <com.google.android.material.divider.MaterialDivider
-                android:id="@+id/divider2"
+                android:id="@+id/divider4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_buttons" />
+                app:layout_constraintTop_toBottomOf="@id/layout_event_description" />
 
-            <TextView
-                android:id="@+id/title_history_comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="歷史留言"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider2" />
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/comments_recycler_view"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="4dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title_history_comments"
-                tools:itemCount="8"
-                tools:listitem="@layout/item_comment_board" />
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                app:layout_constraintTop_toBottomOf="@id/divider4">
+
+
+                <TextView
+                    android:id="@+id/title_comments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/event＿comments"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/comments_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:padding="4dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/title_comments"
+                    tools:itemCount="8"
+                    tools:listitem="@layout/item_comment_board" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-    <!-- layout attend btns-->
+    <!-- layout edit comment box-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_askforgift_buttons"
+        android:id="@+id/layout_edit_comment_box"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_height="60dp"
+        android:layout_margin="2dp"
+        android:background="@color/background_material_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nestedScrollView">
 
-        <Button
-            android:id="@+id/ask_for_gift_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="我要參加"
-            app:layout_constraintEnd_toStartOf="@id/attend_volunteer_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/attend_volunteer_button"
+        <FrameLayout
+            android:id="@+id/base_edit_box"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="志工登記"
+            android:layout_marginVertical="4dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/shape_chatroom_edittext"
+            android:gravity="center|start"
+            android:paddingVertical="8dp"
+            app:layout_constraintEnd_toStartOf="@id/button_send_comment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <EditText
+                android:id="@+id/edit_comment_box"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="18dp"
+                android:background="@color/transparent"
+                android:hint="@string/event_leave_a_comment"
+                android:inputType="text" />
+        </FrameLayout>
+
+
+        <ImageButton
+            android:id="@+id/button_send_comment"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginBottom="2dp"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/ic_baseline_send_24"
+            app:layout_constraintBottom_toBottomOf="@id/base_edit_box"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/ask_for_gift_button"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/base_edit_box" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

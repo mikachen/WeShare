@@ -14,8 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.databinding.FragmentHomeBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.smoothSnapToPosition
+import com.zoe.weshare.util.UserManager
 import java.util.*
-
 
 class HomeFragment : Fragment() {
 
@@ -24,6 +25,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var hotGiftsRv: RecyclerView
     private lateinit var hotGiftAdapter: HotGiftsAdapter
+
+    private lateinit var logTickerRv: RecyclerView
+    private lateinit var tickerAdapter: TickerAdapter
 
     val viewModel by viewModels<HomeViewModel> { getVmFactory() }
     private lateinit var binding: FragmentHomeBinding
@@ -42,14 +46,27 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.events.observe(viewLifecycleOwner) {
-            headerAdapter.submitEvents(it)
+            // zero will cause headerAdapter crash cause i set infinity items adapter
+            if (it.isNotEmpty()) {
+                headerAdapter.submitEvents(it)
+            }
         }
 
+        viewModel.allLogs.observe(viewLifecycleOwner) {
+           viewModel.onFilteringLog(it)
+        }
+
+        viewModel.filteredLogs.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                tickerAdapter.submitList(it)
+            }
+        }
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    NavGraphDirections.actionGlobalGiftDetailFragment(it))
+                    NavGraphDirections.actionGlobalGiftDetailFragment(it)
+                )
 
                 viewModel.displayGiftDetailsComplete()
             }
@@ -67,6 +84,7 @@ class HomeFragment : Fragment() {
 
         setupHeaderGallery()
         setupHotGiftsGallery()
+        setupLogTicker()
 
         return binding.root
     }
@@ -81,8 +99,10 @@ class HomeFragment : Fragment() {
             }
         )
 
-        val manager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.HORIZONTAL, false)
+        val manager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL, false
+        )
 
         headerRv.adapter = headerAdapter
         headerRv.layoutManager = manager
@@ -91,32 +111,80 @@ class HomeFragment : Fragment() {
         linearSnapHelper.attachToRecyclerView(headerRv)
 
         val timer = Timer()
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
-                    manager.smoothScrollToPosition(headerRv,
-                        RecyclerView.State(),
-                        manager.findLastVisibleItemPosition() + 1)
-                } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
-                    manager.smoothScrollToPosition(headerRv,
-                        RecyclerView.State(), 0)
+        timer.schedule(
+            object : TimerTask() {
+                override fun run() {
+                    if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+                        manager.smoothScrollToPosition(
+                            headerRv,
+                            RecyclerView.State(),
+                            manager.findLastVisibleItemPosition() + 1
+                        )
+                    } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+                        manager.smoothScrollToPosition(
+                            headerRv,
+                            RecyclerView.State(), 0
+                        )
+                    }
                 }
-            }
-        }, 0, 3000)
+            },
+            0, 3000
+        )
     }
 
     private fun setupHotGiftsGallery() {
 
         hotGiftsRv = binding.hotGiftRv
 
-        hotGiftAdapter = HotGiftsAdapter(HotGiftsAdapter.HotGiftsOnClickListener { selectedGift ->
-            viewModel.displayGiftDetails(selectedGift)
-        })
+        hotGiftAdapter = HotGiftsAdapter(
+            HotGiftsAdapter.HotGiftsOnClickListener { selectedGift ->
+                viewModel.displayGiftDetails(selectedGift)
+            }
+        )
 
         val manager = GridLayoutManager(requireContext(), 2)
 
         hotGiftsRv.adapter = hotGiftAdapter
         hotGiftsRv.layoutManager = manager
+    }
 
+    private fun setupLogTicker() {
+
+        logTickerRv = binding.tickerRv
+        tickerAdapter = TickerAdapter()
+
+        val manager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL, false
+        )
+
+        logTickerRv.adapter = tickerAdapter
+        logTickerRv.layoutManager = manager
+
+        val linearSnapHelper = LinearSnapHelper()
+        linearSnapHelper.attachToRecyclerView(logTickerRv)
+
+        val timer = Timer()
+        timer.schedule(
+            object : TimerTask() {
+                override fun run() {
+                    if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
+
+                        logTickerRv.smoothSnapToPosition(manager.findLastVisibleItemPosition() + 1)
+
+                    } else if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
+
+                        logTickerRv.smoothSnapToPosition(0)
+
+                    }
+                }
+            }, 0, 5000
+        )
+    }
+
+    private fun requireLogIn() {
+        if (!UserManager.isLoggedIn) {
+            findNavController().navigate(NavGraphDirections.actionGlobalLoginFragment())
+        }
     }
 }

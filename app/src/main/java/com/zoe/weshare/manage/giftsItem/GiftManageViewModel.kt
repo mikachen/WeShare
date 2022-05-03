@@ -8,7 +8,9 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.Const.PATH_GIFT_POST
 import com.zoe.weshare.util.GiftStatusType
+import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,30 +21,20 @@ class GiftManageViewModel(
     private val userInfo: UserInfo?,
 ) : ViewModel() {
 
-
-    var _logs = MutableLiveData<List<PostLog>?>()
-    val log: LiveData<List<PostLog>?>
-        get() = _logs
-
     private var _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>>
         get() = _comments
 
-
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private val _status = MutableLiveData<LoadApiStatus>()
-    val status: LiveData<LoadApiStatus>
-        get() = _status
+    private val _searchGiftsStatus = MutableLiveData<LoadApiStatus>()
+    val searchGiftsStatus: LiveData<LoadApiStatus>
+        get() = _searchGiftsStatus
 
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
-
-    private val _onDocSearch = MutableLiveData<Int>()
-    val onDocSearch: LiveData<Int>
-        get() = _onDocSearch
 
     private val _onAlterMsgShowing = MutableLiveData<GiftPost>()
     val onAlterMsgShowing: LiveData<GiftPost>
@@ -60,102 +52,78 @@ class GiftManageViewModel(
     val abandonStatus: LiveData<LoadApiStatus>
         get() = _abandonStatus
 
-
-    private val gifts = mutableListOf<GiftPost>()
+    var gifts = listOf<GiftPost>()
 
     init {
-        userInfo?.let { getUsersGiftLog(it.uid) }
+        onSearchGiftsDetail()
     }
 
-    fun getUsersGiftLog(uid: String) {
-        coroutineScope.launch {
-            _status.value = LoadApiStatus.LOADING
+    private fun onSearchGiftsDetail() {
 
-            when (val result = repository.getUsersGiftLog(uid)) {
+        coroutineScope.launch {
+            _searchGiftsStatus.value = LoadApiStatus.LOADING
+
+            when (
+                val result = repository.getUserHistoryPosts(
+                    collection = PATH_GIFT_POST,
+                    uid = userInfo!!.uid
+                )
+            ) {
+
                 is Result.Success -> {
                     _error.value = null
-                    _status.value = LoadApiStatus.DONE
-                    _logs.value = result.data
 
-                    _onDocSearch.value = result.data.size
+                    gifts = result.data
+
+                    _searchGiftsStatus.value = LoadApiStatus.DONE
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                    _logs.value = null
+                    _searchGiftsStatus.value = LoadApiStatus.ERROR
+
+                    _allGifts.value = emptyList()
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                    _logs.value = null
+                    _searchGiftsStatus.value = LoadApiStatus.ERROR
+
+                    _allGifts.value = emptyList()
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
-                    _logs.value = null
+                    _searchGiftsStatus.value = LoadApiStatus.ERROR
+
+                    _allGifts.value = emptyList()
                 }
             }
         }
     }
 
-    fun onSearchGiftsDetail(logs: List<PostLog>) {
-        gifts.clear()
-         for (element in logs) {
-                coroutineScope.launch {
-                    _status.value = LoadApiStatus.LOADING
-
-                    when (val result = repository.searchGiftDocument(element.id)) {
-                        is Result.Success -> {
-                            _error.value = null
-                            _status.value = LoadApiStatus.DONE
-                            gifts.add(result.data)
-                        }
-                        is Result.Fail -> {
-                            _error.value = result.error
-                            _status.value = LoadApiStatus.ERROR
-                        }
-                        is Result.Error -> {
-                            _error.value = result.exception.toString()
-                            _status.value = LoadApiStatus.ERROR
-                        }
-                        else -> {
-                            _error.value =
-                                WeShareApplication.instance.getString(R.string.result_fail)
-                            _status.value = LoadApiStatus.ERROR
-                        }
-                    }
-                    _onDocSearch.value = _onDocSearch.value!!.minus(1)
-                }
-            }
-        }
-
     fun filteringGift(index: Int) {
-
-        when(index){
+        when (index) {
 
             0 -> _allGifts.value = gifts
 
-            1-> {
+            1 -> {
                 _allGifts.value = gifts.filter { it.status == GiftStatusType.OPENING.code }
             }
 
-            2-> {
+            2 -> {
                 _allGifts.value = gifts.filter { it.status == GiftStatusType.CLOSED.code }
             }
 
-            3-> {
+            3 -> {
                 _allGifts.value = gifts.filter { it.status == GiftStatusType.ABANDONED.code }
             }
         }
-
     }
 
     fun userCheckWhoRequest(gift: GiftPost) {
         _onCommentsShowing.value = gift
     }
 
-    fun showCommentsComplete(){
+    fun showCommentsComplete() {
         _onCommentsShowing.value = null
     }
 
@@ -167,10 +135,15 @@ class GiftManageViewModel(
         coroutineScope.launch {
             _abandonStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.updateGiftStatus(selectedGift.id, GiftStatusType.ABANDONED.code)) {
+            when (
+                val result =
+                    repository.updateGiftStatus(selectedGift.id, GiftStatusType.ABANDONED.code, "")
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _abandonStatus.value = LoadApiStatus.DONE
+
+                    onSaveAbandonGiftLog(selectedGift)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -188,5 +161,42 @@ class GiftManageViewModel(
             }
         }
     }
-}
 
+    fun onSaveAbandonGiftLog(gift: GiftPost) {
+        val log = OperationLog(
+            postDocId = gift.id,
+            logType = LogType.ABANDONED_GIFT.value,
+            operatorUid = userInfo!!.uid,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_abandon_gift,
+                userInfo.name,
+                gift.title
+            )
+        )
+        saveAbandonLog(log)
+    }
+
+    private fun saveAbandonLog(log: OperationLog) {
+        coroutineScope.launch {
+
+            when (
+                val result =
+                    repository.saveLog(log)
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                }
+                else -> {
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
+                }
+            }
+        }
+    }
+}

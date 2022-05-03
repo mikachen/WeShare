@@ -13,9 +13,7 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
     private var list: List<EventPost>? = null
 
     class HeaderViewHolder(val binding: ItemHeaderTvBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
+        RecyclerView.ViewHolder(binding.root)
 
     class HeaderOnClickListener(val doNothing: (selected: EventPost) -> Unit) {
         fun onClick(selectedEvent: EventPost) = doNothing(selectedEvent)
@@ -24,7 +22,8 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderViewHolder {
         return HeaderViewHolder(
             ItemHeaderTvBinding.inflate(
-                LayoutInflater.from(parent.context), parent, false)
+                LayoutInflater.from(parent.context), parent, false
+            )
         )
     }
 
@@ -34,9 +33,10 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
         data?.let {
             bindImage(holder.binding.headerImageTv, data.image)
 
+            holder.binding.textTvTitle.text = data.title
+
             holder.itemView.setOnClickListener { onClickListener.onClick(data) }
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -47,10 +47,8 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
         position % it.size
     } ?: 0
 
-
     fun submitEvents(dataList: List<EventPost>) {
         this.list = dataList
         notifyDataSetChanged()
     }
-
 }

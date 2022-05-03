@@ -1,7 +1,6 @@
 package com.zoe.weshare.manage.giftsItem
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,44 +15,43 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftManageBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.UserManager.userZoe
+import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class GiftManageFragment : Fragment() {
 
     var index = -1
-    val currentUser = userZoe
+
     private lateinit var binding: FragmentGiftManageBinding
 
-    private val viewModel by viewModels<GiftManageViewModel> { getVmFactory(currentUser) }
+    private val viewModel by viewModels<GiftManageViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentGiftManageBinding.inflate(inflater, container, false)
 
-        //everytime when tabs position change, the index change
+        // everytime when tabs position change, the index change
         index = requireArguments().getInt(INDEX_VALUE)
 
-        Log.d("GiftManageFragment","$index")
-        val adapter = GiftItemsAdapter(viewModel, GiftItemsAdapter.OnClickListener {
-            findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
-        })
-        val manager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.VERTICAL, false)
+        val adapter = GiftItemsAdapter(
+            viewModel,
+            GiftItemsAdapter.OnClickListener {
+                findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
+            }
+        )
+        val manager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.VERTICAL, false
+        )
 
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = manager
 
-
-        viewModel.log.observe(viewLifecycleOwner) {
-            it?.let {
-                viewModel.onSearchGiftsDetail(it)
-            }
-        }
-
-        viewModel.onDocSearch.observe(viewLifecycleOwner) {
-            if (it == 0) {
+        viewModel.searchGiftsStatus.observe(viewLifecycleOwner) {
+            if (it == LoadApiStatus.DONE) {
                 viewModel.filteringGift(index)
             }
         }
@@ -63,11 +61,13 @@ class GiftManageFragment : Fragment() {
         }
 
         viewModel.onAlterMsgShowing.observe(viewLifecycleOwner) {
-            abandonedEvent(it)
+            onAlertAbandon(it)
         }
 
         viewModel.abandonStatus.observe(viewLifecycleOwner) {
-            Toast.makeText(requireContext(), "下架成功", Toast.LENGTH_SHORT).show()
+            if (it == LoadApiStatus.DONE) {
+                Toast.makeText(requireContext(), "下架成功", Toast.LENGTH_SHORT).show()
+            }
         }
 
         viewModel.onCommentsShowing.observe(viewLifecycleOwner) {
@@ -77,13 +77,10 @@ class GiftManageFragment : Fragment() {
             }
         }
 
-
-
-
         return binding.root
     }
 
-    private fun abandonedEvent(gift: GiftPost) {
+    private fun onAlertAbandon(gift: GiftPost) {
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {
@@ -102,7 +99,6 @@ class GiftManageFragment : Fragment() {
         val alter: AlertDialog = builder.create()
         alter.show()
     }
-
 
     companion object {
         private const val INDEX_VALUE = "INDEX"

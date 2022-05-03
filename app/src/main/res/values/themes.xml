@@ -12,8 +12,21 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:navigationBarColor">@color/black</item>
+        <item name="android:navigationBarColor">@color/background_material_light</item>
+        <item name="android:windowLightNavigationBar">true</item>
+
+
+        <!-- MaterialCalendar -->
+
+        <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen</item>
     </style>
+
+
+    <style name="ThemeOverlay.AppTheme.TextInputEditText.Outlined" parent="bottomSheetStyleWrapper">
+        <item name="colorControlActivated">@color/app_work_orange1</item>
+    </style>
+
+
 
     <style name="FloatingActionButton" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/app_work_orange3</item>

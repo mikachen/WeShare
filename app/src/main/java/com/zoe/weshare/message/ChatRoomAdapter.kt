@@ -13,12 +13,20 @@ import com.zoe.weshare.databinding.ItemMessageReceiveBinding
 import com.zoe.weshare.databinding.ItemMessageSendBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 
 class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
     ListAdapter<MessageItem, RecyclerView.ViewHolder>(DiffCallback) {
 
-    val target = chatRoom.usersInfo?.single { it.uid != UserManager.userZoe.uid }
+    var targetUsersList = listOf<UserInfo>()
+
+    init {
+        getTargetUsers(chatRoom)
+    }
+
+    fun getTargetUsers(room: ChatRoom) {
+        targetUsersList = room.usersInfo.filter { it.uid != weShareUser!!.uid }
+    }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -51,7 +59,9 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
                 (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it) }
             }
             is ReceiveViewHolder -> {
-                (itemType as MessageItem.OnReceiveSide).message?.let { holder.bind(it, viewModel, target) }
+                (itemType as MessageItem.OnReceiveSide).message?.let {
+                    holder.bind(it, viewModel, targetUsersList)
+                }
             }
         }
     }
@@ -66,12 +76,14 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, viewModel: ChatRoomViewModel, targetInfo: UserInfo?) {
+        fun bind(comment: Comment, viewModel: ChatRoomViewModel, usersList: List<UserInfo>) {
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
 
-            if (targetInfo != null) {
-                bindImage(binding.imageTargeImage, targetInfo.image)
+            if (usersList.isNotEmpty()) {
+                val speaker = usersList.single { it.uid == comment.uid }
+
+                bindImage(binding.imageTargeImage, speaker.image)
             }
         }
     }

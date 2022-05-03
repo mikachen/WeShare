@@ -19,16 +19,15 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
-import com.zoe.weshare.util.UserManager.userLora
+import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 
 class GiftDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentGiftDetailBinding
     private lateinit var adapter: GiftsCommentsAdapter
-    private val currentUser = userLora
 
-    val viewModel by viewModels<GiftDetailViewModel> { getVmFactory(currentUser) }
+    val viewModel by viewModels<GiftDetailViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +47,7 @@ class GiftDetailFragment : Fragment() {
         viewModel.selectedGiftDisplay.observe(viewLifecycleOwner) {
             setupView(it)
             setupBtn(it)
+            setupLikeBtn(it)
         }
 
         viewModel.onCommentLikePressed.observe(viewLifecycleOwner) {
@@ -111,34 +111,42 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
-        setupLikeBtn(selectedGift)
-        setupBtn(selectedGift)
+        viewModel.targetUser.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                viewModel.navigateToProfileComplete()
+            }
+        }
+
         return binding.root
     }
 
-    private fun setupView(selectedGift: GiftPost) {
+    private fun setupView(gift: GiftPost) {
         binding.apply {
-            bindImage(this.images, selectedGift.image)
+            bindImage(this.images, gift.image)
 
-            textGiftTitle.text = selectedGift.title
+            textGiftTitle.text = gift.title
 
-            textProfileName.text = selectedGift.author?.name
+            textProfileName.text = gift.author?.name
 
-            bindImage(this.imageProfileAvatar, selectedGift.author?.image)
+            bindImage(this.imageProfileAvatar, gift.author?.image)
 
-            textPostedLocation.text = selectedGift.location?.locationName
+            textPostedLocation.text = gift.location?.locationName
 
             textCreatedTime.text = getString(R.string.posted_time,
-                selectedGift.createdTime.toDisplayFormat())
+                gift.createdTime.toDisplayFormat()
+            )
 
-            textSort.text = selectedGift.sort
+            textGiftSort.text = gift.sort
+
+            textGiftCondition.text = gift.condition
 
             textLikedNumber.text =
-                getString(R.string.number_who_liked, selectedGift.whoLiked.size)
+                getString(R.string.number_who_liked, gift.whoLiked.size)
 
-            textGiftDescription.text = selectedGift.description
+            textGiftDescription.text = gift.description
 
-            when (selectedGift.status) {
+            when (gift.status) {
                 GiftStatusType.OPENING.code -> {
                     binding.textStatus.text = GiftStatusType.OPENING.tag
                     binding.textStatus.setBackgroundResource(R.color.message_sender_green)
@@ -157,29 +165,42 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-    private fun setupBtn(selectedGift: GiftPost) {
+    private fun setupBtn(gift: GiftPost) {
         binding.lottieBtnChatMe.setOnClickListener {
-            viewModel.searchOnPrivateRoom(currentUser)
+            viewModel.searchOnPrivateRoom(weShareUser!!)
         }
 
-
-        // author he/herself hide the button
-        if (selectedGift.author!!.uid == currentUser.uid) {
-            binding.lottieBtnChatMe.visibility = View.GONE
-            binding.layoutAskForGift.visibility = View.GONE
-        } else {
-            binding.buttonAskForGift.setOnClickListener {
-                findNavController().navigate(
-                    GiftDetailFragmentDirections
-                        .actionGiftDetailFragmentToAskForGiftFragment(selectedGift)
-                )
+        when (true) {
+            // author he/herself hide the button
+            (gift.author!!.uid == weShareUser!!.uid) -> {
+                binding.lottieBtnChatMe.visibility = View.GONE
+                binding.layoutAskForGift.visibility = View.GONE
             }
+
+            // gift status CLOSE or ABANDONED hide the button
+            (gift.status == GiftStatusType.CLOSED.code) -> {
+                binding.layoutAskForGift.visibility = View.GONE
+            }
+            (gift.status == GiftStatusType.ABANDONED.code) -> {
+                binding.layoutAskForGift.visibility = View.GONE
+            }
+            else -> {
+                binding.buttonAskForGift.setOnClickListener {
+                    findNavController().navigate(
+                        GiftDetailFragmentDirections
+                            .actionGiftDetailFragmentToAskForGiftFragment(gift)
+                    )
+                }
+            }
+        }
+        binding.imageProfileAvatar.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(gift.author))
         }
     }
 
     private fun checkIfUserRequested(comments: List<Comment>) {
         binding.buttonAskForGift.apply {
-            when (comments.none { it.uid == currentUser.uid }) {
+            when (comments.none { it.uid == weShareUser!!.uid }) {
                 true -> {
                     isEnabled = true
                     text = Util.getString(R.string.request_gift)
@@ -192,16 +213,17 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-
     private fun setupLikeBtn(selectedGift: GiftPost) {
-        val scaleAnimation = ScaleAnimation(0.7f,
+        val scaleAnimation = ScaleAnimation(
+            0.7f,
             1.0f,
             0.7f,
             1.0f,
             Animation.RELATIVE_TO_SELF,
             0.7f,
             Animation.RELATIVE_TO_SELF,
-            0.7f)
+            0.7f
+        )
         scaleAnimation.duration = 500
         val bounceInterpolator = BounceInterpolator()
         scaleAnimation.interpolator = bounceInterpolator
@@ -223,14 +245,14 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-
     private fun playCreditScene() {
         if (binding.buttonAdditionHeart2.isChecked &&
             binding.buttonAdditionHeart1.isChecked &&
             binding.buttonPressLike.isChecked
         ) {
             findNavController().navigate(
-                GiftDetailFragmentDirections.actionGiftDetailFragmentToCreditFragment())
+                GiftDetailFragmentDirections.actionGiftDetailFragmentToCreditFragment()
+            )
         }
     }
 }

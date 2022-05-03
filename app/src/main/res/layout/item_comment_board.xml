@@ -24,21 +24,28 @@
         android:scaleType="centerCrop"/>
     </androidx.cardview.widget.CardView>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/layout_main_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/lottie_received_gift"
+        app:layout_constraintStart_toEndOf="@+id/base_profile_avatar"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_comment_box_roundconer"
         android:paddingVertical="4dp"
         android:paddingHorizontal="8dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@+id/base_profile_avatar"
-        app:layout_constraintTop_toTopOf="parent"
+
         android:orientation="vertical" >
 
     <TextView
         android:id="@+id/text_profile_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textColor="@color/black"
@@ -48,16 +55,15 @@
 
     <TextView
         android:id="@+id/text_comment"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="1dp"
-        android:maxLines="1"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:layout_gravity="bottom"
-        tools:text="每年都要參加der拉～～～" />
+        tools:text="每年都要參加der拉～～每年都要參加der拉～～～" />
     </LinearLayout>
 
-
+    </FrameLayout>
     <TextView
         android:id="@+id/text_created_time"
         android:layout_width="wrap_content"
@@ -106,5 +112,23 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_created_time"
         app:layout_constraintStart_toEndOf="@id/button_comment_like" />
+
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_received_gift"
+        android:layout_width="50dp"
+        android:layout_height="30dp"
+        app:layout_constraintEnd_toStartOf="@id/block_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        android:visibility="gone"
+        android:layout_marginEnd="16dp"
+        tools:visibility="visible"
+        android:scaleX="4"
+        android:scaleY="4"
+        app:lottie_fileName="receive-gift.json"
+        app:lottie_loop="true"
+        app:lottie_speed="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

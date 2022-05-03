@@ -1,7 +1,9 @@
 package com.zoe.weshare.data.source
 
+import android.net.Uri
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.data.*
-
 
 class DefaultWeShareRepository(
     private val remoteDataSource: WeShareDataSource,
@@ -24,28 +26,45 @@ class DefaultWeShareRepository(
         return remoteDataSource.getEvents()
     }
 
-    override suspend fun getUserInfo(uid: String): Result<UserProfile> {
+    override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>{
+        return remoteDataSource.getLiveEventDetail(docId)
+    }
+    override fun getLiveLogs(): MutableLiveData<List<OperationLog>>{
+        return remoteDataSource.getLiveLogs()
+    }
+
+
+    override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
+        return remoteDataSource.getLiveMessages(docId)
+    }
+
+    override fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>>{
+        return remoteDataSource.getLiveNotifications(uid)
+    }
+
+    override suspend fun getUserInfo(uid: String): Result<UserProfile?> {
         return remoteDataSource.getUserInfo(uid)
     }
 
-    override suspend fun getGiftAskForComments(docId: String): Result<List<Comment>> {
-        return remoteDataSource.getGiftAskForComments(docId)
+    override suspend fun newUserRegister(user: UserProfile) : Result<Boolean>{
+        return remoteDataSource.newUserRegister(user)
     }
 
-    override suspend fun askForGift(docId: String, comment: Comment): Result<Boolean> {
-        return remoteDataSource.askForGift(docId, comment)
+    override suspend fun sendComment(
+        collection: String,
+        docId: String,
+        comment: Comment,
+        subCollection: String,
+    ): Result<Boolean> {
+        return remoteDataSource.sendComment(collection, docId, comment, subCollection)
     }
 
-    override suspend fun sendEventComment(docId: String, comment: Comment): Result<Boolean> {
-        return remoteDataSource.sendEventComment(docId, comment)
-    }
-
-    override suspend fun getEventComments(docId: String): Result<List<Comment>> {
-        return remoteDataSource.getEventComments(docId)
-    }
-
-    override suspend fun getChatsHistory(docId: String): Result<List<MessageItem>> {
-        return remoteDataSource.getChatsHistory(docId)
+    override suspend fun getAllComments(
+        collection: String,
+        docId: String,
+        subCollection: String,
+    ): Result<List<Comment>> {
+        return remoteDataSource.getAllComments(collection, docId, subCollection)
     }
 
     override suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>> {
@@ -60,84 +79,99 @@ class DefaultWeShareRepository(
         return remoteDataSource.sendMessage(docId, comment)
     }
 
-    override suspend fun likeEventPost(docId: String, uid: String): Result<Boolean> {
-        return remoteDataSource.likeEventPost(docId, uid)
-    }
 
-    override suspend fun likeGiftPost(docId: String, uid: String): Result<Boolean> {
-        return remoteDataSource.likeGiftPost(docId, uid)
-    }
 
-    override suspend fun cancelLikeEventPost(docId: String, uid: String): Result<Boolean> {
-        return remoteDataSource.cancelLikeEventPost(docId, uid)
-    }
-
-    override suspend fun cancelLikeGiftPost(docId: String, uid: String): Result<Boolean> {
-        return remoteDataSource.cancelLikeGiftPost(docId, uid)
-    }
-
-    override suspend fun likeGiftComment(
+    override suspend fun likeOnPostComment(
+        collection: String,
         docId: String,
+        subCollection: String,
         subDocId: String,
         uid: String,
     ): Result<Boolean> {
-        return remoteDataSource.likeGiftComment(docId, subDocId, uid)
+        return remoteDataSource.likeOnPostComment(collection, docId, subCollection, subDocId, uid)
     }
 
-    override suspend fun likeEventComment(
+    override suspend fun cancelLikeOnPostComment(
+        collection: String,
         docId: String,
+        subCollection: String,
         subDocId: String,
         uid: String,
     ): Result<Boolean> {
-        return remoteDataSource.likeEventComment(docId, subDocId, uid)
-    }
-
-    override suspend fun cancelLikeGiftComment(
-        docId: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.cancelLikeGiftComment(docId, subDocId, uid)
-    }
-
-    override suspend fun cancelLikeEventComment(
-        docId: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.cancelLikeEventComment(docId, subDocId, uid)
+        return remoteDataSource.cancelLikeOnPostComment(
+            collection,
+            docId,
+            subCollection,
+            subDocId,
+            uid
+        )
     }
 
     override suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean> {
         return remoteDataSource.saveLastMsgRecord(docId, message)
     }
 
-    override suspend fun savePostLog(log: PostLog): Result<Boolean> {
-        return remoteDataSource.savePostLog(log)
+    override suspend fun saveLog(log: OperationLog): Result<Boolean> {
+        return remoteDataSource.saveLog(log)
     }
 
-
-    override suspend fun getUsersGiftLog(uid: String): Result<List<PostLog>> {
-        return remoteDataSource.getUsersGiftLog(uid)
+    override suspend fun getUserLog(uid: String): Result<List<OperationLog>> {
+        return remoteDataSource.getUserLog(uid)
     }
 
-    override suspend fun getUsersRequestLog(uid: String): Result<List<PostLog>> {
-        return remoteDataSource.getUsersRequestLog(uid)
+    override suspend fun getUserHistoryPosts(
+        collection: String,
+        uid: String,
+    ): Result<List<GiftPost>> {
+        return remoteDataSource.getUserHistoryPosts(collection, uid)
     }
 
-    override suspend fun searchGiftDocument(doc: String): Result<GiftPost> {
-        return remoteDataSource.searchGiftDocument(doc)
-    }
-
-    override suspend fun updateGiftStatus(docId: String, statusCode: Int): Result<Boolean> {
-        return remoteDataSource.updateGiftStatus(docId, statusCode)
-    }
-
-    override suspend fun sendAwayGift(
+    override suspend fun updateGiftStatus(
         docId: String,
         statusCode: Int,
         uid: String,
     ): Result<Boolean> {
-        return remoteDataSource.sendAwayGift(docId, statusCode, uid)
+        return remoteDataSource.updateGiftStatus(docId, statusCode, uid)
+    }
+
+    override fun getLiveComments(
+        collection: String,
+        docId: String,
+        subCollection: String,
+    ): MutableLiveData<List<Comment>> {
+        return remoteDataSource.getLiveComments(collection, docId, subCollection)
+    }
+
+
+    override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> {
+        return remoteDataSource.updateEventRoom(roomId, user)
+    }
+
+    override suspend fun updateEventStatus(docId: String, code: Int): Result<Boolean> {
+        return remoteDataSource.updateEventStatus(docId, code)
+    }
+
+    override suspend fun getEventRoom(docId: String): Result<ChatRoom> {
+        return remoteDataSource.getEventRoom(docId)
+    }
+
+    override suspend fun updateFieldValue(
+        collection: String,
+        docId: String,
+        field: String,
+        value: FieldValue
+    ): Result<Boolean>{
+        return remoteDataSource.updateFieldValue(collection, docId, field, value)
+    }
+
+    override suspend fun uploadImage(imageUri: Uri): Result<String> {
+        return remoteDataSource.uploadImage(imageUri)
+    }
+
+    override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> {
+        return remoteDataSource.updateUserProfile(profile)
+    }
+    override suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean>{
+        return remoteDataSource.sendNotifications(targetUid,log)
     }
 }

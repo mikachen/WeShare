@@ -2,7 +2,6 @@ package com.zoe.weshare.util
 
 import com.google.android.material.bottomappbar.BottomAppBar
 
-
 abstract class FabBehavior : BottomAppBar.Behavior() {
 
     private enum class State {
@@ -27,5 +26,4 @@ abstract class FabBehavior : BottomAppBar.Behavior() {
         currentState = State.SCROLLED_UP
         onSlideUp()
     }
-
 }

@@ -20,15 +20,15 @@ class HotGiftsAdapter(private val onClickListener: HotGiftsOnClickListener) :
                 textHotGiftTitle.text = gift.title
                 bindImage(imageHotGift, gift.image)
             }
-
         }
 
         companion object {
             fun from(parent: ViewGroup): HotGiftsViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
 
-                return HotGiftsViewHolder(ItemHotGiftGridBinding
-                    .inflate(layoutInflater, parent, false)
+                return HotGiftsViewHolder(
+                    ItemHotGiftGridBinding
+                        .inflate(layoutInflater, parent, false)
                 )
             }
         }
@@ -38,7 +38,6 @@ class HotGiftsAdapter(private val onClickListener: HotGiftsOnClickListener) :
         return HotGiftsViewHolder.from(parent)
     }
 
-
     override fun onBindViewHolder(holder: HotGiftsViewHolder, position: Int) {
         val data = getItem(position)
         holder.bind(data)
@@ -47,7 +46,6 @@ class HotGiftsAdapter(private val onClickListener: HotGiftsOnClickListener) :
             onClickListener.onClick(data)
         }
     }
-
 
     class HotGiftsOnClickListener(val doNothing: (gift: GiftPost) -> Unit) {
         fun onClick(selectedGift: GiftPost) = doNothing(selectedGift)

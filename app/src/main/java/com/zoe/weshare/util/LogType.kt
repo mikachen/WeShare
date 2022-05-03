@@ -1,12 +1,15 @@
 package com.zoe.weshare.util
 
-import com.zoe.weshare.util.Util.getString
-
-enum class LogType (val value: Int) {
-    POSTGIFT(0),
-    POSTEVENT(1),
-    REQUESTGIFT(2),
-    GIVEOUTGIFT(3),
-    ATTENDEVENT(4),
-    REGIVOLUNTEER(5)
+enum class LogType(val value: Int) {
+    POST_GIFT(0),
+    POST_EVENT(1),
+    REQUEST_GIFT(2),
+    SEND_GIFT(3),
+    ATTEND_EVENT(4),
+    VOLUNTEER_EVENT(5),
+    COMMENT_EVENT(6),
+    ABANDONED_GIFT(7),
+    EVENT_STARTED(8),
+    EVENT_ENDED(9),
+    FOLLOWING(10)
 }

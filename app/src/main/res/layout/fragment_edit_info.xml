@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginTop="@dimen/height_toolbar"
+    tools:context=".profile.editmode.EditInfoFragment">
+
+    <TextView
+        android:id="@+id/title_user_information"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="會員資料"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/base_edit_avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="90dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_user_information">
+
+        <ImageView
+            android:id="@+id/image_profile_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!--    name   -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_nickname"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="暱稱"
+        app:counterEnabled="true"
+        app:counterMaxLength="12"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/base_edit_avatar">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="top|start"
+            android:inputType="text"
+            android:maxLength="12"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--    introMsg   -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_intro_msg"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="自我介紹"
+        app:counterEnabled="true"
+        app:counterMaxLength="100"
+        app:errorEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_nickname">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edit_intro_msg"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:maxLength="100"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/sl_profile_follow_button"
+        android:text="保存"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_intro_msg" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
