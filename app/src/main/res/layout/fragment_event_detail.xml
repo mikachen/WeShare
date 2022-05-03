@@ -72,7 +72,7 @@
                     android:gravity="center_horizontal"
                     android:padding="4dp"
                     android:textColor="@color/white"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     tools:text="已結案" />
 
             </androidx.cardview.widget.CardView>
@@ -417,7 +417,7 @@
                     android:id="@+id/button_press_like"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="32dp"
                     android:background="@drawable/button_toggle_like"
                     android:text=""
                     android:textOff=""
@@ -456,6 +456,7 @@
                     android:layout_marginTop="4dp"
                     android:textColor="@color/black"
                     android:textSize="16sp"
+                    android:layout_marginStart="2dp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/button_press_like"
                     tools:text="3人說讚" />

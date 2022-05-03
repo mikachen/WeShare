@@ -22,6 +22,9 @@
     </style>
 
 
+    <style name="ThemeOverlay.AppTheme.TextInputEditText.Outlined" parent="bottomSheetStyleWrapper">
+        <item name="colorControlActivated">@color/app_work_orange1</item>
+    </style>
 
 
 

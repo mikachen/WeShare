@@ -74,7 +74,7 @@
 
     //送禮物Alert窗
     <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
-    <string name="send_gift_message">注意：一次只能送出一人，確認送出後將不可再作修改!</string>
+    <string name="send_gift_message">確認送出後將不可再作修改!</string>
     <string name="send_gift_yes">確認</string>
     <string name="send_gift_no">取消</string>
     <string name="title_who_requested">當前索取人</string>
@@ -125,5 +125,7 @@
 
 
     <string name="room_list_event_title">活動群聊：%1s</string>
+    <string name="leave_ask_for_gift_comment">索取留言</string>
+    <string name="pls_leave_askforgift_comment">留言索取理由或感謝文。</string>
 
 </resources>

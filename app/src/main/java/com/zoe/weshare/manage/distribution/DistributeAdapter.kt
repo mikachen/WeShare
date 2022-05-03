@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.UserInfo
-import com.zoe.weshare.databinding.ItemGiftDistrubutionListBinding
+import com.zoe.weshare.databinding.ItemGiftDistributionListBinding
 import com.zoe.weshare.ext.bindImage
-import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.Util
 
@@ -31,12 +31,12 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
         holderGift.bind(comment, viewModel)
     }
 
-    class DistributionViewHolder(val binding: ItemGiftDistrubutionListBinding) :
+    class DistributionViewHolder(val binding: ItemGiftDistributionListBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(comment: Comment, viewModel: DistributeViewModel) {
 
             binding.textComment.text = comment.content
-            binding.textCreatedTime.text = comment.createdTime.toDisplaySentTime()
+            binding.textCreatedTime.text = comment.createdTime.toDisplayFormat()
 
             // displaying user's image and name
             if (viewModel.onProfileSearchComplete.value == 0) {
@@ -61,7 +61,7 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
         companion object {
             fun from(parent: ViewGroup): DistributionViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemGiftDistrubutionListBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemGiftDistributionListBinding.inflate(layoutInflater, parent, false)
 
                 return DistributionViewHolder(binding)
             }

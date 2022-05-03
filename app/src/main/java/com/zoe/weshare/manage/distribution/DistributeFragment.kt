@@ -79,14 +79,21 @@ class DistributeFragment : BottomSheetDialogFragment() {
             findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
         }
 
+        setupBtn()
         return binding.root
+    }
+
+    private fun setupBtn(){
+        binding.buttonCloseDialog.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     private fun onConfirmingOperation(target: UserProfile?) {
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {
-            setTitle(getString(R.string.send_gift_title, selectedGift.title, target!!.uid))
+            setTitle(getString(R.string.send_gift_title, selectedGift.title, target!!.name))
             setMessage(getString(R.string.send_gift_message))
             setPositiveButton(getString(R.string.send_gift_yes)) { dialog, _ ->
                 viewModel.sendGift(selectedGift, target)

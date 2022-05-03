@@ -44,7 +44,6 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
                 findNavController().navigate(
                     NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift)
                 )
-                Toast.makeText(requireContext(), "save log success", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -54,7 +53,6 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
 
     private fun setupBtn() {
         binding.buttonSubmit.setOnClickListener {
-            // TODO 判斷是否登入
 
             val message = binding.editLeaveComment.text.toString()
 
@@ -74,7 +72,6 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 鍵盤彈出後，畫面拉長上推畫面 android:windowSoftInputMode = adjustResize
         setStyle(STYLE_NORMAL, R.style.DialogStyle)
     }
 

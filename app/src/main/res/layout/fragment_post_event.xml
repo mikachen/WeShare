@@ -155,7 +155,7 @@
     <Button
         android:id="@+id/next_button"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/sl_profile_follow_button"

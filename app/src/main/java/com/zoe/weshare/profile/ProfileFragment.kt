@@ -43,7 +43,6 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.userLog.observe(viewLifecycleOwner) {
-            Log.d("userLog","$it")
             setupLogView(it)
         }
 
