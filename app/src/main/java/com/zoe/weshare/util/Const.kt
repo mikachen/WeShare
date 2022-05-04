@@ -32,5 +32,6 @@ object Const {
     const val FIELD_USER_NAME = "name"
     const val FIELD_USER_INTRO_MSG = "introMsg"
     const val FIELD_USER_IMAGE = "image"
+    const val FIELD_NOTIFICATION_READ = "read"
 
 }

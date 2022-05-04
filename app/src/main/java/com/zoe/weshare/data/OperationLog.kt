@@ -11,5 +11,5 @@ data class OperationLog(
     var operatorUid: String = "",
     var logMsg: String = "",
     var createdTime: Long = -1,
-    var isRead: Boolean = false
+    var read: Boolean = false
 ) : Parcelable

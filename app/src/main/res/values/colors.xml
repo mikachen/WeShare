@@ -27,6 +27,11 @@
     <color name="gift_abandoned_red">#FF0000</color>
     <color name="home_background_grey">#f5f5f5</color>
 
+    <color name="notification_volunteer_tag">#005d82</color>
+    <color name="notification_volunteer_tag_string">#fffefa</color>
+
+    <color name="notification_gift_tag">#D34B2B</color>
+    <color name="notification_gift_tag_string">#FDF0B6</color>
 
 
 

@@ -22,7 +22,10 @@ class SendNotificationService : Service() {
     private val coroutineScope = CoroutineScope(serviceJob + Dispatchers.Main)
 
     companion object {
-        const val SEND_NOTIFICATION = "sendNotification"
+        const val SEND_TO_ALL_FOLLOWERS = "sendToAllFollowers"
+        const val SEND_TO_AUTHOR_UID = "sendToAuthorUid"
+        const val SEND_TO_AUTHOR_MSG = "sendToAuthorMsg"
+
     }
 
     lateinit var followers: List<String>
@@ -39,17 +42,29 @@ class SendNotificationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        val log = intent?.getParcelableExtra<OperationLog>(SEND_NOTIFICATION)
+        val notifications = intent?.getParcelableExtra<OperationLog>(SEND_TO_ALL_FOLLOWERS)
 
-        log?.let {
-            sendNotificationToFollower(log)
+        notifications?.let {
+            getFollowersList(notifications)
+        }
+
+
+        val requestNotification = intent?.getParcelableExtra<OperationLog>(SEND_TO_AUTHOR_MSG)
+        val requestTarget = intent?.getStringExtra(SEND_TO_AUTHOR_UID)
+
+
+        requestNotification?.let { request ->
+            requestTarget?.let { target ->
+                loopCount = 1
+                sendingNotification(target, request)
+            }
         }
 
         return START_NOT_STICKY
     }
 
 
-    fun sendNotificationToFollower(log: OperationLog) {
+    fun getFollowersList(notifications: OperationLog) {
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
@@ -62,7 +77,7 @@ class SendNotificationService : Service() {
 
                     followers = result.data?.follower ?: emptyList()
 
-                    taskLoop(followers, log)
+                    taskLoop(followers, notifications)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -81,16 +96,15 @@ class SendNotificationService : Service() {
         }
     }
 
-
     private fun taskLoop(follower: List<String>, log: OperationLog) {
         loopCount = follower.size
 
         for (target in follower) {
-            onSending(target, log)
+            sendingNotification(target, log)
         }
     }
 
-    private fun onSending(targetUid: String, log: OperationLog) {
+    private fun sendingNotification(targetUid: String, log: OperationLog) {
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
@@ -124,9 +138,10 @@ class SendNotificationService : Service() {
 
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("service","onDestroy")
+        Log.d("service", "onDestroy")
         serviceJob.cancel()
     }
 

@@ -164,6 +164,17 @@ class DefaultWeShareRepository(
         return remoteDataSource.updateFieldValue(collection, docId, field, value)
     }
 
+    override suspend fun updateSubCollectionFieldValue(
+        collection: String,
+        docId: String,
+        subCollection: String,
+        subDocId: String,
+        field: String,
+        value: FieldValue,
+    ): Result<Boolean>{
+        return remoteDataSource.updateSubCollectionFieldValue(collection, docId, subCollection,subDocId, field, value)
+    }
+
     override suspend fun uploadImage(imageUri: Uri): Result<String> {
         return remoteDataSource.uploadImage(imageUri)
     }
@@ -174,4 +185,8 @@ class DefaultWeShareRepository(
     override suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean>{
         return remoteDataSource.sendNotifications(targetUid,log)
     }
+    override suspend fun readNotification(uid: String, docId: String, read: Boolean, ): Result<Boolean>{
+        return remoteDataSource.readNotification(uid, docId, read)
+    }
+
 }

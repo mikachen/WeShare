@@ -10,6 +10,7 @@ import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemGiftDistributionListBinding
 import com.zoe.weshare.ext.bindImage
+import com.zoe.weshare.ext.getTimeAgoString
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.Util
@@ -36,7 +37,7 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
         fun bind(comment: Comment, viewModel: DistributeViewModel) {
 
             binding.textComment.text = comment.content
-            binding.textCreatedTime.text = comment.createdTime.toDisplayFormat()
+            binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
 
             // displaying user's image and name
             if (viewModel.onProfileSearchComplete.value == 0) {

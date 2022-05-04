@@ -52,7 +52,7 @@
         <entry key="app/src/main/res/font/graffiti.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_credit_scene.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/activity_logo.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.67" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.2" />
         <entry key="app/src/main/res/layout/event_temp.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fab_btn_add_gift_resize.xml" value="0.23728088926891835" />
@@ -72,7 +72,7 @@
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_new.xml" value="0.25908507909362977" />
-        <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.2201795639162035" />
+        <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_pager.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fragment_pager_filter.xml" value="0.1393758016246259" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />
@@ -97,6 +97,7 @@
         <entry key="app/src/main/res/layout/item_hot_gift_grid.xml" value="0.10888252148997135" />
         <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_message_send.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/item_notifications.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_related_room_list.xml" value="0.15702479338842976" />
         <entry key="app/src/main/res/layout/notification_badge.xml" value="1.5" />
         <entry key="app/src/main/res/layout/test_view.xml" value="0.5" />
@@ -108,7 +109,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

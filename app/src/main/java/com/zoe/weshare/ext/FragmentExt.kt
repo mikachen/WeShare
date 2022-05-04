@@ -1,14 +1,12 @@
 package com.zoe.weshare.ext
 
 import android.Manifest
-import android.R
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.Settings
-import android.widget.Toast
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.karumi.dexter.Dexter
@@ -16,10 +14,12 @@ import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener
 import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.SendNotificationService
+import com.zoe.weshare.SendNotificationService.Companion.SEND_TO_ALL_FOLLOWERS
+import com.zoe.weshare.SendNotificationService.Companion.SEND_TO_AUTHOR_MSG
+import com.zoe.weshare.SendNotificationService.Companion.SEND_TO_AUTHOR_UID
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.data.UserInfo
@@ -96,9 +96,18 @@ fun Fragment.requestPermissions() {
         }).check()
 }
 
-fun Fragment.sendNotifications(log: OperationLog){
+fun Fragment.sendNotificationsToFollowers(log: OperationLog) {
     val intent = Intent(requireContext(), SendNotificationService::class.java)
-    intent.putExtra(SendNotificationService.SEND_NOTIFICATION,log)
+    intent.putExtra(SEND_TO_ALL_FOLLOWERS, log)
+
+    requireContext().startService(intent)
+}
+
+
+fun Fragment.sendNotificationToAuthor(authorUid: String, log: OperationLog) {
+    val intent = Intent(requireContext(), SendNotificationService::class.java)
+    intent.putExtra(SEND_TO_AUTHOR_MSG, log)
+    intent.putExtra(SEND_TO_AUTHOR_UID, authorUid)
 
     requireContext().startService(intent)
 }

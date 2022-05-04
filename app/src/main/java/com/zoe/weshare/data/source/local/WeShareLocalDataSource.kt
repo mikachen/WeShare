@@ -50,6 +50,25 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateSubCollectionFieldValue(
+        collection: String,
+        docId: String,
+        subCollection: String,
+        subDocId: String,
+        field: String,
+        value: FieldValue,
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun readNotification(
+        uid: String,
+        docId: String,
+        read: Boolean,
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun uploadImage(imageUri: Uri): Result<String> {
         TODO("Not yet implemented")
     }

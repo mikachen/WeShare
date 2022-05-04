@@ -56,7 +56,7 @@
                 tools:text="募款：山區浪浪需要你" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/layout_status"
+                android:id="@+id/layout_request_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="4dp"

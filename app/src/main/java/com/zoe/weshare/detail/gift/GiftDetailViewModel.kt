@@ -317,6 +317,38 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         }
     }
 
+    fun searchOnPrivateRoom(user: UserInfo) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            val result = repository.getUserChatRooms(user.uid)
+
+            _userChatRooms.value = when (result) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                    result.data
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+                else -> {
+                    _error.value =
+                        WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                    null
+                }
+            }
+        }
+    }
+
     fun checkIfPrivateRoomExist(rooms: List<ChatRoom>) {
 
         val result = rooms.filter {
@@ -370,37 +402,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         }
     }
 
-    fun searchOnPrivateRoom(user: UserInfo) {
-        coroutineScope.launch {
-            _status.value = LoadApiStatus.LOADING
-
-            val result = repository.getUserChatRooms(user.uid)
-
-            _userChatRooms.value = when (result) {
-                is Result.Success -> {
-                    _error.value = null
-                    _status.value = LoadApiStatus.DONE
-                    result.data
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                    null
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                    null
-                }
-                else -> {
-                    _error.value =
-                        WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
-                    null
-                }
-            }
-        }
-    }
 
     fun navigateToRoomComplete() {
         _userChatRooms.value = null
@@ -409,7 +410,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     }
 
     fun onNavigateToTargetProfile(uid: String) {
-        var target = UserInfo()
+        val target = UserInfo()
         target.uid = uid
 
         _targetUser.value = target

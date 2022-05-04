@@ -106,8 +106,6 @@ class ProfileFragment : Fragment() {
                 R.id.action_gifts_manage -> findNavController().navigate(NavGraphDirections
                     .actionGlobalPagerFilterFragment())
 
-                R.id.action_events_manage -> findNavController().navigate(NavGraphDirections
-                    .actionGlobalNotificationFragment())
             }
             false
         }

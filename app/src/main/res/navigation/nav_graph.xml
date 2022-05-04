@@ -205,7 +205,7 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.zoe.weshare.search.SearchFragment"
+        android:name="com.zoe.weshare.notification.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <action
@@ -213,9 +213,10 @@
         app:destination="@id/searchFragment" />
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="com.zoe.weshare.search.NotificationFragment"
+        android:name="com.zoe.weshare.notification.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
+
     <action
         android:id="@+id/action_global_notificationFragment"
         app:destination="@id/notificationFragment" />

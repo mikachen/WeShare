@@ -267,7 +267,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onStart() {
         super.onStart()
-        Log.d("onStart", "onStart")
         if (isPermissionGranted) {
             binding.mapView.onStart()
         }
@@ -275,7 +274,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
 
     override fun onResume() {
-        Log.d("onResume", "onResume")
         super.onResume()
         if (isPermissionGranted) {
             binding.mapView.onResume()

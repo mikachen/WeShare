@@ -53,6 +53,7 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
     }
 }
 
+
 /**
  * resize Map marker icon
  * */

@@ -16,8 +16,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.ext.sendNotificationToAuthor
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class AskForGiftFragment : BottomSheetDialogFragment() {
@@ -39,11 +38,15 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
         viewModel.newRequestComment.observe(viewLifecycleOwner) {
             viewModel.askForGiftRequest(selectedGift, it)
         }
+
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
-            if (it == LoadApiStatus.DONE) {
+            it?.let {
+                sendNotificationToAuthor(selectedGift.author!!.uid, it)
+
                 findNavController().navigate(
-                    NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift)
-                )
+                    NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift))
+
+                viewModel.backToDetailComplete()
             }
         }
 

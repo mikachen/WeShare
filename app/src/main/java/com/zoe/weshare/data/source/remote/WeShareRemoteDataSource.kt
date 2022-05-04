@@ -12,6 +12,7 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.Const.FIELD_NOTIFICATION_READ
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_SENT_TIME
@@ -838,6 +839,39 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
+    override suspend fun updateSubCollectionFieldValue(
+        collection: String,
+        docId: String,
+        subCollection: String,
+        subDocId: String,
+        field: String,
+        value: FieldValue,
+    ): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(collection).document(docId)
+                .collection(subCollection).document(subDocId)
+                .update(field, value)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("updateSubCollectionFieldValue: $collection:$subCollection -> $field : $value")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                        " Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
+
     override suspend fun updateEventStatus(
         docId: String,
         code: Int,
@@ -998,17 +1032,19 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean> =
+    override suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean> =
         suspendCoroutine { continuation ->
 
-            val logSave = FirebaseFirestore.getInstance().collection(PATH_USER)
-            val document = logSave.document(targetUid).collection(SUB_PATH_USER_NOTIFICATION)
+            val notificationRef = FirebaseFirestore.getInstance().collection(PATH_USER)
+                .document(targetUid).collection(SUB_PATH_USER_NOTIFICATION)
+
+            val document = notificationRef.document()
 
             log.createdTime = Calendar.getInstance().timeInMillis
             log.id = document.id
 
             document
-                .add(log)
+                .set(log)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Logger.i("sendNotifications: $log")
@@ -1034,4 +1070,33 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
+    override suspend fun readNotification(
+        uid: String,
+        docId: String,
+        read: Boolean,
+    ): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_USER).document(uid)
+                .collection(SUB_PATH_USER_NOTIFICATION).document(docId)
+                .update(FIELD_NOTIFICATION_READ, read)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("readNotification -> $docId : $read")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                        " Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(Result.Fail(WeShareApplication.instance.getString(R.string.result_fail)))
+                    }
+                }
+        }
 }

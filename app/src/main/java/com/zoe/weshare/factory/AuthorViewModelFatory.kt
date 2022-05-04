@@ -11,6 +11,8 @@ import com.zoe.weshare.manage.distribution.DistributeViewModel
 import com.zoe.weshare.manage.giftsItem.GiftManageViewModel
 import com.zoe.weshare.message.ChatRoomViewModel
 import com.zoe.weshare.message.roomlist.RoomListViewModel
+import com.zoe.weshare.notification.NotificationFragment
+import com.zoe.weshare.notification.NotificationViewModel
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import com.zoe.weshare.profile.ProfileViewModel
@@ -69,6 +71,10 @@ class AuthorViewModelFactory(
 
         if (modelClass.isAssignableFrom(EditInfoViewModel::class.java)) {
             return EditInfoViewModel(repository, userInfo) as T
+        }
+
+        if (modelClass.isAssignableFrom(NotificationViewModel::class.java)) {
+            return NotificationViewModel(repository, userInfo) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

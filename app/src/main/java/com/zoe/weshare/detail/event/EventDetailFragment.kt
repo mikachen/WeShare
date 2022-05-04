@@ -1,8 +1,8 @@
 package com.zoe.weshare.detail.event
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -17,8 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
-import com.zoe.weshare.SendNotificationService
-import com.zoe.weshare.SendNotificationService.Companion.SEND_NOTIFICATION
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventDetailBinding
@@ -28,7 +26,6 @@ import com.zoe.weshare.util.Const.FIELD_EVENT_VOLUNTEER
 import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.Logger
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class EventDetailFragment : Fragment() {
@@ -139,7 +136,11 @@ class EventDetailFragment : Fragment() {
         }
 
         viewModel.saveLogComplete.observe(viewLifecycleOwner){
-            sendNotifications(it)
+            if(it.logType == LogType.VOLUNTEER_EVENT.value){
+                sendNotificationToAuthor(selectedEvent.author!!.uid,it)
+            }else{
+                sendNotificationsToFollowers(it)
+            }
         }
 
         return binding.root

@@ -36,9 +36,8 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentSearchLocationBinding
 import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.ext.sendNotifications
+import com.zoe.weshare.ext.sendNotificationsToFollowers
 import com.zoe.weshare.ext.toDisplayFormat
-import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import com.zoe.weshare.util.UserManager.weShareUser
@@ -119,7 +118,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
-                    sendNotifications(it)
+                    sendNotificationsToFollowers(it)
                     findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
 
                 }
@@ -135,7 +134,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 setupInputPreview(gift = newGift, event = null)
 
                 giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
-                    sendNotifications(it)
+                    sendNotificationsToFollowers(it)
                     findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
                 }
 

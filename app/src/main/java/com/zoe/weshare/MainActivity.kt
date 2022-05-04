@@ -103,6 +103,7 @@ class MainActivity : AppCompatActivity() {
                     CurrentFragmentType.POSTGIFT -> { hideBottom() }
                     CurrentFragmentType.POSTEVENT -> { hideBottom() }
                     CurrentFragmentType.EDITPROFILE -> { hideBottom() }
+                    CurrentFragmentType.NOTIFICATION -> { binding.fabsLayoutView.visibility = View.GONE }
 
                     CurrentFragmentType.LOGIN -> {
                         topAppbar.visibility = View.GONE
@@ -122,7 +123,6 @@ class MainActivity : AppCompatActivity() {
                 viewModel.liveNotifications.observe(this){ notifications->
                     notifications?.let {
                         updateBadge(notifications)
-                        viewModel.liveNotifications.value = null
                     }
                 }
             }
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateBadge(list: List<OperationLog>) {
-        val count = list.size
+        val count = list.filter { !it.read }.size
 
         if (count == 0) {
             binding.layoutBadge.visibility = View.INVISIBLE
