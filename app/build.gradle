@@ -64,6 +64,9 @@ android {
 }
 
 dependencies {
+
+    implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
+
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'
 
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.3'

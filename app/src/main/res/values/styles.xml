@@ -3,11 +3,28 @@
     <style name="chatroom_message_textview">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingHorizontal">12dp</item>
-        <item name="android:paddingVertical">4dp</item>
-        <item name="android:maxEms">12</item>
+        <item name="android:justificationMode">inter_word</item>
+        <item name="android:maxEms">10</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:paddingHorizontal">14dp</item>
         <item name="android:scrollHorizontally">false</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="profile_userlog_string">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="profile_userlog_count">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20sp</item>
     </style>
 </resources>

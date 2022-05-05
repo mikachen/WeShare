@@ -60,7 +60,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
             }
             is ReceiveViewHolder -> {
                 (itemType as MessageItem.OnReceiveSide).message?.let {
-                    holder.bind(it, viewModel, targetUsersList)
+                    holder.bind(it, targetUsersList)
                 }
             }
         }
@@ -76,7 +76,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, viewModel: ChatRoomViewModel, usersList: List<UserInfo>) {
+        fun bind(comment: Comment, usersList: List<UserInfo>) {
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
 

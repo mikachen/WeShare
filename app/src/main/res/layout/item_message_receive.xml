@@ -5,61 +5,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_marginStart="8dp"
+    android:paddingTop="8dp">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/base_target_image"
         android:layout_width="45dp"
         android:layout_height="45dp"
         app:cardCornerRadius="90dp"
-        app:layout_constraintEnd_toStartOf="@id/base_text_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="@id/layout_text_message"
+        app:layout_constraintEnd_toStartOf="@id/layout_text_message"
+        app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
             android:id="@+id/image_targe_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/base_text_content"
-        android:layout_width="0dp"
+
+    <LinearLayout
+        android:id="@+id/layout_text_message"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:elevation="10dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/base_target_image"
-        app:layout_constraintTop_toTopOf="@id/base_target_image">
+        app:layout_constraintStart_toEndOf="@id/base_target_image">
 
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/incoming_speech_bubble" />
 
         <TextView
             android:id="@+id/text_message"
-            android:background="@drawable/shape_receive_message_round"
             style="@style/chatroom_message_textview"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/text_sent_time"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
+            android:background="@drawable/shape_incomming_text_round"
             tools:text="mesagemessagemesaagemessageagemessageagemessageagemessageagemessageagemessageagemessagegemessageagemessageagemessage." />
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_sent_time"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/text_message"
-            tools:text="9:11" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    <TextView
+        android:id="@+id/text_sent_time"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/layout_text_message"
+        tools:text="9:11" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 

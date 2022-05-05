@@ -24,22 +24,44 @@
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="6dp"
+        android:layout_height="2dp"
+        app:dividerColor="@color/app_work_orange2"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_image_preview_holder" />
+
+    <TextView
+        android:id="@+id/title_what_to_post"
+        android:layout_width="wrap_content"
+        android:textSize="24sp"
+        android:fontFamily="@font/naikai_light"
+        android:layout_marginBottom="-8dp"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="今天想刊登什麼呢"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layout_title"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:text="？\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05"
+        app:layout_constraintStart_toEndOf="@id/title_what_to_post"
+        app:layout_constraintTop_toTopOf="@id/title_what_to_post"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_title"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:hint="活動名稱"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider">
+        app:layout_constraintTop_toBottomOf="@id/title_what_to_post">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_title"

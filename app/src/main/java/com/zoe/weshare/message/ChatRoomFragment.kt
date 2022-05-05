@@ -7,17 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.MainActivity
+import com.zoe.weshare.R
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager.weShareUser
+import com.zoe.weshare.util.Util.getStringWithStrParm
 
 class ChatRoomFragment : Fragment() {
 
     private lateinit var chatRoom: ChatRoom
     private lateinit var binding: FragmentChatroomBinding
     private lateinit var adapter: ChatRoomAdapter
+    private lateinit var recyclerView: RecyclerView
 
     val currentUser = weShareUser
 
@@ -35,10 +41,6 @@ class ChatRoomFragment : Fragment() {
 
         viewModel.onViewDisplay(chatRoom)
 
-        val recyclerView = binding.messagesRecyclerView
-
-        adapter = ChatRoomAdapter(viewModel, chatRoom)
-        recyclerView.adapter = adapter
 
         viewModel.liveMessages.observe(viewLifecycleOwner) {
             adapter.submitList(it) {
@@ -46,19 +48,44 @@ class ChatRoomFragment : Fragment() {
             }
         }
 
-        viewModel.roomTitle.observe(viewLifecycleOwner) {
-            (activity as MainActivity).binding.toolbarFragmentTitleText.text = it
-        }
 
         viewModel.newMessage.observe(viewLifecycleOwner) {
             viewModel.sendNewMessage(chatRoom.id, it)
         }
 
+
+        setupView()
         setupSendBtn()
         return binding.root
     }
 
+    private fun setupView() {
+
+        recyclerView = binding.messagesRecyclerView
+
+        adapter = ChatRoomAdapter(viewModel, chatRoom)
+        recyclerView.adapter = adapter
+
+
+        binding.textRoomTargetTitle.text =
+            when (chatRoom.type) {
+                ChatRoomType.PRIVATE.value ->
+                    chatRoom.usersInfo.single { it.uid != weShareUser!!.uid }.name
+
+                ChatRoomType.MULTIPLE.value -> getStringWithStrParm(R.string.room_list_event_title,
+                    chatRoom.eventTitle)
+
+                else -> "unKnow"
+            }
+
+    }
+
     private fun setupSendBtn() {
+
+        binding.toolbarArrowBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
         binding.buttonSend.setOnClickListener {
             onSendComment()
         }

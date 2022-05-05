@@ -26,10 +26,6 @@ class ChatRoomViewModel(
     val chatRoom: LiveData<ChatRoom>
         get() = _chatRoom
 
-    private var _roomTitle = MutableLiveData<String>()
-    val roomTitle: LiveData<String>
-        get() = _roomTitle
-
     var _newMessage = MutableLiveData<Comment>()
     val newMessage: LiveData<Comment>
         get() = _newMessage
@@ -116,15 +112,6 @@ class ChatRoomViewModel(
     fun onViewDisplay(chatRoom: ChatRoom) {
 
         _chatRoom.value = chatRoom
-
-        _roomTitle.value = when (chatRoom.type) {
-            ChatRoomType.PRIVATE.value ->
-                chatRoom.usersInfo.single { it.uid != weShareUser!!.uid }.name
-
-            ChatRoomType.MULTIPLE.value -> "活動群聊"
-
-            else -> "unKnow chatroom type"
-        }
 
         getLiveMessageResult(chatRoom)
     }

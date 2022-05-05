@@ -149,7 +149,7 @@ class GiftDetailFragment : Fragment() {
             when (gift.status) {
                 GiftStatusType.OPENING.code -> {
                     binding.textStatus.text = GiftStatusType.OPENING.tag
-                    binding.textStatus.setBackgroundResource(R.color.message_sender_green)
+                    binding.textStatus.setBackgroundResource(R.color.app_work_light_green)
                 }
                 GiftStatusType.CLOSED.code -> {
                     binding.imageLogoStatus.visibility = View.VISIBLE

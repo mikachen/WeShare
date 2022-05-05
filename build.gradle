@@ -13,6 +13,7 @@ buildscript {
         version_ktlint = '10.2.0'
         version_navigation = '2.4.2'
         version_google_services = '4.3.10'
+        version_compose = '1.1.1'
 
     }
 

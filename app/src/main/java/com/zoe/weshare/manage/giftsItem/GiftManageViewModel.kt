@@ -44,77 +44,71 @@ class GiftManageViewModel(
     val onCommentsShowing: LiveData<GiftPost?>
         get() = _onCommentsShowing
 
-    private val _allGifts = MutableLiveData<List<GiftPost>>()
-    val allGifts: LiveData<List<GiftPost>>
-        get() = _allGifts
+    private val _giftsDisplay = MutableLiveData<List<GiftPost>>()
+    val giftsDisplay: LiveData<List<GiftPost>>
+        get() = _giftsDisplay
 
     private val _abandonStatus = MutableLiveData<LoadApiStatus>()
     val abandonStatus: LiveData<LoadApiStatus>
         get() = _abandonStatus
 
+    private val _saveLogComplete = MutableLiveData<LoadApiStatus>()
+    val saveLogComplete: LiveData<LoadApiStatus>
+        get() = _saveLogComplete
+
     var gifts = listOf<GiftPost>()
 
-    init {
-        onSearchGiftsDetail()
-    }
 
-    private fun onSearchGiftsDetail() {
-
+    fun onSearchGiftsDetail(position: Int) {
         coroutineScope.launch {
             _searchGiftsStatus.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.getUserHistoryPosts(
-                    collection = PATH_GIFT_POST,
-                    uid = userInfo!!.uid
-                )
-            ) {
+            when (val result = repository.getUserHistoryPosts(
+                collection = PATH_GIFT_POST,
+                uid = userInfo!!.uid
+            )) {
 
                 is Result.Success -> {
                     _error.value = null
 
                     gifts = result.data
 
+                    filteringGift(position)
+
                     _searchGiftsStatus.value = LoadApiStatus.DONE
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _searchGiftsStatus.value = LoadApiStatus.ERROR
-
-                    _allGifts.value = emptyList()
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _searchGiftsStatus.value = LoadApiStatus.ERROR
-
-                    _allGifts.value = emptyList()
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _searchGiftsStatus.value = LoadApiStatus.ERROR
-
-                    _allGifts.value = emptyList()
                 }
             }
         }
     }
 
-    fun filteringGift(index: Int) {
-        when (index) {
+    fun filteringGift(position: Int) {
+        when (position) {
 
-            0 -> _allGifts.value = gifts
+            0 -> _giftsDisplay.value = gifts
 
             1 -> {
-                _allGifts.value = gifts.filter { it.status == GiftStatusType.OPENING.code }
+                _giftsDisplay.value = gifts.filter { it.status == GiftStatusType.OPENING.code }
             }
 
             2 -> {
-                _allGifts.value = gifts.filter { it.status == GiftStatusType.CLOSED.code }
+                _giftsDisplay.value = gifts.filter { it.status == GiftStatusType.CLOSED.code }
             }
 
             3 -> {
-                _allGifts.value = gifts.filter { it.status == GiftStatusType.ABANDONED.code }
+                _giftsDisplay.value = gifts.filter { it.status == GiftStatusType.ABANDONED.code }
             }
         }
     }
@@ -127,7 +121,7 @@ class GiftManageViewModel(
         _onCommentsShowing.value = null
     }
 
-    fun userPressAbandon(gift: GiftPost) {
+    fun userClickAbandon(gift: GiftPost) {
         _onAlterMsgShowing.value = gift
     }
 
@@ -178,25 +172,34 @@ class GiftManageViewModel(
 
     private fun saveAbandonLog(log: OperationLog) {
         coroutineScope.launch {
+            _saveLogComplete.value = LoadApiStatus.LOADING
 
             when (
                 val result =
                     repository.saveLog(log)
             ) {
                 is Result.Success -> {
+                    _saveLogComplete.value = LoadApiStatus.DONE
                     _error.value = null
                 }
                 is Result.Fail -> {
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                     _error.value = result.error
                 }
                 is Result.Error -> {
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                     _error.value = result.exception.toString()
                 }
                 else -> {
+                    _saveLogComplete.value = LoadApiStatus.ERROR
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                 }
             }
         }
+    }
+
+    fun refreshFilterView(currentTabPosition: Int) {
+        onSearchGiftsDetail(currentTabPosition)
     }
 }

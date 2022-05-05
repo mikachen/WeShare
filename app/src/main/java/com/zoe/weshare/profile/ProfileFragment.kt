@@ -104,7 +104,7 @@ class ProfileFragment : Fragment() {
                     .actionProfileFragmentToEditInfoFragment(viewModel.user.value!!))
 
                 R.id.action_gifts_manage -> findNavController().navigate(NavGraphDirections
-                    .actionGlobalPagerFilterFragment())
+                    .actionGlobalGiftManageFragment())
 
             }
             false

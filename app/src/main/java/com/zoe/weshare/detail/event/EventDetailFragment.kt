@@ -265,11 +265,11 @@ class EventDetailFragment : Fragment() {
         when (true) {
             (event.status == EventStatusType.WAITING.code) -> {
                 binding.textStatus.text = EventStatusType.WAITING.tag
-                binding.textStatus.setBackgroundResource(R.color.message_sender_green)
+                binding.textStatus.setBackgroundResource(R.color.app_work_light_green)
             }
             (event.status == EventStatusType.ONGOING.code) -> {
                 binding.textStatus.text = EventStatusType.ONGOING.tag
-                binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
+                binding.textStatus.setBackgroundResource(R.color.app_work_orange2)
             }
             (event.status == EventStatusType.ENDED.code) -> {
                 binding.textStatus.text = EventStatusType.ENDED.tag

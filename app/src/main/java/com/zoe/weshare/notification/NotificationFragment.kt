@@ -41,7 +41,6 @@ class NotificationFragment : Fragment() {
 
         viewModel.notifications.observe(viewLifecycleOwner) {
             adapter.submitList(it)
-            adapter.notifyDataSetChanged()
 
             if(it.isEmpty()){
                 binding.hintNoNews.visibility = View.VISIBLE

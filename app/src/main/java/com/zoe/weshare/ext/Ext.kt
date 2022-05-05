@@ -21,7 +21,7 @@ fun Long.toDisplayFormat(): String {
 }
 
 fun Long.toDisplaySentTime(): String {
-    return SimpleDateFormat("hh:mm", Locale.TAIWAN).format(this)
+    return SimpleDateFormat("HH:mm", Locale.TAIWAN).format(this)
 }
 
 fun Long.toDisplayDateFormat(): String {

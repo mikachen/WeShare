@@ -1,5 +1,6 @@
 package com.zoe.weshare.home
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +12,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.github.amlcurran.showcaseview.ShowcaseView
+import com.github.amlcurran.showcaseview.targets.Target.NONE
+import com.github.amlcurran.showcaseview.targets.ViewTarget
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.databinding.FragmentHomeBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.smoothSnapToPosition
-import com.zoe.weshare.util.UserManager
 import java.util.*
 
-class HomeFragment : Fragment() {
+
+class HomeFragment : Fragment(),View.OnClickListener {
 
     private lateinit var headerRv: RecyclerView
     private lateinit var headerAdapter: HeaderAdapter
@@ -28,9 +32,12 @@ class HomeFragment : Fragment() {
 
     private lateinit var logTickerRv: RecyclerView
     private lateinit var tickerAdapter: TickerAdapter
+    private lateinit var showcaseView: ShowcaseView
 
     val viewModel by viewModels<HomeViewModel> { getVmFactory() }
     private lateinit var binding: FragmentHomeBinding
+
+    var counter = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +60,7 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.allLogs.observe(viewLifecycleOwner) {
-           viewModel.onFilteringLog(it)
+            viewModel.onFilteringLog(it)
         }
 
         viewModel.filteredLogs.observe(viewLifecycleOwner) {
@@ -85,8 +92,27 @@ class HomeFragment : Fragment() {
         setupHeaderGallery()
         setupHotGiftsGallery()
         setupLogTicker()
-
+        setupButton()
         return binding.root
+    }
+
+    private fun setupButton() {
+        binding.buttonNewbieHint.setOnClickListener {
+            setShowCase()
+        }
+
+    }
+
+    fun setShowCase(){
+        showcaseView = ShowcaseView.Builder(requireActivity())
+            .setTarget(ViewTarget(binding.buttonNewbieHint))
+            .setOnClickListener(this)
+            .setContentTitle("ShowcaseView")
+            .setContentText("This is highlighting the Home button")
+            .hideOnTouchOutside()
+            .build()
+
+        showcaseView.setButtonText("NEXT")
     }
 
     private fun setupHeaderGallery() {
@@ -182,9 +208,31 @@ class HomeFragment : Fragment() {
         )
     }
 
-    private fun requireLogIn() {
-        if (!UserManager.isLoggedIn) {
-            findNavController().navigate(NavGraphDirections.actionGlobalLoginFragment())
+    override fun onClick(p0: View?) {
+        when (counter) {
+            0 -> showcaseView.setShowcase(ViewTarget(binding.buttonCheckEvents), true)
+            1 -> showcaseView.setShowcase(ViewTarget(binding.buttonCheckGifts), true)
+            2 -> {
+                showcaseView.setTarget(NONE)
+                showcaseView.setContentTitle("Check it out")
+                showcaseView.setContentText("You don't always need a target to showcase")
+                showcaseView.setButtonText("END")
+                setAlpha(0.4f, binding.buttonNewbieHint, binding.buttonCheckEvents, binding.buttonCheckGifts)
+            }
+            3 -> {
+                showcaseView.hide()
+                setAlpha(1.0f, binding.buttonNewbieHint, binding.buttonCheckEvents, binding.buttonCheckGifts)
+            }
+        }
+        counter++
+    }
+
+    private fun setAlpha(alpha: Float, vararg views: View) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            for (view in views) {
+                view.alpha = alpha
+            }
         }
     }
+
 }

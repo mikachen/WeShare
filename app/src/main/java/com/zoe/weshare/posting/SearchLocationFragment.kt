@@ -98,8 +98,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                     }
                 }
                 eventViewModel.postingProgress.observe(viewLifecycleOwner) {
-                    binding.progressBarText.text =
-                        getStringWithIntParm(R.string.posting_progress, it)
 
                     animation = ObjectAnimator.ofInt(progressBar,
                         "progress",
@@ -150,8 +148,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 giftViewModel.postingProgress.observe(viewLifecycleOwner) {
-                    binding.progressBarText.text =
-                        getStringWithIntParm(R.string.posting_progress, it)
 
                     animation = ObjectAnimator.ofInt(progressBar,
                         "progress",

@@ -62,7 +62,6 @@
     <string name="filter_abandoned">已下架</string>
     <string name="event_leave_a_comment">留個言吧…</string>
     <string name="chatroom_send_a_message">輸入訊息</string>
-    <string name="posting_progress">LOADING..%1$d%%</string>
 
 
     //下架Alert窗
@@ -131,5 +130,12 @@
 
     <string name="notification_request_gift">索取</string>
     <string name="notification_attend_volunteer">志工</string>
+    <string name="profile_following_string">追蹤中</string>
+    <string name="profile_follower_string">粉絲數</string>
+    <string name="profile_gift_sent_count_string">贈品送出</string>
+    <string name="profile_gift_post_count_string">贈品刊登</string>
+    <string name="profile_event_post_count_string">發起活動</string>
+    <string name="profile_volunteer_count_string">志工參與</string>
+    <string name="profile_defult_zero_count">-</string>
 
 </resources>

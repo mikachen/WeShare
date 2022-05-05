@@ -173,18 +173,8 @@
     <action
         android:id="@+id/action_global_chatRoomFragment"
         app:destination="@id/chatRoomFragment" />
-    <fragment
-        android:id="@+id/pagerFilterFragment"
-        android:name="com.zoe.weshare.manage.PagerFilterFragment"
-        android:label="PagerFilterFragment">
 
-    </fragment>
 
-    <action
-        android:id="@+id/action_global_pagerFilterFragment"
-        app:destination="@id/pagerFilterFragment"
-        app:popUpTo="@id/distributeFragment"
-        app:popUpToInclusive="true" />
     <dialog
         android:id="@+id/distributeFragment"
         android:name="com.zoe.weshare.manage.distribution.DistributeFragment"
@@ -234,11 +224,20 @@
         android:id="@+id/editInfoFragment"
         android:name="com.zoe.weshare.profile.editmode.EditInfoFragment"
         android:label="fragment_edit_info"
-        tools:layout="@layout/fragment_edit_info" >
+        tools:layout="@layout/fragment_edit_info">
         <argument
             android:name="userProfile"
             app:argType="com.zoe.weshare.data.UserProfile" />
     </fragment>
+
+    <fragment
+        android:id="@+id/giftManageFragment"
+        android:name="com.zoe.weshare.manage.giftsItem.GiftManageFragment"
+        android:label="GiftManageFragment"
+        tools:layout="@layout/fragment_gift_manage" />
+    <action
+        android:id="@+id/action_global_giftManageFragment"
+        app:destination="@id/giftManageFragment" />
 
 
 </navigation>

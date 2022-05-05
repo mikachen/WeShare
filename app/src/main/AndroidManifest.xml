@@ -16,10 +16,8 @@
         android:theme="@style/Theme.WeShare">
 
         <service
-            android:name="com.zoe.weshare.SendNotificationService"
-            android:exported="false">
-
-        </service>
+            android:name=".SendNotificationService"
+            android:exported="false"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

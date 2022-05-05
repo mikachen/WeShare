@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    var notificationPageOpen: Boolean = false
     private var isFabExpend: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
@@ -83,7 +84,6 @@ class MainActivity : AppCompatActivity() {
                     // 顯示副標題+倒退鍵
                     CurrentFragmentType.SEARCHLOCATION -> {
                         hideBottom()
-                        toolbarFragmentTitleText.text = it.value
                     }
 
                     // 大主頁
@@ -97,7 +97,10 @@ class MainActivity : AppCompatActivity() {
                     CurrentFragmentType.ROOMLIST -> {}
                     CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
 
-                    CurrentFragmentType.CHATROOM -> { hideBottom() }
+                    CurrentFragmentType.CHATROOM -> {
+                        hideBottom()
+                        topAppbar.visibility = View.GONE
+                    }
                     CurrentFragmentType.GIFTDETAIL -> { hideBottom() }
                     CurrentFragmentType.EVENTDETAIL -> { hideBottom() }
                     CurrentFragmentType.POSTGIFT -> { hideBottom() }
@@ -179,7 +182,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.eventDetailFragment -> CurrentFragmentType.EVENTDETAIL
                 R.id.giftDetailFragment -> CurrentFragmentType.GIFTDETAIL
                 R.id.searchLocationFragment -> CurrentFragmentType.SEARCHLOCATION
-                R.id.pagerFilterFragment -> CurrentFragmentType.GIFTMANAGE
+                R.id.giftManageFragment -> CurrentFragmentType.GIFTMANAGE
                 R.id.notificationFragment -> CurrentFragmentType.NOTIFICATION
                 R.id.loginFragment -> CurrentFragmentType.LOGIN
                 R.id.editInfoFragment -> CurrentFragmentType.EDITPROFILE
@@ -191,8 +194,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupToolbar(){
         binding.notification.setOnClickListener {
-            findNavController(R.id.nav_host_fragment)
-                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
+            onNotificationClick()
         }
 
         binding.toolbarArrowBack.setOnClickListener {
@@ -255,6 +257,16 @@ class MainActivity : AppCompatActivity() {
         setAnimation(isFabExpend)
 
         isFabExpend = !isFabExpend
+    }
+
+    private fun onNotificationClick(){
+        if (!notificationPageOpen){
+            findNavController(R.id.nav_host_fragment)
+                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
+        }else{
+            findNavController(R.id.nav_host_fragment).navigateUp()
+        }
+        notificationPageOpen = !notificationPageOpen
     }
 
     private fun setAnimation(isFabExpend: Boolean) {
