@@ -9,11 +9,14 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.Const
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.PATH_EVENT_POST
 import com.zoe.weshare.util.Const.SUB_PATH_EVENT_USER_WHO_COMMENT
 import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithStrParm
 import kotlinx.coroutines.CoroutineScope
@@ -25,13 +28,15 @@ import java.util.*
 class EventDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
 
-    var liveComments = MutableLiveData<List<Comment>>()
-
     var onEventDisplaying = MutableLiveData<EventPost?>()
 
-    private var _newComment = MutableLiveData<Comment>()
-    val newComment: LiveData<Comment>
-        get() = _newComment
+    var liveComments = MutableLiveData<List<Comment>>()
+
+    private var _filteredComments = MutableLiveData<List<Comment>>()
+    val filteredComments: LiveData<List<Comment>>
+        get() = _filteredComments
+
+    var blockUserComplete = MutableLiveData<UserProfile>()
 
     private var _room = MutableLiveData<ChatRoom?>()
     val room: LiveData<ChatRoom?>
@@ -53,17 +58,9 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val refreshStatus: LiveData<Boolean>
         get() = _refreshStatus
 
-    private var _currentLikedNumber = MutableLiveData<Int>()
-    val currentLikedNumber: LiveData<Int>
-        get() = _currentLikedNumber
-
-    private var _isUserPressedLike = MutableLiveData<Boolean>()
-    val isUserPressedLike: LiveData<Boolean>
-        get() = _isUserPressedLike
-
-    private var _onProfileSearch = MutableLiveData<Int>()
-    val onProfileSearch: LiveData<Int>
-        get() = _onProfileSearch
+    private var __onProfileSearchComplete = MutableLiveData<Int>()
+    val onProfileSearchComplete: LiveData<Int>
+        get() = __onProfileSearchComplete
 
     val profileList = mutableListOf<UserProfile>()
 
@@ -91,12 +88,18 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val error: LiveData<String?>
         get() = _error
 
+    fun onViewPrepare(event: EventPost) {
+
+        checkEventStatus(event)
+        getLiveEventDetail(event)
+        getLiveCommentResult(event)
+    }
 
     fun searchUsersProfile(comments: List<Comment>) {
-        if (comments.isNotEmpty()) {
 
-            val newUserUid = mutableListOf<String>()
+        if (comments.isNotEmpty()) {
             val filteredUser = comments.distinctBy { it.uid }
+            val newUserUid = mutableListOf<String>()
 
             if (profileList.isNotEmpty()) {
                 for (i in filteredUser) {
@@ -105,14 +108,14 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     }
                 }
             }
-            // first time is empty
+            // first time is always empty
             else {
                 for (i in filteredUser) {
                     newUserUid.add(i.uid)
                 }
             }
 
-            _onProfileSearch.value = newUserUid.size
+            __onProfileSearchComplete.value = newUserUid.size
 
             for (uid in newUserUid) {
                 getUserInfo(uid)
@@ -146,7 +149,16 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     _status.value = LoadApiStatus.ERROR
                 }
             }
-            _onProfileSearch.value = _onProfileSearch.value?.minus(1)
+            __onProfileSearchComplete.value = __onProfileSearchComplete.value?.minus(1)
+        }
+    }
+
+    fun onPostLikePressed(doc: String, isUserLiked: Boolean) {
+
+        if (!isUserLiked) {
+            sendLike(doc)
+        } else {
+            cancelLike(doc)
         }
     }
 
@@ -166,8 +178,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _currentLikedNumber.value = _currentLikedNumber.value?.plus(1)
-                    _isUserPressedLike.value = true
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -201,8 +211,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _currentLikedNumber.value = _currentLikedNumber.value?.minus(1)
-                    _isUserPressedLike.value = false
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -220,37 +228,21 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun onViewPrepare(event: EventPost) {
-        _currentLikedNumber.value = event.whoLiked.size
-        _isUserPressedLike.value = event.whoLiked.contains(userInfo!!.uid) == true
-
-        checkEventStatus(event)
-        getLiveEventDetail(event)
-        getLiveCommentResult(event)
-    }
-
-    fun onPostLikePressed(doc: String) {
-        if (_isUserPressedLike.value == false) {
-            sendLike(doc)
-        } else {
-            cancelLike(doc)
-        }
-    }
-
     fun onSendNewComment(message: String) {
-        _newComment.value = Comment(
+        val newComment = Comment(
             uid = userInfo!!.uid,
             content = message
         )
+        sendComment(newComment)
     }
 
-    fun sendComment(docId: String, comment: Comment) {
+    fun sendComment(comment: Comment) {
         coroutineScope.launch {
 
             when (
                 val result = repository.sendComment(
                     collection = PATH_EVENT_POST,
-                    docId = docId,
+                    docId = onEventDisplaying.value!!.id,
                     comment = comment,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
                 )
@@ -592,5 +584,48 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
     fun navigateToProfileComplete() {
         _targetUser.value = null
+    }
+
+    fun blockThisUser(target: UserProfile) {
+        _status.value = LoadApiStatus.LOADING
+
+        coroutineScope.launch {
+            when (val result = repository.updateFieldValue(
+                collection = Const.PATH_USER,
+                docId = UserManager.weShareUser!!.uid,
+                field = Const.FIELD_USER_BLACKLIST,
+                value = FieldValue.arrayUnion(target.uid)
+            )
+            ) {
+                is Result.Success -> {
+
+                    UserManager.userBlackList.add(target.uid)
+                    blockUserComplete.value = target
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    fun filterComment(){
+        _filteredComments.value =
+            liveComments.value?.filterNot { UserManager.userBlackList.contains(it.uid) }
+    }
+
+    fun refreshCommentBoard() {
+        filterComment()
+
+        blockUserComplete.value = null
     }
 }

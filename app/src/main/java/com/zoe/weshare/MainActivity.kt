@@ -204,7 +204,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-
                     findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToHomeFragment())
                     return@setOnItemSelectedListener true
                 }

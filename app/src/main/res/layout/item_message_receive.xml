@@ -33,7 +33,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="4dp"
         app:cardCornerRadius="16dp"
-        app:strokeColor="@color/app_work_orange2"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/base_target_image"
@@ -41,8 +40,8 @@
 
         <TextView
             android:id="@+id/text_message"
+            android:background="@color/background_material_light"
             style="@style/chatroom_message_textview"
-            android:background="@drawable/shape_dialog_round"
             tools:text="mesagemessagemesaagemessageagemessageagemessageagemessageagemessageagemessageagemessagegemessageagemessageagemessage." />
     </com.google.android.material.card.MaterialCardView>
 

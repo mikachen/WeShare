@@ -56,7 +56,7 @@
         android:elevation="1dp"
         android:paddingBottom="8dp"
         android:layout_height="0dp"
-        android:background="@color/white"
+        android:background="@color/home_background_grey"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/layout_send_tool"
         app:layout_constraintEnd_toEndOf="parent"

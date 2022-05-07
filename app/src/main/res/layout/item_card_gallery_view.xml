@@ -18,7 +18,7 @@
 
         <ImageView
             android:id="@+id/image"
-            android:layout_width="150dp"
+            android:layout_width="130dp"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             tools:src="@drawable/upload_image_holder"

@@ -138,9 +138,7 @@
 
     <action
         android:id="@+id/navigate_to_roomlist_fragment"
-        app:destination="@id/roomListFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true" />
+        app:destination="@id/roomListFragment" />
 
     <action
         android:id="@+id/action_global_profileFragment"

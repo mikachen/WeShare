@@ -2,7 +2,6 @@ package com.zoe.weshare.detail.event
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -60,12 +59,6 @@ class EventDetailFragment : Fragment() {
             viewModel.updateEventStatus(it)
         }
 
-        viewModel.newComment.observe(viewLifecycleOwner) {
-            if (it != null) {
-                viewModel.sendComment(selectedEvent.id, it)
-            }
-        }
-
         viewModel.userAttendType.observe(viewLifecycleOwner) {
             if (it == FIELD_EVENT_ATTENDEE) {
                 viewModel.onSaveOperateLog(
@@ -103,25 +96,17 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        viewModel.currentLikedNumber.observe(viewLifecycleOwner) {
-            binding.textLikedNumber.text = resources.getString(R.string.number_who_liked, it)
-        }
-
-        viewModel.isUserPressedLike.observe(viewLifecycleOwner) {
-            binding.buttonPressLike.isChecked = it
-        }
-
-        viewModel.currentLikedNumber.observe(viewLifecycleOwner) {
-            binding.textLikedNumber.text = resources.getString(R.string.number_who_liked, it)
-        }
 
         viewModel.liveComments.observe(viewLifecycleOwner) {
+            viewModel.filterComment()
+        }
+        viewModel.filteredComments.observe(viewLifecycleOwner){
             viewModel.searchUsersProfile(it)
         }
 
-        viewModel.onProfileSearch.observe(viewLifecycleOwner) {
+        viewModel.onProfileSearchComplete.observe(viewLifecycleOwner) {
             if (it == 0) {
-                adapter.submitList(viewModel.liveComments.value) {
+                adapter.submitList(viewModel.filteredComments.value) {
                     commentsBoard.post {
                         commentsBoard.scrollToPosition(adapter.itemCount - 1)
                     }
@@ -143,6 +128,15 @@ class EventDetailFragment : Fragment() {
                 sendNotificationsToFollowers(it)
             }
         }
+
+        viewModel.blockUserComplete.observe(viewLifecycleOwner){
+            it?.let{
+                Toast.makeText(requireContext(),"已封鎖用戶",Toast.LENGTH_SHORT).show()
+
+                viewModel.refreshCommentBoard()
+            }
+        }
+
 
         return binding.root
     }
@@ -208,7 +202,7 @@ class EventDetailFragment : Fragment() {
     private fun setupView(event: EventPost) {
 
         commentsBoard = binding.commentsRecyclerView
-        adapter = EventCommentsAdapter(viewModel)
+        adapter = EventCommentsAdapter(viewModel, requireContext())
         commentsBoard.adapter = adapter
 
         binding.apply {
@@ -235,6 +229,8 @@ class EventDetailFragment : Fragment() {
 
             textLikedNumber.text =
                 getString(R.string.number_who_liked, event.whoLiked.size)
+
+            buttonPressLike.isChecked = event.whoLiked.contains(weShareUser!!.uid) == true
 
             textEventDescription.text = event.description
 
@@ -282,7 +278,7 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-    private fun setupLikeBtn(selectedEvent: EventPost) {
+    private fun setupLikeBtn(event: EventPost) {
         val scaleAnimation = ScaleAnimation(
             0.7f,
             1.0f,
@@ -301,7 +297,7 @@ class EventDetailFragment : Fragment() {
 
             it.startAnimation(scaleAnimation)
 
-            viewModel.onPostLikePressed(selectedEvent.id)
+            viewModel.onPostLikePressed(event.id, event.whoLiked.contains(weShareUser!!.uid))
             playCreditScene()
         }
 

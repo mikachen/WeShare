@@ -47,6 +47,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/home_background_grey"
         app:layout_constraintTop_toBottomOf="@id/notification_tabs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

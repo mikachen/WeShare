@@ -57,7 +57,6 @@ class GiftDetailFragment : Fragment() {
 
         viewModel.filteredComments.observe(viewLifecycleOwner) {
             adapter.submitList(it)
-//            adapter.notifyDataSetChanged()
 
             // make sure it only run one time
             if (viewModel.onProfileSearchComplete.value == null) {

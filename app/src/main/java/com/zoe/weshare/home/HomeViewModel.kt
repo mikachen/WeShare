@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     var allLogs = MutableLiveData<List<OperationLog>>()
-
     var filteredLogs = MutableLiveData<List<OperationLog>>()
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
@@ -67,7 +66,11 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     fun onFilteringLog(list: List<OperationLog>){
-        filteredLogs.value = list.filter { it.logType != LogType.FOLLOWING.value}
+        list.filter { it.logType != LogType.REQUEST_GIFT.value}
+        list.filter { it.logType != LogType.FOLLOWING.value}
+        list.filter { it.logType != LogType.ABANDONED_GIFT.value}
+
+        filteredLogs.value = list
     }
 
     private fun getGiftsResult() {
