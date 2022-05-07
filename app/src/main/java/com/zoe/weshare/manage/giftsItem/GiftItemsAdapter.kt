@@ -38,7 +38,7 @@ class GiftItemsAdapter(
             when (gift.status) {
                 GiftStatusType.OPENING.code -> {
                     binding.textStatus.text = GiftStatusType.OPENING.tag
-                    binding.textStatus.setBackgroundResource(R.color.app_work_light_green)
+                    binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
                 }
                 GiftStatusType.CLOSED.code -> {
                     binding.buttonAbandon.visibility = View.GONE

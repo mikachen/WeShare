@@ -65,6 +65,9 @@ android {
 
 dependencies {
 
+
+    implementation 'com.github.jd-alexander:LikeButton:0.2.3'
+
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
 
     implementation 'com.chauthai.swipereveallayout:swipe-reveal-layout:1.4.1'

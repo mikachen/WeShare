@@ -225,6 +225,10 @@ class HomeFragment : Fragment(),View.OnClickListener {
             }
         }
         counter++
+
+        if(counter == 4){
+            counter = 0
+        }
     }
 
     private fun setAlpha(alpha: Float, vararg views: View) {

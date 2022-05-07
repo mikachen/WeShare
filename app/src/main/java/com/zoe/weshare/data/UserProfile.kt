@@ -11,4 +11,5 @@ data class UserProfile(
     var follower: List<String> = emptyList(),
     var following: List<String> = emptyList(),
     var introMsg: String = "",
+    var blackList: MutableList<String> = mutableListOf()
 ):Parcelable

@@ -43,11 +43,7 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
             }
 
 
-            if (isUserLikeBefore) {
-                buttonCommentLike.setTextColor(Util.getColor(R.color.lightBlueTestColor))
-            } else {
-                buttonCommentLike.setTextColor(Util.getColor(R.color.greyTestColor))
-            }
+            buttonCommentLike.isLiked = isUserLikeBefore
 
             buttonCommentLike.setOnClickListener {
                 viewModel.onCommentsLikePressed(comment, isUserLikeBefore)

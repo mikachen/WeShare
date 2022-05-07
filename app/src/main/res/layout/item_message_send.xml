@@ -2,19 +2,31 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="8dp"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginEnd="8dp"
-    android:layout_height="wrap_content">
+    android:paddingTop="8dp">
 
 
-    <TextView
-        android:id="@+id/text_message"
-        style="@style/chatroom_message_textview"
-        android:background="@drawable/outgoing_speed_bubble"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/layout_text_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="mesagemessagemesaagemessageagemessageagemessageagemessageagemessageagemessageagemessagegemessageagemessageagemessage." />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text_message"
+            style="@style/chatroom_message_textview"
+            android:background="@drawable/outgoing_speed_bubble"
+            android:textColor="@color/white"
+            tools:text="mesagemessagemesaagemessageagemessageagemessageagemessageagemessageagemessageagemessagegemessageagemessageagemessage." />
+
+    </com.google.android.material.card.MaterialCardView>
 
 
     <TextView
@@ -23,8 +35,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="@id/text_message"
-        app:layout_constraintEnd_toStartOf="@id/text_message"
+        app:layout_constraintBottom_toBottomOf="@id/layout_text_message"
+        app:layout_constraintEnd_toStartOf="@id/layout_text_message"
         tools:text="9:11" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

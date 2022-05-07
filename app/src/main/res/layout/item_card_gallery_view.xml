@@ -21,7 +21,7 @@
             android:layout_width="150dp"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/upload_image_holder"
+            tools:src="@drawable/upload_image_holder"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,15 +42,12 @@
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <ImageView
             android:id="@+id/title_posted_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:letterSpacing="0.08"
-            android:text="@string/preview_location_title"
-            android:textColor="@color/black"
-            android:textSize="14sp"
+            android:layout_width="22dp"
+            android:layout_marginTop="16dp"
+            android:layout_height="22dp"
+            android:src="@drawable/ic_pin"
             app:layout_constraintStart_toStartOf="@id/text_title"
             app:layout_constraintTop_toBottomOf="@id/text_title" />
 
@@ -70,15 +67,12 @@
             app:layout_constraintTop_toBottomOf="@id/title_posted_location"
             tools:text="台北西門" />
 
-        <TextView
+        <ImageView
             android:id="@+id/title_posted_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginTop="12dp"
-            android:letterSpacing="0.08"
-            android:text="@string/title_posted_time"
-            android:textColor="@color/black"
-            android:textSize="14sp"
+            android:src="@drawable/ic_clock"
             app:layout_constraintStart_toStartOf="@id/text_title"
             app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
 
@@ -95,9 +89,9 @@
 
         <ToggleButton
             android:id="@+id/button_addition_heart2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_margin="8dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="10dp"
             android:background="@drawable/button_toggle_like"
             android:text=""
             android:textOff=""

@@ -18,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -50,17 +51,24 @@
 
     </androidx.cardview.widget.CardView>
 
-    <ImageView
+
+    <FrameLayout
         android:id="@+id/button_settings"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_baseline_settings_24"
+        android:layout_marginEnd="8dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_user_header"
-        tools:visibility="visible" />
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_baseline_settings_24" />
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/base_info_text"
@@ -279,7 +287,6 @@
                 android:id="@+id/text_event_volunteer_count"
                 style="@style/profile_userlog_count"
                 android:text="@string/profile_defult_zero_count" />
-            tools:text="32" />
 
             <TextView
                 android:id="@+id/title_event_volunteer_count"
@@ -289,6 +296,42 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:visibility="visible"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear_base_social_status2">
+
+        <Button
+            android:id="@+id/lora"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lora" />
+
+        <Button
+            android:id="@+id/ken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ken" />
+
+        <Button
+            android:id="@+id/amy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amy" />
+
+        <Button
+            android:id="@+id/mandy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mandy" />
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

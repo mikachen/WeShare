@@ -33,6 +33,7 @@ class EventDetailFragment : Fragment() {
     private lateinit var binding: FragmentEventDetailBinding
     private lateinit var adapter: EventCommentsAdapter
     private lateinit var commentsBoard: RecyclerView
+    private lateinit var selectedEvent: EventPost
 
     val viewModel by viewModels<EventDetailViewModel> { getVmFactory(weShareUser) }
 
@@ -43,7 +44,7 @@ class EventDetailFragment : Fragment() {
     ): View? {
         binding = FragmentEventDetailBinding.inflate(inflater, container, false)
 
-        val selectedEvent = EventDetailFragmentArgs.fromBundle(requireArguments()).selectedEvent
+        selectedEvent = EventDetailFragmentArgs.fromBundle(requireArguments()).selectedEvent
 
         viewModel.onViewPrepare(selectedEvent)
 
@@ -253,10 +254,10 @@ class EventDetailFragment : Fragment() {
 
             when (event.status) {
                 EventStatusType.WAITING.code ->
-                    countDownTimer(event.startTime - System.currentTimeMillis()).start()
+                    countDownTimer(event.startTime - System.currentTimeMillis(),"開始").start()
 
                 EventStatusType.ONGOING.code ->
-                    countDownTimer(event.endTime - System.currentTimeMillis()).start()
+                    countDownTimer(event.endTime - System.currentTimeMillis(),"結束").start()
 
                 else -> binding.textCountdownTime.text = ""
             }
@@ -265,7 +266,7 @@ class EventDetailFragment : Fragment() {
         when (true) {
             (event.status == EventStatusType.WAITING.code) -> {
                 binding.textStatus.text = EventStatusType.WAITING.tag
-                binding.textStatus.setBackgroundResource(R.color.app_work_light_green)
+                binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
             }
             (event.status == EventStatusType.ONGOING.code) -> {
                 binding.textStatus.text = EventStatusType.ONGOING.tag
@@ -324,18 +325,19 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-    private fun countDownTimer(millisInFuture: Long): CountDownTimer {
+    private fun countDownTimer(millisInFuture: Long, state :String): CountDownTimer {
 
         return object : CountDownTimer(millisInFuture, 1000) {
             override fun onTick(millisUntilFinished: Long) {
 
-                val timeRemaining = getCountDownTimeString(millisUntilFinished)
+                val timeRemaining = getCountDownTimeString(millisUntilFinished,state)
 
                 binding.textCountdownTime.text = timeRemaining
             }
 
             override fun onFinish() {
-                binding.textCountdownTime.text = "活動開始"
+                binding.textCountdownTime.text = ""
+                viewModel.checkEventStatus(selectedEvent)
             }
         }
     }

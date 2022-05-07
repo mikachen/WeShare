@@ -18,23 +18,30 @@
         android:elevation="0dp"
         android:background="@drawable/transparent_gradient_background">
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/toolbar_arrow_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_baseline_arrow_back_ios_new_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_gravity="center"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_baseline_arrow_back_ios_new_24"
+            />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/text_room_target_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="24sp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintStart_toEndOf="@id/toolbar_arrow_back"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,8 +54,9 @@
         android:id="@+id/messages_recycler_view"
         android:layout_width="match_parent"
         android:elevation="1dp"
+        android:paddingBottom="8dp"
         android:layout_height="0dp"
-        android:background="@drawable/chatroom_background"
+        android:background="@color/white"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/layout_send_tool"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,14 +68,15 @@
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:dividerColor="@color/app_work_orange4"
+        android:elevation="1dp"
+        app:dividerColor="@color/app_work_orange1"
         app:layout_constraintBottom_toBottomOf="@id/messages_recycler_view"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_send_tool"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:elevation="3dp"
+        android:elevation="1dp"
         android:background="@color/background_material_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

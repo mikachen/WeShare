@@ -72,7 +72,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
         }
 
 
-        viewModel.saveLogComplete.observe(viewLifecycleOwner){
+        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
             sendNotificationsToFollowers(it)
 
             Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
@@ -83,7 +83,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    private fun setupBtn(){
+    private fun setupBtn() {
         binding.buttonCloseDialog.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -95,24 +95,24 @@ class DistributeFragment : BottomSheetDialogFragment() {
         builder.apply {
             setTitle(getString(R.string.send_gift_title, selectedGift.title, target!!.name))
             setMessage(getString(R.string.send_gift_message))
-            setPositiveButton(getString(R.string.send_gift_yes)) { dialog, _ ->
+            setPositiveButton(getString(R.string.confirm_yes)) { dialog, _ ->
                 viewModel.sendGift(selectedGift, target)
                 dialog.cancel()
             }
 
-            setNegativeButton(getString(R.string.send_gift_no)) { dialog, _ ->
+            setNegativeButton(getString(R.string.confirm_no)) { dialog, _ ->
                 dialog.cancel()
             }
         }
 
-        val alter: AlertDialog = builder.create()
-        alter.show()
+        builder.create().show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogBg)
+        setStyle(STYLE_NORMAL, R.style.DialogStyle)
     }
+
 
     // expanded all dialog view when keyboard pop up
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -134,6 +134,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
         }
 
         return dialog
+
     }
 
     private fun setupFullHeight(bottomSheet: View) {

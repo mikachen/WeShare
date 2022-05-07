@@ -28,7 +28,6 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
                 bindImage(image, data.image)
 
                 if(data.postType == EVENT_CARD){
-                    titlePostedTime.text = getString(R.string.preview_event_time_title)
                     textPostedTime.text = data.eventTime
                 }
             }

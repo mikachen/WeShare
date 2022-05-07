@@ -2,19 +2,14 @@ package com.zoe.weshare
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuItemCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -189,6 +184,9 @@ class MainActivity : AppCompatActivity() {
 
                 else -> viewModel.currentFragmentType.value
             }
+            if(isFabExpend) {
+                onMainFabClick()
+            }
         }
     }
 
@@ -242,13 +240,11 @@ class MainActivity : AppCompatActivity() {
         binding.layoutFabEvent.setOnClickListener {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostEventFragment())
-            onMainFabClick()
         }
 
         binding.layoutFabGift.setOnClickListener {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostGiftFragment())
-            onMainFabClick()
         }
     }
 
@@ -286,10 +282,9 @@ class MainActivity : AppCompatActivity() {
         if (!isFabExpend) {
             binding.layoutFabGift.visibility = View.VISIBLE
             binding.layoutFabEvent.visibility = View.VISIBLE
-        }
-        if (!isFabExpend) {
-            binding.layoutFabGift.visibility = View.INVISIBLE
-            binding.layoutFabEvent.visibility = View.INVISIBLE
+        }else {
+            binding.layoutFabGift.visibility = View.GONE
+            binding.layoutFabEvent.visibility = View.GONE
         }
     }
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -41,7 +42,7 @@ class GiftDetailFragment : Fragment() {
         viewModel.onGiftDisplay(selectedGift)
         viewModel.getAskForGiftComments(selectedGift.id)
 
-        adapter = GiftsCommentsAdapter(viewModel)
+        adapter = GiftsCommentsAdapter(viewModel,requireContext())
         binding.commentsRecyclerView.adapter = adapter
 
         viewModel.selectedGiftDisplay.observe(viewLifecycleOwner) {
@@ -54,22 +55,21 @@ class GiftDetailFragment : Fragment() {
             adapter.notifyItemChanged(it)
         }
 
-        viewModel.comments.observe(viewLifecycleOwner) {
+        viewModel.filteredComments.observe(viewLifecycleOwner) {
             adapter.submitList(it)
-
-            if (it != null) {
-                checkIfUserRequested(it)
-            }
-
-            if (it != null) {
-                binding.textRegistrantsNumber.text =
-                    getString(R.string.gift_registrants_number, it.size)
-            }
+//            adapter.notifyDataSetChanged()
 
             // make sure it only run one time
             if (viewModel.onProfileSearchComplete.value == null) {
                 viewModel.searchUsersProfile(it)
             }
+
+            if (!it.isNullOrEmpty()) {
+                setupRequestButton(it)
+                binding.textRegistrantsNumber.text =
+                    getString(R.string.gift_registrants_number, it.size)
+            }
+
         }
 
         // drawing the user avatar image and nickName after searching user's profile docs
@@ -118,6 +118,14 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
+        viewModel.blockUserComplete.observe(viewLifecycleOwner){
+            it?.let{
+                Toast.makeText(requireContext(),"已封鎖用戶",Toast.LENGTH_SHORT).show()
+
+                viewModel.refreshCommentBoard()
+            }
+        }
+
         return binding.root
     }
 
@@ -133,9 +141,7 @@ class GiftDetailFragment : Fragment() {
 
             textPostedLocation.text = gift.location?.locationName
 
-            textCreatedTime.text = getString(R.string.posted_time,
-                gift.createdTime.toDisplayFormat()
-            )
+            textCreatedTime.text = getString(R.string.posted_time, gift.createdTime.toDisplayFormat())
 
             textGiftSort.text = gift.sort
 
@@ -149,7 +155,7 @@ class GiftDetailFragment : Fragment() {
             when (gift.status) {
                 GiftStatusType.OPENING.code -> {
                     binding.textStatus.text = GiftStatusType.OPENING.tag
-                    binding.textStatus.setBackgroundResource(R.color.app_work_light_green)
+                    binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
                 }
                 GiftStatusType.CLOSED.code -> {
                     binding.imageLogoStatus.visibility = View.VISIBLE
@@ -198,7 +204,7 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-    private fun checkIfUserRequested(comments: List<Comment>) {
+    private fun setupRequestButton(comments: List<Comment>) {
         binding.buttonAskForGift.apply {
             when (comments.none { it.uid == weShareUser!!.uid }) {
                 true -> {

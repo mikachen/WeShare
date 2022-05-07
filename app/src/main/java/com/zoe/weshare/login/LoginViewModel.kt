@@ -121,6 +121,7 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
             uid = profile.uid
         )
         UserManager.weShareUser = user
+        UserManager.userBlackList = profile.blackList
 
         _loginSuccess.value = user
     }

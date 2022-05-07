@@ -30,12 +30,6 @@
     </style>
 
 
-    <style name="DialogStyle" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
-    </style>
-
     <style name="ProfileButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">90dp</item>
         <item name="android:layout_height">80dp</item>
@@ -55,13 +49,19 @@
         <item name="android:gravity">bottom|center_horizontal</item>
     </style>
 
-    <style name="BottomSheetDialogBg" parent="Theme.Design.Light.BottomSheetDialog">
+
+
+    <style name="DialogStyle" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
-        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="colorControlActivated">@color/app_work_orange1</item>
     </style>
+
     <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@drawable/shape_dialog_round</item>
     </style>
+
 
 </resources>

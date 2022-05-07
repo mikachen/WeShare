@@ -4,50 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="16dp"
     tools:context=".login.LoginFragment">
+
+    <TextView
+        android:id="@+id/text_welcom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/setofont"
+        android:text="歡迎使用"
+        android:textColor="@color/black"
+        android:textSize="44sp"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/welcome_logo"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="-40dp"
+        android:src="@drawable/logo_weshare"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_welcom"
+        app:tint="@color/black" />
+
+
+    <ImageView
+        android:id="@+id/welcome_sticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-50dp"
+        android:layout_marginHorizontal="24dp"
+        android:src="@drawable/welcome_page_gift"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome_logo" />
 
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/button_signin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:buttonSize="wide"
+        android:layout_marginTop="-30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="100dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/lora"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lora" />
-
-        <Button
-            android:id="@+id/ken"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ken" />
-
-        <Button
-            android:id="@+id/amy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Amy" />
-
-        <Button
-            android:id="@+id/mandy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mandy" />
-
-    </LinearLayout>
-
+        app:layout_constraintTop_toBottomOf="@id/welcome_sticker" />
 </androidx.constraintlayout.widget.ConstraintLayout>

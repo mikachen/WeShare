@@ -7,5 +7,5 @@
             android:centerColor="@color/app_work_orange2"
             android:endColor="@color/app_work_orange3"
             />
-        <corners android:radius="16dp" />
+        <corners android:radius="10dp" />
     </shape>

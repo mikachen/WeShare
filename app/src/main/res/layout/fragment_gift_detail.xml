@@ -211,8 +211,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="start"
+                    android:justificationMode="inter_word"
                     android:textColor="@color/black"
                     android:textSize="16sp"
+                    android:maxEms="20"
                     android:layout_marginEnd="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
@@ -325,7 +327,7 @@
 
 
                 <TextView
-                    android:id="@+id/title_people_who_asked"
+                    android:id="@+id/title_people_who_requested"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_who_requested"
@@ -349,11 +351,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:paddingBottom="8dp"
                     android:padding="4dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/title_people_who_asked"
+                    app:layout_constraintTop_toBottomOf="@id/title_people_who_requested"
                     tools:itemCount="8"
                     tools:listitem="@layout/item_comment_board" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -369,7 +372,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:elevation="10dp"
+        android:elevation="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
