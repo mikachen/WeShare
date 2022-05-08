@@ -138,9 +138,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
             }
     }
 
-    override suspend fun getEvents(): Result<List<EventPost>> = suspendCoroutine { continuation ->
+    override suspend fun getAllEvents(): Result<List<EventPost>> = suspendCoroutine { continuation ->
         FirebaseFirestore.getInstance()
-            .collection(PATH_EVENT_POST).orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+            .collection(PATH_EVENT_POST)
+            .whereNotEqualTo(FIELD_STATUS,2)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {

@@ -22,8 +22,8 @@ class DefaultWeShareRepository(
         return remoteDataSource.getAllGifts()
     }
 
-    override suspend fun getEvents(): Result<List<EventPost>> {
-        return remoteDataSource.getEvents()
+    override suspend fun getAllEvents(): Result<List<EventPost>> {
+        return remoteDataSource.getAllEvents()
     }
 
     override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>{

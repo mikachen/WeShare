@@ -222,13 +222,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun setupMapSettings() {
 
+
         map.uiSettings.setAllGesturesEnabled(true)
+
         map.uiSettings.isMyLocationButtonEnabled = true
 
-        map.setOnMyLocationButtonClickListener {
+        binding.btnGetUserLocation.setOnClickListener {
             getLastLocation()
-            true
         }
+
 
         map.setOnMarkerClickListener(this)
     }

@@ -17,6 +17,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_get_user_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_my_location_24"
+        app:layout_constraintBottom_toTopOf="@id/cards_recycleview"
+        app:maxImageSize="28dp"
+        app:backgroundTint="@color/app_work_orange1"
+        app:borderWidth="1dp"
+        android:backgroundTint="@color/white"
+        android:tint="@color/app_work_orange1"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="20dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cards_recycleview"
         android:layout_width="match_parent"

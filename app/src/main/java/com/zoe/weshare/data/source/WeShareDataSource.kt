@@ -14,7 +14,7 @@ interface WeShareDataSource {
     suspend fun postNewGift(gift: GiftPost): Result<String>
 
     suspend fun getAllGifts(): Result<List<GiftPost>>
-    suspend fun getEvents(): Result<List<EventPost>>
+    suspend fun getAllEvents(): Result<List<EventPost>>
 
 
     suspend fun getUserAllGiftsPosts(collection: String, uid: String): Result<List<GiftPost>>

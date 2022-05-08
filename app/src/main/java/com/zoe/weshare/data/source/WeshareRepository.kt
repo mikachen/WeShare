@@ -9,7 +9,7 @@ interface WeShareRepository {
     suspend fun postNewEvent(event: EventPost): Result<String>
     suspend fun postNewGift(gift: GiftPost): Result<String>
     suspend fun getAllGifts(): Result<List<GiftPost>>
-    suspend fun getEvents(): Result<List<EventPost>>
+    suspend fun getAllEvents(): Result<List<EventPost>>
 
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
 

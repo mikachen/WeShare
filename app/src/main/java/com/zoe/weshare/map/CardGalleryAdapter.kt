@@ -25,6 +25,7 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
                 textTitle.text = data.title
                 textPostedLocation.text = data.postLocation?.locationName
                 textPostedTime.text = data.createdTime.toDisplayFormat()
+                textDescriptionShort.text = data.description
                 bindImage(image, data.image)
 
                 if(data.postType == EVENT_CARD){

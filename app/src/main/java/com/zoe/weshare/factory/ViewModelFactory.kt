@@ -7,6 +7,7 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.home.HomeViewModel
 import com.zoe.weshare.login.LoginViewModel
 import com.zoe.weshare.map.MapViewModel
+import com.zoe.weshare.search.events.EventsAllViewModel
 import com.zoe.weshare.search.gifts.GiftsAllViewModel
 
 /**
@@ -14,7 +15,7 @@ import com.zoe.weshare.search.gifts.GiftsAllViewModel
  */
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory constructor(
-    private val repository: WeShareRepository
+    private val repository: WeShareRepository,
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel> create(modelClass: Class<T>) =
@@ -34,6 +35,9 @@ class ViewModelFactory constructor(
 
                 isAssignableFrom(GiftsAllViewModel::class.java) ->
                     GiftsAllViewModel(repository)
+
+                isAssignableFrom(EventsAllViewModel::class.java) ->
+                    EventsAllViewModel(repository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

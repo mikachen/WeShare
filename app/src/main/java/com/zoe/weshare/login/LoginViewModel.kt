@@ -51,6 +51,8 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
+                    Log.d("result.data","${result.data}")
+
                     if (result.data == null) {
                         onCreateNewUser(user)
                     } else {

@@ -2,6 +2,7 @@ package com.zoe.weshare.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -206,6 +207,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
         logTickerRv.adapter = tickerAdapter
         logTickerRv.layoutManager = manager
 
+        //disable user interact
+        logTickerRv.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                return true
+            }
+        })
+        
         val linearSnapHelper = LinearSnapHelper()
         linearSnapHelper.attachToRecyclerView(logTickerRv)
 

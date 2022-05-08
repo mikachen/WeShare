@@ -85,6 +85,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                 val newCard = Cards(
                     id = element.id,
                     title = element.title,
+                    description= element.description,
                     createdTime = element.createdTime,
                     eventTime = "",
                     postType = GIFT_CARD,
@@ -100,6 +101,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                 val newCard = Cards(
                     id = element.id,
                     title = element.title,
+                    description= element.description,
                     createdTime = element.createdTime,
                     eventTime = WeShareApplication.instance.getString(R.string.preview_event_time,
                         element.startTime.toDisplayDateFormat(),
@@ -112,7 +114,6 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
             }
             isEventCardsComplete = true
         }
-        Log.d("cardsViewList", "$cardsViewList")
         _cards.value = cardsViewList.shuffled()
     }
 
@@ -151,7 +152,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
     private fun getEventsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getEvents()
+            val result = repository.getAllEvents()
 
             _events.value = when (result) {
                 is Result.Success -> {

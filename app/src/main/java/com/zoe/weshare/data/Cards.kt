@@ -8,6 +8,7 @@ data class Cards(
 
     val id: String,
     val title: String,
+    val description: String,
     val createdTime: Long,
     val eventTime: String,
     val postType: Int,

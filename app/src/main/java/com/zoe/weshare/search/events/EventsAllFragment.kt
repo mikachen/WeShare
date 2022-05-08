@@ -1,7 +1,6 @@
-package com.zoe.weshare.search.gifts
+package com.zoe.weshare.search.events
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,36 +11,36 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.databinding.FragmentGiftsAllBinding
+import com.zoe.weshare.databinding.FragmentEventsAllBinding
 import com.zoe.weshare.ext.getVmFactory
 
-class GiftsAllFragment : Fragment() {
+class EventsAllFragment : Fragment() {
 
-    lateinit var binding: FragmentGiftsAllBinding
-    lateinit var adapter: GiftsAllAdapter
+    lateinit var binding: FragmentEventsAllBinding
+    lateinit var adapter: EventsAllAdapter
     lateinit var manager: GridLayoutManager
     lateinit var recyclerView: RecyclerView
 
-    val viewModel by viewModels<GiftsAllViewModel> { getVmFactory() }
+    val viewModel by viewModels<EventsAllViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentGiftsAllBinding.inflate(inflater, container, false)
+        binding = FragmentEventsAllBinding.inflate(inflater, container, false)
 
 
-        viewModel.gifts.observe(viewLifecycleOwner) {
+        viewModel.events.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
         }
 
-        viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
+        viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
-                viewModel.onNavigateGiftDetailsComplete()
+                findNavController().navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
+                viewModel.onNavigateEventDetailsComplete()
 
-                binding.giftsSearchview.apply {
+                binding.eventsSearchview.apply {
                     isIconified = true
                     setQuery("", false)
                 }
@@ -49,6 +48,7 @@ class GiftsAllFragment : Fragment() {
         }
 
         viewModel.onSearchEmpty.observe(viewLifecycleOwner) {
+
             it?.let {
                 if (it) {
                     binding.hintNoItem.visibility = View.VISIBLE
@@ -64,8 +64,8 @@ class GiftsAllFragment : Fragment() {
 
     fun setupView() {
 
-        adapter = GiftsAllAdapter(GiftsAllAdapter.GiftsALLOnClickListener { selectedGift ->
-            viewModel.onNavigateGiftDetails(selectedGift)
+        adapter = EventsAllAdapter(EventsAllAdapter.EventsAllOnClickListener { selectedEvent ->
+            viewModel.onNavigateEventDetails(selectedEvent)
         })
 
         manager = GridLayoutManager(requireContext(), 2)
@@ -74,11 +74,11 @@ class GiftsAllFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = manager
 
-        binding.giftsSearchview.setOnClickListener {
-            binding.giftsSearchview.isIconified = false
+        binding.eventsSearchview.setOnClickListener {
+            binding.eventsSearchview.isIconified = false
         }
 
-        binding.giftsSearchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.eventsSearchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
 
@@ -92,4 +92,5 @@ class GiftsAllFragment : Fragment() {
 
         })
     }
+
 }

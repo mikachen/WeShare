@@ -235,7 +235,7 @@
         tools:layout="@layout/fragment_gifts_all" />
     <fragment
         android:id="@+id/eventsAllFragment"
-        android:name="com.zoe.weshare.search.EventsAllFragment"
+        android:name="com.zoe.weshare.search.events.EventsAllFragment"
         android:label="fragment_events_all"
         tools:layout="@layout/fragment_events_all" />
     <action

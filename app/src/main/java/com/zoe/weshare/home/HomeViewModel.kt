@@ -106,7 +106,7 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     private fun getEventsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getEvents()
+            val result = repository.getAllEvents()
 
             _events.value = when (result) {
                 is Result.Success -> {

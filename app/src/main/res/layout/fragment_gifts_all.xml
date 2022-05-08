@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="暫時找不到相關贈品\n嘗試搜尋其他關鍵字？\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05"
+            android:text="暫時找不到相關贈品\n嘗試搜尋其他關鍵字吧？\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05"
             android:textSize="18sp" />
 
     </LinearLayout>

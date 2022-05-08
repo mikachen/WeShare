@@ -32,12 +32,13 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="fitCenter"
+                    android:layout_marginStart="20dp"
                     android:src="@drawable/logo_weshare"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:visibility="invisible" />
+                    tools:visibility="visible" />
 
                 <FrameLayout
                     android:id="@+id/notification"

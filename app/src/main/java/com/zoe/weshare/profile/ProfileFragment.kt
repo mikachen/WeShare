@@ -17,6 +17,7 @@ import com.zoe.weshare.databinding.FragmentProfileBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class ProfileFragment : Fragment() {
@@ -69,6 +70,7 @@ class ProfileFragment : Fragment() {
         }
 
         mockUser()
+        mockUser2()
         setupBtn()
         return binding.root
     }
@@ -185,4 +187,40 @@ class ProfileFragment : Fragment() {
             }
         }
     }
+    fun mockUser2() {
+
+        binding.apply {
+
+            A.setOnClickListener {
+                UserManager.weShareUser = UserInfo(
+                    name = "Johnny",
+                    image = "https://img.tagsis.com/202204/96045.jpg",
+                    uid = "12344408Johnny62583"
+                )
+            }
+            B.setOnClickListener {
+                UserManager.weShareUser = UserInfo(
+                    name = "迅姐",
+                    image = "https://www.laoziliao.net/fs/img/3e/3e1885f8708c208ab875033e3e5e3e8f.webp",
+                    uid = " 12343j0000ZhouXun111"
+                )
+            }
+
+            C.setOnClickListener {
+                UserManager.weShareUser = UserInfo(
+                    name = "小傑",
+                    image = "https://images.chinatimes.com/newsphoto/2021-05-25/656/20210525003814.jpg",
+                    uid = "100000Chiang2123212"
+                )
+            }
+            D.setOnClickListener {
+                UserManager.weShareUser = UserInfo(
+                    name = "艾瑪",
+                    image = "https://image.knowing.asia/c4f9ba3d-78f0-4c0e-828a-58eb5ede41ea/70eed7080b3bc4791fe83d798c08a210.png",
+                    uid = "98666Emma1ji332583"
+                )
+            }
+        }
+    }
+
 }

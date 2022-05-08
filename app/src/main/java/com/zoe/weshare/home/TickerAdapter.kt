@@ -39,9 +39,6 @@ class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(
 
     }
 
-//    class HotGiftsOnClickListener(val doNothing: (gift: GiftPost) -> Unit) {
-//        fun onClick(selectedGift: GiftPost) = doNothing(selectedGift)
-//    }
 
     companion object DiffCallback : DiffUtil.ItemCallback<OperationLog>() {
         override fun areItemsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {

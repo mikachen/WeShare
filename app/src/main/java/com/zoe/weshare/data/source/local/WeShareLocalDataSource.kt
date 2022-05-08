@@ -21,6 +21,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getAllEvents(): Result<List<EventPost>> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean> {
         TODO("Not yet implemented")
     }
@@ -33,9 +37,6 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getEvents(): Result<List<EventPost>> {
-        TODO("Not yet implemented")
-    }
 
     override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?> {
         TODO("Not yet implemented")

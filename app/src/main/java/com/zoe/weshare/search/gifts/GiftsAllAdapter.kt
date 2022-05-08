@@ -1,6 +1,5 @@
 package com.zoe.weshare.search.gifts
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -12,11 +11,11 @@ import com.zoe.weshare.ext.bindImage
 import java.util.*
 
 class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
-    ListAdapter<GiftPost, GiftsAllAdapter.ALLGiftsViewHolder>(DiffCallback) {
+    ListAdapter<GiftPost, GiftsAllAdapter.AllGiftsViewHolder>(DiffCallback) {
 
     private var unfilteredList = listOf<GiftPost>()
 
-    class ALLGiftsViewHolder(var binding: ItemHotGiftGridBinding) :
+    class AllGiftsViewHolder(var binding: ItemHotGiftGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(gift: GiftPost) {
             binding.apply {
@@ -27,10 +26,10 @@ class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
         }
 
         companion object {
-            fun from(parent: ViewGroup): ALLGiftsViewHolder {
+            fun from(parent: ViewGroup): AllGiftsViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
 
-                return ALLGiftsViewHolder(
+                return AllGiftsViewHolder(
                     ItemHotGiftGridBinding
                         .inflate(layoutInflater, parent, false)
                 )
@@ -38,7 +37,7 @@ class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
         }
     }
 
-    override fun onBindViewHolder(holder: ALLGiftsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AllGiftsViewHolder, position: Int) {
         val data = getItem(position)
         holder.bind(data)
 
@@ -47,8 +46,8 @@ class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ALLGiftsViewHolder {
-        return ALLGiftsViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllGiftsViewHolder {
+        return AllGiftsViewHolder.from(parent)
     }
 
 
