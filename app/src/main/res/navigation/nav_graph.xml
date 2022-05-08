@@ -192,14 +192,6 @@
 
 
     <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.zoe.weshare.notification.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
-    <action
-        android:id="@+id/action_global_searchFragment"
-        app:destination="@id/searchFragment" />
-    <fragment
         android:id="@+id/notificationFragment"
         android:name="com.zoe.weshare.notification.NotificationFragment"
         android:label="fragment_notification"
@@ -236,6 +228,22 @@
     <action
         android:id="@+id/action_global_giftManageFragment"
         app:destination="@id/giftManageFragment" />
+    <fragment
+        android:id="@+id/giftsAllFragment"
+        android:name="com.zoe.weshare.search.gifts.GiftsAllFragment"
+        android:label="fragment_gifts_all"
+        tools:layout="@layout/fragment_gifts_all" />
+    <fragment
+        android:id="@+id/eventsAllFragment"
+        android:name="com.zoe.weshare.search.EventsAllFragment"
+        android:label="fragment_events_all"
+        tools:layout="@layout/fragment_events_all" />
+    <action
+        android:id="@+id/action_global_eventsAllFragment"
+        app:destination="@id/eventsAllFragment" />
+    <action
+        android:id="@+id/action_global_giftsAllFragment"
+        app:destination="@id/giftsAllFragment" />
 
 
 </navigation>

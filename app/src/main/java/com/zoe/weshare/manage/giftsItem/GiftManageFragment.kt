@@ -1,7 +1,6 @@
 package com.zoe.weshare.manage.giftsItem
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +37,7 @@ class GiftManageFragment : Fragment() {
     ): View? {
         binding = FragmentGiftManageBinding.inflate(inflater, container, false)
 
-        viewModel.onSearchGiftsDetail(currentTabPosition)
+        viewModel.getUserAllGiftsPosts(currentTabPosition)
 
 
         viewModel.giftsDisplay.observe(viewLifecycleOwner) {

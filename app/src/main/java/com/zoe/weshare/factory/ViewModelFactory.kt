@@ -7,6 +7,7 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.home.HomeViewModel
 import com.zoe.weshare.login.LoginViewModel
 import com.zoe.weshare.map.MapViewModel
+import com.zoe.weshare.search.gifts.GiftsAllViewModel
 
 /**
  * Factory for all ViewModels.
@@ -30,6 +31,9 @@ class ViewModelFactory constructor(
 
                 isAssignableFrom(LoginViewModel::class.java) ->
                     LoginViewModel(repository)
+
+                isAssignableFrom(GiftsAllViewModel::class.java) ->
+                    GiftsAllViewModel(repository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

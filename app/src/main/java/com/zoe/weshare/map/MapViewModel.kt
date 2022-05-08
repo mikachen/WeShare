@@ -119,7 +119,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
     private fun getGiftsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getGifts()
+            val result = repository.getAllGifts()
 
             _gifts.value = when (result) {
                 is Result.Success -> {

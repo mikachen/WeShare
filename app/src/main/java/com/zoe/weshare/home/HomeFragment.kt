@@ -1,11 +1,9 @@
 package com.zoe.weshare.home
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,8 +35,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var logTickerRv: RecyclerView
     private lateinit var tickerAdapter: TickerAdapter
     private lateinit var showcaseView: ShowcaseView
-
-    var isShowCaseOn = false
 
     val viewModel by viewModels<HomeViewModel> { getVmFactory() }
     private lateinit var binding: FragmentHomeBinding
@@ -104,16 +100,19 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private fun setupButton() {
         binding.buttonNewbieHint.setOnClickListener {
-            if (!isShowCaseOn){
                 setShowCase()
-            }
         }
-
+        binding.buttonCheckEvents.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalEventsAllFragment())
+        }
+        binding.buttonCheckGifts.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalGiftsAllFragment())
+        }
+        binding.buttonCurrentHeros.setOnClickListener {
+        }
     }
 
     fun setShowCase() {
-
-        val customButton = layoutInflater.inflate(R.layout.custom_button, null) as Button
 
         val lps = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
             ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -128,14 +127,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
             .setContentTitle("歡迎進入WeShare，恭喜您已成功地完成共享的第一步！")
             .setContentText("讓我為您做個操作介紹吧:)")
             .setOnClickListener(this)
-//            .hideOnTouchOutside()
-//            .replaceEndButton(customButton)
+            .hideOnTouchOutside()
             .build()
 
         showcaseView.setButtonPosition(lps)
         showcaseView.setButtonText("下一步")
-        isShowCaseOn = true
-
     }
 
     private fun setupHeaderGallery() {
@@ -186,7 +182,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         hotGiftsRv = binding.hotGiftRv
 
         hotGiftAdapter = HotGiftsAdapter(
-            HotGiftsAdapter.HotGiftsOnClickListener { selectedGift ->
+            HotGiftsAdapter.OnClickListener { selectedGift ->
                 viewModel.displayGiftDetails(selectedGift)
             }
         )
@@ -267,16 +263,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         if (counter == 6) {
             counter = 0
-            isShowCaseOn = false
         }
     }
-
-    private fun setAlpha(alpha: Float, vararg views: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            for (view in views) {
-                view.alpha = alpha
-            }
-        }
-    }
-
 }

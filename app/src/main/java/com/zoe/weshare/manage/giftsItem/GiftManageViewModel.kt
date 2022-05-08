@@ -59,11 +59,11 @@ class GiftManageViewModel(
     var gifts = listOf<GiftPost>()
 
 
-    fun onSearchGiftsDetail(position: Int) {
+    fun getUserAllGiftsPosts(position: Int) {
         coroutineScope.launch {
             _searchGiftsStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getUserHistoryPosts(
+            when (val result = repository.getUserAllGiftsPosts(
                 collection = PATH_GIFT_POST,
                 uid = userInfo!!.uid
             )) {
@@ -200,6 +200,6 @@ class GiftManageViewModel(
     }
 
     fun refreshFilterView(currentTabPosition: Int) {
-        onSearchGiftsDetail(currentTabPosition)
+        getUserAllGiftsPosts(currentTabPosition)
     }
 }

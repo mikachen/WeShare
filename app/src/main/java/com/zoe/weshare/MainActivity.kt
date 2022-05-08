@@ -181,6 +181,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.notificationFragment -> CurrentFragmentType.NOTIFICATION
                 R.id.loginFragment -> CurrentFragmentType.LOGIN
                 R.id.editInfoFragment -> CurrentFragmentType.EDITPROFILE
+                R.id.giftsAllFragment -> CurrentFragmentType.GIFTSALL
+                R.id.eventsAllFragment -> CurrentFragmentType.EVENTSALL
 
                 else -> viewModel.currentFragmentType.value
             }

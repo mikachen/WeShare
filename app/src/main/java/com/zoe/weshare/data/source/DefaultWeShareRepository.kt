@@ -18,8 +18,8 @@ class DefaultWeShareRepository(
         return remoteDataSource.postNewGift(gift)
     }
 
-    override suspend fun getGifts(): Result<List<GiftPost>> {
-        return remoteDataSource.getGifts()
+    override suspend fun getAllGifts(): Result<List<GiftPost>> {
+        return remoteDataSource.getAllGifts()
     }
 
     override suspend fun getEvents(): Result<List<EventPost>> {
@@ -119,11 +119,11 @@ class DefaultWeShareRepository(
         return remoteDataSource.getUserLog(uid)
     }
 
-    override suspend fun getUserHistoryPosts(
+    override suspend fun getUserAllGiftsPosts(
         collection: String,
         uid: String,
     ): Result<List<GiftPost>> {
-        return remoteDataSource.getUserHistoryPosts(collection, uid)
+        return remoteDataSource.getUserAllGiftsPosts(collection, uid)
     }
 
     override suspend fun updateGiftStatus(

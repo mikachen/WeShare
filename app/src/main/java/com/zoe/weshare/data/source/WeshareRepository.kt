@@ -8,7 +8,7 @@ import com.zoe.weshare.data.*
 interface WeShareRepository {
     suspend fun postNewEvent(event: EventPost): Result<String>
     suspend fun postNewGift(gift: GiftPost): Result<String>
-    suspend fun getGifts(): Result<List<GiftPost>>
+    suspend fun getAllGifts(): Result<List<GiftPost>>
     suspend fun getEvents(): Result<List<EventPost>>
 
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
@@ -60,7 +60,7 @@ interface WeShareRepository {
     ): Result<Boolean>
 
     suspend fun getUserLog(uid: String): Result<List<OperationLog>>
-    suspend fun getUserHistoryPosts(collection: String, uid: String): Result<List<GiftPost>>
+    suspend fun getUserAllGiftsPosts(collection: String, uid: String): Result<List<GiftPost>>
 
     suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean>
     suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String>

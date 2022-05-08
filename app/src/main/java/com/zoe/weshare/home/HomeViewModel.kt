@@ -50,8 +50,6 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     val navigateToSelectedEvent: LiveData<EventPost?>
         get() = _navigateToSelectedEvent
 
-    val cardsViewList = mutableListOf<Cards>()
-
     var isGiftCardsComplete: Boolean = false
     var isEventCardsComplete: Boolean = false
 
@@ -76,7 +74,7 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     private fun getGiftsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getGifts()
+            val result = repository.getAllGifts()
 
             _gifts.value = when (result) {
                 is Result.Success -> {
@@ -145,8 +143,8 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         _navigateToSelectedEvent.value = null
     }
 
-    fun displayGiftDetails(event: GiftPost) {
-        _navigateToSelectedGift.value = event
+    fun displayGiftDetails(gift: GiftPost) {
+        _navigateToSelectedGift.value = gift
     }
 
     fun displayGiftDetailsComplete() {

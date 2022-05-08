@@ -107,9 +107,10 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
-    override suspend fun getGifts(): Result<List<GiftPost>> = suspendCoroutine { continuation ->
+    override suspend fun getAllGifts(): Result<List<GiftPost>> = suspendCoroutine { continuation ->
         FirebaseFirestore.getInstance()
-            .collection(PATH_GIFT_POST).orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+            .collection(PATH_GIFT_POST)
+            .whereNotEqualTo(FIELD_STATUS,2)
             .get()
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -725,7 +726,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         return liveData
     }
 
-    override suspend fun getUserHistoryPosts(
+    override suspend fun getUserAllGiftsPosts(
         collection: String,
         uid: String,
     ): Result<List<GiftPost>> =
