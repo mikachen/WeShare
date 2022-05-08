@@ -39,6 +39,10 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
 
+            binding.imageProfileAvatar.setOnClickListener {
+                viewModel.onNavigateToTargetProfile(comment.uid)
+            }
+
             // displaying user's image and name
             if (viewModel.onProfileSearchComplete.value == 0) {
                 if (viewModel.profileList.isNotEmpty()) {

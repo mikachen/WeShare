@@ -104,7 +104,7 @@ fun Fragment.sendNotificationsToFollowers(log: OperationLog) {
 }
 
 
-fun Fragment.sendNotificationToAuthor(authorUid: String, log: OperationLog) {
+fun Fragment.sendNotificationToTarget(authorUid: String, log: OperationLog) {
     val intent = Intent(requireContext(), SendNotificationService::class.java)
     intent.putExtra(SEND_TO_AUTHOR_MSG, log)
     intent.putExtra(SEND_TO_AUTHOR_UID, authorUid)

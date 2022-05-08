@@ -24,9 +24,15 @@ class DistributeViewModel(
 
     lateinit var gift: GiftPost
 
+     var receiverNotification = MutableLiveData<OperationLog>()
+
     private var _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>>
         get() = _comments
+
+    private var _targetUser = MutableLiveData<UserInfo>()
+    val targetUser: LiveData<UserInfo>
+        get() = _targetUser
 
     private var _onProfileSearchComplete = MutableLiveData<Int>()
     val onProfileSearchComplete: LiveData<Int>
@@ -179,7 +185,21 @@ class DistributeViewModel(
                 onConfirmMsgShowing.value?.name ?: ""
             )
         )
+
+        val msgToGiftReceiver = OperationLog(
+            postDocId = gift.id,
+            logType = LogType.SEND_GIFT.value,
+            operatorUid = onConfirmMsgShowing.value!!.uid,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_receive_gift,
+                userInfo.name,
+                gift.title,
+            )
+        )
+
+        receiverNotification.value = msgToGiftReceiver
         saveSendGiftLog(log)
+
     }
 
     private fun saveSendGiftLog(log: OperationLog) {
@@ -205,5 +225,16 @@ class DistributeViewModel(
                 }
             }
         }
+    }
+
+    fun onNavigateToTargetProfile(uid: String) {
+        val target = UserInfo()
+        target.uid = uid
+
+        _targetUser.value = target
+    }
+
+    fun navigateToProfileComplete() {
+        _targetUser.value = null
     }
 }

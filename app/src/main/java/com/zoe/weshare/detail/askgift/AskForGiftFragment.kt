@@ -16,7 +16,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentAskForGiftBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.ext.sendNotificationToAuthor
+import com.zoe.weshare.ext.sendNotificationToTarget
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class AskForGiftFragment : BottomSheetDialogFragment() {
@@ -41,7 +41,7 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
 
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
             it?.let {
-                sendNotificationToAuthor(selectedGift.author!!.uid, it)
+                sendNotificationToTarget(selectedGift.author!!.uid, it)
 
                 findNavController().navigate(
                     NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift))

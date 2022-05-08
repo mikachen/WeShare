@@ -64,4 +64,14 @@
     </style>
 
 
+
+    //credit scene transparent background
+    <style name="BottomSheetDialogBg" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CreditDialog</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    <style name="CreditDialog" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
 </resources>

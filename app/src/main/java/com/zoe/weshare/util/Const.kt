@@ -19,12 +19,14 @@ object Const {
     const val FIELD_ROOM_PARTICIPANTS = "participants"
     const val FIELD_ROOM_USERS_INFO = "usersInfo"
 
-    const val FIELD_WHO_LIKED = "whoLiked"
     const val FIELD_STATUS = "status"
     const val FIELD_WHO_GET_GIFT = "whoGetGift"
     const val FIELD_OPERATOR_UID = "operatorUid"
+
+    const val FIELD_WHO_LIKED = "whoLiked"
     const val FIELD_EVENT_ATTENDEE = "whoAttended"
     const val FIELD_EVENT_VOLUNTEER = "whoVolunteer"
+    const val FIELD_EVENT_CHECKED_IN = "whoCheckedIn"
 
 
     const val FIELD_USER_FOLLOWER = "follower"

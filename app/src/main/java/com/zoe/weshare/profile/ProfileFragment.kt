@@ -128,6 +128,10 @@ class ProfileFragment : Fragment() {
 
             binding.buttonSettings.setOnClickListener {
                 showPopupMenu(it)
+
+                binding.mock1.visibility = View.VISIBLE
+                binding.mock2.visibility = View.VISIBLE
+
             }
         }
     }

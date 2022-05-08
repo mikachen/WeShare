@@ -1,11 +1,11 @@
 package com.zoe.weshare.map
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.maps.GoogleMap
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.Cards
@@ -24,6 +24,8 @@ const val GIFT_CARD = 0
 const val EVENT_CARD = 1
 
 class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
+
+    var googleMap: GoogleMap? = null
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>
@@ -85,7 +87,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                 val newCard = Cards(
                     id = element.id,
                     title = element.title,
-                    description= element.description,
+                    description = element.description,
                     createdTime = element.createdTime,
                     eventTime = "",
                     postType = GIFT_CARD,
@@ -101,7 +103,7 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                 val newCard = Cards(
                     id = element.id,
                     title = element.title,
-                    description= element.description,
+                    description = element.description,
                     createdTime = element.createdTime,
                     eventTime = WeShareApplication.instance.getString(R.string.preview_event_time,
                         element.startTime.toDisplayDateFormat(),
@@ -206,5 +208,9 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                 }
             }
         }
+    }
+
+    fun saveMapInfo(map: GoogleMap) {
+        googleMap = map
     }
 }

@@ -81,7 +81,7 @@ class CreditFragment : BottomSheetDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.DialogStyle)
+        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogBg)
     }
 
     private fun setupFullHeight(bottomSheet: View) {

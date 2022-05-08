@@ -1,7 +1,9 @@
 package com.zoe.weshare.detail.event
 
+import android.graphics.Point
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +11,16 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
+import android.widget.PopupMenu
 import android.widget.Toast
+import androidmads.library.qrgenearator.QRGContents
+import androidmads.library.qrgenearator.QRGEncoder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.google.zxing.WriterException
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
@@ -27,12 +34,17 @@ import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
 
+
 class EventDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentEventDetailBinding
     private lateinit var adapter: EventCommentsAdapter
     private lateinit var commentsBoard: RecyclerView
     private lateinit var selectedEvent: EventPost
+
+    var isUserAttend: Boolean = false
+    var isUserVolunteer: Boolean = false
+    var isUserCheckedIn: Boolean = false
 
     val viewModel by viewModels<EventDetailViewModel> { getVmFactory(weShareUser) }
 
@@ -44,10 +56,9 @@ class EventDetailFragment : Fragment() {
         binding = FragmentEventDetailBinding.inflate(inflater, container, false)
 
         selectedEvent = EventDetailFragmentArgs.fromBundle(requireArguments()).selectedEvent
-
         viewModel.onViewPrepare(selectedEvent)
 
-        viewModel.onEventDisplaying.observe(viewLifecycleOwner) {
+        viewModel.onEventLiveDisplaying.observe(viewLifecycleOwner) {
             it?.let {
                 setupView(it)
                 setupBtn(it)
@@ -55,7 +66,7 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        viewModel.eventStatusChanged.observe(viewLifecycleOwner) {
+        viewModel.statusTriggerChanged.observe(viewLifecycleOwner) {
             viewModel.updateEventStatus(it)
         }
 
@@ -83,24 +94,17 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        viewModel.updateRoomStatus.observe(viewLifecycleOwner) {
-            it?.let {
-                viewModel.getChatRoomInfo()
-            }
-        }
-
         viewModel.onNavigateToRoom.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalChatRoomFragment(it))
                 viewModel.navigateToRoomComplete()
+                findNavController().navigate(NavGraphDirections.actionGlobalChatRoomFragment(it))
             }
         }
-
 
         viewModel.liveComments.observe(viewLifecycleOwner) {
             viewModel.filterComment()
         }
-        viewModel.filteredComments.observe(viewLifecycleOwner){
+        viewModel.filteredComments.observe(viewLifecycleOwner) {
             viewModel.searchUsersProfile(it)
         }
 
@@ -114,24 +118,24 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        viewModel.targetUser.observe(viewLifecycleOwner){
+        viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
                 viewModel.navigateToProfileComplete()
             }
         }
 
-        viewModel.saveLogComplete.observe(viewLifecycleOwner){
-            if(it.logType == LogType.VOLUNTEER_EVENT.value){
-                sendNotificationToAuthor(selectedEvent.author!!.uid,it)
-            }else{
+        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
+            if (it.logType == LogType.VOLUNTEER_EVENT.value) {
+                sendNotificationToTarget(selectedEvent.author!!.uid, it)
+            } else {
                 sendNotificationsToFollowers(it)
             }
         }
 
-        viewModel.blockUserComplete.observe(viewLifecycleOwner){
-            it?.let{
-                Toast.makeText(requireContext(),"已封鎖用戶",Toast.LENGTH_SHORT).show()
+        viewModel.blockUserComplete.observe(viewLifecycleOwner) {
+            it?.let {
+                Toast.makeText(requireContext(), "已封鎖用戶", Toast.LENGTH_SHORT).show()
 
                 viewModel.refreshCommentBoard()
             }
@@ -141,65 +145,10 @@ class EventDetailFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupBtn(event: EventPost) {
-
-        binding.buttonSendComment.setOnClickListener {
-            onSendComment()
-        }
-
-        binding.editCommentBox.setOnKeyListener { _, keyCode, keyEvent ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {
-
-                onSendComment()
-
-                true
-            } else false
-        }
-
-        if (event.status == EventStatusType.ENDED.code) {
-
-            binding.layoutAttendeeButton.visibility = View.GONE
-
-        } else {
-            binding.buttonAttend.setOnClickListener {
-                viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
-            }
-            binding.buttonVolunteer.setOnClickListener {
-                viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
-            }
-        }
-
-        /**
-         * when user click on enter room :
-         * 1) getEventRoom
-         * 2) check if user has been in chat before
-         * 3) if true -> navigate to room
-         * 4) if false -> update room doc, return to (1~2~3 steps)
-         */
-
-        binding.buttonEnterEventChatroom.setOnClickListener {
-            viewModel.getChatRoomInfo()
-        }
-
-        binding.imageProfileAvatar.setOnClickListener {
-            findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(event.author))
-        }
-    }
-
-    private fun onSendComment() {
-        val message = binding.editCommentBox.text
-
-        if (message != null) {
-            if (message.isNotEmpty()) {
-                viewModel.onSendNewComment(message.toString())
-                message.clear()
-            } else {
-                Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     private fun setupView(event: EventPost) {
+        isUserAttend = event.whoAttended.contains(weShareUser!!.uid)
+        isUserVolunteer = event.whoVolunteer.contains(weShareUser!!.uid)
+        isUserCheckedIn = event.whoCheckedIn.contains(weShareUser!!.uid)
 
         commentsBoard = binding.commentsRecyclerView
         adapter = EventCommentsAdapter(viewModel, requireContext())
@@ -238,22 +187,16 @@ class EventDetailFragment : Fragment() {
                 event.startTime.toDisplayDateFormat(),
                 event.endTime.toDisplayDateFormat())
 
-            when (event.whoAttended.contains(weShareUser!!.uid)) {
-                true -> buttonAttend.text = "參與中"
-                false -> buttonAttend.text = "我要參加"
-            }
+            buttonAttend.isChecked = isUserAttend
 
-            when (event.whoVolunteer.contains(weShareUser!!.uid)) {
-                true -> buttonVolunteer.text = "已登記"
-                false -> buttonVolunteer.text = "志工參與"
-            }
+            buttonVolunteer.isChecked = isUserVolunteer
 
             when (event.status) {
                 EventStatusType.WAITING.code ->
-                    countDownTimer(event.startTime - System.currentTimeMillis(),"開始").start()
+                    countDownTimer(event.startTime - System.currentTimeMillis(), "開始").start()
 
                 EventStatusType.ONGOING.code ->
-                    countDownTimer(event.endTime - System.currentTimeMillis(),"結束").start()
+                    countDownTimer(event.endTime - System.currentTimeMillis(), "結束").start()
 
                 else -> binding.textCountdownTime.text = ""
             }
@@ -277,6 +220,169 @@ class EventDetailFragment : Fragment() {
             }
         }
     }
+
+    private fun setupBtn(event: EventPost) {
+
+        binding.buttonSendComment.setOnClickListener {
+            onSendComment()
+        }
+
+        binding.editCommentBox.setOnKeyListener { _, keyCode, keyEvent ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {
+
+                onSendComment()
+
+                true
+            } else false
+        }
+
+        if (event.status == EventStatusType.ENDED.code) {
+
+            binding.layoutAttendeeButton.visibility = View.GONE
+
+        } else {
+
+            if(isUserAttend){
+                binding.buttonAttend.setOnCheckedChangeListener { _, checked ->
+                    binding.buttonAttend.isChecked = !checked
+                }
+            }
+
+            if(isUserVolunteer){
+                binding.buttonVolunteer.setOnCheckedChangeListener { _, checked ->
+                    binding.buttonVolunteer.isChecked = !checked
+                }
+            }
+
+            binding.buttonAttend.setOnClickListener {
+                attendBtnClick()
+            }
+            binding.buttonVolunteer.setOnClickListener {
+                volunteerBtnClick()
+            }
+        }
+
+
+        binding.imageProfileAvatar.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(event.author))
+        }
+
+
+        binding.eventOut.setOnClickListener {
+            generateQrcode()
+        }
+    }
+
+    fun attendBtnClick() {
+        if (isUserAttend) {
+            showPopupMenu(binding.buttonAttend, 0)
+        } else {
+            viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
+        }
+    }
+
+    fun volunteerBtnClick() {
+        if (isUserVolunteer) {
+            showPopupMenu(binding.buttonVolunteer, 1)
+        } else {
+            viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
+        }
+    }
+
+    private fun showPopupMenu(view: View, adjustCode: Int) {
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.menuInflater.inflate(R.menu.event_more_menu, popupMenu.menu)
+
+
+        when (adjustCode) {
+
+            0 -> {
+                popupMenu.menu.removeItem(R.id.action_cancel_volunteer)
+                popupMenu.menu.removeItem(R.id.action_check_in)
+                popupMenu.menu.removeItem(R.id.action_enter_chatroom)
+            }
+
+            1 -> {
+                popupMenu.menu.removeItem(R.id.action_cancel_attend)
+            }
+
+        }
+
+
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_check_in -> {
+
+                    when (selectedEvent.status) {
+
+                        EventStatusType.WAITING.code -> {
+                            Toast.makeText(requireContext(), "活動尚未開始！不能簽到", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                        EventStatusType.ONGOING.code -> {
+                            findNavController().navigate(EventDetailFragmentDirections
+                                .actionEventDetailFragmentToEventCheckInFragment(selectedEvent))
+                        }
+
+                        else -> {}
+                    }
+                }
+
+
+                R.id.action_enter_chatroom -> viewModel.getChatRoomInfo()
+
+                R.id.action_cancel_volunteer -> {}
+
+                R.id.action_cancel_attend -> {}
+            }
+            false
+        }
+        popupMenu.show()
+    }
+
+
+    fun generateQrcode() {
+
+        val display = (activity as MainActivity).windowManager.defaultDisplay
+
+        val point = Point()
+        display.getSize(point)
+
+        val width: Int = point.x
+        val height: Int = point.y
+
+        // generating dimension from width and height.
+        var dimen = if (width < height) width else height
+        dimen = dimen * 3 / 4
+
+        val qrgEncoder = QRGEncoder("5PbKfTLSRUy2i17UThFY", null, QRGContents.Type.TEXT, dimen)
+        try {
+
+            val bitmap = qrgEncoder.encodeAsBitmap()
+
+            binding.images.setImageBitmap(bitmap)
+
+        } catch (e: WriterException) {
+            // this method is called for
+            // exception handling.
+            Log.e("Tag", e.toString())
+        }
+    }
+
+    private fun onSendComment() {
+        val message = binding.editCommentBox.text
+
+        if (message != null) {
+            if (message.isNotEmpty()) {
+                viewModel.onSendNewComment(message.toString())
+                message.clear()
+            } else {
+                Toast.makeText(requireContext(), "請填寫留言", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
     private fun setupLikeBtn(event: EventPost) {
         val scaleAnimation = ScaleAnimation(
@@ -321,12 +427,12 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-    private fun countDownTimer(millisInFuture: Long, state :String): CountDownTimer {
+    private fun countDownTimer(millisInFuture: Long, state: String): CountDownTimer {
 
         return object : CountDownTimer(millisInFuture, 1000) {
             override fun onTick(millisUntilFinished: Long) {
 
-                val timeRemaining = getCountDownTimeString(millisUntilFinished,state)
+                val timeRemaining = getCountDownTimeString(millisUntilFinished, state)
 
                 binding.textCountdownTime.text = timeRemaining
             }

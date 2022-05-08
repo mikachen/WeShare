@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/action_check_in"
+        android:title="簽到掃描"
+        app:showAsAction="never"/>
+
+
+    <item
+        android:id="@+id/action_enter_chatroom"
+        android:title="進入群聊"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_cancel_volunteer"
+        android:title="取消登記"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_cancel_attend"
+        android:title="取消參加"
+        app:showAsAction="never"/>
+
+</menu>

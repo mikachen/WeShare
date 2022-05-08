@@ -16,7 +16,6 @@ import com.zoe.weshare.util.Const.SUB_PATH_EVENT_USER_WHO_COMMENT
 import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.UserManager
-import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithStrParm
 import kotlinx.coroutines.CoroutineScope
@@ -28,7 +27,7 @@ import java.util.*
 class EventDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
 
-    var onEventDisplaying = MutableLiveData<EventPost?>()
+    var onEventLiveDisplaying = MutableLiveData<EventPost?>()
 
     var liveComments = MutableLiveData<List<Comment>>()
 
@@ -46,9 +45,9 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val targetUser: LiveData<UserInfo>
         get() = _targetUser
 
-    private var _eventStatusChanged = MutableLiveData<Int>()
-    val eventStatusChanged: LiveData<Int>
-        get() = _eventStatusChanged
+    private var _statusTriggerChanged = MutableLiveData<Int>()
+    val statusTriggerChanged: LiveData<Int>
+        get() = _statusTriggerChanged
 
     private var _onNavigateToRoom = MutableLiveData<ChatRoom?>()
     val onNavigateToRoom: LiveData<ChatRoom?>
@@ -58,15 +57,14 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val refreshStatus: LiveData<Boolean>
         get() = _refreshStatus
 
-    private var __onProfileSearchComplete = MutableLiveData<Int>()
+    private var _onProfileSearchComplete = MutableLiveData<Int>()
     val onProfileSearchComplete: LiveData<Int>
-        get() = __onProfileSearchComplete
+        get() = _onProfileSearchComplete
 
     val profileList = mutableListOf<UserProfile>()
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
 
     private val _saveLogComplete = MutableLiveData<OperationLog>()
     val saveLogComplete: LiveData<OperationLog>
@@ -76,8 +74,8 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    private val _updateRoomStatus = MutableLiveData<LoadApiStatus>()
-    val updateRoomStatus: LiveData<LoadApiStatus>
+    private val _updateRoomStatus = MutableLiveData<LoadApiStatus?>()
+    val updateRoomStatus: LiveData<LoadApiStatus?>
         get() = _updateRoomStatus
 
     private val _userAttendType = MutableLiveData<String>()
@@ -115,7 +113,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 }
             }
 
-            __onProfileSearchComplete.value = newUserUid.size
+            _onProfileSearchComplete.value = newUserUid.size
 
             for (uid in newUserUid) {
                 getUserInfo(uid)
@@ -149,7 +147,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     _status.value = LoadApiStatus.ERROR
                 }
             }
-            __onProfileSearchComplete.value = __onProfileSearchComplete.value?.minus(1)
+            _onProfileSearchComplete.value = _onProfileSearchComplete.value?.minus(1)
         }
     }
 
@@ -242,7 +240,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.sendComment(
                     collection = PATH_EVENT_POST,
-                    docId = onEventDisplaying.value!!.id,
+                    docId = onEventLiveDisplaying.value!!.id,
                     comment = comment,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
                 )
@@ -255,7 +253,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                         logMsg = WeShareApplication.instance.getString(
                             R.string.log_msg_send_event_comment,
                             userInfo!!.name,
-                            onEventDisplaying.value!!.title
+                            onEventLiveDisplaying.value!!.title
                         )
                     )
                 }
@@ -276,7 +274,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         val log = OperationLog(
             logType = logType,
             logMsg = logMsg,
-            postDocId = onEventDisplaying.value!!.id,
+            postDocId = onEventLiveDisplaying.value!!.id,
             operatorUid = userInfo!!.uid
         )
         saveLog(log)
@@ -318,7 +316,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.likeOnPostComment(
                     collection = PATH_EVENT_POST,
-                    docId = onEventDisplaying.value!!.id,
+                    docId = onEventLiveDisplaying.value!!.id,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT,
                     subDocId = subDoc,
                     uid = userInfo!!.uid
@@ -351,7 +349,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.cancelLikeOnPostComment(
                     collection = PATH_EVENT_POST,
-                    docId = onEventDisplaying.value!!.id,
+                    docId = onEventLiveDisplaying.value!!.id,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT,
                     subDocId = subDoc,
                     uid = userInfo!!.uid
@@ -383,7 +381,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
             when (val result = repository.updateFieldValue(
                 collection = PATH_EVENT_POST,
-                docId = onEventDisplaying.value!!.id,
+                docId = onEventLiveDisplaying.value!!.id,
                 field = fieldString,
                 value = FieldValue.arrayUnion(userInfo!!.uid)
             )) {
@@ -411,7 +409,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
     fun getLiveEventDetail(event: EventPost) {
 
-        onEventDisplaying = repository.getLiveEventDetail(docId = event.id)
+        onEventLiveDisplaying = repository.getLiveEventDetail(docId = event.id)
 
         _status.value = LoadApiStatus.DONE
         _refreshStatus.value = false
@@ -429,11 +427,20 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         _refreshStatus.value = false
     }
 
+
+    /**
+     * when user click on enter room :
+     * 1) getEventRoom
+     * 2) check if user has been in chat before
+     * 3) if true -> navigate to room
+     * 4) if false -> update room doc -> navigate to room
+     */
     fun getChatRoomInfo() {
         coroutineScope.launch {
-            when (val result = repository.getEventRoom(docId = onEventDisplaying.value!!.roomId)) {
+            when (val result = repository.getEventRoom(docId = onEventLiveDisplaying.value!!.roomId)) {
                 is Result.Success -> {
                     _error.value = null
+
                     _room.value = result.data
                 }
                 is Result.Fail -> {
@@ -449,19 +456,38 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun updateRoomParticipants() {
+    fun checkUserInRoomBefore(room: ChatRoom) {
+
+        if (room.participants.isNotEmpty()) {
+            if (room.participants.contains(userInfo!!.uid)) {
+
+                _onNavigateToRoom.value = room
+
+            } else {
+                // a new user never been in room before
+                updateRoomParticipants(room)
+            }
+        } else {
+            // the first user want to enter this room
+            updateRoomParticipants(room)
+        }
+    }
+
+    fun updateRoomParticipants(room: ChatRoom) {
         coroutineScope.launch {
             _updateRoomStatus.value = LoadApiStatus.LOADING
 
             when (
                 val result = repository.updateEventRoom(
-                    roomId = onEventDisplaying.value!!.roomId,
+                    roomId = onEventLiveDisplaying.value!!.roomId,
                     user = userInfo!!
                 )
             ) {
                 is Result.Success -> {
                     _error.value = null
                     _updateRoomStatus.value = LoadApiStatus.DONE
+
+                    _onNavigateToRoom.value = room
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -479,22 +505,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun checkUserInRoomBefore(room: ChatRoom) {
-
-        if (room.participants.isNotEmpty()) {
-            if (room.participants.contains(userInfo!!.uid)) {
-
-                _onNavigateToRoom.value = room
-
-            } else {
-                // a new user never been in room before
-                updateRoomParticipants()
-            }
-        } else {
-            // the first user want to enter this room
-            updateRoomParticipants()
-        }
-    }
 
     fun navigateToRoomComplete() {
         _updateRoomStatus.value = null
@@ -506,17 +516,17 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         when (true) {
             (event.startTime > Calendar.getInstance().timeInMillis) -> {
                 if (event.status != EventStatusType.WAITING.code) {
-                    _eventStatusChanged.value = EventStatusType.WAITING.code
+                    _statusTriggerChanged.value = EventStatusType.WAITING.code
                 }
             }
             (event.startTime < Calendar.getInstance().timeInMillis) -> {
                 if (event.endTime > Calendar.getInstance().timeInMillis) {
                     if (event.status != EventStatusType.ONGOING.code) {
-                        _eventStatusChanged.value = EventStatusType.ONGOING.code
+                        _statusTriggerChanged.value = EventStatusType.ONGOING.code
                     }
                 } else {
                     if (event.status != EventStatusType.ENDED.code) {
-                        _eventStatusChanged.value = EventStatusType.ENDED.code
+                        _statusTriggerChanged.value = EventStatusType.ENDED.code
                     }
                 }
             }
@@ -529,7 +539,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
             when (
                 val result = repository.updateEventStatus(
-                    docId = onEventDisplaying.value!!.id,
+                    docId = onEventLiveDisplaying.value!!.id,
                     code = newStatus
                 )
             ) {
@@ -553,7 +563,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     private fun onStatusChangedLog(status: Int) {
 
         val log = OperationLog(
-            postDocId = onEventDisplaying.value!!.id,
+            postDocId = onEventLiveDisplaying.value!!.id,
             operatorUid = userInfo!!.uid
         )
         when (status) {
@@ -561,14 +571,14 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 log.logType = LogType.EVENT_STARTED.value
                 log.logMsg = getStringWithStrParm(
                     R.string.log_msg_event_status_ongoing,
-                    onEventDisplaying.value!!.title
+                    onEventLiveDisplaying.value!!.title
                 )
             }
             EventStatusType.ENDED.code -> {
                 log.logType = LogType.EVENT_ENDED.value
                 log.logMsg = getStringWithStrParm(
                     R.string.log_msg_event_status_ended,
-                    onEventDisplaying.value!!.title
+                    onEventLiveDisplaying.value!!.title
                 )
             }
         }
@@ -628,4 +638,5 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
         blockUserComplete.value = null
     }
+
 }

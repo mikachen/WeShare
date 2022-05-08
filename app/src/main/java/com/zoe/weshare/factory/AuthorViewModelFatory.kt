@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.detail.askgift.AskForGiftViewModel
+import com.zoe.weshare.detail.checkin.CheckInViewModel
 import com.zoe.weshare.detail.event.EventDetailViewModel
 import com.zoe.weshare.detail.gift.GiftDetailViewModel
 import com.zoe.weshare.manage.distribution.DistributeViewModel
@@ -75,6 +76,10 @@ class AuthorViewModelFactory(
 
         if (modelClass.isAssignableFrom(NotificationViewModel::class.java)) {
             return NotificationViewModel(repository, userInfo) as T
+        }
+
+        if (modelClass.isAssignableFrom(CheckInViewModel::class.java)) {
+            return CheckInViewModel(repository, userInfo) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

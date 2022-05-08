@@ -21,6 +21,7 @@ data class EventPost(
     var status: Int = EventStatusType.WAITING.code,
     var whoLiked: List<String> = emptyList(),
     var whoAttended: List<String> = emptyList(),
-    var whoVolunteer: List<String> = emptyList()
+    var whoVolunteer: List<String> = emptyList(),
+    var whoCheckedIn: List<String> = emptyList(),
 
-) : Parcelable
+    ) : Parcelable

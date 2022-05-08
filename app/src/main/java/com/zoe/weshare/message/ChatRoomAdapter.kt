@@ -1,6 +1,7 @@
 package com.zoe.weshare.message
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -13,12 +14,14 @@ import com.zoe.weshare.databinding.ItemMessageReceiveBinding
 import com.zoe.weshare.databinding.ItemMessageSendBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
+import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
     ListAdapter<MessageItem, RecyclerView.ViewHolder>(DiffCallback) {
 
     var targetUsersList = listOf<UserInfo>()
+    var roomType: Int = -1
 
     init {
         getTargetUsers(chatRoom)
@@ -26,6 +29,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     fun getTargetUsers(room: ChatRoom) {
         targetUsersList = room.usersInfo.filter { it.uid != weShareUser!!.uid }
+        roomType = room.type
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -60,7 +64,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
             }
             is ReceiveViewHolder -> {
                 (itemType as MessageItem.OnReceiveSide).message?.let {
-                    holder.bind(it, targetUsersList)
+                    holder.bind(it, targetUsersList, roomType)
                 }
             }
         }
@@ -76,7 +80,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, usersList: List<UserInfo>) {
+        fun bind(comment: Comment, usersList: List<UserInfo>, roomType: Int) {
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
 
@@ -84,6 +88,11 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
                 val speaker = usersList.single { it.uid == comment.uid }
 
                 bindImage(binding.imageTargeImage, speaker.image)
+
+                if (roomType == ChatRoomType.MULTIPLE.value) {
+                    binding.textTargetName.visibility = View.VISIBLE
+                    binding.textTargetName.text = speaker.name
+                }
             }
         }
     }

@@ -96,6 +96,9 @@
         <action
             android:id="@+id/action_eventDetailFragment_to_creditFragment"
             app:destination="@id/creditFragment" />
+        <action
+            android:id="@+id/action_eventDetailFragment_to_eventCheckInFragment"
+            app:destination="@id/eventCheckInFragment" />
 
     </fragment>
 
@@ -160,7 +163,7 @@
 
     <action
         android:id="@+id/action_global_eventDetailFragment"
-        app:destination="@id/eventDetailFragment" />
+        app:destination="@id/eventDetailFragment"/>
 
     <action
         android:id="@+id/action_global_giftDetailFragment"
@@ -244,6 +247,19 @@
     <action
         android:id="@+id/action_global_giftsAllFragment"
         app:destination="@id/giftsAllFragment" />
+    <fragment
+        android:id="@+id/eventCheckInFragment"
+        android:name="com.zoe.weshare.detail.checkin.EventCheckInFragment"
+        android:label="EventCheckInFragment">
+        <argument
+            android:name="event"
+            app:argType="com.zoe.weshare.data.EventPost" />
+        <action
+            android:id="@+id/action_eventCheckInFragment_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment"
+            app:popUpTo="@id/eventDetailFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 
 </navigation>

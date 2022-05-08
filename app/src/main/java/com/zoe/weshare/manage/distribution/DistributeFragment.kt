@@ -21,6 +21,7 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.sendNotificationToTarget
 import com.zoe.weshare.ext.sendNotificationsToFollowers
 import com.zoe.weshare.util.UserManager.weShareUser
 
@@ -71,6 +72,16 @@ class DistributeFragment : BottomSheetDialogFragment() {
             onConfirmingOperation(it)
         }
 
+        viewModel.targetUser.observe(viewLifecycleOwner){
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                viewModel.navigateToProfileComplete()
+            }
+        }
+
+        viewModel.receiverNotification.observe(viewLifecycleOwner){
+            sendNotificationToTarget(it.operatorUid,it)
+        }
 
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
             sendNotificationsToFollowers(it)
