@@ -6,7 +6,6 @@ import com.zoe.weshare.data.UserInfo
 
 object UserManager {
 
-
     private const val APP_NAME = "WeShare"
     private const val MODE = Context.MODE_PRIVATE
     private lateinit var preferences: SharedPreferences
@@ -39,7 +38,6 @@ object UserManager {
 //        set(UserInfo) = preferences.edit {
 //            it.putString(USER_INFO, com.zoe.weshare.data.UserInfo)
 //        }
-
 
     var weShareUser: UserInfo? = null
 

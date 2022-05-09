@@ -3,13 +3,10 @@ package com.zoe.weshare.map
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.zoe.weshare.R
 import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.ItemCardGalleryViewBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayFormat
-import com.zoe.weshare.util.Util.getString
-import com.zoe.weshare.util.Util.getStringWithStrParm
 
 class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
     RecyclerView.Adapter<CardGalleryAdapter.CardsViewHolder>() {
@@ -28,7 +25,7 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
                 textDescriptionShort.text = data.description
                 bindImage(image, data.image)
 
-                if(data.postType == EVENT_CARD){
+                if (data.postType == EVENT_CARD) {
                     textPostedTime.text = data.eventTime
                 }
             }

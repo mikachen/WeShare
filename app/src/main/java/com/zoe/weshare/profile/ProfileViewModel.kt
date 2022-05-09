@@ -57,7 +57,6 @@ class ProfileViewModel(
     val navigateToNewRoom: LiveData<ChatRoom?>
         get() = _navigateToNewRoom
 
-
     init {
         targetUser?.let {
             getUserInfo(it.uid)
@@ -125,7 +124,6 @@ class ProfileViewModel(
         }
     }
 
-
     /** when a "user" click someone follow,
      * A. update the target's follower value = "user"
      * */
@@ -181,7 +179,6 @@ class ProfileViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -232,7 +229,6 @@ class ProfileViewModel(
             }
         }
     }
-
 
     fun searchOnPrivateRoom(user: UserInfo) {
         coroutineScope.launch {
@@ -319,7 +315,6 @@ class ProfileViewModel(
             }
         }
     }
-
 
     fun navigateToRoomComplete() {
         _userChatRooms.value = null

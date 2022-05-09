@@ -21,7 +21,7 @@ class GiftItemsAdapter(
     private val onClickListener: OnClickListener,
 ) : ListAdapter<GiftPost, GiftItemsAdapter.GiftViewHolder>(DiffCallback) {
 
-     val viewBinderHelper = ViewBinderHelper()
+    val viewBinderHelper = ViewBinderHelper()
 
     class GiftViewHolder(var binding: ItemGiftManageBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -42,7 +42,6 @@ class GiftItemsAdapter(
                 }
                 GiftStatusType.CLOSED.code -> {
                     binding.buttonAbandon.visibility = View.GONE
-                    binding.btnCheckWhoRequest.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.CLOSED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
                 }

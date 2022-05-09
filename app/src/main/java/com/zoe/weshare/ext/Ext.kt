@@ -12,21 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Result
-import com.zoe.weshare.data.source.WeShareRepository
-import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.Const
-import com.zoe.weshare.util.Const.FIELD_USER_BLACKLIST
-import com.zoe.weshare.util.Const.PATH_USER
-import com.zoe.weshare.util.UserManager
-import com.zoe.weshare.util.UserManager.weShareUser
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -67,7 +54,6 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
     }
 }
 
-
 /**
  * resize Map marker icon
  * */
@@ -85,12 +71,12 @@ fun RecyclerView.smoothSnapToPosition(
     position: Int,
     snapMode: Int = LinearSmoothScroller.SNAP_TO_START,
 ) {
-    val scrollDuration = 8000f;
+    val scrollDuration = 8000f
     val smoothScroller = object : LinearSmoothScroller(this.context) {
         override fun getVerticalSnapPreference(): Int = snapMode
         override fun getHorizontalSnapPreference(): Int = snapMode
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-            return scrollDuration / computeVerticalScrollRange();
+            return scrollDuration / computeVerticalScrollRange()
         }
     }
     smoothScroller.targetPosition = position
@@ -152,14 +138,20 @@ fun getCountDownTimeString(millisUntilFinished: Long, state: String): String {
     val seconds = TimeUnit.MILLISECONDS.toSeconds(millisTillEnd)
 
     return if (days != 0L) {
-        WeShareApplication.instance.getString(R.string.countdown_time1,
-            days, hours, minutes, seconds) + state
+        WeShareApplication.instance.getString(
+            R.string.countdown_time1,
+            days, hours, minutes, seconds
+        ) + state
     } else if (hours != 0L) {
-        WeShareApplication.instance.getString(R.string.countdown_time2,
-            hours, minutes, seconds) + state
+        WeShareApplication.instance.getString(
+            R.string.countdown_time2,
+            hours, minutes, seconds
+        ) + state
     } else if (minutes != 0L) {
-        WeShareApplication.instance.getString(R.string.countdown_time3,
-            minutes, seconds) + state
+        WeShareApplication.instance.getString(
+            R.string.countdown_time3,
+            minutes, seconds
+        ) + state
     } else {
         WeShareApplication.instance.getString(R.string.countdown_time4, seconds) + state
     }

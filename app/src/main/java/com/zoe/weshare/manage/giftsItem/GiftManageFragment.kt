@@ -21,7 +21,6 @@ import com.zoe.weshare.util.UserManager.weShareUser
 
 class GiftManageFragment : Fragment() {
 
-
     private lateinit var binding: FragmentGiftManageBinding
     lateinit var adapter: GiftItemsAdapter
     lateinit var manager: LinearLayoutManager
@@ -39,13 +38,12 @@ class GiftManageFragment : Fragment() {
 
         viewModel.getUserAllGiftsPosts(currentTabPosition)
 
-
         viewModel.giftsDisplay.observe(viewLifecycleOwner) {
             adapter.submitList(it)
 
-            if(it.isEmpty()){
+            if (it.isEmpty()) {
                 binding.hintNoNews.visibility = View.VISIBLE
-            }else{
+            } else {
                 binding.hintNoNews.visibility = View.INVISIBLE
             }
         }
@@ -67,7 +65,7 @@ class GiftManageFragment : Fragment() {
             }
         }
 
-        viewModel.saveLogComplete.observe(viewLifecycleOwner){
+        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
             viewModel.refreshFilterView(currentTabPosition)
         }
 
@@ -97,7 +95,7 @@ class GiftManageFragment : Fragment() {
         alter.show()
     }
 
-    fun setupView(){
+    fun setupView() {
         adapter = GiftItemsAdapter(
             viewModel,
             GiftItemsAdapter.OnClickListener {

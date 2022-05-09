@@ -37,14 +37,12 @@ class NotificationViewModel(
     val error: LiveData<String?>
         get() = _error
 
-
     fun filterList(position: Int) {
         when (position) {
-            0 ->  _notifications.value = allMessage.value?.filter { !it.read }
-            1 ->  _notifications.value = allMessage.value?.filter { it.read }
+            0 -> _notifications.value = allMessage.value?.filter { !it.read }
+            1 -> _notifications.value = allMessage.value?.filter { it.read }
         }
     }
-
 
     fun onViewDisplay(liveData: MutableLiveData<List<OperationLog>>) {
 
@@ -52,36 +50,34 @@ class NotificationViewModel(
         _notifications.value = allMessage.value?.filter { !it.read }
     }
 
+    fun userOnClickAndRead(log: OperationLog) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
 
-    fun userOnClickAndRead(log: OperationLog){
-         coroutineScope.launch {
-                _status.value = LoadApiStatus.LOADING
-
-                when (
-                    val result = repository.readNotification(
-                        uid = userInfo!!.uid,
-                        docId = log.id,
-                        read = true
-                    )
-                ) {
-                    is Result.Success -> {
-                        _error.value = null
-                        _status.value = LoadApiStatus.DONE
-                    }
-                    is Result.Fail -> {
-                        _error.value = result.error
-                        _status.value = LoadApiStatus.ERROR
-                    }
-                    is Result.Error -> {
-                        _error.value = result.exception.toString()
-                        _status.value = LoadApiStatus.ERROR
-                    }
-                    else -> {
-                        _error.value = Util.getString(R.string.result_fail)
-                        _status.value = LoadApiStatus.ERROR
-                    }
+            when (
+                val result = repository.readNotification(
+                    uid = userInfo!!.uid,
+                    docId = log.id,
+                    read = true
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = Util.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
                 }
             }
         }
-
+    }
 }

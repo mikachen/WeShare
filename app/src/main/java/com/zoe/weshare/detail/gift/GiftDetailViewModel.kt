@@ -1,6 +1,5 @@
 package com.zoe.weshare.detail.gift
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -67,7 +66,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         get() = _navigateToNewRoom
 
     var blockUserComplete = MutableLiveData<UserProfile>()
-
 
     val profileList = mutableListOf<UserProfile>()
     var updateCommentLike = mutableListOf<Comment>()
@@ -362,9 +360,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     }
 
     fun checkIfPrivateRoomExist(rooms: List<ChatRoom>) {
+        val userUid = selectedGiftDisplay.value!!.author!!.uid
 
         val result = rooms.filter {
-            it.participants.contains(selectedGiftDisplay.value!!.author!!.uid) && it.type == ChatRoomType.PRIVATE.value
+            it.participants.contains(userUid) && it.type == ChatRoomType.PRIVATE.value
         }
 
         if (result.isNotEmpty()) {
@@ -414,7 +413,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         }
     }
 
-
     fun navigateToRoomComplete() {
         _userChatRooms.value = null
         _navigateToFormerRoom.value = null
@@ -436,7 +434,8 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         _status.value = LoadApiStatus.LOADING
 
         coroutineScope.launch {
-            when (val result = repository.updateFieldValue(
+            when (
+                val result = repository.updateFieldValue(
                     collection = Const.PATH_USER,
                     docId = UserManager.weShareUser!!.uid,
                     field = Const.FIELD_USER_BLACKLIST,
@@ -464,8 +463,8 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         }
     }
 
-    fun filterComment(){
-       _filteredComments.value = allComments.value?.filterNot { userBlackList.contains(it.uid) }
+    fun filterComment() {
+        _filteredComments.value = allComments.value?.filterNot { userBlackList.contains(it.uid) }
     }
 
     fun refreshCommentBoard() {

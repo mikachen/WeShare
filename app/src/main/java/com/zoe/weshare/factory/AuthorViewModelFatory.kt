@@ -12,7 +12,6 @@ import com.zoe.weshare.manage.distribution.DistributeViewModel
 import com.zoe.weshare.manage.giftsItem.GiftManageViewModel
 import com.zoe.weshare.message.ChatRoomViewModel
 import com.zoe.weshare.message.roomlist.RoomListViewModel
-import com.zoe.weshare.notification.NotificationFragment
 import com.zoe.weshare.notification.NotificationViewModel
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel

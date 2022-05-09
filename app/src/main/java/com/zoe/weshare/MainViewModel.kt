@@ -15,7 +15,6 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     var reObserveNotification = MutableLiveData<Boolean>()
 
-
     fun getLiveNotificationResult() {
         liveNotifications = repository.getLiveNotifications(weShareUser!!.uid)
 

@@ -14,7 +14,13 @@
         android:id="@+id/mapFragment"
         android:name="com.zoe.weshare.map.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_self"
+            app:destination="@id/mapFragment"
+            app:popUpTo="@id/mapFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/roomListFragment"
         android:name="com.zoe.weshare.message.roomlist.RoomListFragment"
@@ -70,6 +76,11 @@
             android:name="newEvent"
             app:argType="com.zoe.weshare.data.EventPost"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_searchLocationFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 
     <fragment
@@ -145,21 +156,15 @@
 
     <action
         android:id="@+id/action_global_profileFragment"
-        app:destination="@id/profileFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true" />
+        app:destination="@id/profileFragment" />
 
     <action
         android:id="@+id/navigate_to_post_event_fragment"
-        app:destination="@id/postEventFragment"
-        app:popUpTo="@id/homeFragment"
-        app:popUpToInclusive="false" />
+        app:destination="@id/postEventFragment"/>
 
     <action
         android:id="@+id/navigate_to_post_gift_fragment"
-        app:destination="@id/postGiftFragment"
-        app:popUpTo="@id/homeFragment"
-        app:popUpToInclusive="false" />
+        app:destination="@id/postGiftFragment"/>
 
     <action
         android:id="@+id/action_global_eventDetailFragment"
@@ -167,9 +172,7 @@
 
     <action
         android:id="@+id/action_global_giftDetailFragment"
-        app:destination="@id/giftDetailFragment"
-        app:popUpTo="@id/giftDetailFragment"
-        app:popUpToInclusive="true" />
+        app:destination="@id/giftDetailFragment" />
 
     <action
         android:id="@+id/action_global_chatRoomFragment"

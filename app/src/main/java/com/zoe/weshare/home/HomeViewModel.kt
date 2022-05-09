@@ -64,15 +64,16 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         allLogs = repository.getLiveLogs()
     }
 
-    fun onFilteringLog(list: List<OperationLog>){
-        list.filter { it.logType != LogType.REQUEST_GIFT.value}
-        list.filter { it.logType != LogType.FOLLOWING.value}
-        list.filter { it.logType != LogType.ABANDONED_GIFT.value}
-
-        filteredLogs.value = list
+    fun onFilteringLog(list: List<OperationLog>) {
+        filteredLogs.value = list.filter {
+            it.logType != LogType.REQUEST_GIFT.value &&
+                it.logType != LogType.FOLLOWING.value &&
+                it.logType != LogType.ABANDONED_GIFT.value &&
+                it.logType != LogType.EVENT_CHECK_IN.value
+        }
     }
 
-    private fun filterGift(gifts: List<GiftPost>){
+    private fun filterGift(gifts: List<GiftPost>) {
         _gifts.value = gifts.filter { it.status != GiftStatusType.CLOSED.code }
     }
 

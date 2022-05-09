@@ -16,7 +16,6 @@ interface WeShareDataSource {
     suspend fun getAllGifts(): Result<List<GiftPost>>
     suspend fun getAllEvents(): Result<List<EventPost>>
 
-
     suspend fun getUserAllGiftsPosts(collection: String, uid: String): Result<List<GiftPost>>
 
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
@@ -36,7 +35,6 @@ interface WeShareDataSource {
     suspend fun newUserRegister(user: UserProfile): Result<Boolean>
     suspend fun getUserInfo(uid: String): Result<UserProfile?>
 
-
     suspend fun sendComment(
         collection: String,
         docId: String,
@@ -50,7 +48,6 @@ interface WeShareDataSource {
         subCollection: String,
     ): Result<List<Comment>>
 
-
     /** search user's room list, create new chatroom on first time chat */
     suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>>
     suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String>
@@ -58,7 +55,6 @@ interface WeShareDataSource {
 
     suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean>
     suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean>
-
 
     suspend fun likeOnPostComment(
         collection: String,
@@ -78,7 +74,6 @@ interface WeShareDataSource {
 
     suspend fun saveLog(log: OperationLog): Result<Boolean>
     suspend fun getUserLog(uid: String): Result<List<OperationLog>>
-
 
     suspend fun updateGiftStatus(docId: String, statusCode: Int, uid: String): Result<Boolean>
     suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean>
@@ -102,7 +97,6 @@ interface WeShareDataSource {
 
     suspend fun uploadImage(imageUri: Uri): Result<String>
     suspend fun updateUserProfile(profile: UserProfile): Result<Boolean>
-    suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean>
-    suspend fun readNotification(uid: String, docId: String, read: Boolean, ): Result<Boolean>
-
+    suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean>
+    suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean>
 }

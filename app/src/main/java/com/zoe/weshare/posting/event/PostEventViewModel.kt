@@ -227,9 +227,11 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         startTime = startDate
         endTime = secondDate
 
-        _datePick.value = WeShareApplication.instance.getString(R.string.preview_event_time,
+        _datePick.value = WeShareApplication.instance.getString(
+            R.string.preview_event_time,
             startTime.toDisplayFormat(),
-            endTime.toDisplayFormat())
+            endTime.toDisplayFormat()
+        )
     }
 
     fun onSaveUserInput(

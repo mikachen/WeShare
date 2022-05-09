@@ -36,9 +36,7 @@ class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(
     override fun onBindViewHolder(holder: TickerViewHolder, position: Int) {
         val data = getItem(position)
         holder.bind(data)
-
     }
-
 
     companion object DiffCallback : DiffUtil.ItemCallback<OperationLog>() {
         override fun areItemsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {

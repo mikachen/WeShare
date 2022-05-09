@@ -41,8 +41,6 @@ import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import com.zoe.weshare.util.UserManager.weShareUser
-import com.zoe.weshare.util.Util.getStringWithIntParm
-
 
 class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
@@ -51,7 +49,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
     lateinit var progressBar: ProgressBar
     lateinit var animation: ObjectAnimator
-
 
     private var isPermissionGranted: Boolean = false
 
@@ -69,7 +66,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
         if (isPermissionGranted) {
 
-
             binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
             progressBar = binding.progressBar
             progressBar.max = 100 * 100
@@ -78,7 +74,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
             val newEvent = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newEvent }
             val newGift = arguments?.let { SearchLocationFragmentArgs.fromBundle(it).newGift }
-
 
             if (newEvent != null) {
                 val eventViewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
@@ -92,21 +87,24 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                         binding.layoutProgressLoading.visibility = View.VISIBLE
                         eventViewModel.uploadImage()
                     } else {
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             getString(R.string.error_event_location_isEmpty),
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
                 eventViewModel.postingProgress.observe(viewLifecycleOwner) {
 
-                    animation = ObjectAnimator.ofInt(progressBar,
+                    animation = ObjectAnimator.ofInt(
+                        progressBar,
                         "progress",
                         progressBar.progress,
-                        it * 100)
+                        it * 100
+                    )
                     animation.duration = 500
                     animation.interpolator = DecelerateInterpolator()
                     animation.start()
-
                 }
 
                 eventViewModel.roomCreateComplete.observe(viewLifecycleOwner) {
@@ -117,8 +115,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
                 eventViewModel.saveLogComplete.observe(viewLifecycleOwner) {
                     sendNotificationsToFollowers(it)
-                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
-
+                    findNavController().navigate(
+                        SearchLocationFragmentDirections.actionSearchLocationFragmentToHomeFragment())
                 }
 
                 eventViewModel.onPostEvent.observe(viewLifecycleOwner) {
@@ -133,7 +131,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
                 giftViewModel.saveLogComplete.observe(viewLifecycleOwner) {
                     sendNotificationsToFollowers(it)
-                    findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
+                    findNavController().navigate(
+                        SearchLocationFragmentDirections.actionSearchLocationFragmentToHomeFragment())
                 }
 
                 binding.buttonSubmit.setOnClickListener {
@@ -141,18 +140,22 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                         binding.layoutProgressLoading.visibility = View.VISIBLE
                         giftViewModel.uploadImage()
                     } else {
-                        Toast.makeText(requireContext(),
+                        Toast.makeText(
+                            requireContext(),
                             getString(R.string.error_gift_location_isEmpty),
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
                 giftViewModel.postingProgress.observe(viewLifecycleOwner) {
 
-                    animation = ObjectAnimator.ofInt(progressBar,
+                    animation = ObjectAnimator.ofInt(
+                        progressBar,
                         "progress",
                         progressBar.progress,
-                        it * 100)
+                        it * 100
+                    )
                     animation.duration = 500
                     animation.interpolator = DecelerateInterpolator()
                     animation.start()
@@ -162,7 +165,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                     giftViewModel.newGiftPost(it)
                 }
             }
-
 
             // 當user同意location權限後，檢查user是否有啟用GooglePlayService
             if (isPermissionGranted) {
@@ -178,7 +180,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-
 
         return binding.root
     }
@@ -251,7 +252,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 imagePreview.setImageURI(Uri.parse(gift.image))
                 titleEventTime.visibility = View.GONE
                 textEventTime.visibility = View.GONE
-
             }
         }
 
@@ -260,9 +260,11 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 textTitle.text = event.title
                 textSort.text = event.sort
                 textEventTime.text =
-                    WeShareApplication.instance.getString(R.string.preview_event_time,
+                    WeShareApplication.instance.getString(
+                        R.string.preview_event_time,
                         event.startTime.toDisplayFormat(),
-                        event.endTime.toDisplayFormat())
+                        event.endTime.toDisplayFormat()
+                    )
                 textDescription.text = event.description
                 imagePreview.setImageURI(Uri.parse(event.image))
                 titleTitle.text = getString(R.string.preview_event_title_title)
@@ -270,7 +272,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 titleCondition.text = getString(R.string.preview_event_volunteer_title)
                 textCondition.text = event.volunteerNeeds.toString()
                 titleDescription.text = getString(R.string.preview_event_description_title)
-
             }
         }
     }
@@ -296,7 +297,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         }
         return false
     }
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
@@ -348,5 +348,4 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         super.onLowMemory()
         binding.mapView.onLowMemory()
     }
-
 }

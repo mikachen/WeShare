@@ -42,7 +42,7 @@ class GiftDetailFragment : Fragment() {
         viewModel.onGiftDisplay(selectedGift)
         viewModel.getAskForGiftComments(selectedGift.id)
 
-        adapter = GiftsCommentsAdapter(viewModel,requireContext())
+        adapter = GiftsCommentsAdapter(viewModel, requireContext())
         binding.commentsRecyclerView.adapter = adapter
 
         viewModel.selectedGiftDisplay.observe(viewLifecycleOwner) {
@@ -68,7 +68,6 @@ class GiftDetailFragment : Fragment() {
                 binding.textRegistrantsNumber.text =
                     getString(R.string.gift_registrants_number, it.size)
             }
-
         }
 
         // drawing the user avatar image and nickName after searching user's profile docs
@@ -117,9 +116,9 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
-        viewModel.blockUserComplete.observe(viewLifecycleOwner){
-            it?.let{
-                Toast.makeText(requireContext(),"已封鎖用戶",Toast.LENGTH_SHORT).show()
+        viewModel.blockUserComplete.observe(viewLifecycleOwner) {
+            it?.let {
+                Toast.makeText(requireContext(), "已封鎖用戶", Toast.LENGTH_SHORT).show()
 
                 viewModel.refreshCommentBoard()
             }
@@ -140,7 +139,8 @@ class GiftDetailFragment : Fragment() {
 
             textPostedLocation.text = gift.location?.locationName
 
-            textCreatedTime.text = getString(R.string.posted_time, gift.createdTime.toDisplayFormat())
+            textCreatedTime.text = getString(R.string.posted_time,
+                gift.createdTime.toDisplayFormat())
 
             textGiftSort.text = gift.sort
 
@@ -199,7 +199,9 @@ class GiftDetailFragment : Fragment() {
             }
         }
         binding.imageProfileAvatar.setOnClickListener {
-            findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(gift.author))
+            findNavController().navigate(
+                NavGraphDirections.actionGlobalProfileFragment(gift.author)
+            )
         }
     }
 

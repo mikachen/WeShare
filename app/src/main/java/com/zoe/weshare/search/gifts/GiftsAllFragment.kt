@@ -1,7 +1,6 @@
 package com.zoe.weshare.search.gifts
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,12 +24,12 @@ class GiftsAllFragment : Fragment() {
     val viewModel by viewModels<GiftsAllViewModel> { getVmFactory() }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
         binding = FragmentGiftsAllBinding.inflate(inflater, container, false)
-
 
         viewModel.gifts.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
@@ -64,9 +63,11 @@ class GiftsAllFragment : Fragment() {
 
     fun setupView() {
 
-        adapter = GiftsAllAdapter(GiftsAllAdapter.GiftsALLOnClickListener { selectedGift ->
-            viewModel.onNavigateGiftDetails(selectedGift)
-        })
+        adapter = GiftsAllAdapter(
+            GiftsAllAdapter.GiftsALLOnClickListener { selectedGift ->
+                viewModel.onNavigateGiftDetails(selectedGift)
+            }
+        )
 
         manager = GridLayoutManager(requireContext(), 2)
         recyclerView = binding.recyclerview
@@ -81,7 +82,6 @@ class GiftsAllFragment : Fragment() {
         binding.giftsSearchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
-
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -89,7 +89,6 @@ class GiftsAllFragment : Fragment() {
 
                 return true
             }
-
         })
     }
 }

@@ -3,11 +3,7 @@ package com.zoe.weshare.detail.event
 import android.graphics.Point
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
@@ -33,7 +29,6 @@ import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
-
 
 class EventDetailFragment : Fragment() {
 
@@ -67,7 +62,9 @@ class EventDetailFragment : Fragment() {
         }
 
         viewModel.statusTriggerChanged.observe(viewLifecycleOwner) {
-            viewModel.updateEventStatus(it)
+            it?.let {
+                viewModel.updateEventStatus(it)
+            }
         }
 
         viewModel.userAttendType.observe(viewLifecycleOwner) {
@@ -136,13 +133,20 @@ class EventDetailFragment : Fragment() {
         viewModel.blockUserComplete.observe(viewLifecycleOwner) {
             it?.let {
                 Toast.makeText(requireContext(), "已封鎖用戶", Toast.LENGTH_SHORT).show()
-
                 viewModel.refreshCommentBoard()
             }
         }
 
 
+        setupCommentBoard()
         return binding.root
+    }
+
+    private fun setupCommentBoard(){
+        commentsBoard = binding.commentsRecyclerView
+        adapter = EventCommentsAdapter(viewModel, requireContext())
+        commentsBoard.adapter = adapter
+
     }
 
     private fun setupView(event: EventPost) {
@@ -150,9 +154,6 @@ class EventDetailFragment : Fragment() {
         isUserVolunteer = event.whoVolunteer.contains(weShareUser!!.uid)
         isUserCheckedIn = event.whoCheckedIn.contains(weShareUser!!.uid)
 
-        commentsBoard = binding.commentsRecyclerView
-        adapter = EventCommentsAdapter(viewModel, requireContext())
-        commentsBoard.adapter = adapter
 
         binding.apply {
             bindImage(this.images, event.image)
@@ -183,37 +184,34 @@ class EventDetailFragment : Fragment() {
 
             textEventDescription.text = event.description
 
-            textStartTime.text = WeShareApplication.instance.getString(R.string.preview_event_time,
+            textStartTime.text = WeShareApplication.instance.getString(
+                R.string.preview_event_time,
                 event.startTime.toDisplayDateFormat(),
-                event.endTime.toDisplayDateFormat())
+                event.endTime.toDisplayDateFormat()
+            )
 
             buttonAttend.isChecked = isUserAttend
 
             buttonVolunteer.isChecked = isUserVolunteer
-
-            when (event.status) {
-                EventStatusType.WAITING.code ->
-                    countDownTimer(event.startTime - System.currentTimeMillis(), "開始").start()
-
-                EventStatusType.ONGOING.code ->
-                    countDownTimer(event.endTime - System.currentTimeMillis(), "結束").start()
-
-                else -> binding.textCountdownTime.text = ""
-            }
         }
 
         when (true) {
             (event.status == EventStatusType.WAITING.code) -> {
                 binding.textStatus.text = EventStatusType.WAITING.tag
                 binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
+                countDownTimer(event.startTime - System.currentTimeMillis(), "開始").start()
             }
+
             (event.status == EventStatusType.ONGOING.code) -> {
                 binding.textStatus.text = EventStatusType.ONGOING.tag
                 binding.textStatus.setBackgroundResource(R.color.app_work_orange2)
+                countDownTimer(event.endTime - System.currentTimeMillis(), "結束").start()
             }
             (event.status == EventStatusType.ENDED.code) -> {
                 binding.textStatus.text = EventStatusType.ENDED.tag
                 binding.textStatus.setBackgroundResource(R.color.app_work_dark_grey)
+                binding.textCountdownTime.text = ""
+                binding.layoutAttendeeButton.visibility = View.GONE
             }
             else -> {
                 Logger.d("unKnow status")
@@ -231,24 +229,20 @@ class EventDetailFragment : Fragment() {
             if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_DOWN) {
 
                 onSendComment()
-
                 true
+
             } else false
         }
 
-        if (event.status == EventStatusType.ENDED.code) {
+        if (event.status != EventStatusType.ENDED.code) {
 
-            binding.layoutAttendeeButton.visibility = View.GONE
-
-        } else {
-
-            if(isUserAttend){
+            if (isUserAttend) {
                 binding.buttonAttend.setOnCheckedChangeListener { _, checked ->
                     binding.buttonAttend.isChecked = !checked
                 }
             }
 
-            if(isUserVolunteer){
+            if (isUserVolunteer) {
                 binding.buttonVolunteer.setOnCheckedChangeListener { _, checked ->
                     binding.buttonVolunteer.isChecked = !checked
                 }
@@ -262,14 +256,10 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-
         binding.imageProfileAvatar.setOnClickListener {
-            findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(event.author))
-        }
-
-
-        binding.eventOut.setOnClickListener {
-            generateQrcode()
+            findNavController().navigate(
+                NavGraphDirections.actionGlobalProfileFragment(event.author)
+            )
         }
     }
 
@@ -293,7 +283,6 @@ class EventDetailFragment : Fragment() {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.event_more_menu, popupMenu.menu)
 
-
         when (adjustCode) {
 
             0 -> {
@@ -305,9 +294,7 @@ class EventDetailFragment : Fragment() {
             1 -> {
                 popupMenu.menu.removeItem(R.id.action_cancel_attend)
             }
-
         }
-
 
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -321,14 +308,15 @@ class EventDetailFragment : Fragment() {
                         }
 
                         EventStatusType.ONGOING.code -> {
-                            findNavController().navigate(EventDetailFragmentDirections
-                                .actionEventDetailFragmentToEventCheckInFragment(selectedEvent))
+                            findNavController().navigate(
+                                EventDetailFragmentDirections
+                                    .actionEventDetailFragmentToEventCheckInFragment(selectedEvent)
+                            )
                         }
 
-                        else -> {}
+                        else -> { Logger.d("unKnow")}
                     }
                 }
-
 
                 R.id.action_enter_chatroom -> viewModel.getChatRoomInfo()
 
@@ -340,7 +328,6 @@ class EventDetailFragment : Fragment() {
         }
         popupMenu.show()
     }
-
 
     fun generateQrcode() {
 
@@ -362,11 +349,10 @@ class EventDetailFragment : Fragment() {
             val bitmap = qrgEncoder.encodeAsBitmap()
 
             binding.images.setImageBitmap(bitmap)
-
         } catch (e: WriterException) {
             // this method is called for
             // exception handling.
-            Log.e("Tag", e.toString())
+            Logger.e("error: ${e.toString()}")
         }
     }
 
@@ -382,7 +368,6 @@ class EventDetailFragment : Fragment() {
             }
         }
     }
-
 
     private fun setupLikeBtn(event: EventPost) {
         val scaleAnimation = ScaleAnimation(
@@ -433,14 +418,18 @@ class EventDetailFragment : Fragment() {
             override fun onTick(millisUntilFinished: Long) {
 
                 val timeRemaining = getCountDownTimeString(millisUntilFinished, state)
-
                 binding.textCountdownTime.text = timeRemaining
             }
 
             override fun onFinish() {
-                binding.textCountdownTime.text = ""
-                viewModel.checkEventStatus(selectedEvent)
+                binding.textCountdownTime.text = "活動"+state
             }
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        )
     }
 }

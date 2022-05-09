@@ -20,8 +20,7 @@ interface WeShareRepository {
     fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>>
 
     suspend fun getUserInfo(uid: String): Result<UserProfile?>
-    suspend fun newUserRegister(user: UserProfile) : Result<Boolean>
-
+    suspend fun newUserRegister(user: UserProfile): Result<Boolean>
 
     suspend fun sendComment(
         collection: String,
@@ -39,7 +38,6 @@ interface WeShareRepository {
         docId: String,
         subCollection: String,
     ): MutableLiveData<List<Comment>>
-
 
     suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>>
 
@@ -68,12 +66,10 @@ interface WeShareRepository {
 
     suspend fun updateGiftStatus(docId: String, statusCode: Int, uid: String): Result<Boolean>
 
-
     suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean>
     suspend fun getEventRoom(docId: String): Result<ChatRoom>
 
     suspend fun updateEventStatus(docId: String, code: Int): Result<Boolean>
-
 
     suspend fun updateFieldValue(
         collection: String,
@@ -93,6 +89,6 @@ interface WeShareRepository {
 
     suspend fun uploadImage(imageUri: Uri): Result<String>
     suspend fun updateUserProfile(profile: UserProfile): Result<Boolean>
-    suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean>
-    suspend fun readNotification(uid: String, docId: String, read: Boolean, ): Result<Boolean>
+    suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean>
+    suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean>
 }

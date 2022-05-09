@@ -47,7 +47,6 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
                 textLikesCount.visibility = View.INVISIBLE
             }
 
-
             buttonCommentLike.isLiked = isUserLikeBefore
 
             buttonCommentLike.setOnClickListener {
@@ -75,27 +74,35 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
                         binding.textProfileName.text = speaker.name
 
                         binding.moreBtn.setOnClickListener {
-                            showPopupMenu(it,speaker,context,viewModel)
+                            showPopupMenu(it, speaker, context, viewModel)
                         }
-
                     }
                 }
             }
         }
-        private fun showPopupMenu(view: View, sender: UserProfile, context: Context, viewModel: EventDetailViewModel) {
+        private fun showPopupMenu(
+            view: View,
+            sender: UserProfile,
+            context: Context,
+            viewModel: EventDetailViewModel
+        ) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.menuInflater.inflate(R.menu.block_popup_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_block -> { showAlterDialog(sender,context,viewModel) }
+                    R.id.action_block -> { showAlterDialog(sender, context, viewModel) }
                 }
                 false
             }
             popupMenu.show()
         }
 
-        private fun showAlterDialog(target: UserProfile, context : Context, viewModel: EventDetailViewModel) {
+        private fun showAlterDialog(
+            target: UserProfile,
+            context: Context,
+            viewModel: EventDetailViewModel
+        ) {
             val builder = AlertDialog.Builder(context)
 
             builder.apply {

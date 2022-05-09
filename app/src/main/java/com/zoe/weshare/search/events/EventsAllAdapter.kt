@@ -9,7 +9,6 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.ItemEventsAllGridBinding
-import com.zoe.weshare.databinding.ItemHotGiftGridBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayDateFormat
 import java.util.*
@@ -25,9 +24,11 @@ class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
             binding.apply {
                 textEventLocation.text = event.location?.locationName ?: ""
 
-                textEventTime.text = WeShareApplication.instance.getString(R.string.preview_event_time,
+                textEventTime.text = WeShareApplication.instance.getString(
+                    R.string.preview_event_time,
                     event.startTime.toDisplayDateFormat(),
-                    event.endTime.toDisplayDateFormat())
+                    event.endTime.toDisplayDateFormat()
+                )
 
                 textEventTitle.text = event.title
                 bindImage(imageEventAll, event.image)
@@ -59,7 +60,6 @@ class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
         return AllEventsViewHolder.from(parent)
     }
 
-
     class EventsAllOnClickListener(val doNothing: (event: EventPost) -> Unit) {
         fun onClick(event: EventPost) = doNothing(event)
     }
@@ -84,13 +84,21 @@ class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
 
         // perform the data filtering
         if (!query.isNullOrEmpty()) {
-            list.addAll(unfilteredList.filter {
-                it.title.toLowerCase(Locale.getDefault()).contains(query.toString().toLowerCase(
-                    Locale.getDefault())) ||
+            list.addAll(
+                unfilteredList.filter {
+                    it.title.toLowerCase(Locale.getDefault()).contains(
+                        query.toString().toLowerCase(
+                            Locale.getDefault()
+                        )
+                    ) ||
                         it.description.toLowerCase(Locale.getDefault())
-                            .contains(query.toString().toLowerCase(
-                                Locale.getDefault()))
-            })
+                            .contains(
+                                query.toString().toLowerCase(
+                                    Locale.getDefault()
+                                )
+                            )
+                }
+            )
 
             viewModel.onSearchEmpty.value = list.isEmpty()
         } else {

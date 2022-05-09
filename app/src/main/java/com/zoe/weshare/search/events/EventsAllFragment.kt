@@ -24,12 +24,12 @@ class EventsAllFragment : Fragment() {
     val viewModel by viewModels<EventsAllViewModel> { getVmFactory() }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
         binding = FragmentEventsAllBinding.inflate(inflater, container, false)
-
 
         viewModel.events.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
@@ -64,9 +64,11 @@ class EventsAllFragment : Fragment() {
 
     fun setupView() {
 
-        adapter = EventsAllAdapter(EventsAllAdapter.EventsAllOnClickListener { selectedEvent ->
-            viewModel.onNavigateEventDetails(selectedEvent)
-        })
+        adapter = EventsAllAdapter(
+            EventsAllAdapter.EventsAllOnClickListener { selectedEvent ->
+                viewModel.onNavigateEventDetails(selectedEvent)
+            }
+        )
 
         manager = GridLayoutManager(requireContext(), 2)
         recyclerView = binding.recyclerview
@@ -81,7 +83,6 @@ class EventsAllFragment : Fragment() {
         binding.eventsSearchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
-
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -89,8 +90,6 @@ class EventsAllFragment : Fragment() {
 
                 return true
             }
-
         })
     }
-
 }

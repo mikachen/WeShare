@@ -44,7 +44,8 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
                 sendNotificationToTarget(selectedGift.author!!.uid, it)
 
                 findNavController().navigate(
-                    NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift))
+                    NavGraphDirections.actionGlobalGiftDetailFragment(selectedGift)
+                )
 
                 viewModel.backToDetailComplete()
             }

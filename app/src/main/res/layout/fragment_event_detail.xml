@@ -151,14 +151,6 @@
                     app:layout_constraintTop_toTopOf="@id/button_attend" />
 
 
-                <Button
-                    android:id="@+id/event_out"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="code"
-                    app:layout_constraintEnd_toStartOf="@id/layout_request_tag"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/divider"
                     android:layout_width="match_parent"

@@ -26,6 +26,7 @@ const val EVENT_CARD = 1
 class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     var googleMap: GoogleMap? = null
+    var isPermissionGranted: Boolean = false
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>
@@ -105,9 +106,11 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                     title = element.title,
                     description = element.description,
                     createdTime = element.createdTime,
-                    eventTime = WeShareApplication.instance.getString(R.string.preview_event_time,
+                    eventTime = WeShareApplication.instance.getString(
+                        R.string.preview_event_time,
                         element.startTime.toDisplayDateFormat(),
-                        element.endTime.toDisplayDateFormat()),
+                        element.endTime.toDisplayDateFormat()
+                    ),
                     postType = EVENT_CARD,
                     image = element.image,
                     postLocation = element.location

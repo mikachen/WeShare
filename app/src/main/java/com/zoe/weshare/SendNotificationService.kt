@@ -3,18 +3,17 @@ package com.zoe.weshare
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
 
 class SendNotificationService : Service() {
 
@@ -25,7 +24,6 @@ class SendNotificationService : Service() {
         const val SEND_TO_ALL_FOLLOWERS = "sendToAllFollowers"
         const val SEND_TO_AUTHOR_UID = "sendToAuthorUid"
         const val SEND_TO_AUTHOR_MSG = "sendToAuthorMsg"
-
     }
 
     lateinit var followers: List<String>
@@ -48,10 +46,8 @@ class SendNotificationService : Service() {
             getFollowersList(notifications)
         }
 
-
         val requestNotification = intent?.getParcelableExtra<OperationLog>(SEND_TO_AUTHOR_MSG)
         val requestTarget = intent?.getStringExtra(SEND_TO_AUTHOR_UID)
-
 
         requestNotification?.let { request ->
             requestTarget?.let { target ->
@@ -63,14 +59,15 @@ class SendNotificationService : Service() {
         return START_NOT_STICKY
     }
 
-
     fun getFollowersList(notifications: OperationLog) {
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
 
-            when (val result =
-                WeShareApplication.instance.repository.getUserInfo(weShareUser!!.uid)) {
+            when (
+                val result =
+                    WeShareApplication.instance.repository.getUserInfo(weShareUser!!.uid)
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -109,8 +106,10 @@ class SendNotificationService : Service() {
 
             _status.value = LoadApiStatus.LOADING
 
-            when (val result =
-                WeShareApplication.instance.repository.sendNotifications(targetUid, log)) {
+            when (
+                val result =
+                    WeShareApplication.instance.repository.sendNotifications(targetUid, log)
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -135,13 +134,11 @@ class SendNotificationService : Service() {
                 stopSelf()
             }
         }
-
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d("service", "onDestroy")
+        Logger.d("service task complete onDestroy")
         serviceJob.cancel()
     }
 

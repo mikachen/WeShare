@@ -20,7 +20,6 @@ import com.google.android.gms.vision.Detector
 import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.zoe.weshare.MainActivity
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentEventCheckInBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -38,11 +37,11 @@ class EventCheckInFragment : Fragment() {
     private var scannedValue = ""
     private var getData = false
 
-
     val viewModel by viewModels<CheckInViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
@@ -67,16 +66,19 @@ class EventCheckInFragment : Fragment() {
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
             it?.let {
                 sendNotificationToTarget(event.author!!.uid, it)
-                findNavController().navigate(EventCheckInFragmentDirections.actionEventCheckInFragmentToEventDetailFragment(event))
+
+                findNavController().navigate(
+                    EventCheckInFragmentDirections
+                        .actionEventCheckInFragmentToEventDetailFragment(event)
+                )
+
                 viewModel.navigateComplete()
                 Toast.makeText(requireContext(), "簽到成功", Toast.LENGTH_SHORT).show()
             }
-
         }
 
         return binding.root
     }
-
 
     private fun setupControls() {
         barcodeDetector =
@@ -84,14 +86,14 @@ class EventCheckInFragment : Fragment() {
 
         cameraSource = CameraSource.Builder(requireContext(), barcodeDetector)
             .setRequestedPreviewSize(1920, 1080)
-            .setAutoFocusEnabled(true) //you should add this feature
+            .setAutoFocusEnabled(true) // you should add this feature
             .build()
 
         binding.cameraSurfaceView.getHolder().addCallback(object : SurfaceHolder.Callback {
             @SuppressLint("MissingPermission")
             override fun surfaceCreated(holder: SurfaceHolder) {
                 try {
-                    //Start preview after 1s delay
+                    // Start preview after 1s delay
                     cameraSource.start(holder)
                 } catch (e: IOException) {
                     e.printStackTrace()
@@ -117,7 +119,6 @@ class EventCheckInFragment : Fragment() {
             }
         })
 
-
         barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
             override fun release() {
                 Toast.makeText(requireContext(), "Scanner has been closed", Toast.LENGTH_SHORT)
@@ -129,7 +130,7 @@ class EventCheckInFragment : Fragment() {
                 if (barcodes.size() == 1) {
                     scannedValue = barcodes.valueAt(0).rawValue
 
-                    //Don't forget to add this line printing value or finishing activity must run on main thread
+                    // Don't forget to add this line printing value or finishing activity must run on main thread
                     (activity as MainActivity).runOnUiThread {
                         cameraSource.stop()
 
@@ -138,7 +139,6 @@ class EventCheckInFragment : Fragment() {
                             viewModel.checkInEvent(scannedValue)
                         }
                     }
-
                 } else {
                 }
             }

@@ -24,7 +24,6 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.smoothSnapToPosition
 import java.util.*
 
-
 class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var headerRv: RecyclerView
@@ -49,7 +48,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
     ): View? {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
 
         viewModel.gifts.observe(viewLifecycleOwner) {
             hotGiftAdapter.submitList(it)
@@ -91,7 +89,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
             }
         }
 
-
         setupHeaderGallery()
         setupHotGiftsGallery()
         setupLogTicker()
@@ -101,7 +98,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private fun setupButton() {
         binding.buttonNewbieHint.setOnClickListener {
-                setShowCase()
+            setShowCase()
         }
         binding.buttonCheckEvents.setOnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalEventsAllFragment())
@@ -115,8 +112,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     fun setShowCase() {
 
-        val lps = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT)
+        val lps = RelativeLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
         lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
         val margin = ((resources.displayMetrics.density * 24) as Number).toInt()
@@ -207,13 +206,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
         logTickerRv.adapter = tickerAdapter
         logTickerRv.layoutManager = manager
 
-        //disable user interact
+        // disable user interact
         logTickerRv.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 return true
             }
         })
-        
+
         val linearSnapHelper = LinearSnapHelper()
         linearSnapHelper.attachToRecyclerView(logTickerRv)
 
@@ -224,14 +223,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
 
                         logTickerRv.smoothSnapToPosition(manager.findLastVisibleItemPosition() + 1)
-
                     } else if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
 
                         logTickerRv.smoothSnapToPosition(0)
-
                     }
                 }
-            }, 0, 5000
+            },
+            0, 5000
         )
     }
 

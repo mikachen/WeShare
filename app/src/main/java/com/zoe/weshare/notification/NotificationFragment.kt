@@ -1,7 +1,6 @@
 package com.zoe.weshare.notification
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,13 +19,13 @@ class NotificationFragment : Fragment() {
     lateinit var adapter: NotificationAdapter
     lateinit var manager: LinearLayoutManager
 
-
     val viewModel by viewModels<NotificationViewModel> { getVmFactory(weShareUser) }
 
     var currentTabPosition = 0
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
@@ -42,9 +41,9 @@ class NotificationFragment : Fragment() {
         viewModel.notifications.observe(viewLifecycleOwner) {
             adapter.submitList(it)
 
-            if(it.isEmpty()){
+            if (it.isEmpty()) {
                 binding.hintNoNews.visibility = View.VISIBLE
-            }else{
+            } else {
                 binding.hintNoNews.visibility = View.INVISIBLE
             }
         }
@@ -61,7 +60,6 @@ class NotificationFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-
         setupView()
         return binding.root
     }
@@ -76,6 +74,5 @@ class NotificationFragment : Fragment() {
 
         binding.notificationRv.adapter = adapter
         binding.notificationRv.layoutManager = manager
-
     }
 }

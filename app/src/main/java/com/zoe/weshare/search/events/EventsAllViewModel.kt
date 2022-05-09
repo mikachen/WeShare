@@ -81,4 +81,3 @@ class EventsAllViewModel(private val repository: WeShareRepository) : ViewModel(
         onSearchEmpty.value = null
     }
 }
-

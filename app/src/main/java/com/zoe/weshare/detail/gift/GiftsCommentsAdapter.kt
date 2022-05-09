@@ -69,7 +69,7 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
 
     class GiftCommentsViewHolder(val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, viewModel: GiftDetailViewModel,  context: Context) {
+        fun bind(comment: Comment, viewModel: GiftDetailViewModel, context: Context) {
 
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
@@ -77,7 +77,6 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
             binding.imageProfileAvatar.setOnClickListener {
                 viewModel.onNavigateToTargetProfile(comment.uid)
             }
-
 
             // displaying user's image and name
             if (viewModel.onProfileSearchComplete.value == 0) {
@@ -88,28 +87,36 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
                         binding.textProfileName.text = sender.name
 
                         binding.moreBtn.setOnClickListener {
-                            showPopupMenu(it,sender,context,viewModel)
+                            showPopupMenu(it, sender, context, viewModel)
                         }
-
                     }
                 }
             }
         }
 
-        private fun showPopupMenu(view: View, sender: UserProfile, context: Context, viewModel:GiftDetailViewModel) {
+        private fun showPopupMenu(
+            view: View,
+            sender: UserProfile,
+            context: Context,
+            viewModel: GiftDetailViewModel
+        ) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.menuInflater.inflate(R.menu.block_popup_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_block -> { showAlterDialog(sender,context,viewModel) }
+                    R.id.action_block -> { showAlterDialog(sender, context, viewModel) }
                 }
                 false
             }
             popupMenu.show()
         }
 
-        private fun showAlterDialog(target: UserProfile, context :Context, viewModel:GiftDetailViewModel) {
+        private fun showAlterDialog(
+            target: UserProfile,
+            context: Context,
+            viewModel: GiftDetailViewModel
+        ) {
             val builder = AlertDialog.Builder(context)
 
             builder.apply {
@@ -137,9 +144,7 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
             }
         }
     }
-
 }
-
 
 class DiffCall : DiffUtil.ItemCallback<Comment>() {
     override fun areItemsTheSame(

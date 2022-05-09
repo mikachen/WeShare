@@ -58,15 +58,16 @@ class GiftManageViewModel(
 
     var gifts = listOf<GiftPost>()
 
-
     fun getUserAllGiftsPosts(position: Int) {
         coroutineScope.launch {
             _searchGiftsStatus.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getUserAllGiftsPosts(
-                collection = PATH_GIFT_POST,
-                uid = userInfo!!.uid
-            )) {
+            when (
+                val result = repository.getUserAllGiftsPosts(
+                    collection = PATH_GIFT_POST,
+                    uid = userInfo!!.uid
+                )
+            ) {
 
                 is Result.Success -> {
                     _error.value = null

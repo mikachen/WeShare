@@ -12,4 +12,4 @@ data class UserProfile(
     var following: List<String> = emptyList(),
     var introMsg: String = "",
     var blackList: MutableList<String> = mutableListOf()
-):Parcelable
+) : Parcelable

@@ -25,11 +25,11 @@ class NotificationAdapter(val viewModel: NotificationViewModel) :
                 textMessage.text = Html.fromHtml(log.logMsg)
                 textCreatedTime.text = log.createdTime.getTimeAgoString()
 
-                if (log.read){
+                if (log.read) {
                     notReadView.visibility = View.GONE
                 }
 
-                when(log.logType){
+                when (log.logType) {
                     LogType.REQUEST_GIFT.value -> {
                         layoutRequestTag.visibility = View.VISIBLE
                         textRequestType.text = getString(R.string.notification_request_gift)
@@ -74,7 +74,6 @@ class NotificationAdapter(val viewModel: NotificationViewModel) :
             viewModel.userOnClickAndRead(data)
         }
     }
-
 
     companion object DiffCallback : DiffUtil.ItemCallback<OperationLog>() {
         override fun areItemsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {

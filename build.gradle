@@ -31,6 +31,8 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$version_kotlin_gradle_plugin"
         classpath ("org.jlleitschuh.gradle:ktlint-gradle:$version_ktlint")
         classpath "com.google.gms:google-services:$version_google_services"
+        classpath 'com.android.tools.build:gradle:3.4.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
     }
 
 }

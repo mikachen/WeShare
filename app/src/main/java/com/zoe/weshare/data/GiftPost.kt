@@ -12,7 +12,7 @@ data class GiftPost(
     var sort: String = "",
     var condition: String = "",
     var description: String = "",
-    var image: String = "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/vdaygifts-1641495726.png",
+    var image: String = "",
     var createdTime: Long = -1,
     var location: PostLocation? = null,
     var status: Int = GiftStatusType.OPENING.code,

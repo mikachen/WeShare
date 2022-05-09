@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
@@ -81,5 +80,4 @@ class GiftsAllViewModel(private val repository: WeShareRepository) : ViewModel()
         _navigateToSelectedGift.value = null
         onSearchEmpty.value = null
     }
-
 }

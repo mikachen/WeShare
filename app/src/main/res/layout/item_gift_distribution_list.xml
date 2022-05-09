@@ -110,6 +110,7 @@
         android:layout_height="40dp"
         android:text="@string/give_away_gift"
         android:textColor="@color/white"
+        android:visibility="invisible"
         android:background="@drawable/sl_profile_follow_button"
         android:layout_marginEnd="8dp"
         android:textSize="16sp"

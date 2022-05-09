@@ -60,10 +60,8 @@ class MainActivity : AppCompatActivity() {
         // lottie animation
         loginAnimate()
 
-
         // observe current fragment change, only for show info
-        viewModel.currentFragmentType.observe(this)
-        {
+        viewModel.currentFragmentType.observe(this) {
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -88,9 +86,14 @@ class MainActivity : AppCompatActivity() {
                         layoutToolbarSubtitle.visibility = View.INVISIBLE
                     }
 
-                    CurrentFragmentType.MAP -> { binding.fabsLayoutView.visibility = View.GONE }
+                    CurrentFragmentType.MAP -> {
+                        binding.fabsLayoutView.visibility = View.GONE
+                    }
+
                     CurrentFragmentType.ROOMLIST -> {}
-                    CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
+                    CurrentFragmentType.PROFILE -> {
+                        topAppbar.visibility = View.GONE
+                    }
 
                     CurrentFragmentType.CHATROOM -> {
                         hideBottom()
@@ -101,7 +104,10 @@ class MainActivity : AppCompatActivity() {
                     CurrentFragmentType.POSTGIFT -> { hideBottom() }
                     CurrentFragmentType.POSTEVENT -> { hideBottom() }
                     CurrentFragmentType.EDITPROFILE -> { hideBottom() }
-                    CurrentFragmentType.NOTIFICATION -> { binding.fabsLayoutView.visibility = View.GONE }
+
+                    CurrentFragmentType.NOTIFICATION -> {
+                        binding.fabsLayoutView.visibility = View.GONE
+                    }
 
                     CurrentFragmentType.LOGIN -> {
                         topAppbar.visibility = View.GONE
@@ -118,7 +124,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.reObserveNotification.observe(this) {
             it?.let {
-                viewModel.liveNotifications.observe(this){ notifications->
+                viewModel.liveNotifications.observe(this) { notifications ->
                     notifications?.let {
                         updateBadge(notifications)
                     }
@@ -138,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 
         if (count == 0) {
             binding.layoutBadge.visibility = View.INVISIBLE
-        }else{
+        } else {
             binding.layoutBadge.visibility = View.VISIBLE
             binding.badgeCount.text = count.toString()
         }
@@ -186,13 +192,13 @@ class MainActivity : AppCompatActivity() {
 
                 else -> viewModel.currentFragmentType.value
             }
-            if(isFabExpend) {
+            if (isFabExpend) {
                 onMainFabClick()
             }
         }
     }
 
-    private fun setupToolbar(){
+    private fun setupToolbar() {
         binding.notification.setOnClickListener {
             onNotificationClick()
         }
@@ -206,25 +212,36 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToHomeFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(
+                        NavGraphDirections.navigateToHomeFragment()
+                    )
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_map -> {
 
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToMapFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(
+                        NavGraphDirections.navigateToMapFragment()
+                    )
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_messages -> {
 
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToRoomlistFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(
+                        NavGraphDirections.navigateToRoomlistFragment()
+                    )
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_profile -> {
                     if (!UserManager.isLoggedIn) {
-                        findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalLoginFragment())
+                        findNavController(R.id.nav_host_fragment).navigate(
+                            NavGraphDirections.actionGlobalLoginFragment()
+                        )
                     } else {
-                        findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalProfileFragment(
-                            UserManager.weShareUser))
+                        findNavController(R.id.nav_host_fragment).navigate(
+                            NavGraphDirections.actionGlobalProfileFragment(
+                                UserManager.weShareUser
+                            )
+                        )
                     }
                     return@setOnItemSelectedListener true
                 }
@@ -256,11 +273,11 @@ class MainActivity : AppCompatActivity() {
         isFabExpend = !isFabExpend
     }
 
-    private fun onNotificationClick(){
-        if (!notificationPageOpen){
+    private fun onNotificationClick() {
+        if (!notificationPageOpen) {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.actionGlobalNotificationFragment())
-        }else{
+        } else {
             findNavController(R.id.nav_host_fragment).navigateUp()
         }
         notificationPageOpen = !notificationPageOpen
@@ -283,7 +300,7 @@ class MainActivity : AppCompatActivity() {
         if (!isFabExpend) {
             binding.layoutFabGift.visibility = View.VISIBLE
             binding.layoutFabEvent.visibility = View.VISIBLE
-        }else {
+        } else {
             binding.layoutFabGift.visibility = View.GONE
             binding.layoutFabEvent.visibility = View.GONE
         }

@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.Settings
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -25,7 +24,6 @@ import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.factory.AuthorViewModelFactory
 import com.zoe.weshare.factory.ViewModelFactory
-
 
 fun Fragment.getVmFactory(userInfo: UserInfo?): AuthorViewModelFactory {
     val repository = (requireContext().applicationContext as WeShareApplication).repository
@@ -48,18 +46,19 @@ fun Fragment.checkLocationPermission(): Boolean {
         true
     } else {
         // 詢問要求獲取權限
-        requestPermissions()
+        requestLocationPermissions()
         false
     }
 }
 
-fun Fragment.requestPermissions() {
+fun Fragment.requestLocationPermissions() {
 
     Dexter.withContext(requireContext())
         .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
         .withListener(object : PermissionListener {
             override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                findNavController().navigate(NavGraphDirections.navigateToMapFragment())
+                findNavController().navigate(
+                    NavGraphDirections.navigateToMapFragment())
             }
 
             override fun onPermissionDenied(response: PermissionDeniedResponse) {
@@ -91,7 +90,6 @@ fun Fragment.requestPermissions() {
                         findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
                     }
                     .show()
-
             }
         }).check()
 }
@@ -102,7 +100,6 @@ fun Fragment.sendNotificationsToFollowers(log: OperationLog) {
 
     requireContext().startService(intent)
 }
-
 
 fun Fragment.sendNotificationToTarget(authorUid: String, log: OperationLog) {
     val intent = Intent(requireContext(), SendNotificationService::class.java)

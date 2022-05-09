@@ -32,7 +32,6 @@ class PostGiftViewModel(
     var imageUri = MutableLiveData<Uri?>()
     var locationChoice: PostLocation? = null
 
-
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -142,7 +141,6 @@ class PostGiftViewModel(
         )
         _gift.value = onPostGift.value
     }
-
 
     fun navigateNextComplete() {
         _gift.value = null

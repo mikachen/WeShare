@@ -28,7 +28,6 @@ object Const {
     const val FIELD_EVENT_VOLUNTEER = "whoVolunteer"
     const val FIELD_EVENT_CHECKED_IN = "whoCheckedIn"
 
-
     const val FIELD_USER_FOLLOWER = "follower"
     const val FIELD_USER_FOLLOWING = "following"
     const val FIELD_USER_BLACKLIST = "blackList"
@@ -37,5 +36,4 @@ object Const {
     const val FIELD_USER_INTRO_MSG = "introMsg"
     const val FIELD_USER_IMAGE = "image"
     const val FIELD_NOTIFICATION_READ = "read"
-
 }

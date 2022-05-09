@@ -11,7 +11,6 @@ import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.databinding.ItemGiftDistributionListBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getTimeAgoString
-import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.Util
 
@@ -60,6 +59,8 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
                 binding.buttonSendGift.setOnClickListener {
                     viewModel.userPressSendGift(comment)
                 }
+            } else {
+                binding.buttonSendGift.isEnabled = false
             }
         }
 

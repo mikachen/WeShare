@@ -27,7 +27,6 @@ import com.zoe.weshare.util.UserManager.weShareUser
 
 class DistributeFragment : BottomSheetDialogFragment() {
 
-
     val viewModel by viewModels<DistributeViewModel> { getVmFactory(weShareUser) }
 
     lateinit var binding: FragmentDistributeBinding
@@ -72,15 +71,15 @@ class DistributeFragment : BottomSheetDialogFragment() {
             onConfirmingOperation(it)
         }
 
-        viewModel.targetUser.observe(viewLifecycleOwner){
+        viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
                 viewModel.navigateToProfileComplete()
             }
         }
 
-        viewModel.receiverNotification.observe(viewLifecycleOwner){
-            sendNotificationToTarget(it.operatorUid,it)
+        viewModel.receiverNotification.observe(viewLifecycleOwner) {
+            sendNotificationToTarget(it.operatorUid, it)
         }
 
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
@@ -124,7 +123,6 @@ class DistributeFragment : BottomSheetDialogFragment() {
         setStyle(STYLE_NORMAL, R.style.DialogStyle)
     }
 
-
     // expanded all dialog view when keyboard pop up
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
@@ -133,8 +131,9 @@ class DistributeFragment : BottomSheetDialogFragment() {
 
             val bottomSheetDialog = it as BottomSheetDialog
 
-            val parentLayout =
-                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            val parentLayout = bottomSheetDialog
+                .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+
             parentLayout?.let { it ->
                 val behaviour = BottomSheetBehavior.from(it)
                 setupFullHeight(it)
@@ -145,7 +144,6 @@ class DistributeFragment : BottomSheetDialogFragment() {
         }
 
         return dialog
-
     }
 
     private fun setupFullHeight(bottomSheet: View) {

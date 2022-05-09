@@ -50,7 +50,6 @@ class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
         return AllGiftsViewHolder.from(parent)
     }
 
-
     class GiftsALLOnClickListener(val doNothing: (gift: GiftPost) -> Unit) {
         fun onClick(selectedGift: GiftPost) = doNothing(selectedGift)
     }
@@ -65,19 +64,24 @@ class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
         }
     }
 
-        fun modifyList(list : List<GiftPost>) {
+    fun modifyList(list: List<GiftPost>) {
         unfilteredList = list
         submitList(list)
     }
 
-    fun filter(query: CharSequence?, viewModel:GiftsAllViewModel) {
+    fun filter(query: CharSequence?, viewModel: GiftsAllViewModel) {
         val list = mutableListOf<GiftPost>()
 
         // perform the data filtering
-        if(!query.isNullOrEmpty()) {
-            list.addAll(unfilteredList.filter {
-                it.title.toLowerCase(Locale.getDefault()).contains(query.toString().toLowerCase(Locale.getDefault())) ||
-                        it.description.toLowerCase(Locale.getDefault()).contains(query.toString().toLowerCase(Locale.getDefault())) })
+        if (!query.isNullOrEmpty()) {
+            list.addAll(
+                unfilteredList.filter {
+                    it.title.toLowerCase(Locale.getDefault())
+                        .contains(query.toString().toLowerCase(Locale.getDefault())) ||
+                        it.description.toLowerCase(Locale.getDefault())
+                            .contains(query.toString().toLowerCase(Locale.getDefault()))
+                }
+            )
 
             viewModel.onSearchEmpty.value = list.isEmpty()
         } else {
