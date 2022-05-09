@@ -24,9 +24,15 @@ class DistributeViewModel(
 
     lateinit var gift: GiftPost
 
+    var receiverNotification = MutableLiveData<OperationLog>()
+
     private var _comments = MutableLiveData<List<Comment>>()
     val comments: LiveData<List<Comment>>
         get() = _comments
+
+    private var _targetUser = MutableLiveData<UserInfo>()
+    val targetUser: LiveData<UserInfo>
+        get() = _targetUser
 
     private var _onProfileSearchComplete = MutableLiveData<Int>()
     val onProfileSearchComplete: LiveData<Int>
@@ -62,10 +68,13 @@ class DistributeViewModel(
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getAllComments(
-                collection = PATH_GIFT_POST,
-                docId = selectedGift.id,
-                subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR)) {
+            when (
+                val result = repository.getAllComments(
+                    collection = PATH_GIFT_POST,
+                    docId = selectedGift.id,
+                    subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR
+                )
+            ) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -179,6 +188,19 @@ class DistributeViewModel(
                 onConfirmMsgShowing.value?.name ?: ""
             )
         )
+
+        val msgToGiftReceiver = OperationLog(
+            postDocId = gift.id,
+            logType = LogType.SEND_GIFT.value,
+            operatorUid = onConfirmMsgShowing.value!!.uid,
+            logMsg = WeShareApplication.instance.getString(
+                R.string.log_msg_receive_gift,
+                userInfo.name,
+                gift.title,
+            )
+        )
+
+        receiverNotification.value = msgToGiftReceiver
         saveSendGiftLog(log)
     }
 
@@ -192,18 +214,26 @@ class DistributeViewModel(
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
-
                 }
             }
         }
+    }
+
+    fun onNavigateToTargetProfile(uid: String) {
+        val target = UserInfo()
+        target.uid = uid
+
+        _targetUser.value = target
+    }
+
+    fun navigateToProfileComplete() {
+        _targetUser.value = null
     }
 }

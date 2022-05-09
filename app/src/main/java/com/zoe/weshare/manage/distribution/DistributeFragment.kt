@@ -21,11 +21,11 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.ext.sendNotifications
+import com.zoe.weshare.ext.sendNotificationToTarget
+import com.zoe.weshare.ext.sendNotificationsToFollowers
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class DistributeFragment : BottomSheetDialogFragment() {
-
 
     val viewModel by viewModels<DistributeViewModel> { getVmFactory(weShareUser) }
 
@@ -71,19 +71,29 @@ class DistributeFragment : BottomSheetDialogFragment() {
             onConfirmingOperation(it)
         }
 
+        viewModel.targetUser.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                viewModel.navigateToProfileComplete()
+            }
+        }
 
-        viewModel.saveLogComplete.observe(viewLifecycleOwner){
-            sendNotifications(it)
+        viewModel.receiverNotification.observe(viewLifecycleOwner) {
+            sendNotificationToTarget(it.operatorUid, it)
+        }
+
+        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
+            sendNotificationsToFollowers(it)
 
             Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(NavGraphDirections.actionGlobalPagerFilterFragment())
+            findNavController().navigate(NavGraphDirections.actionGlobalGiftManageFragment())
         }
 
         setupBtn()
         return binding.root
     }
 
-    private fun setupBtn(){
+    private fun setupBtn() {
         binding.buttonCloseDialog.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -95,23 +105,22 @@ class DistributeFragment : BottomSheetDialogFragment() {
         builder.apply {
             setTitle(getString(R.string.send_gift_title, selectedGift.title, target!!.name))
             setMessage(getString(R.string.send_gift_message))
-            setPositiveButton(getString(R.string.send_gift_yes)) { dialog, _ ->
+            setPositiveButton(getString(R.string.confirm_yes)) { dialog, _ ->
                 viewModel.sendGift(selectedGift, target)
                 dialog.cancel()
             }
 
-            setNegativeButton(getString(R.string.send_gift_no)) { dialog, _ ->
+            setNegativeButton(getString(R.string.confirm_no)) { dialog, _ ->
                 dialog.cancel()
             }
         }
 
-        val alter: AlertDialog = builder.create()
-        alter.show()
+        builder.create().show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogBg)
+        setStyle(STYLE_NORMAL, R.style.DialogStyle)
     }
 
     // expanded all dialog view when keyboard pop up
@@ -122,8 +131,9 @@ class DistributeFragment : BottomSheetDialogFragment() {
 
             val bottomSheetDialog = it as BottomSheetDialog
 
-            val parentLayout =
-                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            val parentLayout = bottomSheetDialog
+                .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+
             parentLayout?.let { it ->
                 val behaviour = BottomSheetBehavior.from(it)
                 setupFullHeight(it)

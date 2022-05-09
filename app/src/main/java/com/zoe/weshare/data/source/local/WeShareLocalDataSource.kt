@@ -17,7 +17,11 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getGifts(): Result<List<GiftPost>> {
+    override suspend fun getAllGifts(): Result<List<GiftPost>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllEvents(): Result<List<EventPost>> {
         TODO("Not yet implemented")
     }
 
@@ -33,10 +37,6 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getEvents(): Result<List<EventPost>> {
-        TODO("Not yet implemented")
-    }
-
     override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?> {
         TODO("Not yet implemented")
     }
@@ -46,6 +46,25 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         docId: String,
         field: String,
         value: FieldValue,
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateSubCollectionFieldValue(
+        collection: String,
+        docId: String,
+        subCollection: String,
+        subDocId: String,
+        field: String,
+        value: FieldValue,
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun readNotification(
+        uid: String,
+        docId: String,
+        read: Boolean,
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
@@ -90,7 +109,6 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     override suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>> {
         TODO("Not yet implemented")
     }
-
 
     override suspend fun likeOnPostComment(
         collection: String,
@@ -143,13 +161,12 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getUserHistoryPosts(
+    override suspend fun getUserAllGiftsPosts(
         collection: String,
         uid: String,
     ): Result<List<GiftPost>> {
         TODO("Not yet implemented")
     }
-
 
     override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> {
         TODO("Not yet implemented")

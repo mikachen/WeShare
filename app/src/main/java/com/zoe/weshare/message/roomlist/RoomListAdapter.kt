@@ -12,7 +12,6 @@ import com.zoe.weshare.databinding.ItemRelatedRoomListBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
 import com.zoe.weshare.util.ChatRoomType
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 
@@ -31,7 +30,6 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
 
         val targetsObj = room.usersInfo.filter { it.uid != weShareUser!!.uid }
 
-        // TODO 對方如果離開可能null
         if (targetsObj.isNotEmpty()) {
             holder.bind(room, targetsObj)
         }
@@ -50,10 +48,10 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
         fun bind(room: ChatRoom, targetsObj: List<UserInfo>) {
 
             binding.apply {
-                if (room.type == ChatRoomType.MULTIPLE.value){
+                if (room.type == ChatRoomType.MULTIPLE.value) {
                     bindImage(imageRoomImage, room.eventImage)
-                    textRoomTargetTitle.text = Util.getStringWithStrParm(R.string.room_list_event_title,room.eventTitle)
-                }else{
+                    textRoomTargetTitle.text = Util.getStringWithStrParm(R.string.room_list_event_title, room.eventTitle)
+                } else {
                     bindImage(imageRoomImage, targetsObj.single().image)
                     textRoomTargetTitle.text = targetsObj.single().name
                 }

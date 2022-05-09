@@ -39,7 +39,6 @@ class RoomListFragment : Fragment() {
         binding.roomlistRecyclerView.adapter = adapter
 
         viewModel.room.observe(viewLifecycleOwner) {
-            Log.d("roomlist","$it")
             adapter.submitList(it)
         }
 

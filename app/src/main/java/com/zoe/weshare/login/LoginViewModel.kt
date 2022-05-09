@@ -1,6 +1,5 @@
 package com.zoe.weshare.login
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,11 +18,9 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
 
-
     private var _loginSuccess = MutableLiveData<UserInfo>()
     val loginSuccess: LiveData<UserInfo>
         get() = _loginSuccess
-
 
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
@@ -35,7 +32,6 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
 
     /**
      * 1) search User collection with uid document
@@ -60,7 +56,6 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
@@ -121,6 +116,7 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
             uid = profile.uid
         )
         UserManager.weShareUser = user
+        UserManager.userBlackList = profile.blackList
 
         _loginSuccess.value = user
     }

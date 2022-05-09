@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -23,6 +24,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.checkLocationPermission
@@ -37,7 +39,7 @@ class PostGiftFragment : Fragment() {
     private lateinit var binding: FragmentPostGiftBinding
 
     val viewModel by viewModels<PostGiftViewModel> { getVmFactory(weShareUser) }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -120,30 +122,39 @@ class PostGiftFragment : Fragment() {
 
         when (true) {
             title.isEmpty() ->
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     getString(R.string.error_title_isEmpty),
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
 
             sort.isEmpty() ->
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     getString(R.string.error_sort_isEmpty),
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
 
             condition.isEmpty() ->
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     getString(R.string.error_condition_isEmpty),
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
 
             description.isEmpty() ->
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     getString(R.string.error_description_isEmpty),
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
 
             (viewModel.imageUri.value == null) ->
-                Toast.makeText(requireContext(),
+                Toast.makeText(
+                    requireContext(),
                     getString(R.string.error_image_isEmpty),
-                    Toast.LENGTH_SHORT).show()
-
+                    Toast.LENGTH_SHORT
+                ).show()
 
             else -> viewModel.onSaveUserInput(title, sort, condition, description)
         }
@@ -165,7 +176,6 @@ class PostGiftFragment : Fragment() {
         )
         binding.dropdownMenuCondition.setAdapter(conditionAdapter)
     }
-
 
     fun checkLocationPermission(): Boolean {
         // 檢查權限
@@ -189,7 +199,6 @@ class PostGiftFragment : Fragment() {
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(response: PermissionGrantedResponse) {
-
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) {
@@ -217,8 +226,14 @@ class PostGiftFragment : Fragment() {
                         }
                         .setNegativeButton("取消") { _, _ -> }
                         .show()
-
                 }
             }).check()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+        )
     }
 }

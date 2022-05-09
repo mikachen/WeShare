@@ -2,8 +2,10 @@ package com.zoe.weshare.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -11,14 +13,18 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.github.amlcurran.showcaseview.ShowcaseView
+import com.github.amlcurran.showcaseview.targets.Target.NONE
+import com.github.amlcurran.showcaseview.targets.ViewTarget
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
+import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentHomeBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.smoothSnapToPosition
-import com.zoe.weshare.util.UserManager
 import java.util.*
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), View.OnClickListener {
 
     private lateinit var headerRv: RecyclerView
     private lateinit var headerAdapter: HeaderAdapter
@@ -28,9 +34,12 @@ class HomeFragment : Fragment() {
 
     private lateinit var logTickerRv: RecyclerView
     private lateinit var tickerAdapter: TickerAdapter
+    private lateinit var showcaseView: ShowcaseView
 
     val viewModel by viewModels<HomeViewModel> { getVmFactory() }
     private lateinit var binding: FragmentHomeBinding
+
+    var counter = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,7 +48,6 @@ class HomeFragment : Fragment() {
     ): View? {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
 
         viewModel.gifts.observe(viewLifecycleOwner) {
             hotGiftAdapter.submitList(it)
@@ -53,7 +61,7 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.allLogs.observe(viewLifecycleOwner) {
-           viewModel.onFilteringLog(it)
+            viewModel.onFilteringLog(it)
         }
 
         viewModel.filteredLogs.observe(viewLifecycleOwner) {
@@ -81,12 +89,49 @@ class HomeFragment : Fragment() {
             }
         }
 
-
         setupHeaderGallery()
         setupHotGiftsGallery()
         setupLogTicker()
-
+        setupButton()
         return binding.root
+    }
+
+    private fun setupButton() {
+        binding.buttonNewbieHint.setOnClickListener {
+            setShowCase()
+        }
+        binding.buttonCheckEvents.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalEventsAllFragment())
+        }
+        binding.buttonCheckGifts.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalGiftsAllFragment())
+        }
+        binding.buttonCurrentHeros.setOnClickListener {
+        }
+    }
+
+    fun setShowCase() {
+
+        val lps = RelativeLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+        val margin = ((resources.displayMetrics.density * 24) as Number).toInt()
+        lps.setMargins(margin, margin, margin, margin * 10)
+
+        showcaseView = ShowcaseView.Builder(requireActivity())
+            .setTarget(NONE)
+            .setStyle(R.style.CustomShowcaseTheme)
+            .setContentTitle("歡迎進入WeShare，恭喜您已成功地完成共享的第一步！")
+            .setContentText("讓我為您做個操作介紹吧:)")
+            .setOnClickListener(this)
+            .hideOnTouchOutside()
+            .build()
+
+        showcaseView.setButtonPosition(lps)
+        showcaseView.setButtonText("下一步")
     }
 
     private fun setupHeaderGallery() {
@@ -137,7 +182,7 @@ class HomeFragment : Fragment() {
         hotGiftsRv = binding.hotGiftRv
 
         hotGiftAdapter = HotGiftsAdapter(
-            HotGiftsAdapter.HotGiftsOnClickListener { selectedGift ->
+            HotGiftsAdapter.OnClickListener { selectedGift ->
                 viewModel.displayGiftDetails(selectedGift)
             }
         )
@@ -161,6 +206,13 @@ class HomeFragment : Fragment() {
         logTickerRv.adapter = tickerAdapter
         logTickerRv.layoutManager = manager
 
+        // disable user interact
+        logTickerRv.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                return true
+            }
+        })
+
         val linearSnapHelper = LinearSnapHelper()
         linearSnapHelper.attachToRecyclerView(logTickerRv)
 
@@ -171,20 +223,52 @@ class HomeFragment : Fragment() {
                     if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
 
                         logTickerRv.smoothSnapToPosition(manager.findLastVisibleItemPosition() + 1)
-
                     } else if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
 
                         logTickerRv.smoothSnapToPosition(0)
-
                     }
                 }
-            }, 0, 5000
+            },
+            0, 5000
         )
     }
 
-    private fun requireLogIn() {
-        if (!UserManager.isLoggedIn) {
-            findNavController().navigate(NavGraphDirections.actionGlobalLoginFragment())
+    override fun onClick(p0: View?) {
+        when (counter) {
+
+            0 ->
+                showcaseView.apply {
+                    setShowcase(ViewTarget((activity as MainActivity).binding.fabMain), true)
+                    setContentTitle("點擊+按鈕可以刊登贈品或刊登活動")
+                    setContentText("")
+                }
+
+            1 -> showcaseView.apply {
+                setShowcase(ViewTarget(binding.buttonCheckEvents), true)
+                setContentTitle("點擊查看活動可以瀏覽當前最新的活動項目")
+            }
+
+            2 -> showcaseView.apply {
+                setShowcase(ViewTarget(binding.buttonCheckGifts), true)
+                setContentTitle("點擊查看贈品可以瀏覽當前最新的贈品項目")
+            }
+            3 -> showcaseView.apply {
+                setShowcase(ViewTarget(binding.buttonCurrentHeros), true)
+                setContentTitle("點擊英雄榜可以查看到用戶的貢獻排名")
+            }
+            4 -> showcaseView.apply {
+                setShowcase(ViewTarget((activity as MainActivity).binding.notification), true)
+                setContentTitle("點擊小鈴鐺來看看最新的通知")
+                setButtonText("關閉")
+            }
+            5 -> {
+                showcaseView.hide()
+            }
+        }
+        counter++
+
+        if (counter == 6) {
+            counter = 0
         }
     }
 }

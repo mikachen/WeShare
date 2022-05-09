@@ -3,7 +3,6 @@ package com.zoe.weshare.profile.editmode
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,23 +28,24 @@ class EditInfoFragment : Fragment() {
     val viewModel by viewModels<EditInfoViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
         binding = FragmentEditInfoBinding.inflate(inflater, container, false)
 
-
         val userProfile = EditInfoFragmentArgs.fromBundle(requireArguments()).userProfile
         viewModel.onProfileDisplay(userProfile)
-
 
         viewModel.profileUpdate.observe(viewLifecycleOwner) {
             viewModel.updateProfile(it)
         }
 
         viewModel.updateComplete.observe(viewLifecycleOwner) {
-            findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(weShareUser))
+            findNavController().navigate(
+                NavGraphDirections.actionGlobalProfileFragment(weShareUser)
+            )
         }
 
         binding.buttonSave.setOnClickListener {
@@ -56,11 +56,9 @@ class EditInfoFragment : Fragment() {
             selectImage()
         }
 
-
         setupView(userProfile)
         return binding.root
     }
-
 
     private fun setupView(profile: UserProfile) {
         binding.apply {
@@ -109,7 +107,6 @@ class EditInfoFragment : Fragment() {
 
                 binding.imageProfileAvatar.setImageURI(filePath)
                 viewModel.newImage = filePath
-
             } catch (e: Exception) {
                 // Log the exception
                 e.printStackTrace()

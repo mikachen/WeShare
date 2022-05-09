@@ -18,27 +18,26 @@ class DefaultWeShareRepository(
         return remoteDataSource.postNewGift(gift)
     }
 
-    override suspend fun getGifts(): Result<List<GiftPost>> {
-        return remoteDataSource.getGifts()
+    override suspend fun getAllGifts(): Result<List<GiftPost>> {
+        return remoteDataSource.getAllGifts()
     }
 
-    override suspend fun getEvents(): Result<List<EventPost>> {
-        return remoteDataSource.getEvents()
+    override suspend fun getAllEvents(): Result<List<EventPost>> {
+        return remoteDataSource.getAllEvents()
     }
 
-    override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>{
+    override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?> {
         return remoteDataSource.getLiveEventDetail(docId)
     }
-    override fun getLiveLogs(): MutableLiveData<List<OperationLog>>{
+    override fun getLiveLogs(): MutableLiveData<List<OperationLog>> {
         return remoteDataSource.getLiveLogs()
     }
-
 
     override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
         return remoteDataSource.getLiveMessages(docId)
     }
 
-    override fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>>{
+    override fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>> {
         return remoteDataSource.getLiveNotifications(uid)
     }
 
@@ -46,7 +45,7 @@ class DefaultWeShareRepository(
         return remoteDataSource.getUserInfo(uid)
     }
 
-    override suspend fun newUserRegister(user: UserProfile) : Result<Boolean>{
+    override suspend fun newUserRegister(user: UserProfile): Result<Boolean> {
         return remoteDataSource.newUserRegister(user)
     }
 
@@ -78,8 +77,6 @@ class DefaultWeShareRepository(
     override suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean> {
         return remoteDataSource.sendMessage(docId, comment)
     }
-
-
 
     override suspend fun likeOnPostComment(
         collection: String,
@@ -119,11 +116,11 @@ class DefaultWeShareRepository(
         return remoteDataSource.getUserLog(uid)
     }
 
-    override suspend fun getUserHistoryPosts(
+    override suspend fun getUserAllGiftsPosts(
         collection: String,
         uid: String,
     ): Result<List<GiftPost>> {
-        return remoteDataSource.getUserHistoryPosts(collection, uid)
+        return remoteDataSource.getUserAllGiftsPosts(collection, uid)
     }
 
     override suspend fun updateGiftStatus(
@@ -142,7 +139,6 @@ class DefaultWeShareRepository(
         return remoteDataSource.getLiveComments(collection, docId, subCollection)
     }
 
-
     override suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean> {
         return remoteDataSource.updateEventRoom(roomId, user)
     }
@@ -160,8 +156,19 @@ class DefaultWeShareRepository(
         docId: String,
         field: String,
         value: FieldValue
-    ): Result<Boolean>{
+    ): Result<Boolean> {
         return remoteDataSource.updateFieldValue(collection, docId, field, value)
+    }
+
+    override suspend fun updateSubCollectionFieldValue(
+        collection: String,
+        docId: String,
+        subCollection: String,
+        subDocId: String,
+        field: String,
+        value: FieldValue,
+    ): Result<Boolean> {
+        return remoteDataSource.updateSubCollectionFieldValue(collection, docId, subCollection, subDocId, field, value)
     }
 
     override suspend fun uploadImage(imageUri: Uri): Result<String> {
@@ -171,7 +178,10 @@ class DefaultWeShareRepository(
     override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> {
         return remoteDataSource.updateUserProfile(profile)
     }
-    override suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean>{
-        return remoteDataSource.sendNotifications(targetUid,log)
+    override suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean> {
+        return remoteDataSource.sendNotifications(targetUid, log)
+    }
+    override suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean> {
+        return remoteDataSource.readNotification(uid, docId, read)
     }
 }

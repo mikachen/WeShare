@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,14 +27,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.FragmentMapBinding
-import com.zoe.weshare.ext.generateSmallIcon
 import com.zoe.weshare.ext.checkLocationPermission
+import com.zoe.weshare.ext.generateSmallIcon
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.util.Logger
 import kotlin.math.max
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -45,16 +44,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var currentLocation: LatLng
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var recyclerView: RecyclerView
+    private lateinit var manager: LinearLayoutManager
     private lateinit var adapter: CardGalleryAdapter
+    private val marginDecoration = GalleryDecoration()
     private val markersRef = mutableListOf<Marker>()
     private val viewModel by viewModels<MapViewModel> { getVmFactory() }
 
-    private var isPermissionGranted: Boolean = false
+    var needRefreshMap = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        isPermissionGranted = this.checkLocationPermission()
+        viewModel.isPermissionGranted = this.checkLocationPermission()
     }
 
     override fun onCreateView(
@@ -62,11 +63,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        Log.d("onCreateView", "$isPermissionGranted")
 
         binding = FragmentMapBinding.inflate(inflater, container, false)
 
-        if (isPermissionGranted) {
+        if (needRefreshMap) {
+            Logger.d("needRefreshMap when navigateUp: $needRefreshMap")
+            findNavController().navigate(MapFragmentDirections.actionMapFragmentSelf())
+        }
+
+        if (viewModel.isPermissionGranted) {
 
             viewModel.gifts.observe(viewLifecycleOwner) {
                 viewModel.onCardPrepare(gifts = it, events = null)
@@ -80,7 +85,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
                     // markers on map
                     createMarker(it)
-
                     // cards recycler view
                     adapter.submitCards(it)
                 }
@@ -89,7 +93,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             viewModel.snapPosition.observe(viewLifecycleOwner) {
                 // when rv scroll, trigger marker showInfoWindow and move camera
                 markersRef[it].showInfoWindow()
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F))
+                map.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F))
             }
 
             viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
@@ -104,8 +109,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
             viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
                 it?.let {
-                    findNavController()
-                        .navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
+                    findNavController().navigate(
+                        NavGraphDirections.actionGlobalEventDetailFragment(it)
+                    )
+
                     viewModel.displayCardDetailsComplete()
                 }
             }
@@ -114,6 +121,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 LocationServices.getFusedLocationProviderClient(requireContext())
 
             binding.mapView.onCreate(savedInstanceState)
+
             binding.mapView.getMapAsync(this)
 
             setupCardGallery()
@@ -123,6 +131,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+
         map = googleMap
 
         setupMapSettings()
@@ -130,6 +139,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun createMarker(cards: List<Cards>?) {
+        markersRef.clear()
         cards?.forEach {
             it.postLocation.let { location ->
 
@@ -153,6 +163,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         )
                     }
                     markersRef.add(newMarker)
+                    Logger.d("createMarker: ${it.title}")
+
                 }
             }
         }
@@ -161,7 +173,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     // Get current location
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
-        if (isPermissionGranted) {
+        if (viewModel.isPermissionGranted) {
             fusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
                 val location: Location? = task.result
                 if (location == null) {
@@ -223,11 +235,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private fun setupMapSettings() {
 
         map.uiSettings.setAllGesturesEnabled(true)
+
         map.uiSettings.isMyLocationButtonEnabled = true
 
-        map.setOnMyLocationButtonClickListener {
+        binding.btnGetUserLocation.setOnClickListener {
             getLastLocation()
-            true
         }
 
         map.setOnMarkerClickListener(this)
@@ -243,7 +255,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
         )
 
-        val manager = LinearLayoutManager(
+        manager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.HORIZONTAL, false
         )
@@ -255,7 +267,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             attachToRecyclerView(recyclerView)
         }
 
-        val marginDecoration = GalleryDecoration()
         recyclerView.addItemDecoration(marginDecoration)
 
         recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
@@ -267,42 +278,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onStart() {
         super.onStart()
-        Log.d("onStart", "onStart")
-        if (isPermissionGranted) {
+        if (viewModel.isPermissionGranted) {
             binding.mapView.onStart()
         }
     }
 
-
     override fun onResume() {
-        Log.d("onResume", "onResume")
         super.onResume()
-        if (isPermissionGranted) {
+        if (viewModel.isPermissionGranted) {
             binding.mapView.onResume()
         }
-
     }
 
     override fun onPause() {
         super.onPause()
-
-        if (isPermissionGranted) {
+        if (viewModel.isPermissionGranted) {
             binding.mapView.onPause()
         }
     }
 
     override fun onStop() {
         super.onStop()
-
-        if (isPermissionGranted) {
+        if (viewModel.isPermissionGranted) {
             binding.mapView.onStop()
+            needRefreshMap = true
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        if (isPermissionGranted) {
+        if (viewModel.isPermissionGranted) {
             binding.mapView.onSaveInstanceState(outState)
         }
     }
@@ -310,7 +316,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onDestroy() {
         super.onDestroy()
 
-        if (isPermissionGranted) {
+        if (viewModel.isPermissionGranted) {
             binding.mapView.onDestroy()
         }
     }
@@ -318,7 +324,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onLowMemory() {
         super.onLowMemory()
 
-        if (isPermissionGranted) {
+        if (viewModel.isPermissionGranted) {
             binding.mapView.onLowMemory()
         }
     }

@@ -9,7 +9,7 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.ItemHotGiftGridBinding
 import com.zoe.weshare.ext.bindImage
 
-class HotGiftsAdapter(private val onClickListener: HotGiftsOnClickListener) :
+class HotGiftsAdapter(private val onClickListener: OnClickListener) :
     ListAdapter<GiftPost, HotGiftsAdapter.HotGiftsViewHolder>(DiffCallback) {
 
     class HotGiftsViewHolder(var binding: ItemHotGiftGridBinding) :
@@ -47,7 +47,7 @@ class HotGiftsAdapter(private val onClickListener: HotGiftsOnClickListener) :
         }
     }
 
-    class HotGiftsOnClickListener(val doNothing: (gift: GiftPost) -> Unit) {
+    class OnClickListener(val doNothing: (gift: GiftPost) -> Unit) {
         fun onClick(selectedGift: GiftPost) = doNothing(selectedGift)
     }
 

@@ -38,11 +38,10 @@ class GiftItemsAdapter(
             when (gift.status) {
                 GiftStatusType.OPENING.code -> {
                     binding.textStatus.text = GiftStatusType.OPENING.tag
-                    binding.textStatus.setBackgroundResource(R.color.message_sender_green)
+                    binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
                 }
                 GiftStatusType.CLOSED.code -> {
                     binding.buttonAbandon.visibility = View.GONE
-                    binding.btnCheckWhoRequest.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.CLOSED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
                 }
@@ -75,10 +74,11 @@ class GiftItemsAdapter(
 
     override fun onBindViewHolder(holder: GiftViewHolder, position: Int) {
 
-        viewBinderHelper.setOpenOnlyOne(true)
-        viewBinderHelper.bind(holder.binding.swipeLayout, position.toString())
-
         val gift = getItem(position)
+
+        viewBinderHelper.setOpenOnlyOne(true)
+        viewBinderHelper.bind(holder.binding.swipeLayout, gift.id)
+
         gift?.let {
             holder.bind(gift)
 
@@ -87,7 +87,7 @@ class GiftItemsAdapter(
             }
 
             holder.binding.buttonAbandon.setOnClickListener {
-                viewModel.userPressAbandon(gift)
+                viewModel.userClickAbandon(gift)
             }
 
             holder.binding.btnCheckWhoRequest.setOnClickListener {

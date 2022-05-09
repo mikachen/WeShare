@@ -62,7 +62,6 @@
     <string name="filter_abandoned">已下架</string>
     <string name="event_leave_a_comment">留個言吧…</string>
     <string name="chatroom_send_a_message">輸入訊息</string>
-    <string name="posting_progress">LOADING..%1$d%%</string>
 
 
     //下架Alert窗
@@ -75,8 +74,8 @@
     //送禮物Alert窗
     <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
     <string name="send_gift_message">確認送出後將不可再作修改!</string>
-    <string name="send_gift_yes">確認</string>
-    <string name="send_gift_no">取消</string>
+    <string name="confirm_yes">確認</string>
+    <string name="confirm_no">取消</string>
     <string name="title_who_requested">當前索取人</string>
 
     //Log Messages
@@ -91,6 +90,8 @@
     <string name="log_msg_event_status_ongoing">&lt;b>活動：%s&lt;/b> 已經開始囉！</string>
     <string name="log_msg_event_status_ended">&lt;b>活動：%s&lt;/b> 已經結束了！</string>
     <string name="log_msg_following_someone">&lt;b>%1s&lt;/b>追蹤了%2s！</string>
+    <string name="log_msg_event_check_in">&lt;b>%1s&lt;/b>已於活動：%2s 完成志工簽到！</string>
+    <string name="log_msg_receive_gift">&lt;b>%1s&lt;/b> 已成功將贈品：%2s 送出給您，恭喜您！</string>
 
 
     //error handle
@@ -127,5 +128,26 @@
     <string name="room_list_event_title">活動群聊：%1s</string>
     <string name="leave_ask_for_gift_comment">索取留言</string>
     <string name="pls_leave_askforgift_comment">留言索取理由或感謝文。</string>
+
+
+    <string name="notification_request_gift">索取</string>
+    <string name="notification_attend_volunteer">志工</string>
+    <string name="profile_following_string">追蹤中</string>
+    <string name="profile_follower_string">粉絲數</string>
+    <string name="profile_gift_sent_count_string">贈品送出</string>
+    <string name="profile_gift_post_count_string">贈品刊登</string>
+    <string name="profile_event_post_count_string">發起活動</string>
+    <string name="profile_volunteer_count_string">志工參與</string>
+    <string name="profile_defult_zero_count">-</string>
+
+
+    <string name="countdown_time1">倒數 %02d 天 %02d 時 %02d 分 %02d 秒</string>
+    <string name="countdown_time2">倒數 %02d 時 %02d 分 %02d 秒</string>
+    <string name="countdown_time3">倒數 %02d 分 %02d 秒</string>
+    <string name="countdown_time4">倒數 %02d 秒</string>
+
+    <string name="block_this_person_title">確定要封鎖用戶：%s？</string>
+    <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何頻論與刊登。</string>
+
 
 </resources>

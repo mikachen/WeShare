@@ -8,6 +8,7 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,6 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     var allLogs = MutableLiveData<List<OperationLog>>()
-
     var filteredLogs = MutableLiveData<List<OperationLog>>()
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
@@ -51,8 +51,6 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     val navigateToSelectedEvent: LiveData<EventPost?>
         get() = _navigateToSelectedEvent
 
-    val cardsViewList = mutableListOf<Cards>()
-
     var isGiftCardsComplete: Boolean = false
     var isEventCardsComplete: Boolean = false
 
@@ -66,36 +64,42 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         allLogs = repository.getLiveLogs()
     }
 
-    fun onFilteringLog(list: List<OperationLog>){
-        filteredLogs.value = list.filter { it.logType != LogType.FOLLOWING.value}
+    fun onFilteringLog(list: List<OperationLog>) {
+        filteredLogs.value = list.filter {
+            it.logType != LogType.REQUEST_GIFT.value &&
+                it.logType != LogType.FOLLOWING.value &&
+                it.logType != LogType.ABANDONED_GIFT.value &&
+                it.logType != LogType.EVENT_CHECK_IN.value
+        }
+    }
+
+    private fun filterGift(gifts: List<GiftPost>) {
+        _gifts.value = gifts.filter { it.status != GiftStatusType.CLOSED.code }
     }
 
     private fun getGiftsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getGifts()
 
-            _gifts.value = when (result) {
+            when (val result = repository.getAllGifts()) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data
+
+                    filterGift(result.data)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
             }
             _refreshStatus.value = false
@@ -105,7 +109,7 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     private fun getEventsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getEvents()
+            val result = repository.getAllEvents()
 
             _events.value = when (result) {
                 is Result.Success -> {
@@ -142,8 +146,8 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         _navigateToSelectedEvent.value = null
     }
 
-    fun displayGiftDetails(event: GiftPost) {
-        _navigateToSelectedGift.value = event
+    fun displayGiftDetails(gift: GiftPost) {
+        _navigateToSelectedGift.value = gift
     }
 
     fun displayGiftDetailsComplete() {

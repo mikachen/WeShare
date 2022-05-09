@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:elevation="4dp"
@@ -17,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
-        android:id="@+id/title_people_who_asked"
+        android:id="@+id/title_people_who_requested"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -37,8 +36,8 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_baseline_close_24"
-        app:layout_constraintTop_toTopOf="@id/title_people_who_asked"
-        app:layout_constraintBottom_toBottomOf="@id/title_people_who_asked"/>
+        app:layout_constraintTop_toTopOf="@id/title_people_who_requested"
+        app:layout_constraintBottom_toBottomOf="@id/title_people_who_requested"/>
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"
@@ -47,12 +46,13 @@
         android:layout_marginHorizontal="8dp"
         app:layout_constraintBottom_toTopOf="@id/scrollView_peoples"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_people_who_asked" />
+        app:layout_constraintTop_toBottomOf="@id/title_people_who_requested" />
 
     <ScrollView
         android:id="@+id/scrollView_peoples"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

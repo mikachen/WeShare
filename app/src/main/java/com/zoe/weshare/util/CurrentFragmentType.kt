@@ -7,7 +7,7 @@ enum class CurrentFragmentType(val value: String) {
     HOME(getString(R.string.home)),
     MAP(getString(R.string.map)),
     ROOMLIST(getString(R.string.message)),
-    CHATROOM(""), // 預期後面assign
+    CHATROOM(""), // 預期後面assign target user's name
     PROFILE(getString(R.string.profile)),
     POSTEVENT(getString(R.string.post_event)),
     POSTGIFT(getString(R.string.post_gift)),
@@ -17,7 +17,7 @@ enum class CurrentFragmentType(val value: String) {
     GIFTMANAGE("贈品管理"),
     NOTIFICATION("通知"),
     LOGIN("登入"),
-    EDITPROFILE("會員資料更新")
-
-
+    EDITPROFILE("會員資料更新"),
+    GIFTSALL("贈品查詢"),
+    EVENTSALL("活動查詢")
 }

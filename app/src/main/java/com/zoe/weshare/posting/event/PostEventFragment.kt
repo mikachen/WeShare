@@ -4,16 +4,17 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostEventBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -51,10 +52,9 @@ class PostEventFragment : Fragment() {
             binding.editDatePicker.setText(it)
         }
 
-        viewModel.imageUri.observe(viewLifecycleOwner){
+        viewModel.imageUri.observe(viewLifecycleOwner) {
             binding.buttonImagePreviewHolder.setImageURI(it)
         }
-
 
         setupBtn()
         setupDropdownMenu()
@@ -72,7 +72,6 @@ class PostEventFragment : Fragment() {
             selectImage()
         }
     }
-
 
     private fun selectImage() {
         // Defining Implicit Intent to mobile gallery
@@ -100,14 +99,12 @@ class PostEventFragment : Fragment() {
             try {
 
                 viewModel.imageUri.value = filePath
-
             } catch (e: Exception) {
                 // Log the exception
                 e.printStackTrace()
             }
         }
     }
-
 
     private fun dataCollecting() {
 
@@ -119,22 +116,40 @@ class PostEventFragment : Fragment() {
 
         when (true) {
             title.isEmpty() ->
-                Toast.makeText(requireContext(), getString(R.string.error_title_isEmpty), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_title_isEmpty), Toast.LENGTH_SHORT
+                ).show()
 
             sort.isEmpty() ->
-                Toast.makeText(requireContext(), getString(R.string.error_sort_isEmpty), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_sort_isEmpty), Toast.LENGTH_SHORT
+                ).show()
 
             volunteerNeeds.isEmpty() ->
-                Toast.makeText(requireContext(), getString(R.string.error_volunteer_need), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_volunteer_need), Toast.LENGTH_SHORT
+                ).show()
 
             description.isEmpty() ->
-                Toast.makeText(requireContext(), getString(R.string.error_description_isEmpty), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_description_isEmpty), Toast.LENGTH_SHORT
+                ).show()
 
             time.isEmpty() ->
-                Toast.makeText(requireContext(), getString(R.string.error_date_pick_isEmpty), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_date_pick_isEmpty), Toast.LENGTH_SHORT
+                ).show()
 
             (viewModel.imageUri.value == null) ->
-                Toast.makeText(requireContext(), getString(R.string.error_image_isEmpty), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_image_isEmpty), Toast.LENGTH_SHORT
+                ).show()
 
             else -> viewModel.onSaveUserInput(title, sort, volunteerNeeds, description)
         }
@@ -166,7 +181,14 @@ class PostEventFragment : Fragment() {
         }
 
         binding.editDatePicker.setOnClickListener {
-            dateRangePicker.show(requireActivity().supportFragmentManager, "date_range_picker")
+            dateRangePicker.show(requireActivity().supportFragmentManager, "date_picker")
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+        )
     }
 }

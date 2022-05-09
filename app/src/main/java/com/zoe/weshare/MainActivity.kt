@@ -2,19 +2,14 @@ package com.zoe.weshare
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuItemCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -49,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    var notificationPageOpen: Boolean = false
     private var isFabExpend: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
@@ -64,10 +60,8 @@ class MainActivity : AppCompatActivity() {
         // lottie animation
         loginAnimate()
 
-
         // observe current fragment change, only for show info
-        viewModel.currentFragmentType.observe(this)
-        {
+        viewModel.currentFragmentType.observe(this) {
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -83,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                     // 顯示副標題+倒退鍵
                     CurrentFragmentType.SEARCHLOCATION -> {
                         hideBottom()
-                        toolbarFragmentTitleText.text = it.value
                     }
 
                     // 大主頁
@@ -93,16 +86,28 @@ class MainActivity : AppCompatActivity() {
                         layoutToolbarSubtitle.visibility = View.INVISIBLE
                     }
 
-                    CurrentFragmentType.MAP -> { binding.fabsLayoutView.visibility = View.GONE }
-                    CurrentFragmentType.ROOMLIST -> {}
-                    CurrentFragmentType.PROFILE -> topAppbar.visibility = View.GONE
+                    CurrentFragmentType.MAP -> {
+                        binding.fabsLayoutView.visibility = View.GONE
+                    }
 
-                    CurrentFragmentType.CHATROOM -> { hideBottom() }
+                    CurrentFragmentType.ROOMLIST -> {}
+                    CurrentFragmentType.PROFILE -> {
+                        topAppbar.visibility = View.GONE
+                    }
+
+                    CurrentFragmentType.CHATROOM -> {
+                        hideBottom()
+                        topAppbar.visibility = View.GONE
+                    }
                     CurrentFragmentType.GIFTDETAIL -> { hideBottom() }
                     CurrentFragmentType.EVENTDETAIL -> { hideBottom() }
                     CurrentFragmentType.POSTGIFT -> { hideBottom() }
                     CurrentFragmentType.POSTEVENT -> { hideBottom() }
                     CurrentFragmentType.EDITPROFILE -> { hideBottom() }
+
+                    CurrentFragmentType.NOTIFICATION -> {
+                        binding.fabsLayoutView.visibility = View.GONE
+                    }
 
                     CurrentFragmentType.LOGIN -> {
                         topAppbar.visibility = View.GONE
@@ -119,10 +124,9 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.reObserveNotification.observe(this) {
             it?.let {
-                viewModel.liveNotifications.observe(this){ notifications->
+                viewModel.liveNotifications.observe(this) { notifications ->
                     notifications?.let {
                         updateBadge(notifications)
-                        viewModel.liveNotifications.value = null
                     }
                 }
             }
@@ -136,11 +140,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateBadge(list: List<OperationLog>) {
-        val count = list.size
+        val count = list.filter { !it.read }.size
 
         if (count == 0) {
             binding.layoutBadge.visibility = View.INVISIBLE
-        }else{
+        } else {
             binding.layoutBadge.visibility = View.VISIBLE
             binding.badgeCount.text = count.toString()
         }
@@ -179,20 +183,24 @@ class MainActivity : AppCompatActivity() {
                 R.id.eventDetailFragment -> CurrentFragmentType.EVENTDETAIL
                 R.id.giftDetailFragment -> CurrentFragmentType.GIFTDETAIL
                 R.id.searchLocationFragment -> CurrentFragmentType.SEARCHLOCATION
-                R.id.pagerFilterFragment -> CurrentFragmentType.GIFTMANAGE
+                R.id.giftManageFragment -> CurrentFragmentType.GIFTMANAGE
                 R.id.notificationFragment -> CurrentFragmentType.NOTIFICATION
                 R.id.loginFragment -> CurrentFragmentType.LOGIN
                 R.id.editInfoFragment -> CurrentFragmentType.EDITPROFILE
+                R.id.giftsAllFragment -> CurrentFragmentType.GIFTSALL
+                R.id.eventsAllFragment -> CurrentFragmentType.EVENTSALL
 
                 else -> viewModel.currentFragmentType.value
+            }
+            if (isFabExpend) {
+                onMainFabClick()
             }
         }
     }
 
-    private fun setupToolbar(){
+    private fun setupToolbar() {
         binding.notification.setOnClickListener {
-            findNavController(R.id.nav_host_fragment)
-                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
+            onNotificationClick()
         }
 
         binding.toolbarArrowBack.setOnClickListener {
@@ -204,26 +212,36 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToHomeFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(
+                        NavGraphDirections.navigateToHomeFragment()
+                    )
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_map -> {
 
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToMapFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(
+                        NavGraphDirections.navigateToMapFragment()
+                    )
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_messages -> {
 
-                    findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.navigateToRoomlistFragment())
+                    findNavController(R.id.nav_host_fragment).navigate(
+                        NavGraphDirections.navigateToRoomlistFragment()
+                    )
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_profile -> {
                     if (!UserManager.isLoggedIn) {
-                        findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalLoginFragment())
+                        findNavController(R.id.nav_host_fragment).navigate(
+                            NavGraphDirections.actionGlobalLoginFragment()
+                        )
                     } else {
-                        findNavController(R.id.nav_host_fragment).navigate(NavGraphDirections.actionGlobalProfileFragment(
-                            UserManager.weShareUser))
+                        findNavController(R.id.nav_host_fragment).navigate(
+                            NavGraphDirections.actionGlobalProfileFragment(
+                                UserManager.weShareUser
+                            )
+                        )
                     }
                     return@setOnItemSelectedListener true
                 }
@@ -240,13 +258,11 @@ class MainActivity : AppCompatActivity() {
         binding.layoutFabEvent.setOnClickListener {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostEventFragment())
-            onMainFabClick()
         }
 
         binding.layoutFabGift.setOnClickListener {
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostGiftFragment())
-            onMainFabClick()
         }
     }
 
@@ -255,6 +271,16 @@ class MainActivity : AppCompatActivity() {
         setAnimation(isFabExpend)
 
         isFabExpend = !isFabExpend
+    }
+
+    private fun onNotificationClick() {
+        if (!notificationPageOpen) {
+            findNavController(R.id.nav_host_fragment)
+                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
+        } else {
+            findNavController(R.id.nav_host_fragment).navigateUp()
+        }
+        notificationPageOpen = !notificationPageOpen
     }
 
     private fun setAnimation(isFabExpend: Boolean) {
@@ -274,10 +300,9 @@ class MainActivity : AppCompatActivity() {
         if (!isFabExpend) {
             binding.layoutFabGift.visibility = View.VISIBLE
             binding.layoutFabEvent.visibility = View.VISIBLE
-        }
-        if (!isFabExpend) {
-            binding.layoutFabGift.visibility = View.INVISIBLE
-            binding.layoutFabEvent.visibility = View.INVISIBLE
+        } else {
+            binding.layoutFabGift.visibility = View.GONE
+            binding.layoutFabEvent.visibility = View.GONE
         }
     }
 }

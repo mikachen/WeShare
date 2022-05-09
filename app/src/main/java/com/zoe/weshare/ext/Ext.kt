@@ -13,19 +13,20 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.zoe.weshare.R
+import com.zoe.weshare.WeShareApplication
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 fun Long.toDisplayFormat(): String {
-    return SimpleDateFormat("yyyy.MM.dd hh:mm", Locale.TAIWAN).format(this)
+    return SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.TAIWAN).format(this)
 }
 
 fun Long.toDisplaySentTime(): String {
-    return SimpleDateFormat("hh:mm", Locale.TAIWAN).format(this)
+    return SimpleDateFormat("HH:mm", Locale.TAIWAN).format(this)
 }
 
 fun Long.toDisplayDateFormat(): String {
-    return SimpleDateFormat("yyyy.MM.dd", Locale.TAIWAN).format(this)
+    return SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN).format(this)
 }
 
 fun bindImage(imgView: ImageView, imgUrl: String?) {
@@ -66,13 +67,16 @@ fun generateSmallIcon(context: Context, icon: Int): Bitmap {
 /**
  * set scrollDuration for Home page Log ticker when scrolling
  * */
-fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
-    val scrollDuration = 8000f;
+fun RecyclerView.smoothSnapToPosition(
+    position: Int,
+    snapMode: Int = LinearSmoothScroller.SNAP_TO_START,
+) {
+    val scrollDuration = 8000f
     val smoothScroller = object : LinearSmoothScroller(this.context) {
         override fun getVerticalSnapPreference(): Int = snapMode
         override fun getHorizontalSnapPreference(): Int = snapMode
         override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
-            return scrollDuration / computeVerticalScrollRange();
+            return scrollDuration / computeVerticalScrollRange()
         }
     }
     smoothScroller.targetPosition = position
@@ -119,7 +123,7 @@ fun Long.getTimeAgoString(): String {
 }
 
 // Method to get days hours minutes seconds from milliseconds
-fun getCountDownTimeString(millisUntilFinished: Long): String {
+fun getCountDownTimeString(millisUntilFinished: Long, state: String): String {
     var millisTillEnd: Long = millisUntilFinished
 
     val days = TimeUnit.MILLISECONDS.toDays(millisTillEnd)
@@ -134,28 +138,21 @@ fun getCountDownTimeString(millisUntilFinished: Long): String {
     val seconds = TimeUnit.MILLISECONDS.toSeconds(millisTillEnd)
 
     return if (days != 0L) {
-        String.format(
-            Locale.getDefault(),
-            "%02d day %02d hour %02d min %02d sec left",
+        WeShareApplication.instance.getString(
+            R.string.countdown_time1,
             days, hours, minutes, seconds
-        )
+        ) + state
     } else if (hours != 0L) {
-        String.format(
-            Locale.getDefault(),
-            "%02d hour %02d min %02d sec left",
+        WeShareApplication.instance.getString(
+            R.string.countdown_time2,
             hours, minutes, seconds
-        )
+        ) + state
     } else if (minutes != 0L) {
-        String.format(
-            Locale.getDefault(),
-            "%02d min %02d sec left",
+        WeShareApplication.instance.getString(
+            R.string.countdown_time3,
             minutes, seconds
-        )
+        ) + state
     } else {
-        String.format(
-            Locale.getDefault(),
-            "%02d sec left",
-            seconds
-        )
+        WeShareApplication.instance.getString(R.string.countdown_time4, seconds) + state
     }
 }

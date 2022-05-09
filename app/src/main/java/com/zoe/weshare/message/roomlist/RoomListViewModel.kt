@@ -17,8 +17,9 @@ import kotlinx.coroutines.launch
 
 class RoomListViewModel(
     private val repository: WeShareRepository,
-    val userInfo: UserInfo?)
-    : ViewModel() {
+    val userInfo: UserInfo?
+) :
+    ViewModel() {
 
     private var _rooms = MutableLiveData<List<ChatRoom>>()
     val room: LiveData<List<ChatRoom>>

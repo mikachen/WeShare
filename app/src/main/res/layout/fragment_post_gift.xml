@@ -26,28 +26,49 @@
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="4dp"
+        android:layout_height="2dp"
+        app:dividerColor="@color/app_work_orange2"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_image_preview_holder" />
 
+    <TextView
+        android:id="@+id/title_what_to_post"
+        android:layout_width="wrap_content"
+        android:textSize="24sp"
+        android:fontFamily="@font/naikai_light"
+        android:layout_marginBottom="-8dp"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="今天想刊登什麼呢"
+        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/layout_title"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:text="？\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05"
+        app:layout_constraintStart_toEndOf="@id/title_what_to_post"
+        app:layout_constraintTop_toTopOf="@id/title_what_to_post"/>
     <!--    TITLE   -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_title"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_height="56dp"
         android:hint="贈品名稱"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider">
+        app:layout_constraintTop_toBottomOf="@id/title_what_to_post">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edit_title"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="match_parent"
             android:gravity="center|start"
             android:maxLength="15"
             android:singleLine="true"
@@ -61,7 +82,7 @@
         android:id="@+id/layout_sort_menu"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginTop="4dp"
         android:hint="贈品分類"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +92,7 @@
         <AutoCompleteTextView
             android:id="@+id/dropdown_menu_sort"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="match_parent"
             android:focusable="false"
             android:gravity="center|start"
             android:inputType="none"
@@ -85,7 +106,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="0dp"
         android:layout_marginTop="4dp"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:hint="贈品狀況"
         app:layout_constraintTop_toBottomOf="@id/layout_sort_menu"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +115,7 @@
         <AutoCompleteTextView
             android:id="@+id/dropdown_menu_condition"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="match_parent"
             android:focusable="false"
             android:gravity="center|left"
             android:inputType="none"
@@ -138,7 +159,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginTop="8dp"
         android:text="@string/preview_next_step"
-        android:isScrollContainer="true"
+        android:isScrollContainer="false"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:background="@drawable/sl_profile_follow_button"

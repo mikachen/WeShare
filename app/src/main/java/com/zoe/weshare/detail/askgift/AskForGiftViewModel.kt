@@ -25,8 +25,8 @@ class AskForGiftViewModel(
     val newRequestComment: LiveData<Comment>
         get() = _newRequestComment
 
-    private val _saveLogComplete = MutableLiveData<LoadApiStatus>()
-    val saveLogComplete: LiveData<LoadApiStatus>
+    private val _saveLogComplete = MutableLiveData<OperationLog>()
+    val saveLogComplete: LiveData<OperationLog>
         get() = _saveLogComplete
 
     private var viewModelJob = Job()
@@ -101,26 +101,25 @@ class AskForGiftViewModel(
     private fun saveGiftRequestLog(log: OperationLog) {
         coroutineScope.launch {
 
-            _saveLogComplete.value = LoadApiStatus.LOADING
-
             when (val result = repository.saveLog(log)) {
                 is Result.Success -> {
                     _error.value = null
-                    _saveLogComplete.value = LoadApiStatus.DONE
+                    _saveLogComplete.value = log
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _saveLogComplete.value = LoadApiStatus.ERROR
                 }
             }
         }
+    }
+
+    fun backToDetailComplete() {
+        _saveLogComplete.value = null
     }
 }

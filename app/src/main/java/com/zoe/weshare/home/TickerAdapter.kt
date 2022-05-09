@@ -36,12 +36,7 @@ class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(
     override fun onBindViewHolder(holder: TickerViewHolder, position: Int) {
         val data = getItem(position)
         holder.bind(data)
-
     }
-
-//    class HotGiftsOnClickListener(val doNothing: (gift: GiftPost) -> Unit) {
-//        fun onClick(selectedGift: GiftPost) = doNothing(selectedGift)
-//    }
 
     companion object DiffCallback : DiffUtil.ItemCallback<OperationLog>() {
         override fun areItemsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {

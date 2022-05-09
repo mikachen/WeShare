@@ -8,8 +8,8 @@ import com.zoe.weshare.data.*
 interface WeShareRepository {
     suspend fun postNewEvent(event: EventPost): Result<String>
     suspend fun postNewGift(gift: GiftPost): Result<String>
-    suspend fun getGifts(): Result<List<GiftPost>>
-    suspend fun getEvents(): Result<List<EventPost>>
+    suspend fun getAllGifts(): Result<List<GiftPost>>
+    suspend fun getAllEvents(): Result<List<EventPost>>
 
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
 
@@ -20,8 +20,7 @@ interface WeShareRepository {
     fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>>
 
     suspend fun getUserInfo(uid: String): Result<UserProfile?>
-    suspend fun newUserRegister(user: UserProfile) : Result<Boolean>
-
+    suspend fun newUserRegister(user: UserProfile): Result<Boolean>
 
     suspend fun sendComment(
         collection: String,
@@ -39,7 +38,6 @@ interface WeShareRepository {
         docId: String,
         subCollection: String,
     ): MutableLiveData<List<Comment>>
-
 
     suspend fun getUserChatRooms(uid: String): Result<List<ChatRoom>>
 
@@ -60,7 +58,7 @@ interface WeShareRepository {
     ): Result<Boolean>
 
     suspend fun getUserLog(uid: String): Result<List<OperationLog>>
-    suspend fun getUserHistoryPosts(collection: String, uid: String): Result<List<GiftPost>>
+    suspend fun getUserAllGiftsPosts(collection: String, uid: String): Result<List<GiftPost>>
 
     suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean>
     suspend fun createNewChatRoom(newRoom: ChatRoom): Result<String>
@@ -68,12 +66,10 @@ interface WeShareRepository {
 
     suspend fun updateGiftStatus(docId: String, statusCode: Int, uid: String): Result<Boolean>
 
-
     suspend fun updateEventRoom(roomId: String, user: UserInfo): Result<Boolean>
     suspend fun getEventRoom(docId: String): Result<ChatRoom>
 
     suspend fun updateEventStatus(docId: String, code: Int): Result<Boolean>
-
 
     suspend fun updateFieldValue(
         collection: String,
@@ -82,7 +78,17 @@ interface WeShareRepository {
         value: FieldValue
     ): Result<Boolean>
 
+    suspend fun updateSubCollectionFieldValue(
+        collection: String,
+        docId: String,
+        subCollection: String,
+        subDocId: String,
+        field: String,
+        value: FieldValue,
+    ): Result<Boolean>
+
     suspend fun uploadImage(imageUri: Uri): Result<String>
     suspend fun updateUserProfile(profile: UserProfile): Result<Boolean>
-    suspend fun sendNotifications(targetUid:String ,log: OperationLog): Result<Boolean>
+    suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean>
+    suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean>
 }

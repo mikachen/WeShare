@@ -1,7 +1,6 @@
 package com.zoe.weshare.profile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +69,6 @@ class ProfileFragment : Fragment() {
             }
         }
 
-
         setupBtn()
         return binding.root
     }
@@ -100,14 +98,15 @@ class ProfileFragment : Fragment() {
 
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.edit_user_info -> findNavController().navigate(ProfileFragmentDirections
-                    .actionProfileFragmentToEditInfoFragment(viewModel.user.value!!))
+                R.id.edit_user_info -> findNavController().navigate(
+                    ProfileFragmentDirections
+                        .actionProfileFragmentToEditInfoFragment(viewModel.user.value!!)
+                )
 
-                R.id.action_gifts_manage -> findNavController().navigate(NavGraphDirections
-                    .actionGlobalPagerFilterFragment())
-
-                R.id.action_events_manage -> findNavController().navigate(NavGraphDirections
-                    .actionGlobalNotificationFragment())
+                R.id.action_gifts_manage -> findNavController().navigate(
+                    NavGraphDirections
+                        .actionGlobalGiftManageFragment()
+                )
             }
             false
         }

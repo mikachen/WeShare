@@ -9,16 +9,15 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.ChatRoomType
-import com.zoe.weshare.util.UserManager
-import com.zoe.weshare.util.UserManager.weShareUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ChatRoomViewModel(
-    private val repository: WeShareRepository, private val userInfo: UserInfo?) : ViewModel() {
+    private val repository: WeShareRepository,
+    private val userInfo: UserInfo?
+) : ViewModel() {
 
     var liveMessages = MutableLiveData<List<MessageItem>>()
 
@@ -26,14 +25,9 @@ class ChatRoomViewModel(
     val chatRoom: LiveData<ChatRoom>
         get() = _chatRoom
 
-    private var _roomTitle = MutableLiveData<String>()
-    val roomTitle: LiveData<String>
-        get() = _roomTitle
-
     var _newMessage = MutableLiveData<Comment>()
     val newMessage: LiveData<Comment>
         get() = _newMessage
-
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -45,7 +39,6 @@ class ChatRoomViewModel(
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
-
 
     fun getLiveMessageResult(room: ChatRoom) {
         liveMessages = repository.getLiveMessages(docId = room.id)
@@ -116,15 +109,6 @@ class ChatRoomViewModel(
     fun onViewDisplay(chatRoom: ChatRoom) {
 
         _chatRoom.value = chatRoom
-
-        _roomTitle.value = when (chatRoom.type) {
-            ChatRoomType.PRIVATE.value ->
-                chatRoom.usersInfo.single { it.uid != weShareUser!!.uid }.name
-
-            ChatRoomType.MULTIPLE.value -> "活動群聊"
-
-            else -> "unKnow chatroom type"
-        }
 
         getLiveMessageResult(chatRoom)
     }

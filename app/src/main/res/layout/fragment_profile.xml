@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/home_background_grey"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/height_bottom_app_bar">
 
@@ -17,6 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <ImageView
             android:layout_width="match_parent"
@@ -50,17 +52,24 @@
 
     </androidx.cardview.widget.CardView>
 
-    <ImageView
+
+    <FrameLayout
         android:id="@+id/button_settings"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_baseline_settings_24"
+        android:layout_marginEnd="8dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_user_header"
-        tools:visibility="visible" />
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_baseline_settings_24" />
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/base_info_text"
@@ -114,10 +123,10 @@
             android:layout_width="142sp"
             android:layout_height="40dp"
             android:background="@drawable/sl_profile_follow_button"
+            android:textColor="@color/white"
             android:textOff="追蹤"
             android:textOn="追蹤中\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05"
             android:textSize="18sp"
-            android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/button_message"
             app:layout_constraintStart_toStartOf="parent"
@@ -144,7 +153,7 @@
         android:id="@+id/linear_base_social_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -153,10 +162,9 @@
 
         <LinearLayout
             android:id="@+id/base_follower"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -164,30 +172,22 @@
 
             <TextView
                 android:id="@+id/text_follower_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="253"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+                style="@style/profile_userlog_count"
+                tools:text="253" />
 
             <TextView
                 android:id="@+id/title_follower_hint"
+                style="@style/profile_userlog_string"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="粉絲數"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:text="@string/profile_follower_string" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/base_following"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
             android:paddingVertical="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -195,49 +195,33 @@
 
             <TextView
                 android:id="@+id/text_following_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="51"
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+                style="@style/profile_userlog_count"
+                tools:text="-" />
 
             <TextView
                 android:id="@+id/title_following_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="追蹤中"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                style="@style/profile_userlog_string"
+                android:text="@string/profile_following_string" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/base_gift_sent_count"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
             android:paddingVertical="8dp">
 
             <TextView
                 android:id="@+id/text_gift_sent_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@color/black"
-                android:textSize="24sp"
+                style="@style/profile_userlog_count"
+                android:text="@string/profile_defult_zero_count"
                 tools:text="33" />
 
             <TextView
                 android:id="@+id/title_gift_sent_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="贈品送出"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                style="@style/profile_userlog_string"
+                android:text="@string/profile_gift_sent_count_string" />
 
         </LinearLayout>
 
@@ -256,90 +240,66 @@
 
         <LinearLayout
             android:id="@+id/base_gift_post_count"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
             android:paddingVertical="8dp">
 
             <TextView
                 android:id="@+id/text_gift_post_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                tools:text="33" />
+                style="@style/profile_userlog_count"
+                android:text="@string/profile_defult_zero_count" />
 
             <TextView
                 android:id="@+id/title_gift_post_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="贈品刊登"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                style="@style/profile_userlog_string"
+                android:text="@string/profile_gift_post_count_string" />
 
         </LinearLayout>
 
-
         <LinearLayout
             android:id="@+id/base_event_post_count"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
             android:paddingVertical="8dp">
 
             <TextView
                 android:id="@+id/text_event_post_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@color/black"
-                android:textSize="24sp"
+                style="@style/profile_userlog_count"
+                android:text="@string/profile_defult_zero_count"
                 tools:text="32" />
 
             <TextView
                 android:id="@+id/title_event_post_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="發起活動"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                style="@style/profile_userlog_string"
+                android:text="@string/profile_event_post_count_string" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/base_event_volunteer_count"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp"
             android:paddingVertical="8dp">
 
             <TextView
                 android:id="@+id/text_event_volunteer_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                tools:text="32" />
+                style="@style/profile_userlog_count"
+                android:text="@string/profile_defult_zero_count" />
 
             <TextView
                 android:id="@+id/title_event_volunteer_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="志工參與"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                style="@style/profile_userlog_string"
+                android:text="@string/profile_volunteer_count_string" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

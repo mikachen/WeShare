@@ -1,7 +1,6 @@
 package com.zoe.weshare.profile.editmode
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,7 +17,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInfo?) : ViewModel() {
-
 
     private var _profileUpdate = MutableLiveData<UserProfile>()
     val profileUpdate: LiveData<UserProfile>
@@ -40,13 +38,12 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
     val error: LiveData<String?>
         get() = _error
 
-
     fun onProfileDisplay(userProfile: UserProfile) {
         profile = userProfile
     }
 
     fun checkIfImageChange(name: String, introMsg: String) {
-        //user didn't choose new image
+        // user didn't choose new image
         if (newImage == null) {
             profile.apply {
                 this.name = name
@@ -82,7 +79,6 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
                 }
             }
         }
-
     }
 
     fun uploadImage(image: Uri, name: String, introMsg: String) {
@@ -112,5 +108,4 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
             }
         }
     }
-
 }
