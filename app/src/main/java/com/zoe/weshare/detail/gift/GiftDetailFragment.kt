@@ -236,18 +236,19 @@ class GiftDetailFragment : Fragment() {
         scaleAnimation.interpolator = bounceInterpolator
 
         binding.buttonPressLike.setOnClickListener {
-
             it.startAnimation(scaleAnimation)
+            playCreditScene()
 
             viewModel.onPostLikePressed(selectedGift.id)
-            playCreditScene()
         }
 
         binding.buttonAdditionHeart1.setOnClickListener {
+            it.startAnimation(scaleAnimation)
             playCreditScene()
         }
 
         binding.buttonAdditionHeart2.setOnClickListener {
+            it.startAnimation(scaleAnimation)
             playCreditScene()
         }
     }

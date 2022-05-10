@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.OperationLog
@@ -151,5 +153,12 @@ class ProfileFragment : Fragment() {
                 buttonFollow.isChecked = user.follower.contains(weShareUser!!.uid)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).window.setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+        )
     }
 }

@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.MainActivity
+import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.databinding.FragmentChatroomBinding
@@ -45,6 +46,13 @@ class ChatRoomFragment : Fragment() {
 
         viewModel.newMessage.observe(viewLifecycleOwner) {
             viewModel.sendNewMessage(chatRoom.id, it)
+        }
+
+        viewModel.navigateToTargetUser.observe(viewLifecycleOwner){
+            it?.let{
+                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                viewModel.navigateToProfileComplete()
+            }
         }
 
         setupView()

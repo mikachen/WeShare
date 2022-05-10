@@ -330,7 +330,7 @@
                     android:id="@+id/title_people_who_requested"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_who_requested"
+                    android:text="@string/requested_comments"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"

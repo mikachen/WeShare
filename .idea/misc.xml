@@ -77,16 +77,17 @@
         <entry key="app/src/main/res/layout/fragment_edit_info.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_event_check_in.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_event_manage.xml" value="0.30867892261650276" />
         <entry key="app/src/main/res/layout/fragment_events_all.xml" value="0.1774262505344164" />
         <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_gift_manage.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_gifts_all.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.3416289592760181" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_home_cards.xml" value="0.3619791666666667" />
-        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.231722958529286" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.1847206385404789" />
         <entry key="app/src/main/res/layout/fragment_new.xml" value="0.25908507909362977" />
-        <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_pager.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fragment_pager_filter.xml" value="0.1393758016246259" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />

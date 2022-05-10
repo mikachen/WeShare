@@ -393,10 +393,14 @@ class EventDetailFragment : Fragment() {
         }
 
         binding.buttonAdditionHeart1.setOnClickListener {
+            it.startAnimation(scaleAnimation)
+
             playCreditScene()
         }
 
         binding.buttonAdditionHeart2.setOnClickListener {
+            it.startAnimation(scaleAnimation)
+
             playCreditScene()
         }
     }

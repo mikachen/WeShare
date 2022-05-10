@@ -11,6 +11,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
+import com.zoe.weshare.ext.imageFileTimeFormat
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.Const.FIELD_NOTIFICATION_READ
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
@@ -1012,7 +1013,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         suspendCoroutine { continuation ->
 
             val createdTime = Calendar.getInstance().timeInMillis
-            val formatFileName = weShareUser!!.uid + "/" + createdTime.toDisplayFormat()
+            val formatFileName = weShareUser!!.uid + "/" + createdTime.imageFileTimeFormat()
 
             val storageRef = FirebaseStorage.getInstance()
                 .reference.child("images/$formatFileName")

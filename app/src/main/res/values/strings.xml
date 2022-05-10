@@ -76,7 +76,7 @@
     <string name="send_gift_message">確認送出後將不可再作修改!</string>
     <string name="confirm_yes">確認</string>
     <string name="confirm_no">取消</string>
-    <string name="title_who_requested">當前索取人</string>
+    <string name="requested_comments">索取人留言</string>
 
     //Log Messages
     <string name="log_msg_post_gift">&lt;b>%1s&lt;/b> 刊登了贈品：%2s</string>

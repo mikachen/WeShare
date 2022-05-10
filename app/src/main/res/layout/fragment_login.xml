@@ -7,51 +7,23 @@
     android:background="@color/background_material_light"
     tools:context=".login.LoginFragment">
 
-    <TextView
-        android:id="@+id/text_welcom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/setofont"
-        android:text="歡迎使用"
-        android:textColor="@color/black"
-        android:textSize="44sp"
-        android:layout_marginTop="48dp"
-        android:layout_marginStart="48dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/welcome_logo"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="48dp"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="-36dp"
-        android:src="@drawable/logo_weshare"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_welcom"
-        app:tint="@color/black" />
-
-
     <ImageView
         android:id="@+id/welcome_sticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-50dp"
-        android:layout_marginHorizontal="24dp"
-        android:src="@drawable/welcome_page_gift"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome_logo" />
-
+        android:layout_marginTop="24dp"
+        android:src="@drawable/custom_login_image_removebg_preview"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/button_signin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:buttonSize="wide"
-        android:layout_marginTop="-30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome_sticker" />
+        app:layout_constraintTop_toBottomOf="@id/welcome_sticker"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

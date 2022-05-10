@@ -77,7 +77,13 @@ class GiftItemsAdapter(
         val gift = getItem(position)
 
         viewBinderHelper.setOpenOnlyOne(true)
-        viewBinderHelper.bind(holder.binding.swipeLayout, gift.id)
+
+        if(gift.status == GiftStatusType.OPENING.code){
+            viewBinderHelper.bind(holder.binding.swipeLayout, gift.id)
+            holder.binding.swipeLayout.setLockDrag(false)
+        }else{
+            holder.binding.swipeLayout.setLockDrag(true)
+        }
 
         gift?.let {
             holder.bind(gift)
