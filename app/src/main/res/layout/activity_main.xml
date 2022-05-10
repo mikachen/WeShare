@@ -13,6 +13,7 @@
         android:id="@+id/top_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="10dp"
         android:background="@drawable/custom_theme_gradient">
 
 
@@ -206,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="4dp"
-                    android:text="刊登贈品"
+                    android:text="@string/profile_gift_post_count_string"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -256,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="4dp"
-                    android:text="刊登活動"
+                    android:text="@string/profile_event_post_count_string"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 

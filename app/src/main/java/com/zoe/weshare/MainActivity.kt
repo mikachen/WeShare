@@ -109,6 +109,13 @@ class MainActivity : AppCompatActivity() {
                         binding.fabsLayoutView.visibility = View.GONE
                     }
 
+                    CurrentFragmentType.EVENTMANAGE -> {
+                        binding.fabsLayoutView.visibility = View.GONE
+                    }
+                    CurrentFragmentType.GIFTMANAGE -> {
+                        binding.fabsLayoutView.visibility = View.GONE
+                    }
+
                     CurrentFragmentType.LOGIN -> {
                         topAppbar.visibility = View.GONE
                         bottomAppBar.visibility = View.GONE
@@ -184,11 +191,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.giftDetailFragment -> CurrentFragmentType.GIFTDETAIL
                 R.id.searchLocationFragment -> CurrentFragmentType.SEARCHLOCATION
                 R.id.giftManageFragment -> CurrentFragmentType.GIFTMANAGE
+                R.id.eventManageFragment -> CurrentFragmentType.EVENTMANAGE
                 R.id.notificationFragment -> CurrentFragmentType.NOTIFICATION
                 R.id.loginFragment -> CurrentFragmentType.LOGIN
                 R.id.editInfoFragment -> CurrentFragmentType.EDITPROFILE
-                R.id.giftsAllFragment -> CurrentFragmentType.GIFTSALL
-                R.id.eventsAllFragment -> CurrentFragmentType.EVENTSALL
+                R.id.giftsBrowseFragment -> CurrentFragmentType.GIFTSBROWSE
+                R.id.eventsBrowseFragment -> CurrentFragmentType.EVENTSBROWSE
 
                 else -> viewModel.currentFragmentType.value
             }

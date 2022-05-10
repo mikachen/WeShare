@@ -106,8 +106,11 @@ class ProfileFragment : Fragment() {
                 )
 
                 R.id.action_gifts_manage -> findNavController().navigate(
-                    NavGraphDirections
-                        .actionGlobalGiftManageFragment()
+                    ProfileFragmentDirections.actionProfileFragmentToGiftManageFragment()
+                )
+
+                R.id.action_events_manage -> findNavController().navigate(
+                    ProfileFragmentDirections.actionProfileFragmentToEventManageFragment()
                 )
             }
             false

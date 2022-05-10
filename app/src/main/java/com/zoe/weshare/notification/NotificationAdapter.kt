@@ -31,20 +31,20 @@ class NotificationAdapter(val viewModel: NotificationViewModel) :
 
                 when (log.logType) {
                     LogType.REQUEST_GIFT.value -> {
-                        layoutRequestTag.visibility = View.VISIBLE
+                        layoutTag.visibility = View.VISIBLE
                         textRequestType.text = getString(R.string.notification_request_gift)
                         textRequestType.setBackgroundColor(getColor(R.color.notification_gift_tag))
                         textRequestType.setTextColor(getColor(R.color.notification_gift_tag_string))
                     }
 
                     LogType.VOLUNTEER_EVENT.value -> {
-                        layoutRequestTag.visibility = View.VISIBLE
+                        layoutTag.visibility = View.VISIBLE
                         textRequestType.text = getString(R.string.notification_attend_volunteer)
                         textRequestType.setTextColor(getColor(R.color.notification_volunteer_tag_string))
                         textRequestType.setBackgroundColor(getColor(R.color.notification_volunteer_tag))
                     }
                     else -> {
-                        layoutRequestTag.visibility = View.GONE
+                        layoutTag.visibility = View.GONE
                     }
                 }
             }

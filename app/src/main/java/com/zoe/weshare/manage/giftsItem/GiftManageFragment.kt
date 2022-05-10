@@ -22,7 +22,7 @@ import com.zoe.weshare.util.UserManager.weShareUser
 class GiftManageFragment : Fragment() {
 
     private lateinit var binding: FragmentGiftManageBinding
-    lateinit var adapter: GiftItemsAdapter
+    lateinit var adapter: GiftManageAdapter
     lateinit var manager: LinearLayoutManager
 
     var currentTabPosition = 0
@@ -36,15 +36,15 @@ class GiftManageFragment : Fragment() {
     ): View? {
         binding = FragmentGiftManageBinding.inflate(inflater, container, false)
 
-        viewModel.getUserAllGiftsPosts(currentTabPosition)
+        viewModel.allGiftsResult.observe(viewLifecycleOwner) {
+            adapter.modifyList(it,currentTabPosition)
+        }
 
-        viewModel.giftsDisplay.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
-
-            if (it.isEmpty()) {
-                binding.hintNoNews.visibility = View.VISIBLE
+        viewModel.onFilterEmpty.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.hintNoItem.visibility = View.VISIBLE
             } else {
-                binding.hintNoNews.visibility = View.INVISIBLE
+                binding.hintNoItem.visibility = View.INVISIBLE
             }
         }
 
@@ -60,13 +60,15 @@ class GiftManageFragment : Fragment() {
 
         viewModel.onCommentsShowing.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalDistributeFragment(it))
-                viewModel.showCommentsComplete()
+                findNavController().navigate(
+                    GiftManageFragmentDirections.actionGiftManageFragmentToDistributeFragment(it))
+
+                viewModel.naviagteToRequestComplete()
             }
         }
 
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
-            viewModel.refreshFilterView(currentTabPosition)
+            viewModel.refreshFilterView()
         }
 
         setupView()
@@ -96,9 +98,9 @@ class GiftManageFragment : Fragment() {
     }
 
     fun setupView() {
-        adapter = GiftItemsAdapter(
+        adapter = GiftManageAdapter(
             viewModel,
-            GiftItemsAdapter.OnClickListener {
+            GiftManageAdapter.OnClickListener {
                 findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
             }
         )
@@ -111,11 +113,11 @@ class GiftManageFragment : Fragment() {
         binding.recyclerview.adapter = adapter
         binding.recyclerview.layoutManager = manager
 
-        binding.notificationTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.filterTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 currentTabPosition = tab.position
 
-                viewModel.filteringGift(tab.position)
+                adapter.filter(tab.position)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}

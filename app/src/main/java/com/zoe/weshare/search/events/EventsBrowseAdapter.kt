@@ -13,8 +13,8 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayDateFormat
 import java.util.*
 
-class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
-    ListAdapter<EventPost, EventsAllAdapter.AllEventsViewHolder>(DiffCallback) {
+class EventsBrowseAdapter(private val onClickListener: EventsAllOnClickListener) :
+    ListAdapter<EventPost, EventsBrowseAdapter.AllEventsViewHolder>(DiffCallback) {
 
     private var unfilteredList = listOf<EventPost>()
 
@@ -79,7 +79,7 @@ class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
         submitList(list)
     }
 
-    fun filter(query: CharSequence?, viewModel: EventsAllViewModel) {
+    fun filter(query: CharSequence?, viewModel: EventsBrowseViewModel) {
         val list = mutableListOf<EventPost>()
 
         // perform the data filtering

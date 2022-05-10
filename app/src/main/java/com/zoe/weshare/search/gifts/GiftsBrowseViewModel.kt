@@ -1,11 +1,11 @@
-package com.zoe.weshare.search.events
+package com.zoe.weshare.search.gifts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.EventPost
+import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
@@ -14,11 +14,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class EventsAllViewModel(private val repository: WeShareRepository) : ViewModel() {
+class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewModel() {
 
-    private var _events = MutableLiveData<List<EventPost>>()
-    val events: LiveData<List<EventPost>>
-        get() = _events
+    private var _gifts = MutableLiveData<List<GiftPost>>()
+    val gifts: LiveData<List<GiftPost>>
+        get() = _gifts
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -31,22 +31,22 @@ class EventsAllViewModel(private val repository: WeShareRepository) : ViewModel(
     val error: LiveData<String?>
         get() = _error
 
-    private val _navigateToSelectedEvent = MutableLiveData<EventPost?>()
-    val navigateToSelectedEvent: LiveData<EventPost?>
-        get() = _navigateToSelectedEvent
+    private val _navigateToSelectedGift = MutableLiveData<GiftPost?>()
+    val navigateToSelectedGift: LiveData<GiftPost?>
+        get() = _navigateToSelectedGift
 
     var onSearchEmpty = MutableLiveData<Boolean>()
 
     init {
-        getALLEventsResult()
+        getGiftsResult()
     }
 
-    private fun getALLEventsResult() {
+    private fun getGiftsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getAllEvents()
+            val result = repository.getAllGifts()
 
-            _events.value = when (result) {
+            _gifts.value = when (result) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -72,12 +72,12 @@ class EventsAllViewModel(private val repository: WeShareRepository) : ViewModel(
         }
     }
 
-    fun onNavigateEventDetails(event: EventPost) {
-        _navigateToSelectedEvent.value = event
+    fun onNavigateGiftDetails(event: GiftPost) {
+        _navigateToSelectedGift.value = event
     }
 
-    fun onNavigateEventDetailsComplete() {
-        _navigateToSelectedEvent.value = null
+    fun onNavigateGiftDetailsComplete() {
+        _navigateToSelectedGift.value = null
         onSearchEmpty.value = null
     }
 }

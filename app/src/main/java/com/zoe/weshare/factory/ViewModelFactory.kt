@@ -7,8 +7,8 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.home.HomeViewModel
 import com.zoe.weshare.login.LoginViewModel
 import com.zoe.weshare.map.MapViewModel
-import com.zoe.weshare.search.events.EventsAllViewModel
-import com.zoe.weshare.search.gifts.GiftsAllViewModel
+import com.zoe.weshare.search.events.EventsBrowseViewModel
+import com.zoe.weshare.search.gifts.GiftsBrowseViewModel
 
 /**
  * Factory for all ViewModels.
@@ -33,11 +33,11 @@ class ViewModelFactory constructor(
                 isAssignableFrom(LoginViewModel::class.java) ->
                     LoginViewModel(repository)
 
-                isAssignableFrom(GiftsAllViewModel::class.java) ->
-                    GiftsAllViewModel(repository)
+                isAssignableFrom(GiftsBrowseViewModel::class.java) ->
+                    GiftsBrowseViewModel(repository)
 
-                isAssignableFrom(EventsAllViewModel::class.java) ->
-                    EventsAllViewModel(repository)
+                isAssignableFrom(EventsBrowseViewModel::class.java) ->
+                    EventsBrowseViewModel(repository)
 
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

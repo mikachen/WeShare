@@ -15,9 +15,10 @@ enum class CurrentFragmentType(val value: String) {
     EVENTDETAIL("活動詳情"),
     SEARCHLOCATION("請選擇地點"),
     GIFTMANAGE("贈品管理"),
+    EVENTMANAGE("活動管理"),
     NOTIFICATION("通知"),
     LOGIN("登入"),
     EDITPROFILE("會員資料更新"),
-    GIFTSALL("贈品查詢"),
-    EVENTSALL("活動查詢")
+    GIFTSBROWSE("贈品查詢"),
+    EVENTSBROWSE("活動查詢")
 }

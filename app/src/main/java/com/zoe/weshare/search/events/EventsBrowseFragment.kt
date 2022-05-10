@@ -11,17 +11,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.databinding.FragmentEventsAllBinding
+import com.zoe.weshare.databinding.FragmentEventsBrowseBinding
 import com.zoe.weshare.ext.getVmFactory
 
-class EventsAllFragment : Fragment() {
+class EventsBrowseFragment : Fragment() {
 
-    lateinit var binding: FragmentEventsAllBinding
-    lateinit var adapter: EventsAllAdapter
+    lateinit var binding: FragmentEventsBrowseBinding
+    lateinit var adapter: EventsBrowseAdapter
     lateinit var manager: GridLayoutManager
     lateinit var recyclerView: RecyclerView
 
-    val viewModel by viewModels<EventsAllViewModel> { getVmFactory() }
+    val viewModel by viewModels<EventsBrowseViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +29,7 @@ class EventsAllFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentEventsAllBinding.inflate(inflater, container, false)
+        binding = FragmentEventsBrowseBinding.inflate(inflater, container, false)
 
         viewModel.events.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
@@ -64,8 +64,8 @@ class EventsAllFragment : Fragment() {
 
     fun setupView() {
 
-        adapter = EventsAllAdapter(
-            EventsAllAdapter.EventsAllOnClickListener { selectedEvent ->
+        adapter = EventsBrowseAdapter(
+            EventsBrowseAdapter.EventsAllOnClickListener { selectedEvent ->
                 viewModel.onNavigateEventDetails(selectedEvent)
             }
         )

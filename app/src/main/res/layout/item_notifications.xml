@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
-        app:layout_constraintEnd_toStartOf="@id/layout_request_tag"
+        app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +30,7 @@
         tools:text="2 days ago" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/layout_request_tag"
+        android:id="@+id/layout_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

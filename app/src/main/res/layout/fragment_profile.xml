@@ -159,7 +159,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_social_button">
 
-
         <LinearLayout
             android:id="@+id/base_follower"
             android:layout_width="100dp"
@@ -206,6 +205,37 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/base_gift_post_count"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingVertical="8dp">
+
+            <TextView
+                android:id="@+id/text_gift_post_count"
+                style="@style/profile_userlog_count"
+                android:text="@string/profile_defult_zero_count" />
+
+            <TextView
+                android:id="@+id/title_gift_post_count"
+                style="@style/profile_userlog_string"
+                android:text="@string/profile_gift_post_count_string" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_base_social_status2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear_base_social_status">
+
+        <LinearLayout
             android:id="@+id/base_gift_sent_count"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
@@ -222,38 +252,6 @@
                 android:id="@+id/title_gift_sent_count"
                 style="@style/profile_userlog_string"
                 android:text="@string/profile_gift_sent_count_string" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linear_base_social_status2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_base_social_status">
-
-
-        <LinearLayout
-            android:id="@+id/base_gift_post_count"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingVertical="8dp">
-
-            <TextView
-                android:id="@+id/text_gift_post_count"
-                style="@style/profile_userlog_count"
-                android:text="@string/profile_defult_zero_count" />
-
-            <TextView
-                android:id="@+id/title_gift_post_count"
-                style="@style/profile_userlog_string"
-                android:text="@string/profile_gift_post_count_string" />
 
         </LinearLayout>
 
@@ -292,7 +290,7 @@
             <TextView
                 android:id="@+id/title_event_volunteer_count"
                 style="@style/profile_userlog_string"
-                android:text="@string/profile_volunteer_count_string" />
+                android:text="@string/profile_event_attend_count_string" />
 
         </LinearLayout>
 

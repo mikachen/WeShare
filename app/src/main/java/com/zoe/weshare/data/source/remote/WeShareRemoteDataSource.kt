@@ -761,14 +761,11 @@ object WeShareRemoteDataSource : WeShareDataSource {
         return liveData
     }
 
-    override suspend fun getUserAllGiftsPosts(
-        collection: String,
-        uid: String,
-    ): Result<List<GiftPost>> =
+    override suspend fun getUserAllGiftsPosts(uid: String): Result<List<GiftPost>> =
         suspendCoroutine { continuation ->
 
             FirebaseFirestore.getInstance()
-                .collection(collection)
+                .collection(PATH_GIFT_POST)
                 .whereEqualTo("author.uid", uid)
                 .get()
                 .addOnCompleteListener { task ->
@@ -781,7 +778,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                             list.add(log)
                         }
 
-                        Logger.i(collection + "getUserHistoryPosts: $list")
+                        Logger.i("getUserAllGiftsPosts: $list")
 
                         continuation.resume(Result.Success(list))
                     } else {
@@ -790,6 +787,46 @@ object WeShareRemoteDataSource : WeShareDataSource {
                             Logger.w(
                                 "[${this::class.simpleName}] " +
                                     "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>> =
+        suspendCoroutine { continuation ->
+
+            FirebaseFirestore.getInstance()
+                .collection(PATH_EVENT_POST)
+                .whereEqualTo("author.uid", uid)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<EventPost>()
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val log = document.toObject(EventPost::class.java)
+                            list.add(log)
+                        }
+
+                        Logger.i("getUserAllEventsPosts: $list")
+
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                        "Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))

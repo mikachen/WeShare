@@ -11,17 +11,17 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.databinding.FragmentGiftsAllBinding
+import com.zoe.weshare.databinding.FragmentGiftsBrowseBinding
 import com.zoe.weshare.ext.getVmFactory
 
-class GiftsAllFragment : Fragment() {
+class GiftsBrowseFragment : Fragment() {
 
-    lateinit var binding: FragmentGiftsAllBinding
-    lateinit var adapter: GiftsAllAdapter
+    lateinit var binding: FragmentGiftsBrowseBinding
+    lateinit var adapter: GiftsBrowseAdapter
     lateinit var manager: GridLayoutManager
     lateinit var recyclerView: RecyclerView
 
-    val viewModel by viewModels<GiftsAllViewModel> { getVmFactory() }
+    val viewModel by viewModels<GiftsBrowseViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +29,7 @@ class GiftsAllFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentGiftsAllBinding.inflate(inflater, container, false)
+        binding = FragmentGiftsBrowseBinding.inflate(inflater, container, false)
 
         viewModel.gifts.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
@@ -63,8 +63,8 @@ class GiftsAllFragment : Fragment() {
 
     fun setupView() {
 
-        adapter = GiftsAllAdapter(
-            GiftsAllAdapter.GiftsALLOnClickListener { selectedGift ->
+        adapter = GiftsBrowseAdapter(
+            GiftsBrowseAdapter.GiftsALLOnClickListener { selectedGift ->
                 viewModel.onNavigateGiftDetails(selectedGift)
             }
         )

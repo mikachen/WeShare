@@ -101,10 +101,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
             setShowCase()
         }
         binding.buttonCheckEvents.setOnClickListener {
-            findNavController().navigate(NavGraphDirections.actionGlobalEventsAllFragment())
+            findNavController().navigate(NavGraphDirections.actionGlobalEventsBrowseFragment())
         }
         binding.buttonCheckGifts.setOnClickListener {
-            findNavController().navigate(NavGraphDirections.actionGlobalGiftsAllFragment())
+            findNavController().navigate(NavGraphDirections.actionGlobalGiftsBrowseFragment())
         }
         binding.buttonCurrentHeros.setOnClickListener {
         }

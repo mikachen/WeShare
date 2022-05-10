@@ -69,41 +69,46 @@
                 android:id="@+id/text_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="6dp"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                app:layout_constraintEnd_toStartOf="@id/layout_request_tag"
+                app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
                 app:layout_constraintStart_toEndOf="@id/image_gift"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="TITLE" />
 
             <ImageView
                 android:id="@+id/ic_pin"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="16dp"
                 android:src="@drawable/ic_pin"
                 app:layout_constraintStart_toStartOf="@id/text_title"
                 app:layout_constraintTop_toBottomOf="@id/text_title" />
 
             <TextView
                 android:id="@+id/text_posted_location"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@id/text_title"
-                app:layout_constraintTop_toBottomOf="@id/ic_pin"
-                tools:text="台北西門" />
+                android:ellipsize="end"
+                android:maxLines="2"
+                app:layout_constraintStart_toEndOf="@id/ic_pin"
+                app:layout_constraintTop_toTopOf="@id/ic_pin"
+                app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
+                tools:text="台北西門台北西門台北西門台北西門台北西門台北西門" />
 
 
             <ImageView
                 android:id="@+id/ic_clock"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:scaleY="0.8"
+                android:scaleX="0.8"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_clock"
                 app:layout_constraintStart_toStartOf="@id/text_title"
                 app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
@@ -111,16 +116,17 @@
 
             <TextView
                 android:id="@+id/text_gift_posted_time"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@id/text_title"
-                app:layout_constraintTop_toBottomOf="@id/ic_clock"
+                app:layout_constraintStart_toEndOf="@id/ic_clock"
+                app:layout_constraintTop_toTopOf="@id/ic_clock"
+                app:layout_constraintEnd_toEndOf="parent"
                 tools:text="還有3小時結束" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/layout_request_tag"
+                android:id="@+id/layout_status_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
@@ -147,6 +153,7 @@
                 android:layout_marginEnd="4dp"
                 android:gravity="bottom"
                 android:text="\u003C 查看索取"
+                android:textStyle="bold"
                 android:textAlignment="center"
                 android:textColor="@color/greenTestColor"
                 android:textSize="16sp"

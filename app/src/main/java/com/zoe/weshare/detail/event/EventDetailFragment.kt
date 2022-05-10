@@ -275,7 +275,14 @@ class EventDetailFragment : Fragment() {
         if (isUserVolunteer) {
             showPopupMenu(binding.buttonVolunteer, 1)
         } else {
-            viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
+
+            // if click volunteer, user must attend event as well
+            if(!isUserAttend) {
+                viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
+                viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
+            }else{
+                viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
+            }
         }
     }
 
@@ -329,32 +336,6 @@ class EventDetailFragment : Fragment() {
         popupMenu.show()
     }
 
-    fun generateQrcode() {
-
-        val display = (activity as MainActivity).windowManager.defaultDisplay
-
-        val point = Point()
-        display.getSize(point)
-
-        val width: Int = point.x
-        val height: Int = point.y
-
-        // generating dimension from width and height.
-        var dimen = if (width < height) width else height
-        dimen = dimen * 3 / 4
-
-        val qrgEncoder = QRGEncoder("5PbKfTLSRUy2i17UThFY", null, QRGContents.Type.TEXT, dimen)
-        try {
-
-            val bitmap = qrgEncoder.encodeAsBitmap()
-
-            binding.images.setImageBitmap(bitmap)
-        } catch (e: WriterException) {
-            // this method is called for
-            // exception handling.
-            Logger.e("error: ${e.toString()}")
-        }
-    }
 
     private fun onSendComment() {
         val message = binding.editCommentBox.text

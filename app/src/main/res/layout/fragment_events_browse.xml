@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/height_toolbar"
     android:layout_marginBottom="@dimen/height_bottom_app_bar"
     android:background="@color/home_background_grey"
-    tools:context=".search.gifts.GiftsAllFragment">
+    tools:context=".search.gifts.GiftsBrowseFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/layout_search_bar"
@@ -26,7 +26,7 @@
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.SearchView
-                android:id="@+id/gifts_searchview"
+                android:id="@+id/events_searchview"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
@@ -47,6 +47,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="4dp"
         android:paddingBottom="4dp"
+        android:paddingHorizontal="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_search_bar" />
 
@@ -83,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:gravity="center"
-            android:text="暫時找不到相關贈品\n嘗試搜尋其他關鍵字吧？\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05"
+            android:text="暫時找不到相關活動\n嘗試搜尋其他關鍵字吧？\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05"
             android:textSize="18sp" />
 
     </LinearLayout>

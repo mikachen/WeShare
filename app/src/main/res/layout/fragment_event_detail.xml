@@ -65,7 +65,7 @@
                 app:layout_constraintTop_toBottomOf="@id/images">
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/layout_request_tag"
+                    android:id="@+id/layout_status_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"

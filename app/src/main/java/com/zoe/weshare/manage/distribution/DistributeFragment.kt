@@ -86,7 +86,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
             sendNotificationsToFollowers(it)
 
             Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(NavGraphDirections.actionGlobalGiftManageFragment())
+//            findNavController().navigate(NavGraphDirections.actionGlobalGiftManageFragment())
         }
 
         setupBtn()

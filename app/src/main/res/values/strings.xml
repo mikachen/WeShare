@@ -136,8 +136,8 @@
     <string name="profile_follower_string">粉絲數</string>
     <string name="profile_gift_sent_count_string">贈品送出</string>
     <string name="profile_gift_post_count_string">贈品刊登</string>
-    <string name="profile_event_post_count_string">發起活動</string>
-    <string name="profile_volunteer_count_string">志工參與</string>
+    <string name="profile_event_post_count_string">活動刊登</string>
+    <string name="profile_event_attend_count_string">活動參與</string>
     <string name="profile_defult_zero_count">-</string>
 
 
@@ -147,7 +147,16 @@
     <string name="countdown_time4">倒數 %02d 秒</string>
 
     <string name="block_this_person_title">確定要封鎖用戶：%s？</string>
-    <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何頻論與刊登。</string>
+    <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何評論與刊登。</string>
+
+    <string name="gift_status_opening">開放中</string>
+    <string name="gift_status_closed">已結案</string>
+    <string name="gift_status_abandoned">已下架</string>
+
+    <string name="event_status_waiting">等待中</string>
+    <string name="event_status_opening">進行中</string>
+    <string name="event_status_ended">已結束</string>
+    <string name="status_all">全部</string>
 
 
 </resources>
