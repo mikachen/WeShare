@@ -76,7 +76,7 @@
         <entry key="app/src/main/res/layout/fragment_distribute.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_edit_info.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_event_check_in.xml" value="0.18896964514749892" />
-        <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_event_detail.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_event_manage.xml" value="0.41642228739002934" />
         <entry key="app/src/main/res/layout/fragment_events_all.xml" value="0.1774262505344164" />
         <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.165" />
@@ -129,7 +129,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

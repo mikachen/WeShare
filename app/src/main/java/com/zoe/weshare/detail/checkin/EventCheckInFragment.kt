@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -21,6 +22,7 @@ import com.google.android.gms.vision.barcode.Barcode
 import com.google.android.gms.vision.barcode.BarcodeDetector
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.R
+import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventCheckInBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.sendNotificationToTarget
@@ -30,12 +32,22 @@ import java.io.IOException
 class EventCheckInFragment : Fragment() {
 
     lateinit var binding: FragmentEventCheckInBinding
+    lateinit var event: EventPost
 
     private val requestCodeCameraPermission = 1001
     private lateinit var cameraSource: CameraSource
     private lateinit var barcodeDetector: BarcodeDetector
+    private lateinit var cholder: SurfaceHolder
+
+    private val aniSlide: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.scanner_animation
+        )
+    }
+
     private var scannedValue = ""
-    private var getData = false
+    private var scanComplete = false
 
     val viewModel by viewModels<CheckInViewModel> { getVmFactory(weShareUser) }
 
@@ -47,7 +59,7 @@ class EventCheckInFragment : Fragment() {
 
         binding = FragmentEventCheckInBinding.inflate(inflater, container, false)
 
-        val event = EventCheckInFragmentArgs.fromBundle(requireArguments()).event
+        event = EventCheckInFragmentArgs.fromBundle(requireArguments()).event
         viewModel.event = event
 
         if (ContextCompat.checkSelfPermission(
@@ -59,8 +71,6 @@ class EventCheckInFragment : Fragment() {
             setupControls()
         }
 
-        val aniSlide: Animation =
-            AnimationUtils.loadAnimation(requireContext(), R.anim.scanner_animation)
         binding.barcodeLine.startAnimation(aniSlide)
 
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
@@ -89,12 +99,14 @@ class EventCheckInFragment : Fragment() {
             .setAutoFocusEnabled(true) // you should add this feature
             .build()
 
-        binding.cameraSurfaceView.getHolder().addCallback(object : SurfaceHolder.Callback {
+        binding.cameraSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             @SuppressLint("MissingPermission")
             override fun surfaceCreated(holder: SurfaceHolder) {
                 try {
+                    cholder = holder
                     // Start preview after 1s delay
                     cameraSource.start(holder)
+
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -121,10 +133,11 @@ class EventCheckInFragment : Fragment() {
 
         barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
             override fun release() {
-                Toast.makeText(requireContext(), "Scanner has been closed", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(),
+                    "Scanner has been closed", Toast.LENGTH_SHORT).show()
             }
 
+            @SuppressLint("MissingPermission")
             override fun receiveDetections(detections: Detector.Detections<Barcode>) {
                 val barcodes = detections.detectedItems
                 if (barcodes.size() == 1) {
@@ -133,17 +146,49 @@ class EventCheckInFragment : Fragment() {
                     // Don't forget to add this line printing value or finishing activity must run on main thread
                     (activity as MainActivity).runOnUiThread {
                         cameraSource.stop()
+                        binding.barcodeLine.clearAnimation()
 
-                        if (!getData) {
-                            getData = true
-                            viewModel.checkInEvent(scannedValue)
+                        if (!scanComplete) {
+                            scanComplete = true
+
+                            if (scannedValue == event.id) {
+                                viewModel.checkInEvent(scannedValue)
+                            } else {
+                                showErrorMsg(cameraSource)
+                            }
                         }
                     }
-                } else {
                 }
             }
         })
     }
+
+    @SuppressLint("MissingPermission")
+    private fun showErrorMsg(cameraSource:CameraSource) {
+        val builder = AlertDialog.Builder(requireActivity())
+
+        builder.apply {
+//            setTitle("條碼與該活動不相符，請重新確認")
+            setMessage("條碼與該活動不相符，請重新確認")
+            setPositiveButton("重新掃描") { dialog, id ->
+                cameraSource.start(cholder)
+                binding.barcodeLine.startAnimation(aniSlide)
+
+                scanComplete = false
+
+                dialog.cancel()
+            }
+
+            setNegativeButton("取消返回") { dialog, id ->
+                dialog.cancel()
+                findNavController().navigateUp()
+            }
+        }
+
+        val alter: AlertDialog = builder.create()
+        alter.show()
+    }
+
 
     private fun askForCameraPermission() {
         ActivityCompat.requestPermissions(

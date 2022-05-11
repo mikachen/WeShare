@@ -247,14 +247,14 @@ class GiftDetailFragment : Fragment() {
             playCreditScene()
         }
 
-        binding.buttonAdditionHeart2.setOnClickListener {
+        binding.buttonLike.setOnClickListener {
             it.startAnimation(scaleAnimation)
             playCreditScene()
         }
     }
 
     private fun playCreditScene() {
-        if (binding.buttonAdditionHeart2.isChecked &&
+        if (binding.buttonLike.isChecked &&
             binding.buttonAdditionHeart1.isChecked &&
             binding.buttonPressLike.isChecked
         ) {

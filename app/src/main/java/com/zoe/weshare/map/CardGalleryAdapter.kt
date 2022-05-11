@@ -2,16 +2,28 @@ package com.zoe.weshare.map
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.BounceInterpolator
+import android.view.animation.ScaleAnimation
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.data.Cards
 import com.zoe.weshare.databinding.ItemCardGalleryViewBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.UserManager
 
-class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
+class CardGalleryAdapter(
+    val viewModel: MapViewModel,
+    private val onClickListener: CardOnClickListener,
+) :
     RecyclerView.Adapter<CardGalleryAdapter.CardsViewHolder>() {
 
     private var list: List<Cards>? = null
+    private lateinit var likeAnimation: ScaleAnimation
+
+    init {
+        setupLikeBtn()
+    }
 
     class CardsViewHolder(val binding: ItemCardGalleryViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -45,13 +57,22 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
     }
 
     override fun onBindViewHolder(holder: CardsViewHolder, position: Int) {
-        val data = list?.get(getRealPosition(position))
+        val card = list?.get(getRealPosition(position))
 
-        data?.let {
-            holder.bind(data)
+        card?.let {
+            holder.bind(card)
+
+            val isUserLiked = card.whoLiked.contains(UserManager.weShareUser!!.uid)
             holder.binding.clickableView.setOnClickListener {
-                onClickListener.onClick(data)
+                onClickListener.onClick(card)
             }
+            holder.binding.buttonLike.setOnClickListener {
+
+                it.startAnimation(likeAnimation)
+                viewModel.onPostLikePressed(card, isUserLiked)
+            }
+
+            holder.binding.buttonLike.isChecked = isUserLiked
         }
     }
 
@@ -67,4 +88,20 @@ class CardGalleryAdapter(private val onClickListener: CardOnClickListener) :
         this.list = dataList
         notifyDataSetChanged()
     }
+
+    private fun setupLikeBtn() {
+        likeAnimation = ScaleAnimation(
+            0.7f,
+            1.0f,
+            0.7f,
+            1.0f,
+            Animation.RELATIVE_TO_SELF,
+            0.7f,
+            Animation.RELATIVE_TO_SELF,
+            0.7f
+        )
+        likeAnimation.duration = 500
+        likeAnimation.interpolator = BounceInterpolator()
+    }
+
 }

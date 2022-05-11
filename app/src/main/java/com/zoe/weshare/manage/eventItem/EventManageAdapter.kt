@@ -1,6 +1,7 @@
 package com.zoe.weshare.manage.eventItem
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -23,6 +24,7 @@ class EventManageAdapter(
 
     val viewBinderHelper = ViewBinderHelper()
     private var unfilteredList = listOf<EventPost>()
+    var firstEntry: Boolean = true
 
     class EventItemViewHolder(var binding: ItemEventManageBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -49,14 +51,17 @@ class EventManageAdapter(
                 EventStatusType.WAITING.code -> {
                     binding.textStatus.text = EventStatusType.WAITING.tag
                     binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
+                    binding.buttonGetQrcode.visibility = View.VISIBLE
                 }
                 EventStatusType.ONGOING.code -> {
                     binding.textStatus.text = EventStatusType.ONGOING.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
+                    binding.buttonGetQrcode.visibility = View.VISIBLE
                 }
                 EventStatusType.ENDED.code -> {
                     binding.textStatus.text = EventStatusType.ENDED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_dark_grey)
+                    binding.buttonGetQrcode.visibility = View.INVISIBLE
                 }
 
                 else -> Logger.d("unKnow status")
@@ -99,11 +104,11 @@ class EventManageAdapter(
                 onClickListener.onClick(event)
             }
 
-//            holder.binding.buttonAbandon.setOnClickListener {
-//                viewModel.userClickAbandon(event)
-//            }
-//
-            holder.binding.btnGetQrcode.setOnClickListener {
+            holder.binding.buttonForceEnd.setOnClickListener {
+                viewModel.userClickForceEnd(event)
+            }
+
+            holder.binding.buttonGetQrcode.setOnClickListener {
                 viewModel.generateQrcode(event.id)
             }
         }
@@ -125,7 +130,6 @@ class EventManageAdapter(
 
     fun modifyList(list: List<EventPost>, position: Int) {
         unfilteredList = list
-
         filter(position)
     }
 
@@ -151,7 +155,17 @@ class EventManageAdapter(
             }
         }
 
-        viewModel.onFilterEmpty.value = list.isEmpty()
-        submitList(list)
+        //to enhance user experience
+        if (firstEntry) {
+            firstEntry = false
+            if (list.isEmpty()) {
+                viewModel.firstEntryEmpty.value = true
+            }else{
+                submitList(list)
+            }
+        } else {
+            viewModel.onFilterEmpty.value = list.isEmpty()
+            submitList(list)
+        }
     }
 }

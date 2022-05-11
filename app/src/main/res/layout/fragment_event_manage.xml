@@ -11,10 +11,9 @@
 
     <View
         android:id="@+id/base_layout"
-        android:elevation="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:elevation="2dp" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/filter_tabs"
@@ -49,16 +48,24 @@
             android:text="@string/status_all" />
     </com.google.android.material.tabs.TabLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/home_background_grey"
-        android:paddingVertical="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filter_tabs" />
+        app:layout_constraintTop_toBottomOf="@id/filter_tabs">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/home_background_grey"
+            android:paddingVertical="4dp" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <ImageView
         android:id="@+id/qrcode_holder"

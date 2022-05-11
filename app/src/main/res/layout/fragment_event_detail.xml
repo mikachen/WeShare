@@ -150,6 +150,18 @@
                     app:layout_constraintStart_toEndOf="@id/button_attend"
                     app:layout_constraintTop_toTopOf="@id/button_attend" />
 
+                <TextView
+                    android:id="@+id/checkin_complete"
+                    android:layout_width="wrap_content"
+                    android:textColor="@color/greenTestColor"
+                    android:textSize="16sp"
+                    android:visibility="invisible"
+                    tools:visibility="visible"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@id/button_volunteer"
+                    app:layout_constraintEnd_toEndOf="@id/button_volunteer"
+                    android:text="\u2705簽到完成！"/>
+
 
                 <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/divider"
@@ -433,12 +445,12 @@
                     android:text=""
                     android:textOff=""
                     android:textOn=""
-                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart2"
+                    app:layout_constraintEnd_toStartOf="@id/button_like"
                     app:layout_constraintStart_toEndOf="@id/button_press_like"
                     app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
                 <ToggleButton
-                    android:id="@+id/button_addition_heart2"
+                    android:id="@+id/button_like"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/button_toggle_like"

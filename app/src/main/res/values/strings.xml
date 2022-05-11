@@ -64,12 +64,18 @@
     <string name="chatroom_send_a_message">輸入訊息</string>
 
 
-    //下架Alert窗
+    //贈品下架Alert窗
     <string name="abandoned_title">您確定要下架\u0022%s\u0022嗎?</string>
     <string name="abandoned_message">下架後將無法復原或操作派發!</string>
     <string name="abandoned_yes">確認下架</string>
     <string name="abandoned_no">取消下架</string>
     <string name="give_away_gift">派發</string>
+
+    //活動強制結束Alert窗
+    <string name="force_end_title">您確定要強制結束\u0022%s\u0022嗎?</string>
+    <string name="force_end_message">操作將無法復原!</string>
+    <string name="force_end_yes">確認結束</string>
+    <string name="force_end_no">取消</string>
 
     //送禮物Alert窗
     <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
@@ -92,6 +98,7 @@
     <string name="log_msg_following_someone">&lt;b>%1s&lt;/b>追蹤了%2s！</string>
     <string name="log_msg_event_check_in">&lt;b>%1s&lt;/b>已於活動：%2s 完成志工簽到！</string>
     <string name="log_msg_receive_gift">&lt;b>%1s&lt;/b> 已成功將贈品：%2s 送出給您，恭喜您！</string>
+    <string name="log_msg_force_end_event">&lt;b>%1s&lt;/b> 強制關閉了活動：%2s</string>
 
 
     //error handle

@@ -1,6 +1,5 @@
 package com.zoe.weshare.detail.event
 
-import android.graphics.Point
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
@@ -9,13 +8,10 @@ import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidmads.library.qrgenearator.QRGContents
-import androidmads.library.qrgenearator.QRGEncoder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.zxing.WriterException
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
@@ -58,6 +54,7 @@ class EventDetailFragment : Fragment() {
                 setupView(it)
                 setupBtn(it)
                 setupLikeBtn(it)
+                viewModel.checkEventStatus(it)
             }
         }
 
@@ -142,7 +139,7 @@ class EventDetailFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupCommentBoard(){
+    private fun setupCommentBoard() {
         commentsBoard = binding.commentsRecyclerView
         adapter = EventCommentsAdapter(viewModel, requireContext())
         commentsBoard.adapter = adapter
@@ -193,6 +190,10 @@ class EventDetailFragment : Fragment() {
             buttonAttend.isChecked = isUserAttend
 
             buttonVolunteer.isChecked = isUserVolunteer
+
+            if(isUserCheckedIn){
+                checkinComplete.visibility = View.VISIBLE
+            }
         }
 
         when (true) {
@@ -277,20 +278,20 @@ class EventDetailFragment : Fragment() {
         } else {
 
             // if click volunteer, user must attend event as well
-            if(!isUserAttend) {
+            if (!isUserAttend) {
                 viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
                 viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
-            }else{
+            } else {
                 viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
             }
         }
     }
 
-    private fun showPopupMenu(view: View, adjustCode: Int) {
+    private fun showPopupMenu(view: View, condition: Int) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.event_more_menu, popupMenu.menu)
 
-        when (adjustCode) {
+        when (condition) {
 
             0 -> {
                 popupMenu.menu.removeItem(R.id.action_cancel_volunteer)
@@ -300,6 +301,11 @@ class EventDetailFragment : Fragment() {
 
             1 -> {
                 popupMenu.menu.removeItem(R.id.action_cancel_attend)
+
+                if(isUserCheckedIn){
+                    popupMenu.menu.removeItem(R.id.action_cancel_volunteer)
+                    popupMenu.menu.removeItem(R.id.action_check_in)
+                }
             }
         }
 
@@ -321,7 +327,9 @@ class EventDetailFragment : Fragment() {
                             )
                         }
 
-                        else -> { Logger.d("unKnow")}
+                        else -> {
+                            Logger.d("unKnow")
+                        }
                     }
                 }
 
@@ -379,7 +387,7 @@ class EventDetailFragment : Fragment() {
             playCreditScene()
         }
 
-        binding.buttonAdditionHeart2.setOnClickListener {
+        binding.buttonLike.setOnClickListener {
             it.startAnimation(scaleAnimation)
 
             playCreditScene()
@@ -387,7 +395,7 @@ class EventDetailFragment : Fragment() {
     }
 
     private fun playCreditScene() {
-        if (binding.buttonAdditionHeart2.isChecked &&
+        if (binding.buttonLike.isChecked &&
             binding.buttonAdditionHeart1.isChecked &&
             binding.buttonPressLike.isChecked
         ) {
@@ -407,10 +415,11 @@ class EventDetailFragment : Fragment() {
             }
 
             override fun onFinish() {
-                binding.textCountdownTime.text = "活動"+state
+                binding.textCountdownTime.text = "活動" + state
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).window.setSoftInputMode(

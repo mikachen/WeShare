@@ -11,6 +11,7 @@ import com.zoe.weshare.detail.gift.GiftDetailViewModel
 import com.zoe.weshare.manage.distribution.DistributeViewModel
 import com.zoe.weshare.manage.eventItem.EventManageViewModel
 import com.zoe.weshare.manage.giftsItem.GiftManageViewModel
+import com.zoe.weshare.map.MapViewModel
 import com.zoe.weshare.message.ChatRoomViewModel
 import com.zoe.weshare.message.roomlist.RoomListViewModel
 import com.zoe.weshare.notification.NotificationViewModel
@@ -36,6 +37,10 @@ class AuthorViewModelFactory(
 
         if (modelClass.isAssignableFrom(PostGiftViewModel::class.java)) {
             return PostGiftViewModel(repository, userInfo) as T
+        }
+
+        if (modelClass.isAssignableFrom(MapViewModel::class.java)) {
+            return MapViewModel(repository, userInfo) as T
         }
 
         if (modelClass.isAssignableFrom(AskForGiftViewModel::class.java)) {

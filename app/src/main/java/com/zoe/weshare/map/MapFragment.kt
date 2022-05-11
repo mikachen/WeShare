@@ -35,6 +35,7 @@ import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.generateSmallIcon
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.Logger
+import com.zoe.weshare.util.UserManager.weShareUser
 import kotlin.math.max
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -48,7 +49,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var adapter: CardGalleryAdapter
     private val marginDecoration = GalleryDecoration()
     private val markersRef = mutableListOf<Marker>()
-    private val viewModel by viewModels<MapViewModel> { getVmFactory() }
+    private val viewModel by viewModels<MapViewModel> { getVmFactory(weShareUser) }
 
     var needRefreshMap = false
 
@@ -249,7 +250,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         recyclerView = binding.cardsRecycleview
 
-        adapter = CardGalleryAdapter(
+        adapter = CardGalleryAdapter(viewModel,
             CardGalleryAdapter.CardOnClickListener { selectedCard ->
                 viewModel.displayCardDetails(selectedCard)
             }

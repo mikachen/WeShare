@@ -12,5 +12,6 @@ enum class LogType(val value: Int) {
     EVENT_STARTED(8),
     EVENT_ENDED(9),
     FOLLOWING(10),
-    EVENT_CHECK_IN(11) // send notification to author only
+    EVENT_CHECK_IN(11), // send notification to author only
+    EVENT_GOT_FORCE_ENDED(12)
 }

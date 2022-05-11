@@ -30,6 +30,7 @@ class GiftManageViewModel(
         get() = _allGiftsResult
 
     var onFilterEmpty = MutableLiveData<Boolean>()
+    var firstEntryEmpty = MutableLiveData<Boolean>()
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -93,11 +94,11 @@ class GiftManageViewModel(
         }
     }
 
-    fun onNaviagteToRequest(gift: GiftPost) {
+    fun onNavigateToRequest(gift: GiftPost) {
         _onCommentsShowing.value = gift
     }
 
-    fun naviagteToRequestComplete() {
+    fun navigateToRequestComplete() {
         _onCommentsShowing.value = null
     }
 
@@ -118,6 +119,7 @@ class GiftManageViewModel(
                     _abandonStatus.value = LoadApiStatus.DONE
 
                     onSaveAbandonGiftLog(selectedGift)
+                    _onAlterMsgShowing.value = null
                 }
                 is Result.Fail -> {
                     _error.value = result.error

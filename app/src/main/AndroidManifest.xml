@@ -30,7 +30,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.WeShare"
             android:windowSoftInputMode="adjustResize|stateVisible">
             <intent-filter>

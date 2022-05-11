@@ -5,12 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.EventPost
-import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.data.Result
-import com.zoe.weshare.data.UserInfo
+import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.EventStatusType
+import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,6 +30,7 @@ class EventManageViewModel(
         get() = _qrcode
 
     var onFilterEmpty = MutableLiveData<Boolean>()
+    var firstEntryEmpty = MutableLiveData<Boolean>()
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -42,11 +43,20 @@ class EventManageViewModel(
     val error: LiveData<String?>
         get() = _error
 
+    private val _saveLogComplete = MutableLiveData<OperationLog>()
+    val saveLogComplete: LiveData<OperationLog>
+        get() = _saveLogComplete
+
+    private val _onAlterMsgShowing = MutableLiveData<EventPost>()
+    val onAlterMsgShowing: LiveData<EventPost>
+        get() = _onAlterMsgShowing
+
+
     init {
-        getUserAllGiftsPosts()
+        getUserAllEventsPosts()
     }
 
-    fun getUserAllGiftsPosts() {
+    fun getUserAllEventsPosts() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
@@ -77,12 +87,81 @@ class EventManageViewModel(
         }
     }
 
+    fun userClickForceEnd(event: EventPost) {
+        _onAlterMsgShowing.value = event
+    }
+
+    fun forceEndedEvent(event: EventPost) {
+        coroutineScope.launch {
+
+            when (
+                val result = repository.updateEventStatus(
+                    docId = event.id,
+                    code = EventStatusType.ENDED.code
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+
+                    onStatusChangedLog(event)
+                    _onAlterMsgShowing.value = null
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                }
+                else -> {
+                    _error.value = Util.getString(R.string.result_fail)
+                }
+            }
+        }
+    }
+
+    private fun onStatusChangedLog(event: EventPost) {
+        val log = OperationLog(
+            postDocId = event.id,
+            operatorUid = userInfo!!.uid,
+            logType = LogType.EVENT_GOT_FORCE_ENDED.value,
+            logMsg = WeShareApplication.instance
+                .getString(R.string.log_msg_force_end_event,userInfo.name,event.title)
+        )
+
+        saveLog(log)
+    }
+
+    private fun saveLog(log: OperationLog) {
+        coroutineScope.launch {
+
+            when (val result = repository.saveLog(log)) {
+                is Result.Success -> {
+                    _error.value = null
+                    _saveLogComplete.value = log
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                }
+                else -> {
+                    _error.value = Util.getString(R.string.result_fail)
+                }
+            }
+        }
+    }
+
     fun generateQrcode(eventId: String){
         _qrcode.value = eventId
     }
 
     fun generateQrcodeComplete(){
         _qrcode.value = null
+    }
+
+    fun refreshFilterView() {
+        getUserAllEventsPosts()
     }
 
 }

@@ -10,7 +10,7 @@
     app:mode="same_level">
 
     <LinearLayout
-        android:id="@+id/button_abandon"
+        android:id="@+id/button_force_end"
         android:layout_width="120dp"
         android:layout_height="match_parent"
         android:background="@drawable/shape_abandon_button_round"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginTop="8dp"
-            android:text="下架"
+            android:text="強制結束"
             android:textColor="@color/white"
             android:textSize="16sp" />
 
@@ -75,35 +75,39 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
+                    android:layout_marginTop="8dp"
+
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
                     app:layout_constraintStart_toEndOf="@id/image_event"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="TITLE" />
+                    tools:text="讀書會讀書會讀書會讀書會讀書會讀書會讀書會讀書會讀書會" />
 
                 <ImageView
                     android:id="@+id/ic_pin"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"
                     android:src="@drawable/ic_pin"
                     app:layout_constraintStart_toStartOf="@id/text_title"
-                    app:layout_constraintTop_toBottomOf="@id/text_title" />
+                    app:layout_constraintTop_toTopOf="@id/text_posted_location" />
 
                 <TextView
                     android:id="@+id/text_posted_location"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:textColor="@color/black"
                     android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@id/ic_clock"
                     app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
                     app:layout_constraintStart_toEndOf="@id/ic_pin"
-                    app:layout_constraintTop_toTopOf="@id/ic_pin"
+                    app:layout_constraintTop_toBottomOf="@id/text_title"
                     tools:text="台北西門台北西門台北西門台北西門台北西門台北西門" />
 
 
@@ -111,12 +115,12 @@
                     android:id="@+id/ic_clock"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:scaleX="0.8"
                     android:scaleY="0.8"
                     android:src="@drawable/ic_clock"
                     app:layout_constraintStart_toStartOf="@id/text_title"
-                    app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
+                    app:layout_constraintTop_toTopOf="@id/text_event_period_time" />
 
 
                 <TextView
@@ -125,36 +129,25 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="@id/ic_clock"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/ic_clock"
-                    app:layout_constraintTop_toTopOf="@id/ic_clock"
+                    app:layout_constraintTop_toBottomOf="@id/text_posted_location"
                     tools:text="還有3小時結束" />
 
                 <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/lottie_get_qrcode"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:layout_constraintStart_toStartOf="@id/text_title"
-                    app:layout_constraintTop_toBottomOf="@id/ic_clock"
+                    android:id="@+id/button_get_qrcode"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="6dp"
+                    android:paddingStart="16dp"
+                    android:paddingBottom="16dp"
+                    app:layout_constraintEnd_toEndOf="@id/layout_status_tag"
+                    app:layout_constraintTop_toBottomOf="@id/layout_status_tag"
                     app:lottie_autoPlay="true"
                     app:lottie_fileName="generate-qr-code.json"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:lottie_loop="true"
-                    app:lottie_speed="1"/>
-
-                <TextView
-                    android:id="@+id/btn_get_qrcode"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:paddingTop="20dp"
-                    android:textColor="@color/greenTestColor"
-                    android:text="產生簽到碼"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@id/lottie_get_qrcode"
-                    app:layout_constraintEnd_toEndOf="@id/layout_status_tag"
-                    app:layout_constraintStart_toEndOf="@id/lottie_get_qrcode"/>
+                    app:lottie_speed="1" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/layout_status_tag"
@@ -312,7 +305,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/layout_response_volunteer_count"
                     app:layout_constraintTop_toTopOf="@id/layout_response_attendee_count"
-                    app:strokeColor="@color/app_work_dark_grey"
+                    app:strokeColor="@color/greenTestColor"
                     app:strokeWidth="1dp">
 
 
@@ -325,6 +318,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/greenTestColor"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:text="已簽到"
                             android:textSize="12sp" />
@@ -332,6 +326,7 @@
                         <TextView
                             android:id="@+id/text_checkin_count"
                             android:layout_width="wrap_content"
+                            android:textColor="@color/greenTestColor"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal|center_vertical"
                             android:textSize="12sp"

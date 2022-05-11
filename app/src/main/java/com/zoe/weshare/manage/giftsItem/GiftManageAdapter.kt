@@ -22,6 +22,7 @@ class GiftManageAdapter(
 
     val viewBinderHelper = ViewBinderHelper()
     private var unfilteredList = listOf<GiftPost>()
+    var firstEntry: Boolean = true
 
     class GiftViewHolder(var binding: ItemGiftManageBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -94,7 +95,7 @@ class GiftManageAdapter(
             }
 
             holder.binding.btnCheckWhoRequest.setOnClickListener {
-                viewModel.onNaviagteToRequest(gift)
+                viewModel.onNavigateToRequest(gift)
             }
         }
     }
@@ -113,7 +114,7 @@ class GiftManageAdapter(
         }
     }
 
-    fun modifyList(list: List<GiftPost>, position:Int) {
+    fun modifyList(list: List<GiftPost>, position: Int) {
         unfilteredList = list
         filter(position)
     }
@@ -140,7 +141,17 @@ class GiftManageAdapter(
             }
         }
 
-        viewModel.onFilterEmpty.value = list.isEmpty()
-        submitList(list)
+        //to enhance user experience
+        if (firstEntry) {
+            firstEntry = false
+            if (list.isEmpty()) {
+                viewModel.firstEntryEmpty.value = true
+            }else{
+                submitList(list)
+            }
+        } else {
+            viewModel.onFilterEmpty.value = list.isEmpty()
+            submitList(list)
+        }
     }
 }

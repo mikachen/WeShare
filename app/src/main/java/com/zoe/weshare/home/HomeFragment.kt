@@ -114,15 +114,17 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         val lps = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+            ViewGroup.LayoutParams.WRAP_CONTENT)
+
         lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+
         val margin = ((resources.displayMetrics.density * 24) as Number).toInt()
         lps.setMargins(margin, margin, margin, margin * 10)
 
         showcaseView = ShowcaseView.Builder(requireActivity())
             .setTarget(NONE)
+            .withMaterialShowcase()
             .setStyle(R.style.CustomShowcaseTheme)
             .setContentTitle("歡迎進入WeShare，恭喜您已成功地完成共享的第一步！")
             .setContentText("讓我為您做個操作介紹吧:)")

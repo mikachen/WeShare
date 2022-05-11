@@ -72,6 +72,7 @@
                 android:layout_marginStart="6dp"
                 android:textColor="@color/black"
                 android:textSize="18sp"
+                android:layout_marginTop="16dp"
                 android:maxLines="1"
                 android:ellipsize="end"
                 app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
@@ -83,7 +84,7 @@
                 android:id="@+id/ic_pin"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:src="@drawable/ic_pin"
                 app:layout_constraintStart_toStartOf="@id/text_title"
                 app:layout_constraintTop_toBottomOf="@id/text_title" />

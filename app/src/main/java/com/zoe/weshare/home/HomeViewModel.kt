@@ -1,11 +1,15 @@
 package com.zoe.weshare.home
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.*
+import com.zoe.weshare.data.EventPost
+import com.zoe.weshare.data.GiftPost
+import com.zoe.weshare.data.OperationLog
+import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.GiftStatusType
@@ -67,14 +71,23 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     fun onFilteringLog(list: List<OperationLog>) {
         filteredLogs.value = list.filter {
             it.logType != LogType.REQUEST_GIFT.value &&
-                it.logType != LogType.FOLLOWING.value &&
-                it.logType != LogType.ABANDONED_GIFT.value &&
-                it.logType != LogType.EVENT_CHECK_IN.value
+                    it.logType != LogType.FOLLOWING.value &&
+                    it.logType != LogType.ABANDONED_GIFT.value &&
+                    it.logType != LogType.VOLUNTEER_EVENT.value &&
+                    it.logType != LogType.EVENT_GOT_FORCE_ENDED.value
         }
     }
 
     private fun filterGift(gifts: List<GiftPost>) {
-        _gifts.value = gifts.filter { it.status != GiftStatusType.CLOSED.code }
+
+        val list = gifts.filter {
+            it.status != GiftStatusType.CLOSED.code && it.whoLiked.size >= 2 } as MutableList
+
+        fun whoLikeSize(gift: GiftPost): Int = gift.whoLiked.size
+        list.sortByDescending { whoLikeSize(it) }
+
+        _gifts.value = list
+        
     }
 
     private fun getGiftsResult() {
@@ -106,32 +119,33 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
+    private fun filterEvent(event: List<EventPost>) {
+        _events.value = event.filter { it.whoAttended.size >= 4 }
+    }
+
     private fun getEventsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getAllEvents()
 
-            _events.value = when (result) {
+            when (val result = repository.getAllEvents()) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data
+
+                    filterEvent(result.data)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
             }
             _refreshStatus.value = false

@@ -313,4 +313,9 @@ class MainActivity : AppCompatActivity() {
             binding.layoutFabEvent.visibility = View.GONE
         }
     }
+
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        finish()
+//    }
 }

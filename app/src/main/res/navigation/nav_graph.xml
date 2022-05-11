@@ -154,11 +154,15 @@
         app:popUpToInclusive="true" />
     <action
         android:id="@+id/navigate_to_map_fragment"
-        app:destination="@id/mapFragment" />
+        app:destination="@id/mapFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/navigate_to_roomlist_fragment"
-        app:destination="@id/roomListFragment" />
+        app:destination="@id/roomListFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/action_global_profileFragment"
