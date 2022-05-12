@@ -99,11 +99,21 @@ class MainActivity : AppCompatActivity() {
                         hideBottom()
                         topAppbar.visibility = View.GONE
                     }
-                    CurrentFragmentType.GIFTDETAIL -> { hideBottom() }
-                    CurrentFragmentType.EVENTDETAIL -> { hideBottom() }
-                    CurrentFragmentType.POSTGIFT -> { hideBottom() }
-                    CurrentFragmentType.POSTEVENT -> { hideBottom() }
-                    CurrentFragmentType.EDITPROFILE -> { hideBottom() }
+                    CurrentFragmentType.GIFTDETAIL -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.EVENTDETAIL -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.POSTGIFT -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.POSTEVENT -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.EDITPROFILE -> {
+                        hideBottom()
+                    }
 
                     CurrentFragmentType.NOTIFICATION -> {
                         binding.fabsLayoutView.visibility = View.GONE
@@ -197,6 +207,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.editInfoFragment -> CurrentFragmentType.EDITPROFILE
                 R.id.giftsBrowseFragment -> CurrentFragmentType.GIFTSBROWSE
                 R.id.eventsBrowseFragment -> CurrentFragmentType.EVENTSBROWSE
+                R.id.eventCheckInFragment -> CurrentFragmentType.EVENTCHECKIN
 
                 else -> viewModel.currentFragmentType.value
             }
@@ -227,6 +238,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_map -> {
 
+
                     findNavController(R.id.nav_host_fragment).navigate(
                         NavGraphDirections.navigateToMapFragment()
                     )
@@ -237,6 +249,7 @@ class MainActivity : AppCompatActivity() {
                     findNavController(R.id.nav_host_fragment).navigate(
                         NavGraphDirections.navigateToRoomlistFragment()
                     )
+
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_profile -> {

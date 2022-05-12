@@ -106,7 +106,7 @@ class GiftManageAdapter(
 
     companion object DiffCallback : DiffUtil.ItemCallback<GiftPost>() {
         override fun areItemsTheSame(oldItem: GiftPost, newItem: GiftPost): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: GiftPost, newItem: GiftPost): Boolean {

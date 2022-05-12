@@ -61,7 +61,7 @@ class LoginFragment : Fragment() {
 
         val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
         // signOut allow user to choose different account to login
-        mGoogleSignInClient.signOut()
+//        mGoogleSignInClient.signOut()
 
         val signInIntent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)

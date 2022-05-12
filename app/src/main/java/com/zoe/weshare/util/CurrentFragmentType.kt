@@ -20,5 +20,7 @@ enum class CurrentFragmentType(val value: String) {
     LOGIN("登入"),
     EDITPROFILE("會員資料更新"),
     GIFTSBROWSE("贈品查詢"),
-    EVENTSBROWSE("活動查詢")
+    EVENTSBROWSE("活動查詢"),
+    EVENTCHECKIN("活動簽到掃描")
+
 }

@@ -25,10 +25,12 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.MainActivity
+import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.requestLocationPermissions
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostGiftFragment : Fragment() {
@@ -72,8 +74,10 @@ class PostGiftFragment : Fragment() {
 
     private fun setupBtn() {
         binding.nextButton.setOnClickListener {
-            if (checkLocationPermission()) {
+            if (checkPermission()) {
                 dataCollecting()
+            }else{
+                requestPermissions()
             }
         }
         binding.buttonImagePreviewHolder.setOnClickListener {
@@ -177,28 +181,20 @@ class PostGiftFragment : Fragment() {
         binding.dropdownMenuCondition.setAdapter(conditionAdapter)
     }
 
-    fun checkLocationPermission(): Boolean {
+    private fun checkPermission(): Boolean {
         // 檢查權限
-        return if (ActivityCompat.checkSelfPermission(
+        return ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            true
-        } else {
-
-            // 詢問要求獲取權限
-            requestPermissions()
-            false
-        }
     }
 
-    fun requestPermissions() {
-
+    private fun requestPermissions() {
         Dexter.withContext(requireContext())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                    dataCollecting()
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) {

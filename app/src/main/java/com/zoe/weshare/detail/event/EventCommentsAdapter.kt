@@ -137,7 +137,7 @@ class DiffCall : DiffUtil.ItemCallback<Comment>() {
         oldItem: Comment,
         newItem: Comment,
     ): Boolean {
-        return oldItem === newItem
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(

@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -33,9 +35,23 @@ class EventDetailFragment : Fragment() {
     private lateinit var commentsBoard: RecyclerView
     private lateinit var selectedEvent: EventPost
 
-    var isUserAttend: Boolean = false
-    var isUserVolunteer: Boolean = false
-    var isUserCheckedIn: Boolean = false
+    private val checkInAnimate: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.event_checkin_success
+        )
+    }
+
+    private val sneakyHideAnimate: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.checkin_sneaky_hide
+        )
+    }
+    private var isAnimateShown: Boolean = false
+    private var isUserAttend: Boolean = false
+    private var isUserVolunteer: Boolean = false
+    private var isUserCheckedIn: Boolean = false
 
     val viewModel by viewModels<EventDetailViewModel> { getVmFactory(weShareUser) }
 
@@ -150,7 +166,7 @@ class EventDetailFragment : Fragment() {
         isUserAttend = event.whoAttended.contains(weShareUser!!.uid)
         isUserVolunteer = event.whoVolunteer.contains(weShareUser!!.uid)
         isUserCheckedIn = event.whoCheckedIn.contains(weShareUser!!.uid)
-
+        setUpAnimation { }
 
         binding.apply {
             bindImage(this.images, event.image)
@@ -191,7 +207,7 @@ class EventDetailFragment : Fragment() {
 
             buttonVolunteer.isChecked = isUserVolunteer
 
-            if(isUserCheckedIn){
+            if (isUserCheckedIn) {
                 checkinComplete.visibility = View.VISIBLE
             }
         }
@@ -218,6 +234,40 @@ class EventDetailFragment : Fragment() {
                 Logger.d("unKnow status")
             }
         }
+
+        if (!isAnimateShown) {
+            if (isUserCheckedIn) {
+                binding.checkinComplete.startAnimation(checkInAnimate)
+            }
+        }
+    }
+
+
+    fun setUpAnimation( onEnd: () -> Unit) {
+        checkInAnimate.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(p0: Animation?) = Unit
+
+            override fun onAnimationEnd(p0: Animation?) {
+                if(!isAnimateShown){
+                    isAnimateShown = true
+                    binding.checkinComplete.startAnimation(sneakyHideAnimate)
+                }else{
+                    onEnd()
+                }
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) = Unit
+        })
+
+        sneakyHideAnimate.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(p0: Animation?) = Unit
+
+            override fun onAnimationEnd(p0: Animation?) {
+                binding.checkinComplete.startAnimation(checkInAnimate)
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) = Unit
+        })
     }
 
     private fun setupBtn(event: EventPost) {
@@ -266,7 +316,9 @@ class EventDetailFragment : Fragment() {
 
     fun attendBtnClick() {
         if (isUserAttend) {
-            showPopupMenu(binding.buttonAttend, 0)
+            if (!isUserCheckedIn) {
+                showPopupMenu(binding.buttonAttend, 0)
+            }
         } else {
             viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
         }
@@ -302,7 +354,7 @@ class EventDetailFragment : Fragment() {
             1 -> {
                 popupMenu.menu.removeItem(R.id.action_cancel_attend)
 
-                if(isUserCheckedIn){
+                if (isUserCheckedIn) {
                     popupMenu.menu.removeItem(R.id.action_cancel_volunteer)
                     popupMenu.menu.removeItem(R.id.action_check_in)
                 }

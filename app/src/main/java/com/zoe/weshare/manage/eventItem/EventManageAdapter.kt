@@ -120,7 +120,7 @@ class EventManageAdapter(
 
     companion object DiffCallback : DiffUtil.ItemCallback<EventPost>() {
         override fun areItemsTheSame(oldItem: EventPost, newItem: EventPost): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: EventPost, newItem: EventPost): Boolean {

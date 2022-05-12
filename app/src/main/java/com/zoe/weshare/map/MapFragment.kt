@@ -34,6 +34,7 @@ import com.zoe.weshare.databinding.FragmentMapBinding
 import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.generateSmallIcon
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.requestLocationPermissions
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
 import kotlin.math.max
@@ -56,7 +57,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.isPermissionGranted = this.checkLocationPermission()
+        viewModel.isPermissionGranted = checkLocationPermission()
     }
 
     override fun onCreateView(
@@ -126,6 +127,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             binding.mapView.getMapAsync(this)
 
             setupCardGallery()
+        }else{
+            requestLocationPermissions()
         }
 
         return binding.root
@@ -169,6 +172,36 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 }
             }
         }
+    }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+
+        val position = markersRef.indexOf(marker)
+        recyclerView.smoothScrollToPosition(position)
+
+        val handler = Handler(Looper.getMainLooper())
+        val start = SystemClock.uptimeMillis()
+        val duration = 1800
+
+        val interpolator = BounceInterpolator()
+
+        handler.post(object : Runnable {
+            override fun run() {
+                val elapsed = SystemClock.uptimeMillis() - start
+                val t = max(
+                    1 - interpolator.getInterpolation(elapsed.toFloat() / duration), 0f
+                )
+
+                marker.setAnchor(0.5f, 1f + 2 * t)
+
+                // Post again 16ms later.
+                if (t > 0.0) {
+                    handler.postDelayed(this, 16)
+                }
+            }
+        })
+
+        return false
     }
 
     // Get current location
@@ -328,35 +361,5 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         if (viewModel.isPermissionGranted) {
             binding.mapView.onLowMemory()
         }
-    }
-
-    override fun onMarkerClick(marker: Marker): Boolean {
-
-        val position = markersRef.indexOf(marker)
-        recyclerView.smoothScrollToPosition(position)
-
-        val handler = Handler(Looper.getMainLooper())
-        val start = SystemClock.uptimeMillis()
-        val duration = 1800
-
-        val interpolator = BounceInterpolator()
-
-        handler.post(object : Runnable {
-            override fun run() {
-                val elapsed = SystemClock.uptimeMillis() - start
-                val t = max(
-                    1 - interpolator.getInterpolation(elapsed.toFloat() / duration), 0f
-                )
-
-                marker.setAnchor(0.5f, 1f + 2 * t)
-
-                // Post again 16ms later.
-                if (t > 0.0) {
-                    handler.postDelayed(this, 16)
-                }
-            }
-        })
-
-        return false
     }
 }

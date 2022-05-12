@@ -37,18 +37,10 @@ fun Fragment.getVmFactory(): ViewModelFactory {
 
 fun Fragment.checkLocationPermission(): Boolean {
     // 檢查權限
-    return if (ActivityCompat.checkSelfPermission(
+    return ActivityCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        // permission granted
-        true
-    } else {
-        // 詢問要求獲取權限
-        requestLocationPermissions()
-        false
-    }
 }
 
 fun Fragment.requestLocationPermissions() {

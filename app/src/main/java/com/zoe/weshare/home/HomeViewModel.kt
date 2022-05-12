@@ -83,11 +83,9 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         val list = gifts.filter {
             it.status != GiftStatusType.CLOSED.code && it.whoLiked.size >= 2 } as MutableList
 
-        fun whoLikeSize(gift: GiftPost): Int = gift.whoLiked.size
-        list.sortByDescending { whoLikeSize(it) }
+        list.sortByDescending { it.whoLiked.size }
 
         _gifts.value = list
-        
     }
 
     private fun getGiftsResult() {

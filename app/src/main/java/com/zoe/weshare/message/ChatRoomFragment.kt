@@ -40,6 +40,7 @@ class ChatRoomFragment : Fragment() {
 
         viewModel.liveMessages.observe(viewLifecycleOwner) {
             adapter.submitList(it) {
+                adapter.notifyDataSetChanged()
                 recyclerView.post { recyclerView.scrollToPosition(adapter.itemCount - 1) }
             }
         }
@@ -65,6 +66,7 @@ class ChatRoomFragment : Fragment() {
         recyclerView = binding.messagesRecyclerView
 
         adapter = ChatRoomAdapter(viewModel, chatRoom)
+
         recyclerView.adapter = adapter
 
         binding.textRoomTargetTitle.text =

@@ -104,11 +104,11 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     companion object DiffCallback : DiffUtil.ItemCallback<MessageItem>() {
         override fun areItemsTheSame(oldItem: MessageItem, newItem: MessageItem): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: MessageItem, newItem: MessageItem): Boolean {
-            return oldItem.id == newItem.id
+            return  oldItem.id == newItem.id
         }
 
         private const val ITEM_VIEW_TYPE_SEND = 0x00

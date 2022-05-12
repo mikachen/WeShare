@@ -15,6 +15,7 @@
         android:name="com.zoe.weshare.map.MapFragment"
         android:label="fragment_map"
         tools:layout="@layout/fragment_map">
+
         <action
             android:id="@+id/action_mapFragment_self"
             app:destination="@id/mapFragment"
@@ -186,7 +187,9 @@
 
     <action
         android:id="@+id/action_global_chatRoomFragment"
-        app:destination="@id/chatRoomFragment" />
+        app:destination="@id/chatRoomFragment"
+        app:enterAnim="@anim/fragment_slide_from_right"
+        app:popExitAnim="@anim/fragment_slide_to_right" />
 
 
     <dialog
@@ -212,7 +215,9 @@
 
     <action
         android:id="@+id/action_global_notificationFragment"
-        app:destination="@id/notificationFragment" />
+        app:destination="@id/notificationFragment"
+        app:enterAnim="@anim/fragment_slide_from_right"
+        app:popExitAnim="@anim/fragment_slide_to_right" />
 
     <fragment
         android:id="@+id/loginFragment"
@@ -254,10 +259,12 @@
         tools:layout="@layout/fragment_events_browse" />
     <action
         android:id="@+id/action_global_eventsBrowseFragment"
-        app:destination="@id/eventsBrowseFragment" />
+        app:destination="@id/eventsBrowseFragment"
+        app:enterAnim="@anim/fragment_slide_from_bottom" />
     <action
         android:id="@+id/action_global_giftsBrowseFragment"
-        app:destination="@id/giftsBrowseFragment" />
+        app:destination="@id/giftsBrowseFragment"
+        app:enterAnim="@anim/fragment_slide_from_bottom" />
     <fragment
         android:id="@+id/eventCheckInFragment"
         android:name="com.zoe.weshare.detail.checkin.EventCheckInFragment"
