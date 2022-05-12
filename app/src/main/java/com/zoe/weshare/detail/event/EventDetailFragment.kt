@@ -1,21 +1,18 @@
 package com.zoe.weshare.detail.event
 
-import android.graphics.Point
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidmads.library.qrgenearator.QRGContents
-import androidmads.library.qrgenearator.QRGEncoder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.google.zxing.WriterException
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
@@ -37,9 +34,23 @@ class EventDetailFragment : Fragment() {
     private lateinit var commentsBoard: RecyclerView
     private lateinit var selectedEvent: EventPost
 
-    var isUserAttend: Boolean = false
-    var isUserVolunteer: Boolean = false
-    var isUserCheckedIn: Boolean = false
+    private val checkInAnimate: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.event_checkin_success
+        )
+    }
+
+    private val sneakyHideAnimate: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.checkin_sneaky_hide
+        )
+    }
+    private var isAnimateShown: Boolean = false
+    private var isUserAttend: Boolean = false
+    private var isUserVolunteer: Boolean = false
+    private var isUserCheckedIn: Boolean = false
 
     val viewModel by viewModels<EventDetailViewModel> { getVmFactory(weShareUser) }
 
@@ -58,6 +69,7 @@ class EventDetailFragment : Fragment() {
                 setupView(it)
                 setupBtn(it)
                 setupLikeBtn(it)
+                viewModel.checkEventStatus(it)
             }
         }
 
@@ -69,14 +81,14 @@ class EventDetailFragment : Fragment() {
 
         viewModel.userAttendType.observe(viewLifecycleOwner) {
             if (it == FIELD_EVENT_ATTENDEE) {
-                viewModel.onSaveOperateLog(
+                viewModel.onSaveLog(
                     logType = LogType.ATTEND_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
                         R.string.log_msg_event_attending, weShareUser!!.name, selectedEvent.title
                     )
                 )
             } else if (it == FIELD_EVENT_VOLUNTEER) {
-                viewModel.onSaveOperateLog(
+                viewModel.onSaveLog(
                     logType = LogType.VOLUNTEER_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
                         R.string.log_msg_event_volunteering, weShareUser!!.name, selectedEvent.title
@@ -102,7 +114,7 @@ class EventDetailFragment : Fragment() {
             viewModel.filterComment()
         }
         viewModel.filteredComments.observe(viewLifecycleOwner) {
-            viewModel.searchUsersProfile(it)
+            viewModel.onGetUsersProfile(it)
         }
 
         viewModel.onProfileSearchComplete.observe(viewLifecycleOwner) {
@@ -142,7 +154,7 @@ class EventDetailFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupCommentBoard(){
+    private fun setupCommentBoard() {
         commentsBoard = binding.commentsRecyclerView
         adapter = EventCommentsAdapter(viewModel, requireContext())
         commentsBoard.adapter = adapter
@@ -154,6 +166,8 @@ class EventDetailFragment : Fragment() {
         isUserVolunteer = event.whoVolunteer.contains(weShareUser!!.uid)
         isUserCheckedIn = event.whoCheckedIn.contains(weShareUser!!.uid)
 
+        setUpAnimation { }
+        buttonStateReset()
 
         binding.apply {
             bindImage(this.images, event.image)
@@ -190,9 +204,10 @@ class EventDetailFragment : Fragment() {
                 event.endTime.toDisplayDateFormat()
             )
 
-            buttonAttend.isChecked = isUserAttend
 
-            buttonVolunteer.isChecked = isUserVolunteer
+            if (isUserCheckedIn) {
+                checkinComplete.visibility = View.VISIBLE
+            }
         }
 
         when (true) {
@@ -217,9 +232,45 @@ class EventDetailFragment : Fragment() {
                 Logger.d("unKnow status")
             }
         }
+
+        if (!isAnimateShown) {
+            if (isUserCheckedIn) {
+                binding.checkinComplete.startAnimation(checkInAnimate)
+            }
+        }
+    }
+
+    fun setUpAnimation(onEnd: () -> Unit) {
+        checkInAnimate.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(p0: Animation?) = Unit
+
+            override fun onAnimationEnd(p0: Animation?) {
+                if (!isAnimateShown) {
+                    isAnimateShown = true
+                    binding.checkinComplete.startAnimation(sneakyHideAnimate)
+                } else {
+                    onEnd()
+                }
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) = Unit
+        })
+
+        sneakyHideAnimate.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(p0: Animation?) = Unit
+
+            override fun onAnimationEnd(p0: Animation?) {
+                binding.checkinComplete.startAnimation(checkInAnimate)
+            }
+
+            override fun onAnimationRepeat(p0: Animation?) = Unit
+        })
     }
 
     private fun setupBtn(event: EventPost) {
+
+        binding.buttonAttend.isChecked = isUserAttend
+        binding.buttonVolunteer.isChecked = isUserVolunteer
 
         binding.buttonSendComment.setOnClickListener {
             onSendComment()
@@ -265,7 +316,9 @@ class EventDetailFragment : Fragment() {
 
     fun attendBtnClick() {
         if (isUserAttend) {
-            showPopupMenu(binding.buttonAttend, 0)
+            if (!isUserCheckedIn) {
+                showPopupMenu(binding.buttonAttend, 0)
+            }
         } else {
             viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
         }
@@ -275,15 +328,22 @@ class EventDetailFragment : Fragment() {
         if (isUserVolunteer) {
             showPopupMenu(binding.buttonVolunteer, 1)
         } else {
-            viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
+
+            // if click volunteer, user must attend event as well
+            if (!isUserAttend) {
+                viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
+                viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
+            } else {
+                viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
+            }
         }
     }
 
-    private fun showPopupMenu(view: View, adjustCode: Int) {
+    private fun showPopupMenu(view: View, condition: Int) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.event_more_menu, popupMenu.menu)
 
-        when (adjustCode) {
+        when (condition) {
 
             0 -> {
                 popupMenu.menu.removeItem(R.id.action_cancel_volunteer)
@@ -293,6 +353,11 @@ class EventDetailFragment : Fragment() {
 
             1 -> {
                 popupMenu.menu.removeItem(R.id.action_cancel_attend)
+
+                if (isUserCheckedIn) {
+                    popupMenu.menu.removeItem(R.id.action_cancel_volunteer)
+                    popupMenu.menu.removeItem(R.id.action_check_in)
+                }
             }
         }
 
@@ -314,47 +379,51 @@ class EventDetailFragment : Fragment() {
                             )
                         }
 
-                        else -> { Logger.d("unKnow")}
+                        else -> {
+                            Logger.d("unKnow")
+                        }
                     }
                 }
 
                 R.id.action_enter_chatroom -> viewModel.getChatRoomInfo()
 
-                R.id.action_cancel_volunteer -> {}
+                R.id.action_cancel_volunteer -> {
+                    viewModel.cancelAttendEvent(FIELD_EVENT_VOLUNTEER)
 
-                R.id.action_cancel_attend -> {}
+                    binding.buttonVolunteer.setOnCheckedChangeListener { btn, checked ->
+                        btn.isChecked = checked
+                    }
+                }
+
+                R.id.action_cancel_attend -> {
+                    if (isUserVolunteer) {
+                        viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
+                        viewModel.cancelAttendEvent(FIELD_EVENT_VOLUNTEER)
+
+
+                    } else {
+                        viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
+                    }
+
+                }
             }
             false
         }
         popupMenu.show()
     }
 
-    fun generateQrcode() {
-
-        val display = (activity as MainActivity).windowManager.defaultDisplay
-
-        val point = Point()
-        display.getSize(point)
-
-        val width: Int = point.x
-        val height: Int = point.y
-
-        // generating dimension from width and height.
-        var dimen = if (width < height) width else height
-        dimen = dimen * 3 / 4
-
-        val qrgEncoder = QRGEncoder("5PbKfTLSRUy2i17UThFY", null, QRGContents.Type.TEXT, dimen)
-        try {
-
-            val bitmap = qrgEncoder.encodeAsBitmap()
-
-            binding.images.setImageBitmap(bitmap)
-        } catch (e: WriterException) {
-            // this method is called for
-            // exception handling.
-            Logger.e("error: ${e.toString()}")
+    fun buttonStateReset() {
+        binding.buttonAttend.setOnCheckedChangeListener { btn, checked ->
+            btn.isChecked = checked
         }
+
+        binding.buttonVolunteer.setOnCheckedChangeListener { btn, checked ->
+            btn.isChecked = checked
+        }
+
+
     }
+
 
     private fun onSendComment() {
         val message = binding.editCommentBox.text
@@ -393,16 +462,20 @@ class EventDetailFragment : Fragment() {
         }
 
         binding.buttonAdditionHeart1.setOnClickListener {
+            it.startAnimation(scaleAnimation)
+
             playCreditScene()
         }
 
-        binding.buttonAdditionHeart2.setOnClickListener {
+        binding.buttonLike.setOnClickListener {
+            it.startAnimation(scaleAnimation)
+
             playCreditScene()
         }
     }
 
     private fun playCreditScene() {
-        if (binding.buttonAdditionHeart2.isChecked &&
+        if (binding.buttonLike.isChecked &&
             binding.buttonAdditionHeart1.isChecked &&
             binding.buttonPressLike.isChecked
         ) {
@@ -422,10 +495,11 @@ class EventDetailFragment : Fragment() {
             }
 
             override fun onFinish() {
-                binding.textCountdownTime.text = "活動"+state
+                binding.textCountdownTime.text = "活動" + state
             }
         }
     }
+
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).window.setSoftInputMode(

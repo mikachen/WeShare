@@ -76,7 +76,7 @@ class DiffCall : DiffUtil.ItemCallback<ChatRoom>() {
         oldItem: ChatRoom,
         newItem: ChatRoom,
     ): Boolean {
-        return oldItem === newItem
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(

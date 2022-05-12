@@ -6,15 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.GoogleMap
+import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.Cards
-import com.zoe.weshare.data.EventPost
-import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.ext.toDisplayDateFormat
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.Const
+import com.zoe.weshare.util.Const.PATH_EVENT_POST
+import com.zoe.weshare.util.Const.PATH_GIFT_POST
+import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,7 +25,8 @@ import kotlinx.coroutines.launch
 const val GIFT_CARD = 0
 const val EVENT_CARD = 1
 
-class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
+class MapViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
+    ViewModel() {
 
     var googleMap: GoogleMap? = null
     var isPermissionGranted: Boolean = false
@@ -93,7 +96,8 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                     eventTime = "",
                     postType = GIFT_CARD,
                     image = element.image,
-                    postLocation = element.location
+                    postLocation = element.location,
+                    whoLiked = element.whoLiked
                 )
                 cardsViewList.add(newCard)
             }
@@ -113,7 +117,8 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                     ),
                     postType = EVENT_CARD,
                     image = element.image,
-                    postLocation = element.location
+                    postLocation = element.location,
+                    whoLiked = element.whoLiked
                 )
                 cardsViewList.add(newCard)
             }
@@ -183,6 +188,88 @@ class MapViewModel(private val repository: WeShareRepository) : ViewModel() {
                 }
             }
             _refreshStatus.value = false
+        }
+    }
+
+    fun onPostLikePressed(card: Cards, isUserLiked: Boolean) {
+        val collection = when (card.postType) {
+            GIFT_CARD -> PATH_GIFT_POST
+            EVENT_CARD -> PATH_EVENT_POST
+            else -> {
+                "unknow"
+            }
+        }
+
+        val docId = card.id
+
+        if (!isUserLiked) {
+            sendLike(collection, docId)
+        } else {
+            cancelLike(collection, docId)
+        }
+    }
+
+    private fun sendLike(collection: String, doc: String) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            when (
+                val result = repository.updateFieldValue(
+                    collection = collection,
+                    docId = doc,
+                    field = Const.FIELD_WHO_LIKED,
+                    value = FieldValue.arrayUnion(userInfo!!.uid)
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = Util.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    private fun cancelLike(collection: String, doc: String) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            when (
+                val result = repository.updateFieldValue(
+                    collection = collection,
+                    docId = doc,
+                    field = Const.FIELD_WHO_LIKED,
+                    value = FieldValue.arrayRemove(userInfo!!.uid)
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = Util.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
         }
     }
 

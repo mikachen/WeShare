@@ -157,8 +157,6 @@ class GiftDetailFragment : Fragment() {
                     binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
                 }
                 GiftStatusType.CLOSED.code -> {
-                    binding.imageLogoStatus.visibility = View.VISIBLE
-                    binding.imageLogoStatus.setBackgroundResource(R.drawable.status_close_title_logo)
                     binding.textStatus.text = GiftStatusType.CLOSED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
                 }
@@ -236,24 +234,25 @@ class GiftDetailFragment : Fragment() {
         scaleAnimation.interpolator = bounceInterpolator
 
         binding.buttonPressLike.setOnClickListener {
-
             it.startAnimation(scaleAnimation)
+            playCreditScene()
 
             viewModel.onPostLikePressed(selectedGift.id)
-            playCreditScene()
         }
 
         binding.buttonAdditionHeart1.setOnClickListener {
+            it.startAnimation(scaleAnimation)
             playCreditScene()
         }
 
-        binding.buttonAdditionHeart2.setOnClickListener {
+        binding.buttonLike.setOnClickListener {
+            it.startAnimation(scaleAnimation)
             playCreditScene()
         }
     }
 
     private fun playCreditScene() {
-        if (binding.buttonAdditionHeart2.isChecked &&
+        if (binding.buttonLike.isChecked &&
             binding.buttonAdditionHeart1.isChecked &&
             binding.buttonPressLike.isChecked
         ) {

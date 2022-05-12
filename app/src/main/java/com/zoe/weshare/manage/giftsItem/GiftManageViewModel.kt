@@ -25,6 +25,13 @@ class GiftManageViewModel(
     val comments: LiveData<List<Comment>>
         get() = _comments
 
+    private val _allGiftsResult = MutableLiveData<List<GiftPost>>()
+    val allGiftsResult: LiveData<List<GiftPost>>
+        get() = _allGiftsResult
+
+    var onFilterEmpty = MutableLiveData<Boolean>()
+    var firstEntryEmpty = MutableLiveData<Boolean>()
+
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -44,10 +51,6 @@ class GiftManageViewModel(
     val onCommentsShowing: LiveData<GiftPost?>
         get() = _onCommentsShowing
 
-    private val _giftsDisplay = MutableLiveData<List<GiftPost>>()
-    val giftsDisplay: LiveData<List<GiftPost>>
-        get() = _giftsDisplay
-
     private val _abandonStatus = MutableLiveData<LoadApiStatus>()
     val abandonStatus: LiveData<LoadApiStatus>
         get() = _abandonStatus
@@ -56,27 +59,23 @@ class GiftManageViewModel(
     val saveLogComplete: LiveData<LoadApiStatus>
         get() = _saveLogComplete
 
-    var gifts = listOf<GiftPost>()
+    init {
+        getUserAllGiftsPosts()
+    }
 
-    fun getUserAllGiftsPosts(position: Int) {
+    fun getUserAllGiftsPosts() {
         coroutineScope.launch {
             _searchGiftsStatus.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.getUserAllGiftsPosts(
-                    collection = PATH_GIFT_POST,
-                    uid = userInfo!!.uid
-                )
+                val result = repository.getUserAllGiftsPosts(uid = userInfo!!.uid)
             ) {
 
                 is Result.Success -> {
                     _error.value = null
-
-                    gifts = result.data
-
-                    filteringGift(position)
-
                     _searchGiftsStatus.value = LoadApiStatus.DONE
+
+                    _allGiftsResult.value = result.data?: emptyList()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -95,30 +94,11 @@ class GiftManageViewModel(
         }
     }
 
-    fun filteringGift(position: Int) {
-        when (position) {
-
-            0 -> _giftsDisplay.value = gifts
-
-            1 -> {
-                _giftsDisplay.value = gifts.filter { it.status == GiftStatusType.OPENING.code }
-            }
-
-            2 -> {
-                _giftsDisplay.value = gifts.filter { it.status == GiftStatusType.CLOSED.code }
-            }
-
-            3 -> {
-                _giftsDisplay.value = gifts.filter { it.status == GiftStatusType.ABANDONED.code }
-            }
-        }
-    }
-
-    fun userCheckWhoRequest(gift: GiftPost) {
+    fun onNavigateToRequest(gift: GiftPost) {
         _onCommentsShowing.value = gift
     }
 
-    fun showCommentsComplete() {
+    fun navigateToRequestComplete() {
         _onCommentsShowing.value = null
     }
 
@@ -139,6 +119,7 @@ class GiftManageViewModel(
                     _abandonStatus.value = LoadApiStatus.DONE
 
                     onSaveAbandonGiftLog(selectedGift)
+                    _onAlterMsgShowing.value = null
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -200,7 +181,7 @@ class GiftManageViewModel(
         }
     }
 
-    fun refreshFilterView(currentTabPosition: Int) {
-        getUserAllGiftsPosts(currentTabPosition)
+    fun refreshFilterView() {
+        getUserAllGiftsPosts()
     }
 }

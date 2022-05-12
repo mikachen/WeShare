@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -25,16 +27,25 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.MainActivity
+import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.requestLocationPermissions
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostGiftFragment : Fragment() {
 
     private val PICK_IMAGE_REQUEST = 151
     private lateinit var filePath: Uri
+
+    private val whatToPostAnimate: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.event_checkin_success
+        )
+    }
 
     private lateinit var binding: FragmentPostGiftBinding
 
@@ -64,16 +75,22 @@ class PostGiftFragment : Fragment() {
             binding.buttonImagePreviewHolder.setImageURI(it)
         }
 
-        setupBtn()
+        setupViewNBtn()
         setupDropdownMenu()
 
         return binding.root
     }
 
-    private fun setupBtn() {
+    private fun setupViewNBtn() {
+        whatToPostAnimate.duration =500
+
+        binding.titleWhatToPost.startAnimation(whatToPostAnimate)
+
         binding.nextButton.setOnClickListener {
-            if (checkLocationPermission()) {
+            if (checkPermission()) {
                 dataCollecting()
+            }else{
+                requestPermissions()
             }
         }
         binding.buttonImagePreviewHolder.setOnClickListener {
@@ -115,10 +132,10 @@ class PostGiftFragment : Fragment() {
 
     private fun dataCollecting() {
 
-        val title = binding.editTitle.text.toString()
-        val sort = binding.dropdownMenuSort.text.toString()
-        val condition = binding.dropdownMenuCondition.text.toString()
-        val description = binding.editDescription.text.toString()
+        val title = binding.editTitle.text.toString().trim()
+        val sort = binding.dropdownMenuSort.text.toString().trim()
+        val condition = binding.dropdownMenuCondition.text.toString().trim()
+        val description = binding.editDescription.text.toString().trim()
 
         when (true) {
             title.isEmpty() ->
@@ -177,28 +194,20 @@ class PostGiftFragment : Fragment() {
         binding.dropdownMenuCondition.setAdapter(conditionAdapter)
     }
 
-    fun checkLocationPermission(): Boolean {
+    private fun checkPermission(): Boolean {
         // 檢查權限
-        return if (ActivityCompat.checkSelfPermission(
+        return ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            true
-        } else {
-
-            // 詢問要求獲取權限
-            requestPermissions()
-            false
-        }
     }
 
-    fun requestPermissions() {
-
+    private fun requestPermissions() {
         Dexter.withContext(requireContext())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                    dataCollecting()
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) {

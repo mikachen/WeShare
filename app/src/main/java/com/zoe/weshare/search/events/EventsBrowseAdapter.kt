@@ -13,8 +13,8 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayDateFormat
 import java.util.*
 
-class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
-    ListAdapter<EventPost, EventsAllAdapter.AllEventsViewHolder>(DiffCallback) {
+class EventsBrowseAdapter(private val onClickListener: EventsAllOnClickListener) :
+    ListAdapter<EventPost, EventsBrowseAdapter.AllEventsViewHolder>(DiffCallback) {
 
     private var unfilteredList = listOf<EventPost>()
 
@@ -66,7 +66,7 @@ class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
 
     companion object DiffCallback : DiffUtil.ItemCallback<EventPost>() {
         override fun areItemsTheSame(oldItem: EventPost, newItem: EventPost): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: EventPost, newItem: EventPost): Boolean {
@@ -79,7 +79,7 @@ class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
         submitList(list)
     }
 
-    fun filter(query: CharSequence?, viewModel: EventsAllViewModel) {
+    fun filter(query: CharSequence?, viewModel: EventsBrowseViewModel) {
         val list = mutableListOf<EventPost>()
 
         // perform the data filtering
@@ -99,13 +99,11 @@ class EventsAllAdapter(private val onClickListener: EventsAllOnClickListener) :
                             )
                 }
             )
-
-            viewModel.onSearchEmpty.value = list.isEmpty()
         } else {
             list.addAll(unfilteredList)
-            viewModel.onSearchEmpty.value = false
         }
 
+        viewModel.onSearchEmpty.value = list.isEmpty()
         submitList(list)
     }
 }

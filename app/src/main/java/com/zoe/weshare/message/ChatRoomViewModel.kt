@@ -29,6 +29,10 @@ class ChatRoomViewModel(
     val newMessage: LiveData<Comment>
         get() = _newMessage
 
+    private var _navigateToTargetUser = MutableLiveData<UserInfo>()
+    val navigateToTargetUser: LiveData<UserInfo>
+        get() = _navigateToTargetUser
+
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -111,5 +115,16 @@ class ChatRoomViewModel(
         _chatRoom.value = chatRoom
 
         getLiveMessageResult(chatRoom)
+    }
+
+    fun onNavigateToTargetProfile(uid: String) {
+        val target = UserInfo()
+        target.uid = uid
+
+        _navigateToTargetUser.value = target
+    }
+
+    fun navigateToProfileComplete() {
+        _navigateToTargetUser.value = null
     }
 }

@@ -1,7 +1,6 @@
 package com.zoe.weshare.manage.giftsItem
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,12 +15,14 @@ import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.Util.getStringWithStrParm
 
-class GiftItemsAdapter(
+class GiftManageAdapter(
     val viewModel: GiftManageViewModel,
     private val onClickListener: OnClickListener,
-) : ListAdapter<GiftPost, GiftItemsAdapter.GiftViewHolder>(DiffCallback) {
+) : ListAdapter<GiftPost, GiftManageAdapter.GiftViewHolder>(DiffCallback) {
 
     val viewBinderHelper = ViewBinderHelper()
+    private var unfilteredList = listOf<GiftPost>()
+    var firstEntry: Boolean = true
 
     class GiftViewHolder(var binding: ItemGiftManageBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -41,13 +42,10 @@ class GiftItemsAdapter(
                     binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
                 }
                 GiftStatusType.CLOSED.code -> {
-                    binding.buttonAbandon.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.CLOSED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
                 }
                 GiftStatusType.ABANDONED.code -> {
-                    binding.buttonAbandon.visibility = View.GONE
-                    binding.buttonAbandon.visibility = View.GONE
                     binding.textStatus.text = GiftStatusType.ABANDONED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_dark_grey)
                 }
@@ -77,7 +75,13 @@ class GiftItemsAdapter(
         val gift = getItem(position)
 
         viewBinderHelper.setOpenOnlyOne(true)
-        viewBinderHelper.bind(holder.binding.swipeLayout, gift.id)
+
+        if (gift.status == GiftStatusType.OPENING.code) {
+            viewBinderHelper.bind(holder.binding.swipeLayout, gift.id)
+            holder.binding.swipeLayout.setLockDrag(false)
+        } else {
+            holder.binding.swipeLayout.setLockDrag(true)
+        }
 
         gift?.let {
             holder.bind(gift)
@@ -91,7 +95,7 @@ class GiftItemsAdapter(
             }
 
             holder.binding.btnCheckWhoRequest.setOnClickListener {
-                viewModel.userCheckWhoRequest(gift)
+                viewModel.onNavigateToRequest(gift)
             }
         }
     }
@@ -102,11 +106,52 @@ class GiftItemsAdapter(
 
     companion object DiffCallback : DiffUtil.ItemCallback<GiftPost>() {
         override fun areItemsTheSame(oldItem: GiftPost, newItem: GiftPost): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: GiftPost, newItem: GiftPost): Boolean {
             return oldItem.id == newItem.id
+        }
+    }
+
+    fun modifyList(list: List<GiftPost>, position: Int) {
+        unfilteredList = list
+        filter(position)
+    }
+
+    fun filter(position: Int) {
+        val list = mutableListOf<GiftPost>()
+
+        when (position) {
+
+            0 -> {
+                list.addAll(unfilteredList.filter { it.status == GiftStatusType.OPENING.code })
+            }
+
+            1 -> {
+                list.addAll(unfilteredList.filter { it.status == GiftStatusType.CLOSED.code })
+            }
+
+            2 -> {
+                list.addAll(unfilteredList.filter { it.status == GiftStatusType.ABANDONED.code })
+            }
+
+            3 -> {
+                list.addAll(unfilteredList)
+            }
+        }
+
+        //to enhance user experience
+        if (firstEntry) {
+            firstEntry = false
+            if (list.isEmpty()) {
+                viewModel.firstEntryEmpty.value = true
+            }else{
+                submitList(list)
+            }
+        } else {
+            viewModel.onFilterEmpty.value = list.isEmpty()
+            submitList(list)
         }
     }
 }

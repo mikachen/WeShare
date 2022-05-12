@@ -1,6 +1,8 @@
 package com.zoe.weshare.search.events
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +13,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.databinding.FragmentEventsAllBinding
+import com.zoe.weshare.databinding.FragmentEventsBrowseBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.hideKeyboard
 
-class EventsAllFragment : Fragment() {
+class EventsBrowseFragment : Fragment() {
 
-    lateinit var binding: FragmentEventsAllBinding
-    lateinit var adapter: EventsAllAdapter
-    lateinit var manager: GridLayoutManager
-    lateinit var recyclerView: RecyclerView
+    private lateinit var binding: FragmentEventsBrowseBinding
+    private lateinit var adapter: EventsBrowseAdapter
+    private lateinit var manager: GridLayoutManager
+    private lateinit var recyclerView: RecyclerView
 
-    val viewModel by viewModels<EventsAllViewModel> { getVmFactory() }
+    private var onNavigateBack: Boolean = false
+    private val viewModel by viewModels<EventsBrowseViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,10 +33,11 @@ class EventsAllFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentEventsAllBinding.inflate(inflater, container, false)
+        binding = FragmentEventsBrowseBinding.inflate(inflater, container, false)
 
         viewModel.events.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
+            onNavigateBack = false
         }
 
         viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
@@ -62,10 +67,11 @@ class EventsAllFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun setupView() {
 
-        adapter = EventsAllAdapter(
-            EventsAllAdapter.EventsAllOnClickListener { selectedEvent ->
+        adapter = EventsBrowseAdapter(
+            EventsBrowseAdapter.EventsAllOnClickListener { selectedEvent ->
                 viewModel.onNavigateEventDetails(selectedEvent)
             }
         )
@@ -74,7 +80,13 @@ class EventsAllFragment : Fragment() {
         recyclerView = binding.recyclerview
 
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = manager
+        manager.also { recyclerView.layoutManager = it }
+
+        recyclerView.setOnTouchListener { view, event ->
+            binding.eventsSearchview.isIconified = true
+            view.hideKeyboard()
+            false
+        }
 
         binding.eventsSearchview.setOnClickListener {
             binding.eventsSearchview.isIconified = false
@@ -86,8 +98,11 @@ class EventsAllFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText, viewModel)
-
+                newText?.let {
+                    if (!onNavigateBack) {
+                        adapter.filter(newText, viewModel)
+                    }
+                }
                 return true
             }
         })

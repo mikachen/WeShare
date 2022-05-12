@@ -13,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:lottie_autoPlay="true"
+        android:scaleY="1.5"
         app:lottie_fileName="full_window_flying_heart.json"
         app:lottie_loop="true"
         app:lottie_speed="1"

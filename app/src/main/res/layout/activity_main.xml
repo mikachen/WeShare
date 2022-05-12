@@ -174,6 +174,8 @@
             android:layout_marginBottom="4dp"
             android:elevation="2dp"
             android:visibility="gone"
+            android:scaleX="0.9"
+            android:scaleY="0.9"
             app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toTopOf="@id/layout_fab_event"
             app:layout_constraintEnd_toEndOf="parent"
@@ -206,7 +208,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="4dp"
-                    android:text="刊登贈品"
+                    android:text="@string/profile_gift_post_count_string"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -221,6 +223,8 @@
             android:layout_marginBottom="4dp"
             android:elevation="2dp"
             android:visibility="gone"
+            android:scaleX="0.9"
+            android:scaleY="0.9"
             app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toTopOf="@id/fab_main"
             app:layout_constraintEnd_toEndOf="parent"
@@ -256,7 +260,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="4dp"
-                    android:text="刊登活動"
+                    android:text="@string/profile_event_post_count_string"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 

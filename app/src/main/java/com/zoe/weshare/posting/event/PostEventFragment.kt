@@ -1,19 +1,32 @@
 package com.zoe.weshare.posting.event
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionDeniedResponse
+import com.karumi.dexter.listener.PermissionGrantedResponse
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostEventBinding
@@ -26,6 +39,14 @@ class PostEventFragment : Fragment() {
     private lateinit var filePath: Uri
 
     private lateinit var binding: FragmentPostEventBinding
+
+    private val whatToPostAnimate: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.event_checkin_success
+        )
+    }
+
     val viewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
@@ -56,16 +77,24 @@ class PostEventFragment : Fragment() {
             binding.buttonImagePreviewHolder.setImageURI(it)
         }
 
-        setupBtn()
+        setupViewNBtn()
         setupDropdownMenu()
         setupDatePicker()
 
         return binding.root
     }
 
-    private fun setupBtn() {
+    private fun setupViewNBtn() {
+        whatToPostAnimate.duration = 500
+
+        binding.titleWhatToPost.startAnimation(whatToPostAnimate)
+
         binding.nextButton.setOnClickListener {
-            dataCollecting()
+            if (checkPermission()) {
+                dataCollecting()
+            }else{
+                requestPermissions()
+            }
         }
 
         binding.buttonImagePreviewHolder.setOnClickListener {
@@ -108,10 +137,10 @@ class PostEventFragment : Fragment() {
 
     private fun dataCollecting() {
 
-        val title = binding.editTitle.text.toString()
-        val sort = binding.dropdownMenuSort.text.toString()
-        val volunteerNeeds = binding.editVolunteer.text.toString()
-        val description = binding.editDescription.text.toString()
+        val title = binding.editTitle.text.toString().trim()
+        val sort = binding.dropdownMenuSort.text.toString().trim()
+        val volunteerNeeds = binding.editVolunteer.text.toString().trim()
+        val description = binding.editDescription.text.toString().trim()
         val time = binding.editDatePicker.text.toString()
 
         when (true) {
@@ -183,6 +212,51 @@ class PostEventFragment : Fragment() {
         binding.editDatePicker.setOnClickListener {
             dateRangePicker.show(requireActivity().supportFragmentManager, "date_picker")
         }
+    }
+
+    private fun checkPermission(): Boolean {
+        // 檢查權限
+        return ActivityCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermissions() {
+        Dexter.withContext(requireContext())
+            .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+            .withListener(object : PermissionListener {
+                override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                    dataCollecting()
+                }
+
+                override fun onPermissionDenied(response: PermissionDeniedResponse) {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("請開啟位置權限")
+                        .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
+                        .setPositiveButton("確定") { _, _ ->
+                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                            startActivityForResult(intent, 111)
+                        }
+                        .setNegativeButton("取消") { _, _ -> }
+                        .show()
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permission: PermissionRequest?,
+                    token: PermissionToken?,
+                ) {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("請開啟位置權限")
+                        .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
+                        .setPositiveButton("確定") { _, _ ->
+                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                            startActivityForResult(intent, 111)
+                        }
+                        .setNegativeButton("取消") { _, _ -> }
+                        .show()
+                }
+            }).check()
     }
 
     override fun onResume() {

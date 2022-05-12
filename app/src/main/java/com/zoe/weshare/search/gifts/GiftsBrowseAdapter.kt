@@ -1,5 +1,6 @@
 package com.zoe.weshare.search.gifts
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,8 +11,8 @@ import com.zoe.weshare.databinding.ItemHotGiftGridBinding
 import com.zoe.weshare.ext.bindImage
 import java.util.*
 
-class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
-    ListAdapter<GiftPost, GiftsAllAdapter.AllGiftsViewHolder>(DiffCallback) {
+class GiftsBrowseAdapter(private val onClickListener: GiftsALLOnClickListener) :
+    ListAdapter<GiftPost, GiftsBrowseAdapter.AllGiftsViewHolder>(DiffCallback) {
 
     private var unfilteredList = listOf<GiftPost>()
 
@@ -56,7 +57,7 @@ class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
 
     companion object DiffCallback : DiffUtil.ItemCallback<GiftPost>() {
         override fun areItemsTheSame(oldItem: GiftPost, newItem: GiftPost): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: GiftPost, newItem: GiftPost): Boolean {
@@ -69,7 +70,7 @@ class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
         submitList(list)
     }
 
-    fun filter(query: CharSequence?, viewModel: GiftsAllViewModel) {
+    fun filter(query: CharSequence?, viewModel: GiftsBrowseViewModel) {
         val list = mutableListOf<GiftPost>()
 
         // perform the data filtering
@@ -82,13 +83,11 @@ class GiftsAllAdapter(private val onClickListener: GiftsALLOnClickListener) :
                             .contains(query.toString().toLowerCase(Locale.getDefault()))
                 }
             )
-
-            viewModel.onSearchEmpty.value = list.isEmpty()
         } else {
             list.addAll(unfilteredList)
-            viewModel.onSearchEmpty.value = false
         }
 
+        viewModel.onSearchEmpty.value = list.isEmpty()
         submitList(list)
     }
 }

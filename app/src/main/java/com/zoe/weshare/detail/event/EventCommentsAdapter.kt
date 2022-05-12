@@ -16,6 +16,7 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getTimeAgoString
+import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 
 class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Context) :
@@ -66,9 +67,17 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
                 viewModel.onNavigateToTargetProfile(comment.uid)
             }
 
+            if(comment.uid == weShareUser!!.uid){
+                binding.moreBtn.visibility = View.INVISIBLE
+            }else{
+                binding.moreBtn.visibility = View.VISIBLE
+            }
+
             if (viewModel.onProfileSearchComplete.value == 0) {
+
                 if (viewModel.profileList.isNotEmpty()) {
                     val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
+
                     speaker?.let {
                         bindImage(binding.imageProfileAvatar, speaker.image)
                         binding.textProfileName.text = speaker.name
@@ -137,7 +146,7 @@ class DiffCall : DiffUtil.ItemCallback<Comment>() {
         oldItem: Comment,
         newItem: Comment,
     ): Boolean {
-        return oldItem === newItem
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(

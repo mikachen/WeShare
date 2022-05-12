@@ -242,12 +242,12 @@
                     android:text=""
                     android:textOff=""
                     android:textOn=""
-                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart2"
+                    app:layout_constraintEnd_toStartOf="@id/button_like"
                     app:layout_constraintStart_toEndOf="@id/button_press_like"
                     app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
                 <ToggleButton
-                    android:id="@+id/button_addition_heart2"
+                    android:id="@+id/button_like"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/button_toggle_like"
@@ -270,7 +270,7 @@
                     tools:text="3人說讚" />
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/layout_request_tag"
+                    android:id="@+id/layout_status_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="4dp"
@@ -288,23 +288,6 @@
                         android:textSize="18sp"
                         tools:text="已結案" />
                 </androidx.cardview.widget.CardView>
-
-
-                <ImageView
-                    android:id="@+id/image_logo_status"
-                    android:layout_width="0dp"
-                    android:layout_height="80dp"
-                    android:layout_marginHorizontal="30dp"
-                    android:layout_marginBottom="30dp"
-                    android:rotation="-15"
-                    android:scaleType="fitCenter"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="@id/title_gift_description"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:src="@drawable/status_close_title_logo"
-                    tools:visibility="visible" />
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -330,7 +313,7 @@
                     android:id="@+id/title_people_who_requested"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_who_requested"
+                    android:text="@string/requested_comments"
                     android:textColor="@color/black"
                     android:textSize="20sp"
                     android:textStyle="bold"

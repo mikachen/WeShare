@@ -11,7 +11,9 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
+import com.zoe.weshare.ext.imageFileTimeFormat
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.Const.FIELD_LOG_TYPE
 import com.zoe.weshare.util.Const.FIELD_NOTIFICATION_READ
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
@@ -738,7 +740,8 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
         FirebaseFirestore.getInstance()
             .collection(PATH_LOG)
-            .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+            .whereLessThanOrEqualTo(FIELD_LOG_TYPE,5)
+//            .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
             .limit(50)
             .addSnapshotListener { snapshot, exception ->
 
@@ -760,14 +763,11 @@ object WeShareRemoteDataSource : WeShareDataSource {
         return liveData
     }
 
-    override suspend fun getUserAllGiftsPosts(
-        collection: String,
-        uid: String,
-    ): Result<List<GiftPost>> =
+    override suspend fun getUserAllGiftsPosts(uid: String): Result<List<GiftPost>> =
         suspendCoroutine { continuation ->
 
             FirebaseFirestore.getInstance()
-                .collection(collection)
+                .collection(PATH_GIFT_POST)
                 .whereEqualTo("author.uid", uid)
                 .get()
                 .addOnCompleteListener { task ->
@@ -780,7 +780,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                             list.add(log)
                         }
 
-                        Logger.i(collection + "getUserHistoryPosts: $list")
+                        Logger.i("getUserAllGiftsPosts: $list")
 
                         continuation.resume(Result.Success(list))
                     } else {
@@ -789,6 +789,46 @@ object WeShareRemoteDataSource : WeShareDataSource {
                             Logger.w(
                                 "[${this::class.simpleName}] " +
                                     "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>> =
+        suspendCoroutine { continuation ->
+
+            FirebaseFirestore.getInstance()
+                .collection(PATH_EVENT_POST)
+                .whereEqualTo("author.uid", uid)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<EventPost>()
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val log = document.toObject(EventPost::class.java)
+                            list.add(log)
+                        }
+
+                        Logger.i("getUserAllEventsPosts: $list")
+
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                        "Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))
@@ -1012,7 +1052,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         suspendCoroutine { continuation ->
 
             val createdTime = Calendar.getInstance().timeInMillis
-            val formatFileName = weShareUser!!.uid + "/" + createdTime.toDisplayFormat()
+            val formatFileName = weShareUser!!.uid + "/" + createdTime.imageFileTimeFormat()
 
             val storageRef = FirebaseStorage.getInstance()
                 .reference.child("images/$formatFileName")

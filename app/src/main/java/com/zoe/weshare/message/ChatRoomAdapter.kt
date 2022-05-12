@@ -64,7 +64,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
             }
             is ReceiveViewHolder -> {
                 (itemType as MessageItem.OnReceiveSide).message?.let {
-                    holder.bind(it, targetUsersList, roomType)
+                    holder.bind(it, targetUsersList, roomType, viewModel)
                 }
             }
         }
@@ -80,9 +80,14 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, usersList: List<UserInfo>, roomType: Int) {
+        fun bind(comment: Comment, usersList: List<UserInfo>, roomType: Int, viewModel: ChatRoomViewModel) {
             binding.textMessage.text = comment.content
             binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
+
+            binding.baseTargetImage.setOnClickListener {
+                viewModel.onNavigateToTargetProfile(comment.uid)
+            }
+
 
             if (usersList.isNotEmpty()) {
                 val speaker = usersList.single { it.uid == comment.uid }
@@ -99,11 +104,11 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     companion object DiffCallback : DiffUtil.ItemCallback<MessageItem>() {
         override fun areItemsTheSame(oldItem: MessageItem, newItem: MessageItem): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: MessageItem, newItem: MessageItem): Boolean {
-            return oldItem.id == newItem.id
+            return  oldItem.id == newItem.id
         }
 
         private const val ITEM_VIEW_TYPE_SEND = 0x00

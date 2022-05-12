@@ -64,19 +64,25 @@
     <string name="chatroom_send_a_message">輸入訊息</string>
 
 
-    //下架Alert窗
+    //贈品下架Alert窗
     <string name="abandoned_title">您確定要下架\u0022%s\u0022嗎?</string>
     <string name="abandoned_message">下架後將無法復原或操作派發!</string>
     <string name="abandoned_yes">確認下架</string>
     <string name="abandoned_no">取消下架</string>
     <string name="give_away_gift">派發</string>
 
+    //活動強制結束Alert窗
+    <string name="force_end_title">您確定要強制結束\u0022%s\u0022嗎?</string>
+    <string name="force_end_message">操作將無法復原!</string>
+    <string name="force_end_yes">確認結束</string>
+    <string name="force_end_no">取消</string>
+
     //送禮物Alert窗
     <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
     <string name="send_gift_message">確認送出後將不可再作修改!</string>
     <string name="confirm_yes">確認</string>
     <string name="confirm_no">取消</string>
-    <string name="title_who_requested">當前索取人</string>
+    <string name="requested_comments">索取人留言</string>
 
     //Log Messages
     <string name="log_msg_post_gift">&lt;b>%1s&lt;/b> 刊登了贈品：%2s</string>
@@ -92,6 +98,7 @@
     <string name="log_msg_following_someone">&lt;b>%1s&lt;/b>追蹤了%2s！</string>
     <string name="log_msg_event_check_in">&lt;b>%1s&lt;/b>已於活動：%2s 完成志工簽到！</string>
     <string name="log_msg_receive_gift">&lt;b>%1s&lt;/b> 已成功將贈品：%2s 送出給您，恭喜您！</string>
+    <string name="log_msg_force_end_event">&lt;b>%1s&lt;/b> 強制關閉了活動：%2s</string>
 
 
     //error handle
@@ -136,8 +143,8 @@
     <string name="profile_follower_string">粉絲數</string>
     <string name="profile_gift_sent_count_string">贈品送出</string>
     <string name="profile_gift_post_count_string">贈品刊登</string>
-    <string name="profile_event_post_count_string">發起活動</string>
-    <string name="profile_volunteer_count_string">志工參與</string>
+    <string name="profile_event_post_count_string">活動刊登</string>
+    <string name="profile_event_attend_count_string">活動參與</string>
     <string name="profile_defult_zero_count">-</string>
 
 
@@ -147,7 +154,16 @@
     <string name="countdown_time4">倒數 %02d 秒</string>
 
     <string name="block_this_person_title">確定要封鎖用戶：%s？</string>
-    <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何頻論與刊登。</string>
+    <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何評論與刊登。</string>
+
+    <string name="gift_status_opening">開放中</string>
+    <string name="gift_status_closed">已結案</string>
+    <string name="gift_status_abandoned">已下架</string>
+
+    <string name="event_status_waiting">等待中</string>
+    <string name="event_status_opening">進行中</string>
+    <string name="event_status_ended">已結束</string>
+    <string name="status_all">全部</string>
 
 
 </resources>

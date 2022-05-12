@@ -1,6 +1,8 @@
 package com.zoe.weshare.search.gifts
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +13,21 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.databinding.FragmentGiftsAllBinding
+import com.zoe.weshare.databinding.FragmentGiftsBrowseBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.hideKeyboard
 
-class GiftsAllFragment : Fragment() {
 
-    lateinit var binding: FragmentGiftsAllBinding
-    lateinit var adapter: GiftsAllAdapter
-    lateinit var manager: GridLayoutManager
-    lateinit var recyclerView: RecyclerView
+class GiftsBrowseFragment : Fragment() {
 
-    val viewModel by viewModels<GiftsAllViewModel> { getVmFactory() }
+    private lateinit var binding: FragmentGiftsBrowseBinding
+    private lateinit var adapter: GiftsBrowseAdapter
+    private lateinit var manager: GridLayoutManager
+    private lateinit var recyclerView: RecyclerView
+
+    private var onNavigateBack: Boolean = false
+
+    private val viewModel by viewModels<GiftsBrowseViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,10 +35,12 @@ class GiftsAllFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentGiftsAllBinding.inflate(inflater, container, false)
+        binding = FragmentGiftsBrowseBinding.inflate(inflater, container, false)
 
         viewModel.gifts.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
+
+            onNavigateBack = false
         }
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
@@ -41,7 +49,10 @@ class GiftsAllFragment : Fragment() {
                 viewModel.onNavigateGiftDetailsComplete()
 
                 binding.giftsSearchview.apply {
+                    //close search view
                     isIconified = true
+
+                    //clear search view text
                     setQuery("", false)
                 }
             }
@@ -61,10 +72,11 @@ class GiftsAllFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun setupView() {
 
-        adapter = GiftsAllAdapter(
-            GiftsAllAdapter.GiftsALLOnClickListener { selectedGift ->
+        adapter = GiftsBrowseAdapter(
+            GiftsBrowseAdapter.GiftsALLOnClickListener { selectedGift ->
                 viewModel.onNavigateGiftDetails(selectedGift)
             }
         )
@@ -74,6 +86,14 @@ class GiftsAllFragment : Fragment() {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = manager
+
+
+        recyclerView.setOnTouchListener { view, event ->
+
+            binding.giftsSearchview.isIconified = true
+            view.hideKeyboard()
+            false
+        }
 
         binding.giftsSearchview.setOnClickListener {
             binding.giftsSearchview.isIconified = false
@@ -85,10 +105,21 @@ class GiftsAllFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText, viewModel)
+                newText?.let {
+                    Log.d("onQueryTextChange", "$newText")
+                    if (!onNavigateBack) {
+                        adapter.filter(newText, viewModel)
+                    }
+                }
 
                 return true
             }
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        onNavigateBack = true
     }
 }

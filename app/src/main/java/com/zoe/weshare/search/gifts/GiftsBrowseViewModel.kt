@@ -1,24 +1,25 @@
-package com.zoe.weshare.search.events
+package com.zoe.weshare.search.gifts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.EventPost
+import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.GiftStatusType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class EventsAllViewModel(private val repository: WeShareRepository) : ViewModel() {
+class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewModel() {
 
-    private var _events = MutableLiveData<List<EventPost>>()
-    val events: LiveData<List<EventPost>>
-        get() = _events
+    private var _gifts = MutableLiveData<List<GiftPost>>()
+    val gifts: LiveData<List<GiftPost>>
+        get() = _gifts
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -31,53 +32,59 @@ class EventsAllViewModel(private val repository: WeShareRepository) : ViewModel(
     val error: LiveData<String?>
         get() = _error
 
-    private val _navigateToSelectedEvent = MutableLiveData<EventPost?>()
-    val navigateToSelectedEvent: LiveData<EventPost?>
-        get() = _navigateToSelectedEvent
+    private val _navigateToSelectedGift = MutableLiveData<GiftPost?>()
+    val navigateToSelectedGift: LiveData<GiftPost?>
+        get() = _navigateToSelectedGift
 
     var onSearchEmpty = MutableLiveData<Boolean>()
 
     init {
-        getALLEventsResult()
+        getGiftsResult()
     }
 
-    private fun getALLEventsResult() {
+    private fun getGiftsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getAllEvents()
 
-            _events.value = when (result) {
+            when (val result = repository.getAllGifts()) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data
+                    filterGift(result.data)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
             }
         }
     }
 
-    fun onNavigateEventDetails(event: EventPost) {
-        _navigateToSelectedEvent.value = event
+    private fun filterGift(gifts: List<GiftPost>) {
+
+        val list = gifts.filter { it.status != GiftStatusType.CLOSED.code } as MutableList
+
+        list.sortByDescending { it.whoLiked.size }
+
+        _gifts.value = list
     }
 
-    fun onNavigateEventDetailsComplete() {
-        _navigateToSelectedEvent.value = null
+
+    fun onNavigateGiftDetails(event: GiftPost) {
+        _navigateToSelectedGift.value = event
+    }
+
+    fun onNavigateGiftDetailsComplete() {
+        _navigateToSelectedGift.value = null
         onSearchEmpty.value = null
     }
 }

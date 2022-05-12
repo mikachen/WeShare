@@ -43,8 +43,8 @@ class CheckInViewModel(
     val error: LiveData<String?>
         get() = _error
 
-    fun checkInEvent(doc: String) {
 
+    fun checkInEvent(doc: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
@@ -81,12 +81,9 @@ class CheckInViewModel(
     fun onSaveOperateLog(doc: String) {
         val log = OperationLog(
             logType = LogType.EVENT_CHECK_IN.value,
-
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_event_check_in,
-                userInfo!!.name, event.title
-            ),
-
+                userInfo!!.name, event.title),
             postDocId = doc,
             operatorUid = userInfo!!.uid
         )

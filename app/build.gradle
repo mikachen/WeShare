@@ -15,7 +15,14 @@ ktlint {
 }
 
 android {
-
+    signingConfigs {
+        release {
+            storeFile file('/Users/zoelo/Documents/priKey/keystore.jks')
+            keyAlias 'upload'
+            storePassword 'Mika7476'
+            keyPassword 'Mika7476'
+        }
+    }
     compileSdk 32
 
     buildFeatures {
@@ -26,8 +33,8 @@ android {
         applicationId "com.zoe.weshare"
         minSdk 28
         targetSdk 32
-        versionCode 4
-        versionName "1.4.0"
+        versionCode 5
+        versionName "1.5.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -38,9 +45,13 @@ android {
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+
         }
         debug {
             buildConfigField("Boolean", "LOGGER_VISIABLE", "true")
+            signingConfig signingConfigs.debug
+
         }
     }
     compileOptions {

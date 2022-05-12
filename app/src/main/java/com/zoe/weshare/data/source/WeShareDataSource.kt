@@ -16,7 +16,8 @@ interface WeShareDataSource {
     suspend fun getAllGifts(): Result<List<GiftPost>>
     suspend fun getAllEvents(): Result<List<EventPost>>
 
-    suspend fun getUserAllGiftsPosts(collection: String, uid: String): Result<List<GiftPost>>
+    suspend fun getUserAllGiftsPosts(uid: String): Result<List<GiftPost>>
+    suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>>
 
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
 

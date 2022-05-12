@@ -40,7 +40,7 @@ class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(
 
     companion object DiffCallback : DiffUtil.ItemCallback<OperationLog>() {
         override fun areItemsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {
-            return oldItem === newItem
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {

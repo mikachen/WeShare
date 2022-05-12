@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
 import android.util.DisplayMetrics
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -27,6 +29,15 @@ fun Long.toDisplaySentTime(): String {
 
 fun Long.toDisplayDateFormat(): String {
     return SimpleDateFormat("yyyy/MM/dd", Locale.TAIWAN).format(this)
+}
+
+fun Long.imageFileTimeFormat(): String {
+    return SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.TAIWAN).format(this)
+}
+
+fun View.hideKeyboard() {
+    val inputManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(windowToken, 0)
 }
 
 fun bindImage(imgView: ImageView, imgUrl: String?) {

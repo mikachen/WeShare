@@ -14,7 +14,8 @@
         android:id="@+id/mapFragment"
         android:name="com.zoe.weshare.map.MapFragment"
         android:label="fragment_map"
-        tools:layout="@layout/fragment_map" >
+        tools:layout="@layout/fragment_map">
+
         <action
             android:id="@+id/action_mapFragment_self"
             app:destination="@id/mapFragment"
@@ -41,6 +42,12 @@
         <action
             android:id="@+id/action_profileFragment_to_editInfoFragment"
             app:destination="@id/editInfoFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_giftManageFragment"
+            app:destination="@id/giftManageFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_eventManageFragment"
+            app:destination="@id/eventManageFragment" />
     </fragment>
     <fragment
         android:id="@+id/postEventFragment"
@@ -148,11 +155,15 @@
         app:popUpToInclusive="true" />
     <action
         android:id="@+id/navigate_to_map_fragment"
-        app:destination="@id/mapFragment" />
+        app:destination="@id/mapFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/navigate_to_roomlist_fragment"
-        app:destination="@id/roomListFragment" />
+        app:destination="@id/roomListFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/action_global_profileFragment"
@@ -160,15 +171,15 @@
 
     <action
         android:id="@+id/navigate_to_post_event_fragment"
-        app:destination="@id/postEventFragment"/>
+        app:destination="@id/postEventFragment" />
 
     <action
         android:id="@+id/navigate_to_post_gift_fragment"
-        app:destination="@id/postGiftFragment"/>
+        app:destination="@id/postGiftFragment" />
 
     <action
         android:id="@+id/action_global_eventDetailFragment"
-        app:destination="@id/eventDetailFragment"/>
+        app:destination="@id/eventDetailFragment" />
 
     <action
         android:id="@+id/action_global_giftDetailFragment"
@@ -176,7 +187,9 @@
 
     <action
         android:id="@+id/action_global_chatRoomFragment"
-        app:destination="@id/chatRoomFragment" />
+        app:destination="@id/chatRoomFragment"
+        app:enterAnim="@anim/fragment_slide_from_right"
+        app:popExitAnim="@anim/fragment_slide_to_right" />
 
 
     <dialog
@@ -188,14 +201,11 @@
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
     </dialog>
-    <action
-        android:id="@+id/action_global_distributeFragment"
-        app:destination="@id/distributeFragment" />
     <dialog
         android:id="@+id/creditFragment"
         android:name="com.zoe.weshare.CreditFragment"
-        android:label="CreditFragment" />
-
+        android:label="CreditFragment"
+        tools:layout="@layout/fragment_credit" />
 
     <fragment
         android:id="@+id/notificationFragment"
@@ -205,16 +215,24 @@
 
     <action
         android:id="@+id/action_global_notificationFragment"
-        app:destination="@id/notificationFragment" />
+        app:destination="@id/notificationFragment"
+        app:enterAnim="@anim/fragment_slide_from_right"
+        app:popExitAnim="@anim/fragment_slide_to_right" />
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.zoe.weshare.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <argument
+            android:name="resetFastLogin"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
     <action
         android:id="@+id/action_global_loginFragment"
-        app:destination="@id/loginFragment" />
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph" />
 
     <fragment
         android:id="@+id/editInfoFragment"
@@ -230,30 +248,34 @@
         android:id="@+id/giftManageFragment"
         android:name="com.zoe.weshare.manage.giftsItem.GiftManageFragment"
         android:label="GiftManageFragment"
-        tools:layout="@layout/fragment_gift_manage" />
-    <action
-        android:id="@+id/action_global_giftManageFragment"
-        app:destination="@id/giftManageFragment" />
+        tools:layout="@layout/fragment_gift_manage" >
+        <action
+            android:id="@+id/action_giftManageFragment_to_distributeFragment"
+            app:destination="@id/distributeFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/giftsAllFragment"
-        android:name="com.zoe.weshare.search.gifts.GiftsAllFragment"
-        android:label="fragment_gifts_all"
-        tools:layout="@layout/fragment_gifts_all" />
+        android:id="@+id/giftsBrowseFragment"
+        android:name="com.zoe.weshare.search.gifts.GiftsBrowseFragment"
+        android:label="fragment_gifts_browse"
+        tools:layout="@layout/fragment_gifts_browse" />
     <fragment
-        android:id="@+id/eventsAllFragment"
-        android:name="com.zoe.weshare.search.events.EventsAllFragment"
-        android:label="fragment_events_all"
-        tools:layout="@layout/fragment_events_all" />
+        android:id="@+id/eventsBrowseFragment"
+        android:name="com.zoe.weshare.search.events.EventsBrowseFragment"
+        android:label="fragment_events_browse"
+        tools:layout="@layout/fragment_events_browse" />
     <action
-        android:id="@+id/action_global_eventsAllFragment"
-        app:destination="@id/eventsAllFragment" />
+        android:id="@+id/action_global_eventsBrowseFragment"
+        app:destination="@id/eventsBrowseFragment"
+        app:enterAnim="@anim/fragment_slide_from_bottom" />
     <action
-        android:id="@+id/action_global_giftsAllFragment"
-        app:destination="@id/giftsAllFragment" />
+        android:id="@+id/action_global_giftsBrowseFragment"
+        app:destination="@id/giftsBrowseFragment"
+        app:enterAnim="@anim/fragment_slide_from_bottom" />
     <fragment
         android:id="@+id/eventCheckInFragment"
         android:name="com.zoe.weshare.detail.checkin.EventCheckInFragment"
-        android:label="EventCheckInFragment">
+        android:label="EventCheckInFragment"
+        tools:layout="@layout/fragment_event_check_in">
         <argument
             android:name="event"
             app:argType="com.zoe.weshare.data.EventPost" />
@@ -262,7 +284,18 @@
             app:destination="@id/eventDetailFragment"
             app:popUpTo="@id/eventDetailFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_eventCheckInFragment_self"
+            app:destination="@id/eventCheckInFragment"
+            app:popUpTo="@id/eventCheckInFragment"
+            app:popUpToInclusive="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/eventManageFragment"
+        android:name="com.zoe.weshare.manage.eventItem.EventManageFragment"
+        android:label="EventManageFragment"
+        tools:layout="@layout/fragment_event_manage" />
 
 
 </navigation>

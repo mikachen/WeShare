@@ -1,5 +1,6 @@
 package com.zoe.weshare.message
 
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.MainActivity
+import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.databinding.FragmentChatroomBinding
@@ -14,6 +16,7 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getStringWithStrParm
+
 
 class ChatRoomFragment : Fragment() {
 
@@ -39,12 +42,20 @@ class ChatRoomFragment : Fragment() {
 
         viewModel.liveMessages.observe(viewLifecycleOwner) {
             adapter.submitList(it) {
+                adapter.notifyDataSetChanged()
                 recyclerView.post { recyclerView.scrollToPosition(adapter.itemCount - 1) }
             }
         }
 
         viewModel.newMessage.observe(viewLifecycleOwner) {
             viewModel.sendNewMessage(chatRoom.id, it)
+        }
+
+        viewModel.navigateToTargetUser.observe(viewLifecycleOwner){
+            it?.let{
+                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                viewModel.navigateToProfileComplete()
+            }
         }
 
         setupView()
@@ -57,6 +68,7 @@ class ChatRoomFragment : Fragment() {
         recyclerView = binding.messagesRecyclerView
 
         adapter = ChatRoomAdapter(viewModel, chatRoom)
+
         recyclerView.adapter = adapter
 
         binding.textRoomTargetTitle.text =
@@ -71,6 +83,21 @@ class ChatRoomFragment : Fragment() {
 
                 else -> "unKnow"
             }
+
+        recyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                v: View?,
+                left: Int, top: Int, right: Int, bottom: Int,
+                oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int,
+            ) {
+                if (bottom < oldBottom) {
+                    recyclerView.postDelayed({
+                        recyclerView.smoothScrollToPosition(
+                            recyclerView.adapter!!.itemCount - 1)
+                    }, 100)
+                }
+            }
+        })
     }
 
     private fun setupSendBtn() {
@@ -104,7 +131,9 @@ class ChatRoomFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+//        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+//        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
     }
 }

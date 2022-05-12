@@ -14,8 +14,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -28,7 +26,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.zoe.weshare.MainActivity
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
@@ -52,6 +49,9 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
     private var isPermissionGranted: Boolean = false
 
+    var needRefreshMap = false
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,9 +64,16 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         savedInstanceState: Bundle?,
     ): View? {
 
+        binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
+
+        if (needRefreshMap) {
+//            Logger.d("needRefreshMap when navigateUp: $needRefreshMap")
+//            findNavController().navigate(MapFragmentDirections.actionMapFragmentSelf())
+
+        }
+
         if (isPermissionGranted) {
 
-            binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
             progressBar = binding.progressBar
             progressBar.max = 100 * 100
 
@@ -102,7 +109,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                         progressBar.progress,
                         it * 100
                     )
-                    animation.duration = 500
+                    animation.duration = 300
                     animation.interpolator = DecelerateInterpolator()
                     animation.start()
                 }
@@ -156,7 +163,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                         progressBar.progress,
                         it * 100
                     )
-                    animation.duration = 500
+                    animation.duration = 300
                     animation.interpolator = DecelerateInterpolator()
                     animation.start()
                 }
@@ -166,19 +173,12 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
             }
 
-            // 當user同意location權限後，檢查user是否有啟用GooglePlayService
-            if (isPermissionGranted) {
-                if (checkGooglePlayService()) {
-                    binding.mapView.onCreate(savedInstanceState)
-                    binding.mapView.getMapAsync(this)
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "GooglePlayService Not Available",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
+
+
+            binding.mapView.onCreate(savedInstanceState)
+
+            binding.mapView.getMapAsync(this)
+
         }
 
         return binding.root
@@ -276,30 +276,9 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun checkGooglePlayService(): Boolean {
-
-        val googleApiAvailability = GoogleApiAvailability.getInstance()
-        val result = googleApiAvailability.isGooglePlayServicesAvailable(requireContext())
-
-        if (result == ConnectionResult.SUCCESS) {
-            return true
-        } else if (googleApiAvailability.isUserResolvableError(result)) {
-
-            val dialog = googleApiAvailability.getErrorDialog(
-                requireActivity(),
-                result,
-                201
-            ) {
-                Toast.makeText(requireContext(), "User Cancel Dialog", Toast.LENGTH_LONG)
-                    .show()
-            }
-            dialog?.show()
-        }
-        return false
-    }
-
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+
         setupMapSettings()
     }
 
@@ -316,36 +295,54 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
     override fun onStart() {
         super.onStart()
-        binding.mapView.onStart()
+        if (isPermissionGranted) {
+            binding.mapView.onStart()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        binding.mapView.onResume()
+        if (isPermissionGranted) {
+            binding.mapView.onResume()
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        binding.mapView.onPause()
+        if (isPermissionGranted) {
+            binding.mapView.onPause()
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        binding.mapView.onStop()
+        if (isPermissionGranted) {
+            binding.mapView.onStop()
+            needRefreshMap = true
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        binding.mapView.onSaveInstanceState(outState)
+
+        if (isPermissionGranted) {
+            binding.mapView.onSaveInstanceState(outState)
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        binding.mapView.onDestroy()
+
+        if (isPermissionGranted) {
+            binding.mapView.onDestroy()
+        }
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        binding.mapView.onLowMemory()
+
+        if (isPermissionGranted) {
+            binding.mapView.onLowMemory()
+        }
     }
 }

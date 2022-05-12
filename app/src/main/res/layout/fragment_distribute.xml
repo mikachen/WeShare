@@ -22,7 +22,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
-        android:text="@string/title_who_requested"
+        android:text="@string/requested_comments"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/divider"

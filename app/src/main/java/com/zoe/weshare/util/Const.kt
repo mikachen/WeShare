@@ -21,7 +21,9 @@ object Const {
 
     const val FIELD_STATUS = "status"
     const val FIELD_WHO_GET_GIFT = "whoGetGift"
+
     const val FIELD_OPERATOR_UID = "operatorUid"
+    const val FIELD_LOG_TYPE = "logType"
 
     const val FIELD_WHO_LIKED = "whoLiked"
     const val FIELD_EVENT_ATTENDEE = "whoAttended"

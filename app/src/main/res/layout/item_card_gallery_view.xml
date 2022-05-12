@@ -38,7 +38,7 @@
             android:layout_marginEnd="8dp"
             android:textColor="@color/black"
             android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@id/button_addition_heart2"
+            app:layout_constraintEnd_toStartOf="@id/button_like"
             app:layout_constraintStart_toEndOf="@id/image"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,7 +62,7 @@
             android:maxLines="1"
             android:textSize="12sp"
             android:ellipsize="end"
-            app:layout_constraintEnd_toEndOf="@id/button_addition_heart2"
+            app:layout_constraintEnd_toEndOf="@id/button_like"
             app:layout_constraintStart_toEndOf="@id/ic_location"
             app:layout_constraintTop_toTopOf="@id/ic_location"
             app:layout_constraintBottom_toBottomOf="@id/ic_location"
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@id/button_addition_heart2"
+            app:layout_constraintEnd_toEndOf="@id/button_like"
             app:layout_constraintStart_toEndOf="@id/icon_time"
             app:layout_constraintBottom_toBottomOf="@id/icon_time"
             app:layout_constraintTop_toTopOf="@id/icon_time"
@@ -110,13 +110,13 @@
             android:textSize="12sp"
             android:maxLines="3"
             android:ellipsize="end"
-            app:layout_constraintEnd_toEndOf="@id/button_addition_heart2"
+            app:layout_constraintEnd_toEndOf="@id/button_like"
             app:layout_constraintStart_toEndOf="@id/ic_info"
             app:layout_constraintTop_toTopOf="@id/ic_info"
             tools:text="也可以隨時上網站查詢寵物糧食遞送的情形，當愛心已經送達狗園或貓園時，並會在個人信箱收到完成助糧的感謝通知信件，讓實質的捐助寵物糧食更有意義與溫度。" />
 
         <ToggleButton
-            android:id="@+id/button_addition_heart2"
+            android:id="@+id/button_like"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_margin="10dp"

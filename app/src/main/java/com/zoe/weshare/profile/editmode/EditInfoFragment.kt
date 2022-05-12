@@ -1,11 +1,14 @@
 package com.zoe.weshare.profile.editmode
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,13 +19,15 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentEditInfoBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class EditInfoFragment : Fragment() {
 
     private val PICK_IMAGE_REQUEST = 161
-    val storage = FirebaseStorage.getInstance()
-    val storageReference = storage.reference
+
+    lateinit var progressBar: ProgressBar
+    lateinit var animation: ObjectAnimator
 
     lateinit var binding: FragmentEditInfoBinding
     val viewModel by viewModels<EditInfoViewModel> { getVmFactory(weShareUser) }
@@ -35,6 +40,7 @@ class EditInfoFragment : Fragment() {
 
         binding = FragmentEditInfoBinding.inflate(inflater, container, false)
 
+
         val userProfile = EditInfoFragmentArgs.fromBundle(requireArguments()).userProfile
         viewModel.onProfileDisplay(userProfile)
 
@@ -42,18 +48,30 @@ class EditInfoFragment : Fragment() {
             viewModel.updateProfile(it)
         }
 
-        viewModel.updateComplete.observe(viewLifecycleOwner) {
-            findNavController().navigate(
-                NavGraphDirections.actionGlobalProfileFragment(weShareUser)
+        viewModel.updatingProgress.observe(viewLifecycleOwner){
+            animation = ObjectAnimator.ofInt(
+                progressBar,
+                "progress",
+                progressBar.progress,
+                it * 100
             )
+            animation.duration = 300
+            animation.interpolator = DecelerateInterpolator()
+            animation.start()
         }
 
-        binding.buttonSave.setOnClickListener {
-            collectUserInput()
+        viewModel.isUploadingImage.observe(viewLifecycleOwner){
+            if(it){
+                binding.imageUploadingHint.visibility = View.VISIBLE
+            }
         }
 
-        binding.imageProfileAvatar.setOnClickListener {
-            selectImage()
+        viewModel.updateComplete.observe(viewLifecycleOwner) {
+            if(it == LoadApiStatus.DONE) {
+                findNavController().navigate(
+                    NavGraphDirections.actionGlobalProfileFragment(weShareUser)
+                )
+            }
         }
 
         setupView(userProfile)
@@ -65,15 +83,28 @@ class EditInfoFragment : Fragment() {
             bindImage(imageProfileAvatar, profile.image)
             editNickname.setText(profile.name)
             editIntroMsg.setText(profile.introMsg)
+
+            buttonSave.setOnClickListener {
+                collectUserInput()
+            }
+
+            imageProfileAvatar.setOnClickListener {
+                selectImage()
+            }
+
         }
+
+        progressBar = binding.progressBar
+        progressBar.max = 100 * 100
     }
 
     private fun collectUserInput() {
-        val name = binding.editNickname.text.toString()
-        val introMsg = binding.editIntroMsg.text.toString()
+        val name = binding.editNickname.text.toString().trim()
+        val introMsg = binding.editIntroMsg.text.toString().trim()
 
         if (name.isNotEmpty()) {
             viewModel.checkIfImageChange(name, introMsg)
+            binding.layoutProgressLoading.visibility = View.VISIBLE
         } else {
             Toast.makeText(requireContext(), "暱稱為必填項目", Toast.LENGTH_SHORT).show()
         }

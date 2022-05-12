@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.databinding.FragmentRoomListBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -45,8 +46,8 @@ class RoomListFragment : Fragment() {
         viewModel.navigateToSelectedRoom.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    NavGraphDirections.actionGlobalChatRoomFragment(it)
-                )
+                    NavGraphDirections.actionGlobalChatRoomFragment(it))
+
                 viewModel.displayRoomDetailsComplete()
             }
         }

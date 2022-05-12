@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_margin="4dp"
+    app:dragEdge="right"
+    app:mode="same_level">
+
+    <LinearLayout
+        android:id="@+id/button_force_end"
+        android:layout_width="120dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_abandon_button_round"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:src="@drawable/ic_manage_trash_bin"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:tint="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:text="強制結束"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/image_event"
+                    android:layout_width="140dp"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@drawable/upload_image_holder" />
+
+
+                <TextView
+                    android:id="@+id/text_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginTop="8dp"
+
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
+                    app:layout_constraintStart_toEndOf="@id/image_event"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="讀書會讀書會讀書會讀書會讀書會讀書會讀書會讀書會讀書會" />
+
+                <ImageView
+                    android:id="@+id/ic_pin"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_pin"
+                    app:layout_constraintStart_toStartOf="@id/text_title"
+                    app:layout_constraintTop_toTopOf="@id/text_posted_location" />
+
+                <TextView
+                    android:id="@+id/text_posted_location"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toTopOf="@id/ic_clock"
+                    app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
+                    app:layout_constraintStart_toEndOf="@id/ic_pin"
+                    app:layout_constraintTop_toBottomOf="@id/text_title"
+                    tools:text="台北西門台北西門台北西門台北西門台北西門台北西門" />
+
+
+                <ImageView
+                    android:id="@+id/ic_clock"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:scaleX="0.8"
+                    android:scaleY="0.8"
+                    android:src="@drawable/ic_clock"
+                    app:layout_constraintStart_toStartOf="@id/text_title"
+                    app:layout_constraintTop_toTopOf="@id/text_event_period_time" />
+
+
+                <TextView
+                    android:id="@+id/text_event_period_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/ic_clock"
+                    app:layout_constraintTop_toBottomOf="@id/text_posted_location"
+                    tools:text="還有3小時結束" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/button_get_qrcode"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="6dp"
+                    android:paddingStart="16dp"
+                    android:paddingBottom="16dp"
+                    app:layout_constraintEnd_toEndOf="@id/layout_status_tag"
+                    app:layout_constraintTop_toBottomOf="@id/layout_status_tag"
+                    app:lottie_autoPlay="true"
+                    app:lottie_fileName="generate-qr-code.json"
+                    app:lottie_loop="true"
+                    app:lottie_speed="1" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/layout_status_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="4dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/text_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_theme_gradient"
+                        android:gravity="center_horizontal"
+                        android:padding="4dp"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        tools:text="已結案" />
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_response_attendee_count"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginVertical="4dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="3:2"
+                    app:layout_constraintEnd_toStartOf="@id/layout_response_volunteer_need"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/divider"
+                    app:strokeColor="@color/app_work_dark_grey"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:gravity="center"
+                            android:text="參與人"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/text_attendee_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:gravity="bottom"
+                            android:textSize="12sp"
+                            tools:text="16" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_response_volunteer_need"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_response_attendee_count"
+                    app:layout_constraintDimensionRatio="3:2"
+                    app:layout_constraintEnd_toStartOf="@id/layout_response_volunteer_count"
+                    app:layout_constraintStart_toEndOf="@id/layout_response_attendee_count"
+                    app:layout_constraintTop_toTopOf="@id/layout_response_attendee_count"
+                    app:strokeColor="@color/app_work_dark_grey"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:text="志工需求"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/text_volunteer_need"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:textSize="12sp"
+                            tools:text="16" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_response_volunteer_count"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_response_attendee_count"
+                    app:layout_constraintDimensionRatio="3:2"
+                    app:layout_constraintEnd_toStartOf="@id/layout_response_checkin_count"
+                    app:layout_constraintStart_toEndOf="@id/layout_response_volunteer_need"
+                    app:layout_constraintTop_toTopOf="@id/layout_response_attendee_count"
+                    app:strokeColor="@color/app_work_dark_grey"
+                    app:strokeWidth="1dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:text="志工登記"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/text_volunteer_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:textSize="12sp"
+                            tools:text="16" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/layout_response_checkin_count"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_response_attendee_count"
+                    app:layout_constraintDimensionRatio="3:2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/layout_response_volunteer_count"
+                    app:layout_constraintTop_toTopOf="@id/layout_response_attendee_count"
+                    app:strokeColor="@color/greenTestColor"
+                    app:strokeWidth="1dp">
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/greenTestColor"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:text="已簽到"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/text_checkin_count"
+                            android:layout_width="wrap_content"
+                            android:textColor="@color/greenTestColor"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|center_vertical"
+                            android:textSize="12sp"
+                            tools:text="16" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</com.chauthai.swipereveallayout.SwipeRevealLayout>

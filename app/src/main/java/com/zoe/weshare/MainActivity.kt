@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity() {
             Logger.i("[${viewModel.currentFragmentType.value}]")
             Logger.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
-            showBottom()
             binding.apply {
                 toolbarLogoImage.visibility = View.INVISIBLE
                 topAppbar.visibility = View.VISIBLE
@@ -81,32 +80,69 @@ class MainActivity : AppCompatActivity() {
 
                     // 大主頁
                     CurrentFragmentType.HOME -> {
+                        showBottom()
                         toolbar.navigationIcon = null
                         toolbarLogoImage.visibility = View.VISIBLE
                         layoutToolbarSubtitle.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.MAP -> {
+                        showBottom()
                         binding.fabsLayoutView.visibility = View.GONE
                     }
 
-                    CurrentFragmentType.ROOMLIST -> {}
+                    CurrentFragmentType.ROOMLIST -> {
+                        showBottom()
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                    }
+
                     CurrentFragmentType.PROFILE -> {
+                        showBottom()
                         topAppbar.visibility = View.GONE
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.CHATROOM -> {
                         hideBottom()
                         topAppbar.visibility = View.GONE
                     }
-                    CurrentFragmentType.GIFTDETAIL -> { hideBottom() }
-                    CurrentFragmentType.EVENTDETAIL -> { hideBottom() }
-                    CurrentFragmentType.POSTGIFT -> { hideBottom() }
-                    CurrentFragmentType.POSTEVENT -> { hideBottom() }
-                    CurrentFragmentType.EDITPROFILE -> { hideBottom() }
+                    CurrentFragmentType.GIFTDETAIL -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.EVENTDETAIL -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.POSTGIFT -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.POSTEVENT -> {
+                        hideBottom()
+                    }
+                    CurrentFragmentType.EDITPROFILE -> {
+                        hideBottom()
+                    }
+
+                    CurrentFragmentType.GIFTSBROWSE -> {
+                        showBottom()
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                    }
+                    CurrentFragmentType.EVENTSBROWSE -> {
+                        showBottom()
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                    }
 
                     CurrentFragmentType.NOTIFICATION -> {
-                        binding.fabsLayoutView.visibility = View.GONE
+                        showBottom()
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                    }
+
+                    CurrentFragmentType.EVENTMANAGE -> {
+                        showBottom()
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                    }
+                    CurrentFragmentType.GIFTMANAGE -> {
+                        showBottom()
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.LOGIN -> {
@@ -151,7 +187,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideBottom() {
-        binding.fabsLayoutView.visibility = View.GONE
+        binding.fabsLayoutView.visibility = View.INVISIBLE
         binding.bottomAppBar.performHide()
     }
 
@@ -172,6 +208,10 @@ class MainActivity : AppCompatActivity() {
     // 每導航新頁面重新assign currentFragmentType
     private fun setupNavController() {
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { navController: NavController, _: NavDestination, _: Bundle? ->
+//            if (isFabExpend) {
+//                onMainFabClick()
+//            }
+
             viewModel.currentFragmentType.value = when (navController.currentDestination?.id) {
                 R.id.homeFragment -> CurrentFragmentType.HOME
                 R.id.mapFragment -> CurrentFragmentType.MAP
@@ -184,23 +224,24 @@ class MainActivity : AppCompatActivity() {
                 R.id.giftDetailFragment -> CurrentFragmentType.GIFTDETAIL
                 R.id.searchLocationFragment -> CurrentFragmentType.SEARCHLOCATION
                 R.id.giftManageFragment -> CurrentFragmentType.GIFTMANAGE
+                R.id.eventManageFragment -> CurrentFragmentType.EVENTMANAGE
                 R.id.notificationFragment -> CurrentFragmentType.NOTIFICATION
                 R.id.loginFragment -> CurrentFragmentType.LOGIN
                 R.id.editInfoFragment -> CurrentFragmentType.EDITPROFILE
-                R.id.giftsAllFragment -> CurrentFragmentType.GIFTSALL
-                R.id.eventsAllFragment -> CurrentFragmentType.EVENTSALL
+                R.id.giftsBrowseFragment -> CurrentFragmentType.GIFTSBROWSE
+                R.id.eventsBrowseFragment -> CurrentFragmentType.EVENTSBROWSE
+                R.id.eventCheckInFragment -> CurrentFragmentType.EVENTCHECKIN
 
                 else -> viewModel.currentFragmentType.value
-            }
-            if (isFabExpend) {
-                onMainFabClick()
             }
         }
     }
 
     private fun setupToolbar() {
         binding.notification.setOnClickListener {
-            onNotificationClick()
+//            onNotificationClick()
+            findNavController(R.id.nav_host_fragment)
+                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
         }
 
         binding.toolbarArrowBack.setOnClickListener {
@@ -219,6 +260,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_map -> {
 
+
                     findNavController(R.id.nav_host_fragment).navigate(
                         NavGraphDirections.navigateToMapFragment()
                     )
@@ -229,6 +271,7 @@ class MainActivity : AppCompatActivity() {
                     findNavController(R.id.nav_host_fragment).navigate(
                         NavGraphDirections.navigateToRoomlistFragment()
                     )
+
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_profile -> {
@@ -256,11 +299,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.layoutFabEvent.setOnClickListener {
+            onMainFabClick()
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostEventFragment())
         }
 
         binding.layoutFabGift.setOnClickListener {
+            onMainFabClick()
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.navigateToPostGiftFragment())
         }
@@ -273,15 +318,15 @@ class MainActivity : AppCompatActivity() {
         isFabExpend = !isFabExpend
     }
 
-    private fun onNotificationClick() {
-        if (!notificationPageOpen) {
-            findNavController(R.id.nav_host_fragment)
-                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
-        } else {
-            findNavController(R.id.nav_host_fragment).navigateUp()
-        }
-        notificationPageOpen = !notificationPageOpen
-    }
+//    private fun onNotificationClick() {
+//        if (!notificationPageOpen) {
+//            findNavController(R.id.nav_host_fragment)
+//                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
+//        } else {
+//            findNavController(R.id.nav_host_fragment).navigateUp()
+//        }
+//        notificationPageOpen = !notificationPageOpen
+//    }
 
     private fun setAnimation(isFabExpend: Boolean) {
 
@@ -301,8 +346,13 @@ class MainActivity : AppCompatActivity() {
             binding.layoutFabGift.visibility = View.VISIBLE
             binding.layoutFabEvent.visibility = View.VISIBLE
         } else {
-            binding.layoutFabGift.visibility = View.GONE
-            binding.layoutFabEvent.visibility = View.GONE
+            binding.layoutFabGift.visibility = View.INVISIBLE
+            binding.layoutFabEvent.visibility = View.INVISIBLE
         }
     }
+
+//    override fun onBackPressed() {
+//        super.onBackPressed()
+//        finish()
+//    }
 }
