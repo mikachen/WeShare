@@ -24,6 +24,7 @@
             style="@style/chatroom_message_textview"
             android:background="@drawable/outgoing_speed_bubble"
             android:textColor="@color/white"
+            android:textIsSelectable="true"
             tools:text="mesagemessagemesaagemessageagemessageagemessageagemessageagemessageagemessageagemessagegemessageagemessageagemessage." />
 
     </com.google.android.material.card.MaterialCardView>

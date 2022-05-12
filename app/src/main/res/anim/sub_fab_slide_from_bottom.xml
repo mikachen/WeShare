@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fillAfter="true">
+    android:fillAfter="false">
 
     <translate
         android:duration="300"
@@ -10,8 +10,8 @@
     <scale
         android:pivotX="50%"
         android:pivotY="50%"
-        android:toXScale="0.9"
-        android:toYScale="0.9" />
+        android:toXScale="1"
+        android:toYScale="1" />
 
     <alpha
         android:duration="800"

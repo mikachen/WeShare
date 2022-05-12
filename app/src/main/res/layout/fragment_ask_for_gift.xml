@@ -28,7 +28,7 @@
         app:counterEnabled="true"
         app:hintTextColor="@color/app_work_orange1"
         app:boxStrokeColor="@color/app_work_orange1"
-        app:counterMaxLength="1000"
+        app:counterMaxLength="200"
         app:errorEnabled="true"
         android:hint="@string/pls_leave_askforgift_comment"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,8 +41,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top|start"
+            android:scrollbars="vertical"
+            tools:text="googlegooglgoogleggooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogleooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogleegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogle"
+            android:singleLine="false"
             android:inputType="textMultiLine"
-            android:maxLength="1000"
+            android:maxLength="200"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 
     </com.google.android.material.textfield.TextInputLayout>

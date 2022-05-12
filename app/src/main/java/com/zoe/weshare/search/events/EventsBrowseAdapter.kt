@@ -99,13 +99,11 @@ class EventsBrowseAdapter(private val onClickListener: EventsAllOnClickListener)
                             )
                 }
             )
-
-            viewModel.onSearchEmpty.value = list.isEmpty()
         } else {
             list.addAll(unfilteredList)
-            viewModel.onSearchEmpty.value = false
         }
 
+        viewModel.onSearchEmpty.value = list.isEmpty()
         submitList(list)
     }
 }

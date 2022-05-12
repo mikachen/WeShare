@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -37,6 +39,13 @@ class PostGiftFragment : Fragment() {
 
     private val PICK_IMAGE_REQUEST = 151
     private lateinit var filePath: Uri
+
+    private val whatToPostAnimate: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.event_checkin_success
+        )
+    }
 
     private lateinit var binding: FragmentPostGiftBinding
 
@@ -66,13 +75,17 @@ class PostGiftFragment : Fragment() {
             binding.buttonImagePreviewHolder.setImageURI(it)
         }
 
-        setupBtn()
+        setupViewNBtn()
         setupDropdownMenu()
 
         return binding.root
     }
 
-    private fun setupBtn() {
+    private fun setupViewNBtn() {
+        whatToPostAnimate.duration =500
+
+        binding.titleWhatToPost.startAnimation(whatToPostAnimate)
+
         binding.nextButton.setOnClickListener {
             if (checkPermission()) {
                 dataCollecting()
@@ -119,10 +132,10 @@ class PostGiftFragment : Fragment() {
 
     private fun dataCollecting() {
 
-        val title = binding.editTitle.text.toString()
-        val sort = binding.dropdownMenuSort.text.toString()
-        val condition = binding.dropdownMenuCondition.text.toString()
-        val description = binding.editDescription.text.toString()
+        val title = binding.editTitle.text.toString().trim()
+        val sort = binding.dropdownMenuSort.text.toString().trim()
+        val condition = binding.dropdownMenuCondition.text.toString().trim()
+        val description = binding.editDescription.text.toString().trim()
 
         when (true) {
             title.isEmpty() ->

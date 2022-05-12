@@ -69,13 +69,15 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     fun onFilteringLog(list: List<OperationLog>) {
-        filteredLogs.value = list.filter {
-            it.logType != LogType.REQUEST_GIFT.value &&
-                    it.logType != LogType.FOLLOWING.value &&
-                    it.logType != LogType.ABANDONED_GIFT.value &&
-                    it.logType != LogType.VOLUNTEER_EVENT.value &&
-                    it.logType != LogType.EVENT_GOT_FORCE_ENDED.value
-        }
+        filteredLogs.value = list
+
+//            list.filter {
+//            it.logType != LogType.REQUEST_GIFT.value &&
+//                    it.logType != LogType.FOLLOWING.value &&
+//                    it.logType != LogType.ABANDONED_GIFT.value &&
+//                    it.logType != LogType.VOLUNTEER_EVENT.value &&
+//                    it.logType != LogType.EVENT_GOT_FORCE_ENDED.value
+//        }
     }
 
     private fun filterGift(gifts: List<GiftPost>) {

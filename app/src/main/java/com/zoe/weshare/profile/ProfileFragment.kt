@@ -18,16 +18,17 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentProfileBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.util.Const
 import com.zoe.weshare.util.LogType
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class ProfileFragment : Fragment() {
 
-    lateinit var targetUser: UserInfo
-    lateinit var binding: FragmentProfileBinding
+    private lateinit var targetUser: UserInfo
+    private lateinit var binding: FragmentProfileBinding
+    private var isFollowingTarget = false
 
-    val viewModel: ProfileViewModel by viewModels { getVmFactory(targetUser) }
+    private val viewModel: ProfileViewModel by viewModels { getVmFactory(targetUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,10 +42,11 @@ class ProfileFragment : Fragment() {
 
         viewModel.user.observe(viewLifecycleOwner) {
             setupView(it)
+            setupSocialButtons()
         }
 
         viewModel.userLog.observe(viewLifecycleOwner) {
-            setupLogView(it)
+            setupBoardCountView(it)
         }
 
         viewModel.userChatRooms.observe(viewLifecycleOwner) {
@@ -71,11 +73,10 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        setupBtn()
         return binding.root
     }
 
-    private fun setupLogView(logs: List<OperationLog>) {
+    private fun setupBoardCountView(logs: List<OperationLog>) {
         if (logs.isNotEmpty()) {
             binding.apply {
 
@@ -94,9 +95,82 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun showPopupMenu(view: View) {
+    private fun setupView(user: UserProfile) {
+        isFollowingTarget = user.follower.contains(weShareUser!!.uid)
+
+        binding.apply {
+            bindImage(imageProfileAvatar, user.image)
+            textProfileName.text = user.name
+            textFollowerNumber.text = (user.follower.size).toString()
+            textFollowingNumber.text = (user.following.size).toString()
+            textIntroMessage.text =
+                when (user.introMsg.isBlank()) {
+                    true -> getString(R.string.request_leave_intro_message)
+                    false -> user.introMsg
+                }
+        }
+    }
+
+    private fun setupSocialButtons() {
+
+        binding.buttonFollow.setOnCheckedChangeListener { btn, checked ->
+            btn.isChecked = checked
+        }
+
+        if (targetUser.uid != weShareUser!!.uid) {
+
+            //target user profile
+            binding.layoutSocialButton.visibility = View.VISIBLE
+            binding.buttonFollow.isChecked = isFollowingTarget
+
+            if (isFollowingTarget) {
+                binding.buttonFollow.setOnCheckedChangeListener { btn, checked ->
+                    btn.isChecked = !checked
+                }
+            }
+            binding.buttonFollow.setOnClickListener {
+                followBtnClick()
+            }
+
+            binding.buttonMessage.setOnClickListener {
+                viewModel.searchOnPrivateRoom(weShareUser!!)
+            }
+
+        } else {
+
+            //user self profile
+            binding.buttonSettings.visibility = View.VISIBLE
+            binding.buttonSettings.setOnClickListener {
+                showPopupMenu(it,0)
+            }
+        }
+    }
+
+    private fun followBtnClick() {
+        if (isFollowingTarget) {
+                showPopupMenu(binding.buttonFollow, 1)
+
+        } else {
+            viewModel.updateTargetFollower(targetUser.uid)
+            viewModel.updateUserFollowing(targetUser.uid)
+        }
+    }
+
+
+    private fun showPopupMenu(view: View, condition: Int) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.profile_popup_menu, popupMenu.menu)
+
+        when(condition){
+            0->  popupMenu.menu.removeItem(R.id.action_cancel_following)
+
+            1-> {
+                popupMenu.menu.removeItem(R.id.edit_user_info)
+                popupMenu.menu.removeItem(R.id.action_gifts_manage)
+                popupMenu.menu.removeItem(R.id.action_events_manage)
+                popupMenu.menu.removeItem(R.id.action_log_out)
+            }
+        }
 
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
@@ -112,50 +186,18 @@ class ProfileFragment : Fragment() {
                 R.id.action_events_manage -> findNavController().navigate(
                     ProfileFragmentDirections.actionProfileFragmentToEventManageFragment()
                 )
+
+                R.id.action_cancel_following -> {
+                    viewModel.cancelTargetFollower(targetUser.uid)
+                    viewModel.cancelUserFollowing(targetUser.uid)
+                }
+
+                R.id.action_log_out -> findNavController().navigate(
+                    NavGraphDirections.actionGlobalLoginFragment(true))
             }
             false
         }
         popupMenu.show()
-    }
-
-    private fun setupBtn() {
-
-        binding.buttonFollow.setOnClickListener {
-            viewModel.updateTargetFollower(targetUser.uid)
-            viewModel.updateUserFollowing(targetUser.uid)
-        }
-
-        binding.buttonMessage.setOnClickListener {
-            viewModel.searchOnPrivateRoom(weShareUser!!)
-        }
-
-        if (targetUser.uid == weShareUser!!.uid) {
-            binding.buttonSettings.visibility = View.VISIBLE
-
-            binding.buttonSettings.setOnClickListener {
-                showPopupMenu(it)
-            }
-        }
-    }
-
-    private fun setupView(user: UserProfile) {
-        binding.apply {
-            bindImage(imageProfileAvatar, user.image)
-            textProfileName.text = user.name
-            textFollowerNumber.text = (user.follower.size).toString()
-            textFollowingNumber.text = (user.following.size).toString()
-            textIntroMessage.text =
-                when (user.introMsg.isBlank()) {
-                    true -> getString(R.string.request_leave_intro_message)
-                    false -> user.introMsg
-                }
-
-            if (targetUser.uid != weShareUser!!.uid) {
-                layoutSocialButton.visibility = View.VISIBLE
-
-                buttonFollow.isChecked = user.follower.contains(weShareUser!!.uid)
-            }
-        }
     }
 
     override fun onResume() {

@@ -11,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -37,6 +39,14 @@ class PostEventFragment : Fragment() {
     private lateinit var filePath: Uri
 
     private lateinit var binding: FragmentPostEventBinding
+
+    private val whatToPostAnimate: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.event_checkin_success
+        )
+    }
+
     val viewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
@@ -67,14 +77,18 @@ class PostEventFragment : Fragment() {
             binding.buttonImagePreviewHolder.setImageURI(it)
         }
 
-        setupBtn()
+        setupViewNBtn()
         setupDropdownMenu()
         setupDatePicker()
 
         return binding.root
     }
 
-    private fun setupBtn() {
+    private fun setupViewNBtn() {
+        whatToPostAnimate.duration = 500
+
+        binding.titleWhatToPost.startAnimation(whatToPostAnimate)
+
         binding.nextButton.setOnClickListener {
             if (checkPermission()) {
                 dataCollecting()
@@ -123,10 +137,10 @@ class PostEventFragment : Fragment() {
 
     private fun dataCollecting() {
 
-        val title = binding.editTitle.text.toString()
-        val sort = binding.dropdownMenuSort.text.toString()
-        val volunteerNeeds = binding.editVolunteer.text.toString()
-        val description = binding.editDescription.text.toString()
+        val title = binding.editTitle.text.toString().trim()
+        val sort = binding.dropdownMenuSort.text.toString().trim()
+        val volunteerNeeds = binding.editVolunteer.text.toString().trim()
+        val description = binding.editDescription.text.toString().trim()
         val time = binding.editDatePicker.text.toString()
 
         when (true) {

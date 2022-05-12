@@ -23,6 +23,10 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
         get() = _profileUpdate
 
     var newImage: Uri? = null
+    var updatingProgress = MutableLiveData<Int>()
+
+    var isUploadingImage = MutableLiveData<Boolean>()
+
 
     lateinit var profile: UserProfile
 
@@ -38,11 +42,14 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
     val error: LiveData<String?>
         get() = _error
 
+
     fun onProfileDisplay(userProfile: UserProfile) {
         profile = userProfile
     }
 
     fun checkIfImageChange(name: String, introMsg: String) {
+        updatingProgress.value = 20
+
         // user didn't choose new image
         if (newImage == null) {
             profile.apply {
@@ -50,13 +57,17 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
                 this.introMsg = introMsg
             }
             _profileUpdate.value = profile
+
+            isUploadingImage.value = false
         } else {
             uploadImage(newImage!!, name, introMsg)
+            isUploadingImage.value = true
         }
     }
 
     fun updateProfile(newProfile: UserProfile) {
         coroutineScope.launch {
+            updatingProgress.value = 80
 
             _updateComplete.value = LoadApiStatus.LOADING
 
@@ -64,6 +75,8 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
                 is Result.Success -> {
                     _error.value = null
                     _updateComplete.value = LoadApiStatus.DONE
+
+                    updatingProgress.value = 100
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -83,6 +96,7 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
 
     fun uploadImage(image: Uri, name: String, introMsg: String) {
         coroutineScope.launch {
+            updatingProgress.value = 40
 
             when (val result = repository.uploadImage(image)) {
                 is Result.Success -> {
@@ -93,6 +107,7 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
                         this.introMsg = introMsg
                         this.image = result.data
                     }
+                    updatingProgress.value = 60
 
                     _profileUpdate.value = profile
                 }

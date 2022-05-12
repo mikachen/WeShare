@@ -13,6 +13,7 @@ import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 import com.zoe.weshare.ext.imageFileTimeFormat
 import com.zoe.weshare.ext.toDisplayFormat
+import com.zoe.weshare.util.Const.FIELD_LOG_TYPE
 import com.zoe.weshare.util.Const.FIELD_NOTIFICATION_READ
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
@@ -739,7 +740,8 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
         FirebaseFirestore.getInstance()
             .collection(PATH_LOG)
-            .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
+            .whereLessThanOrEqualTo(FIELD_LOG_TYPE,5)
+//            .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
             .limit(50)
             .addSnapshotListener { snapshot, exception ->
 

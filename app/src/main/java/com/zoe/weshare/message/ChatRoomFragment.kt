@@ -1,5 +1,6 @@
 package com.zoe.weshare.message
 
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getStringWithStrParm
+
 
 class ChatRoomFragment : Fragment() {
 
@@ -81,6 +83,21 @@ class ChatRoomFragment : Fragment() {
 
                 else -> "unKnow"
             }
+
+        recyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
+            override fun onLayoutChange(
+                v: View?,
+                left: Int, top: Int, right: Int, bottom: Int,
+                oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int,
+            ) {
+                if (bottom < oldBottom) {
+                    recyclerView.postDelayed({
+                        recyclerView.smoothScrollToPosition(
+                            recyclerView.adapter!!.itemCount - 1)
+                    }, 100)
+                }
+            }
+        })
     }
 
     private fun setupSendBtn() {
@@ -114,7 +131,9 @@ class ChatRoomFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
-        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+//        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+//        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
     }
 }

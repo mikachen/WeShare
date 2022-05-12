@@ -29,6 +29,8 @@ class LoginFragment : Fragment() {
 
     lateinit var binding: FragmentLoginBinding
 
+    var resetFastLogin: Boolean = false
+
     val viewModel by viewModels<LoginViewModel> { getVmFactory() }
 
     override fun onCreateView(
@@ -36,6 +38,8 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+
+        resetFastLogin = LoginFragmentArgs.fromBundle(requireArguments()).resetFastLogin
 
         binding = FragmentLoginBinding.inflate(inflater, container, false)
 
@@ -60,8 +64,12 @@ class LoginFragment : Fragment() {
             .build()
 
         val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+
+
         // signOut allow user to choose different account to login
-//        mGoogleSignInClient.signOut()
+        if (resetFastLogin) {
+            mGoogleSignInClient.signOut()
+        }
 
         val signInIntent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)

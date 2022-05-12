@@ -2,10 +2,12 @@ package com.zoe.weshare.ext
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.Settings
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -37,7 +39,6 @@ fun Activity?.showToast(message: String) {
         show()
     }
 }
-
 
 //
 //fun Activity.checkLocationPermission(): Boolean {

@@ -9,12 +9,10 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.ChatRoomType
+import com.zoe.weshare.util.*
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWER
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWING
 import com.zoe.weshare.util.Const.PATH_USER
-import com.zoe.weshare.util.LogType
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -134,7 +132,7 @@ class ProfileViewModel(
             when (
                 val result = repository.updateFieldValue(
                     collection = PATH_USER,
-                    docId = UserManager.weShareUser!!.uid,
+                    docId = weShareUser!!.uid,
                     field = FIELD_USER_FOLLOWING,
                     value = FieldValue.arrayUnion(targetUid)
                 )
@@ -160,20 +158,16 @@ class ProfileViewModel(
             }
         }
     }
-
-    /** when a "user" click someone follow,
-     * B. update " user's " following value = "target"
-     * */
-    fun updateTargetFollower(targetUid: String) {
+    fun cancelUserFollowing(targetUid: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
             when (
                 val result = repository.updateFieldValue(
                     collection = PATH_USER,
-                    docId = targetUid,
-                    field = FIELD_USER_FOLLOWER,
-                    value = FieldValue.arrayUnion(UserManager.weShareUser!!.uid)
+                    docId = weShareUser!!.uid,
+                    field = FIELD_USER_FOLLOWING,
+                    value = FieldValue.arrayRemove(targetUid)
                 )
             ) {
                 is Result.Success -> {
@@ -189,7 +183,79 @@ class ProfileViewModel(
                     _status.value = LoadApiStatus.ERROR
                 }
                 else -> {
+                    _error.value = Util.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+
+    /** when a "user" click someone follow,
+     * B. update " user's " following value = "target"
+     * */
+    fun updateTargetFollower(targetUid: String) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            when (
+                val result = repository.updateFieldValue(
+                    collection = PATH_USER,
+                    docId = targetUid,
+                    field = FIELD_USER_FOLLOWER,
+                    value = FieldValue.arrayUnion(weShareUser!!.uid)
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+
+                    getUserInfo(targetUid)
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
                     _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    fun cancelTargetFollower(targetUid: String) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            when (
+                val result = repository.updateFieldValue(
+                    collection = PATH_USER,
+                    docId = targetUid,
+                    field = FIELD_USER_FOLLOWER,
+                    value = FieldValue.arrayRemove(weShareUser!!.uid)
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+
+                    getUserInfo(targetUid)
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = Util.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
                 }
             }

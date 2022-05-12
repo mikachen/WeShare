@@ -115,8 +115,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    app:layout_constraintBottom_toTopOf="@id/checkin_complete"
                     android:textSize="15sp"
+                    app:layout_constraintBottom_toTopOf="@id/checkin_complete"
                     app:layout_constraintStart_toStartOf="@id/text_start_time"
                     app:layout_constraintTop_toBottomOf="@id/text_start_time"
                     tools:text="倒數3小時開始" />
@@ -127,42 +127,43 @@
                     android:layout_height="40dp"
                     android:layout_marginHorizontal="16dp"
                     android:background="@drawable/sl_profile_follow_button"
+                    android:textColor="@color/white"
                     android:textOff="我要參加"
                     android:textOn="活動參與中"
-                    app:layout_constraintEnd_toStartOf="@id/button_volunteer"
                     android:textSize="15sp"
-                    android:textColor="@color/white"
-                    app:layout_constraintTop_toTopOf="@id/button_volunteer"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    app:layout_constraintEnd_toStartOf="@id/button_volunteer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/button_volunteer" />
+
                 <ToggleButton
                     android:id="@+id/button_volunteer"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:textColor="@color/app_work_orange1"
+                    android:layout_marginTop="-4dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@drawable/sl_profile_message_button"
+                    android:textColor="@color/app_work_orange1"
                     android:textOff="志工參與"
                     android:textOn="已登記志工  \u25BC"
                     android:textSize="15sp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="-4dp"
-                    app:layout_constraintStart_toEndOf="@id/button_attend"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/button_attend"
                     app:layout_constraintTop_toBottomOf="@id/checkin_complete" />
 
                 <TextView
                     android:id="@+id/checkin_complete"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="8dp"
+                    android:text="\u0E05\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05簽到完成！"
                     android:textColor="@color/greenTestColor"
                     android:textSize="18sp"
                     android:visibility="invisible"
-                    android:paddingHorizontal="8dp"
-                    tools:visibility="visible"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="@id/button_volunteer"
-                    app:layout_constraintEnd_toEndOf="@id/button_volunteer"
-                    app:layout_constraintTop_toBottomOf="@id/text_countdown_time"
                     app:layout_constraintBottom_toTopOf="@id/button_volunteer"
-                    android:text="\u0E05\u0295\u2022\u0361\uFECC\u2022\u0294\u0E05簽到完成！"/>
+                    app:layout_constraintEnd_toEndOf="@id/button_volunteer"
+                    app:layout_constraintStart_toStartOf="@id/button_volunteer"
+                    app:layout_constraintTop_toBottomOf="@id/text_countdown_time"
+                    tools:visibility="visible" />
 
 
                 <com.google.android.material.divider.MaterialDivider
@@ -530,10 +531,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_edit_comment_box"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_margin="2dp"
         android:background="@color/background_material_light"
-        android:elevation="4dp"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -546,9 +547,11 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="4dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/shape_chatroom_edittext"
             android:gravity="center|start"
             android:paddingVertical="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/button_send_comment"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -557,12 +560,16 @@
             <EditText
                 android:id="@+id/edit_comment_box"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="18dp"
                 android:background="@color/transparent"
                 android:hint="@string/event_leave_a_comment"
-                android:inputType="text" />
+                android:inputType="textMultiLine"
+                android:maxLines="4"
+                android:scrollbars="vertical"
+                android:singleLine="false"
+                tools:text="11111111111121231231231231231231111121231231231231231231231111121231231231231231231231111121231231231231231231231231231231231231231232123123123123123123123123123123123123123" />
         </FrameLayout>
 
 

@@ -93,7 +93,26 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         getLiveCommentResult(event)
     }
 
-    fun searchUsersProfile(comments: List<Comment>) {
+    fun getLiveEventDetail(event: EventPost) {
+
+        onEventLiveDisplaying = repository.getLiveEventDetail(docId = event.id)
+
+        _status.value = LoadApiStatus.DONE
+        _refreshStatus.value = false
+    }
+
+    fun getLiveCommentResult(event: EventPost) {
+        liveComments = repository.getLiveComments(
+            collection = PATH_EVENT_POST,
+            docId = event.id,
+            subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
+        )
+
+        _status.value = LoadApiStatus.DONE
+        _refreshStatus.value = false
+    }
+
+    fun onGetUsersProfile(comments: List<Comment>) {
 
         if (comments.isNotEmpty()) {
             val filteredUser = comments.distinctBy { it.uid }
@@ -116,12 +135,12 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             _onProfileSearchComplete.value = newUserUid.size
 
             for (uid in newUserUid) {
-                getUserInfo(uid)
+                getUsersProfile(uid)
             }
         }
     }
 
-    private fun getUserInfo(uid: String) {
+    private fun getUsersProfile(uid: String) {
         coroutineScope.launch {
 
             _status.value = LoadApiStatus.LOADING
@@ -245,7 +264,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 is Result.Success -> {
                     _error.value = null
 
-                    onSaveOperateLog(
+                    onSaveLog(
                         logType = LogType.COMMENT_EVENT.value,
                         logMsg = WeShareApplication.instance.getString(
                             R.string.log_msg_send_event_comment,
@@ -267,7 +286,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun onSaveOperateLog(logType: Int, logMsg: String) {
+    fun onSaveLog(logType: Int, logMsg: String) {
         val log = OperationLog(
             logType = logType,
             logMsg = logMsg,
@@ -408,23 +427,36 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun getLiveEventDetail(event: EventPost) {
+    fun cancelAttendEvent(fieldString: String) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
 
-        onEventLiveDisplaying = repository.getLiveEventDetail(docId = event.id)
-
-        _status.value = LoadApiStatus.DONE
-        _refreshStatus.value = false
-    }
-
-    fun getLiveCommentResult(event: EventPost) {
-        liveComments = repository.getLiveComments(
-            collection = PATH_EVENT_POST,
-            docId = event.id,
-            subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
-        )
-
-        _status.value = LoadApiStatus.DONE
-        _refreshStatus.value = false
+            when (
+                val result = repository.updateFieldValue(
+                    collection = PATH_EVENT_POST,
+                    docId = onEventLiveDisplaying.value!!.id,
+                    field = fieldString,
+                    value = FieldValue.arrayRemove(userInfo!!.uid)
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
     }
 
     /**
@@ -647,8 +679,9 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     }
 
     fun refreshCommentBoard() {
-        filterComment()
 
+        filterComment()
         blockUserComplete.value = null
     }
+
 }

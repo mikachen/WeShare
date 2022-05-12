@@ -8,7 +8,6 @@ import android.view.animation.AnimationUtils
 import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
 import android.widget.PopupMenu
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -82,14 +81,14 @@ class EventDetailFragment : Fragment() {
 
         viewModel.userAttendType.observe(viewLifecycleOwner) {
             if (it == FIELD_EVENT_ATTENDEE) {
-                viewModel.onSaveOperateLog(
+                viewModel.onSaveLog(
                     logType = LogType.ATTEND_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
                         R.string.log_msg_event_attending, weShareUser!!.name, selectedEvent.title
                     )
                 )
             } else if (it == FIELD_EVENT_VOLUNTEER) {
-                viewModel.onSaveOperateLog(
+                viewModel.onSaveLog(
                     logType = LogType.VOLUNTEER_EVENT.value,
                     logMsg = WeShareApplication.instance.getString(
                         R.string.log_msg_event_volunteering, weShareUser!!.name, selectedEvent.title
@@ -115,7 +114,7 @@ class EventDetailFragment : Fragment() {
             viewModel.filterComment()
         }
         viewModel.filteredComments.observe(viewLifecycleOwner) {
-            viewModel.searchUsersProfile(it)
+            viewModel.onGetUsersProfile(it)
         }
 
         viewModel.onProfileSearchComplete.observe(viewLifecycleOwner) {
@@ -166,7 +165,9 @@ class EventDetailFragment : Fragment() {
         isUserAttend = event.whoAttended.contains(weShareUser!!.uid)
         isUserVolunteer = event.whoVolunteer.contains(weShareUser!!.uid)
         isUserCheckedIn = event.whoCheckedIn.contains(weShareUser!!.uid)
+
         setUpAnimation { }
+        buttonStateReset()
 
         binding.apply {
             bindImage(this.images, event.image)
@@ -203,9 +204,6 @@ class EventDetailFragment : Fragment() {
                 event.endTime.toDisplayDateFormat()
             )
 
-            buttonAttend.isChecked = isUserAttend
-
-            buttonVolunteer.isChecked = isUserVolunteer
 
             if (isUserCheckedIn) {
                 checkinComplete.visibility = View.VISIBLE
@@ -242,16 +240,15 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-
-    fun setUpAnimation( onEnd: () -> Unit) {
+    fun setUpAnimation(onEnd: () -> Unit) {
         checkInAnimate.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(p0: Animation?) = Unit
 
             override fun onAnimationEnd(p0: Animation?) {
-                if(!isAnimateShown){
+                if (!isAnimateShown) {
                     isAnimateShown = true
                     binding.checkinComplete.startAnimation(sneakyHideAnimate)
-                }else{
+                } else {
                     onEnd()
                 }
             }
@@ -271,6 +268,9 @@ class EventDetailFragment : Fragment() {
     }
 
     private fun setupBtn(event: EventPost) {
+
+        binding.buttonAttend.isChecked = isUserAttend
+        binding.buttonVolunteer.isChecked = isUserVolunteer
 
         binding.buttonSendComment.setOnClickListener {
             onSendComment()
@@ -387,13 +387,41 @@ class EventDetailFragment : Fragment() {
 
                 R.id.action_enter_chatroom -> viewModel.getChatRoomInfo()
 
-                R.id.action_cancel_volunteer -> {}
+                R.id.action_cancel_volunteer -> {
+                    viewModel.cancelAttendEvent(FIELD_EVENT_VOLUNTEER)
 
-                R.id.action_cancel_attend -> {}
+                    binding.buttonVolunteer.setOnCheckedChangeListener { btn, checked ->
+                        btn.isChecked = checked
+                    }
+                }
+
+                R.id.action_cancel_attend -> {
+                    if (isUserVolunteer) {
+                        viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
+                        viewModel.cancelAttendEvent(FIELD_EVENT_VOLUNTEER)
+
+
+                    } else {
+                        viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
+                    }
+
+                }
             }
             false
         }
         popupMenu.show()
+    }
+
+    fun buttonStateReset() {
+        binding.buttonAttend.setOnCheckedChangeListener { btn, checked ->
+            btn.isChecked = checked
+        }
+
+        binding.buttonVolunteer.setOnCheckedChangeListener { btn, checked ->
+            btn.isChecked = checked
+        }
+
+
     }
 
 

@@ -16,6 +16,14 @@
         android:title="活動管理"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_cancel_following"
+        android:title="取消追蹤"
+        app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_log_out"
+        android:title="登出"
+        app:showAsAction="never"/>
 
 </menu>

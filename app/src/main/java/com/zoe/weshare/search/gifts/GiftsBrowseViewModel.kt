@@ -9,6 +9,7 @@ import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.GiftStatusType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,33 +45,39 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
     private fun getGiftsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getAllGifts()
 
-            _gifts.value = when (result) {
+            when (val result = repository.getAllGifts()) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data
+                    filterGift(result.data)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
             }
         }
     }
+
+    private fun filterGift(gifts: List<GiftPost>) {
+
+        val list = gifts.filter { it.status != GiftStatusType.CLOSED.code } as MutableList
+
+        list.sortByDescending { it.whoLiked.size }
+
+        _gifts.value = list
+    }
+
 
     fun onNavigateGiftDetails(event: GiftPost) {
         _navigateToSelectedGift.value = event

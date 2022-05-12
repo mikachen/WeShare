@@ -13,7 +13,6 @@
         android:id="@+id/top_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="10dp"
         android:background="@drawable/custom_theme_gradient">
 
 
@@ -175,6 +174,8 @@
             android:layout_marginBottom="4dp"
             android:elevation="2dp"
             android:visibility="gone"
+            android:scaleX="0.9"
+            android:scaleY="0.9"
             app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toTopOf="@id/layout_fab_event"
             app:layout_constraintEnd_toEndOf="parent"
@@ -222,6 +223,8 @@
             android:layout_marginBottom="4dp"
             android:elevation="2dp"
             android:visibility="gone"
+            android:scaleX="0.9"
+            android:scaleY="0.9"
             app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toTopOf="@id/fab_main"
             app:layout_constraintEnd_toEndOf="parent"

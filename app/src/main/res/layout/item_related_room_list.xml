@@ -38,14 +38,18 @@
 
     <TextView
         android:id="@+id/text_last_message"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="2dp"
         android:textSize="14sp"
+        android:maxLines="2"
+        android:layout_marginEnd="8dp"
+        android:ellipsize="end"
+        app:layout_constraintEnd_toStartOf="@id/text_last_sent_time"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/text_room_target_title"
         app:layout_constraintTop_toBottomOf="@id/text_room_target_title"
-        tools:text="晚安 明天見！" />
+        tools:text="晚安 明天見！晚安 明天見！晚安 明天見！晚安 明天見！晚安 明天見！晚安 明天見！晚安 明天見！" />
 
     <TextView
         android:id="@+id/text_last_sent_time"

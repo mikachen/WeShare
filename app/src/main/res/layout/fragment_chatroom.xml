@@ -22,7 +22,6 @@
             android:id="@+id/toolbar_arrow_back"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginStart="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -75,7 +74,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_send_tool"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="wrap_content"
         android:elevation="1dp"
         android:background="@color/background_material_light"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -90,6 +89,8 @@
             android:layout_height="wrap_content"
             android:gravity="center|start"
             android:paddingVertical="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/shape_chatroom_edittext"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="16dp"
@@ -101,9 +102,13 @@
             <EditText
                 android:id="@+id/edit_box"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:hint="@string/chatroom_send_a_message"
-                android:inputType="text"
+                android:scrollbars="vertical"
+                android:maxLines="6"
+                android:inputType="textMultiLine"
+                android:singleLine="false"
+                tools:text="11111111111121231231231231231231111121231231231231231231231111121231231231231231231231111121231231231231231231231231231231231231231232123123123123123123123123123123123123123"
                 android:layout_gravity="center_vertical"
                 android:background="@color/transparent"
                 android:layout_marginHorizontal="18dp"/>

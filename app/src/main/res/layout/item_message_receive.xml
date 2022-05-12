@@ -55,6 +55,7 @@
             android:id="@+id/text_message"
             android:background="@color/background_material_light"
             style="@style/chatroom_message_textview"
+            android:textIsSelectable="true"
             tools:text="mesagemessagemesaagemessageagemessageagemessageagemessageagemessageagemessageagemessagegemessageagemessageagemessage." />
     </com.google.android.material.card.MaterialCardView>
 

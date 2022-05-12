@@ -16,6 +16,7 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getTimeAgoString
+import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithIntParm
 import com.zoe.weshare.util.Util.getStringWithStrParm
@@ -76,6 +77,12 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
 
             binding.imageProfileAvatar.setOnClickListener {
                 viewModel.onNavigateToTargetProfile(comment.uid)
+            }
+
+            if(comment.uid == UserManager.weShareUser!!.uid){
+                binding.moreBtn.visibility = View.INVISIBLE
+            }else{
+                binding.moreBtn.visibility = View.VISIBLE
             }
 
             // displaying user's image and name

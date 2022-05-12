@@ -157,8 +157,6 @@ class GiftDetailFragment : Fragment() {
                     binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
                 }
                 GiftStatusType.CLOSED.code -> {
-                    binding.imageLogoStatus.visibility = View.VISIBLE
-                    binding.imageLogoStatus.setBackgroundResource(R.drawable.status_close_title_logo)
                     binding.textStatus.text = GiftStatusType.CLOSED.tag
                     binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
                 }

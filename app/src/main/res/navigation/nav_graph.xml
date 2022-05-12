@@ -223,10 +223,16 @@
         android:id="@+id/loginFragment"
         android:name="com.zoe.weshare.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <argument
+            android:name="resetFastLogin"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
     <action
         android:id="@+id/action_global_loginFragment"
-        app:destination="@id/loginFragment" />
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph" />
 
     <fragment
         android:id="@+id/editInfoFragment"
@@ -277,6 +283,11 @@
             android:id="@+id/action_eventCheckInFragment_to_eventDetailFragment"
             app:destination="@id/eventDetailFragment"
             app:popUpTo="@id/eventDetailFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_eventCheckInFragment_self"
+            app:destination="@id/eventCheckInFragment"
+            app:popUpTo="@id/eventCheckInFragment"
             app:popUpToInclusive="true" />
     </fragment>
 

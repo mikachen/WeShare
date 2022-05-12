@@ -1,12 +1,9 @@
 package com.zoe.weshare.posting
 
-import android.Manifest
 import android.animation.ObjectAnimator
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +11,6 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -29,14 +25,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.MainActivity
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
@@ -80,8 +69,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
         if (needRefreshMap) {
 //            Logger.d("needRefreshMap when navigateUp: $needRefreshMap")
 //            findNavController().navigate(MapFragmentDirections.actionMapFragmentSelf())
-            super.onDetach()
-            super.onAttach(requireContext())
+
         }
 
         if (isPermissionGranted) {
@@ -121,7 +109,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                         progressBar.progress,
                         it * 100
                     )
-                    animation.duration = 500
+                    animation.duration = 300
                     animation.interpolator = DecelerateInterpolator()
                     animation.start()
                 }
@@ -175,7 +163,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                         progressBar.progress,
                         it * 100
                     )
-                    animation.duration = 500
+                    animation.duration = 300
                     animation.interpolator = DecelerateInterpolator()
                     animation.start()
                 }
