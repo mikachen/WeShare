@@ -12,8 +12,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_user_header"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@drawable/custom_theme_gradient"
+        android:layout_height="0dp"
+        android:paddingVertical="16dp"
+        android:background="@drawable/shape_hearder_curved"
         android:elevation="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="40dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="60dp"
             android:scaleType="fitCenter"
             android:src="@drawable/logo_weshare"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,11 +35,12 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/base_user_avatar"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:layout_marginTop="-50dp"
+        android:layout_marginTop="-70dp"
+        android:elevation="4dp"
         app:cardCornerRadius="90dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +52,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 
     <FrameLayout
@@ -103,8 +105,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/text_profile_name"
-            tools:text="大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類" />
-
+            tools:text="大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家好，我是自地球的一名人類大家"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -296,6 +297,74 @@
 
     </LinearLayout>
 
+
+    <LinearLayout
+        android:id="@+id/mock1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linear_base_social_status2">
+
+        <Button
+            android:id="@+id/lora"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lora" />
+
+        <Button
+            android:id="@+id/ken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ken" />
+
+        <Button
+            android:id="@+id/amy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Amy" />
+
+        <Button
+            android:id="@+id/mandy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mandy" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/mock2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mock1">
+
+        <Button
+            android:id="@+id/A"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="jonny" />
+
+        <Button
+            android:id="@+id/B"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="shin" />
+
+        <Button
+            android:id="@+id/C"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="jay" />
+
+        <Button
+            android:id="@+id/D"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="emma" />
+
+    </LinearLayout>
 
 
 

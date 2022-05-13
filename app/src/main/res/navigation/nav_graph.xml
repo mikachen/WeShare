@@ -130,7 +130,8 @@
             app:argType="com.zoe.weshare.data.GiftPost" />
         <action
             android:id="@+id/action_giftDetailFragment_to_askForGiftFragment"
-            app:destination="@id/askForGiftFragment" />
+            app:destination="@id/askForGiftFragment"
+            />
         <action
             android:id="@+id/action_giftDetailFragment_to_creditFragment"
             app:destination="@id/creditFragment" />
@@ -144,6 +145,11 @@
         <argument
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
+        <action
+            android:id="@+id/action_askForGiftFragment_to_giftDetailFragment"
+            app:destination="@id/giftDetailFragment"
+            app:popUpTo="@id/giftDetailFragment"
+            app:popUpToInclusive="true" />
     </dialog>
 
 
@@ -296,6 +302,11 @@
         android:name="com.zoe.weshare.manage.eventItem.EventManageFragment"
         android:label="EventManageFragment"
         tools:layout="@layout/fragment_event_manage" />
+    <fragment
+        android:id="@+id/heroRankFragment"
+        android:name="com.zoe.weshare.herorank.HeroRankFragment"
+        android:label="fragment_hero_rank"
+        tools:layout="@layout/fragment_hero_rank" /><action android:id="@+id/action_global_heroRankFragment" app:destination="@id/heroRankFragment"/>
 
 
 </navigation>

@@ -107,6 +107,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalGiftsBrowseFragment())
         }
         binding.buttonCurrentHeros.setOnClickListener {
+            findNavController().navigate(NavGraphDirections.actionGlobalHeroRankFragment())
         }
     }
 

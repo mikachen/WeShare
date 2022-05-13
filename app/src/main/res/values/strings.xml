@@ -165,5 +165,6 @@
     <string name="event_status_ended">已結束</string>
     <string name="status_all">全部</string>
 
+    <string name="hero_contribution">%1$d 點貢獻</string>
 
 </resources>

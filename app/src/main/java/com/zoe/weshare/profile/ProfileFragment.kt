@@ -20,6 +20,7 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.Const
 import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class ProfileFragment : Fragment() {
@@ -47,6 +48,7 @@ class ProfileFragment : Fragment() {
 
         viewModel.userLog.observe(viewLifecycleOwner) {
             setupBoardCountView(it)
+            viewModel.calculateContribution(it)
         }
 
         viewModel.userChatRooms.observe(viewLifecycleOwner) {
@@ -73,11 +75,19 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        viewModel.onUpdateContribution.observe(viewLifecycleOwner){
+            it?.let {
+                viewModel.updateContribution(it)
+            }
+        }
+
+        mockUser()
+        mockUser2()
+
         return binding.root
     }
 
     private fun setupBoardCountView(logs: List<OperationLog>) {
-        if (logs.isNotEmpty()) {
             binding.apply {
 
                 textGiftPostCount.text =
@@ -91,7 +101,6 @@ class ProfileFragment : Fragment() {
 
                 textEventVolunteerCount.text =
                     logs.filter { it.logType == LogType.VOLUNTEER_EVENT.value }.size.toString()
-            }
         }
     }
 
@@ -206,4 +215,76 @@ class ProfileFragment : Fragment() {
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
         )
     }
+
+    fun mockUser() {
+
+        binding.apply {
+
+            ken.setOnClickListener {
+                weShareUser = UserInfo(
+                    name = "Ken",
+                    image = "https://images2.gamme.com.tw/news2/2014/94/31/p6CWnp6ckqKW.jpg",
+                    uid = "kenku037362583"
+                )
+            }
+            amy.setOnClickListener {
+                weShareUser = UserInfo(
+                    name = "Amy",
+                    image = "https://1.bp.blogspot.com/-wXhIWjtUkrc/XxzD1uRhQHI/AAAAAAAAhbc/3sL6IPSuG-gEJeg8Qy5sdLBRDurPCNpbwCLcBGAsYHQ/s640/Shingeki%2Bno%2BKyojin%2B-%2BOAD%2B03%2B%2528DVD%2B1024x576%2BAVC%2BAAC%2529.mp4_20200710_000330.072.jpg",
+                    uid = " ko3jMaAmy03731283111"
+                )
+            }
+
+            lora.setOnClickListener {
+                weShareUser = UserInfo(
+                    name = "蘿拉卡芙特",
+                    image = "https://images2.gamme.com.tw/news2/2016/26/12/q52SpaablqCbqA.jpeg",
+                    uid = "123ijijloraefe2212"
+                )
+            }
+            mandy.setOnClickListener {
+                weShareUser = UserInfo(
+                    name = "Mandy",
+                    image = "https://truth.bahamut.com.tw/s01/201309/f7d2d1613cbcd827ac28c1353bc54693.JPG",
+                    uid = "manddy1ji332583"
+                )
+            }
+        }
+    }
+    fun mockUser2() {
+
+        binding.apply {
+
+            A.setOnClickListener {
+                UserManager.weShareUser = UserInfo(
+                    name = "Johnny",
+                    image = "https://img.tagsis.com/202204/96045.jpg",
+                    uid = "12344408Johnny62583"
+                )
+            }
+            B.setOnClickListener {
+                UserManager.weShareUser = UserInfo(
+                    name = "迅姐",
+                    image = "https://www.laoziliao.net/fs/img/3e/3e1885f8708c208ab875033e3e5e3e8f.webp",
+                    uid = " 12343j0000ZhouXun111"
+                )
+            }
+
+            C.setOnClickListener {
+                UserManager.weShareUser = UserInfo(
+                    name = "小傑",
+                    image = "https://images.chinatimes.com/newsphoto/2021-05-25/656/20210525003814.jpg",
+                    uid = "100000Chiang2123212"
+                )
+            }
+            D.setOnClickListener {
+                UserManager.weShareUser = UserInfo(
+                    name = "艾瑪",
+                    image = "https://image.knowing.asia/c4f9ba3d-78f0-4c0e-828a-58eb5ede41ea/70eed7080b3bc4791fe83d798c08a210.png",
+                    uid = "98666Emma1ji332583"
+                )
+            }
+        }
+    }
+
 }

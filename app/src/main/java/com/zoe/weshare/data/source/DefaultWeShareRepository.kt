@@ -29,6 +29,7 @@ class DefaultWeShareRepository(
     override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?> {
         return remoteDataSource.getLiveEventDetail(docId)
     }
+
     override fun getLiveLogs(): MutableLiveData<List<OperationLog>> {
         return remoteDataSource.getLiveLogs()
     }
@@ -120,7 +121,7 @@ class DefaultWeShareRepository(
         return remoteDataSource.getUserAllGiftsPosts(uid)
     }
 
-    override suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>>{
+    override suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>> {
         return remoteDataSource.getUserAllEventsPosts(uid)
     }
 
@@ -157,7 +158,7 @@ class DefaultWeShareRepository(
         collection: String,
         docId: String,
         field: String,
-        value: FieldValue
+        value: FieldValue,
     ): Result<Boolean> {
         return remoteDataSource.updateFieldValue(collection, docId, field, value)
     }
@@ -170,7 +171,12 @@ class DefaultWeShareRepository(
         field: String,
         value: FieldValue,
     ): Result<Boolean> {
-        return remoteDataSource.updateSubCollectionFieldValue(collection, docId, subCollection, subDocId, field, value)
+        return remoteDataSource.updateSubCollectionFieldValue(collection,
+            docId,
+            subCollection,
+            subDocId,
+            field,
+            value)
     }
 
     override suspend fun uploadImage(imageUri: Uri): Result<String> {
@@ -180,10 +186,28 @@ class DefaultWeShareRepository(
     override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> {
         return remoteDataSource.updateUserProfile(profile)
     }
+
     override suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean> {
         return remoteDataSource.sendNotifications(targetUid, log)
     }
-    override suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean> {
+
+    override suspend fun readNotification(
+        uid: String,
+        docId: String,
+        read: Boolean,
+    ): Result<Boolean> {
         return remoteDataSource.readNotification(uid, docId, read)
     }
+
+    override suspend fun updateUserContribution(
+        uid: String,
+        contribution: Contribution,
+    ): Result<Boolean> {
+        return remoteDataSource.updateUserContribution(uid, contribution)
+    }
+
+    override suspend fun getHeroRanking(): Result<List<UserProfile>>{
+        return remoteDataSource.getHeroRanking()
+    }
+
 }

@@ -145,6 +145,11 @@ class MainActivity : AppCompatActivity() {
                         binding.fabsLayoutView.visibility = View.INVISIBLE
                     }
 
+                    CurrentFragmentType.HERORANK -> {
+                        topAppbar.visibility = View.GONE
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                    }
+
                     CurrentFragmentType.LOGIN -> {
                         topAppbar.visibility = View.GONE
                         bottomAppBar.visibility = View.GONE
@@ -231,6 +236,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.giftsBrowseFragment -> CurrentFragmentType.GIFTSBROWSE
                 R.id.eventsBrowseFragment -> CurrentFragmentType.EVENTSBROWSE
                 R.id.eventCheckInFragment -> CurrentFragmentType.EVENTCHECKIN
+                R.id.heroRankFragment -> CurrentFragmentType.HERORANK
 
                 else -> viewModel.currentFragmentType.value
             }

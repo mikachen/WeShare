@@ -100,4 +100,6 @@ interface WeShareDataSource {
     suspend fun updateUserProfile(profile: UserProfile): Result<Boolean>
     suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean>
     suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean>
+    suspend fun updateUserContribution(uid: String, contribution: Contribution): Result<Boolean>
+    suspend fun getHeroRanking(): Result<List<UserProfile>>
 }

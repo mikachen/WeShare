@@ -10,17 +10,20 @@
     <ImageView
         android:id="@+id/welcome_sticker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/custom_login_image_removebg_preview"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/button_signin"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/button_signin"
+        android:padding="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:buttonSize="wide"
+        android:layout_marginBottom="48dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/welcome_sticker"

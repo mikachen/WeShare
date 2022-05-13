@@ -15,10 +15,12 @@
         android:roundIcon="@mipmap/ic_weshare_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeShare">
-
+        <service
+            android:name=".profile.ContributionUpdateService"
+            android:exported="false"/>
         <service
             android:name=".SendNotificationService"
-            android:exported="false"/>
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

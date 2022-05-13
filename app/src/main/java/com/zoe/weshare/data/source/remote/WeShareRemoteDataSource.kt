@@ -21,9 +21,12 @@ import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_SENT_TIME
 import com.zoe.weshare.util.Const.FIELD_ROOM_PARTICIPANTS
 import com.zoe.weshare.util.Const.FIELD_ROOM_USERS_INFO
 import com.zoe.weshare.util.Const.FIELD_STATUS
+import com.zoe.weshare.util.Const.FIELD_USER_CONTRIBUTION
 import com.zoe.weshare.util.Const.FIELD_USER_IMAGE
 import com.zoe.weshare.util.Const.FIELD_USER_INTRO_MSG
 import com.zoe.weshare.util.Const.FIELD_USER_NAME
+import com.zoe.weshare.util.Const.FIELD_USER_TOTAL_CONTRIBUTION
+import com.zoe.weshare.util.Const.FIELD_USER_UID
 import com.zoe.weshare.util.Const.FIELD_WHO_GET_GIFT
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.KEY_CREATED_TIME
@@ -184,7 +187,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
                 .collection(PATH_USER)
-                .whereEqualTo("uid", uid)
+                .whereEqualTo(FIELD_USER_UID, uid)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -1183,4 +1186,76 @@ object WeShareRemoteDataSource : WeShareDataSource {
                     }
                 }
         }
+
+    override suspend fun updateUserContribution(
+        uid: String,
+        contribution: Contribution
+    ): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_USER)
+                .document(uid)
+                .update(FIELD_USER_CONTRIBUTION, contribution)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("updateUserContribution: $uid -> $contribution")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                        " Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun getHeroRanking(): Result<List<UserProfile>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(PATH_USER)
+                .orderBy(FIELD_USER_TOTAL_CONTRIBUTION, Query.Direction.DESCENDING)
+                .limit(10)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<UserProfile>()
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val users = document.toObject(UserProfile::class.java)
+
+                            list.add(users)
+                        }
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                        "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
 }

@@ -188,4 +188,15 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
     ): Result<Boolean> {
         TODO("Not yet implemented")
     }
+
+    override suspend fun updateUserContribution(
+        uid: String,
+        contribution: Contribution,
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getHeroRanking(): Result<List<UserProfile>> {
+        TODO("Not yet implemented")
+    }
 }
