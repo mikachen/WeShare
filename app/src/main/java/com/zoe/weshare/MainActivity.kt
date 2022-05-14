@@ -88,18 +88,18 @@ class MainActivity : AppCompatActivity() {
 
                     CurrentFragmentType.MAP -> {
                         showBottom()
-                        binding.fabsLayoutView.visibility = View.GONE
+                        fabsLayoutView.visibility = View.GONE
                     }
 
                     CurrentFragmentType.ROOMLIST -> {
                         showBottom()
-                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.PROFILE -> {
                         showBottom()
                         topAppbar.visibility = View.GONE
-                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.CHATROOM -> {
@@ -124,36 +124,36 @@ class MainActivity : AppCompatActivity() {
 
                     CurrentFragmentType.GIFTSBROWSE -> {
                         showBottom()
-                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
                     CurrentFragmentType.EVENTSBROWSE -> {
                         showBottom()
-                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.NOTIFICATION -> {
                         showBottom()
-                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.EVENTMANAGE -> {
                         showBottom()
-                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
                     CurrentFragmentType.GIFTMANAGE -> {
                         showBottom()
-                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.HERORANK -> {
-                        topAppbar.visibility = View.GONE
-                        binding.fabsLayoutView.visibility = View.INVISIBLE
+                        topAppbar.visibility = View.INVISIBLE
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.LOGIN -> {
                         topAppbar.visibility = View.GONE
                         bottomAppBar.visibility = View.GONE
-                        binding.fabsLayoutView.visibility = View.GONE
+                        fabsLayoutView.visibility = View.GONE
                     }
 
                     else -> {

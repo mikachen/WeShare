@@ -222,14 +222,14 @@ class ProfileFragment : Fragment() {
 
             ken.setOnClickListener {
                 weShareUser = UserInfo(
-                    name = "Ken",
+                    name = "Roy Chiu",
                     image = "https://images2.gamme.com.tw/news2/2014/94/31/p6CWnp6ckqKW.jpg",
                     uid = "kenku037362583"
                 )
             }
             amy.setOnClickListener {
                 weShareUser = UserInfo(
-                    name = "Amy",
+                    name = "莎夏·布勞斯",
                     image = "https://1.bp.blogspot.com/-wXhIWjtUkrc/XxzD1uRhQHI/AAAAAAAAhbc/3sL6IPSuG-gEJeg8Qy5sdLBRDurPCNpbwCLcBGAsYHQ/s640/Shingeki%2Bno%2BKyojin%2B-%2BOAD%2B03%2B%2528DVD%2B1024x576%2BAVC%2BAAC%2529.mp4_20200710_000330.072.jpg",
                     uid = " ko3jMaAmy03731283111"
                 )
@@ -244,7 +244,7 @@ class ProfileFragment : Fragment() {
             }
             mandy.setOnClickListener {
                 weShareUser = UserInfo(
-                    name = "Mandy",
+                    name = "Ann Hsu",
                     image = "https://truth.bahamut.com.tw/s01/201309/f7d2d1613cbcd827ac28c1353bc54693.JPG",
                     uid = "manddy1ji332583"
                 )

@@ -95,8 +95,8 @@
     <string name="log_msg_event_volunteering">&lt;b>%1s&lt;/b> 成為了活動：%2s 志工</string>
     <string name="log_msg_event_status_ongoing">&lt;b>活動：%s&lt;/b> 已經開始囉！</string>
     <string name="log_msg_event_status_ended">&lt;b>活動：%s&lt;/b> 已經結束了！</string>
-    <string name="log_msg_following_someone">&lt;b>%1s&lt;/b>追蹤了%2s！</string>
-    <string name="log_msg_event_check_in">&lt;b>%1s&lt;/b>已於活動：%2s 完成志工簽到！</string>
+    <string name="log_msg_following_someone">&lt;b>%1s&lt;/b> 追蹤了%2s！</string>
+    <string name="log_msg_event_check_in">&lt;b>%1s&lt;/b> 已於活動：%2s 完成志工簽到！</string>
     <string name="log_msg_receive_gift">&lt;b>%1s&lt;/b> 已成功將贈品：%2s 送出給您，恭喜您！</string>
     <string name="log_msg_force_end_event">&lt;b>%1s&lt;/b> 強制關閉了活動：%2s</string>
 

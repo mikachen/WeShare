@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/first"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,8 +69,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/second_content"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="18dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="14dp"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -84,7 +84,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|bottom"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@id/base_user_image"
                         app:layout_constraintStart_toEndOf="@id/base_user_image"
@@ -96,7 +96,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
-                        android:textSize="15sp"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@id/base_user_image"
                         app:layout_constraintStart_toEndOf="@id/base_user_image"
                         app:layout_constraintTop_toTopOf="@id/base_user_image"
@@ -131,12 +132,12 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_gravity="bottom|center_horizontal"
                 android:elevation="1dp"
                 android:src="@drawable/ic_second_rank"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_gravity="bottom|center_horizontal"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -144,9 +145,9 @@
             android:id="@+id/first"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="30dp"
             app:layout_constraintBottom_toBottomOf="@id/second"
-            android:layout_marginHorizontal="16dp"
             app:layout_constraintEnd_toStartOf="@id/third"
             app:layout_constraintStart_toEndOf="@id/second"
             app:layout_constraintTop_toBottomOf="@id/layout_title_bar">
@@ -154,8 +155,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/first_content"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="18dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="14dp"
                 app:layout_constraintBottom_toBottomOf="parent">
 
 
@@ -170,7 +171,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@id/base_user_image"
                         app:layout_constraintStart_toEndOf="@id/base_user_image"
@@ -182,7 +183,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
-                        android:textSize="15sp"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@id/base_user_image"
                         app:layout_constraintStart_toEndOf="@id/base_user_image"
                         app:layout_constraintTop_toTopOf="@id/base_user_image"
@@ -216,12 +218,12 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_gravity="bottom|center_horizontal"
                 android:elevation="1dp"
                 android:src="@drawable/ic_first_rank"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_gravity="bottom|center_horizontal"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -238,8 +240,8 @@
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/third_content"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="18dp"
+                android:layout_height="130dp"
+                android:layout_marginBottom="14dp"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -253,7 +255,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="@id/base_user_image"
                         app:layout_constraintStart_toEndOf="@id/base_user_image"
@@ -265,7 +267,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
-                        android:textSize="15sp"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="14sp"
                         app:layout_constraintBottom_toBottomOf="@id/base_user_image"
                         app:layout_constraintStart_toEndOf="@id/base_user_image"
                         app:layout_constraintTop_toTopOf="@id/base_user_image"
@@ -300,12 +303,12 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_gravity="bottom|center_horizontal"
                 android:elevation="1dp"
                 android:src="@drawable/ic_third_rank"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_gravity="bottom|center_horizontal"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

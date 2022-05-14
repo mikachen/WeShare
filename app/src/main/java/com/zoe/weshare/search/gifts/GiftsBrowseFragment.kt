@@ -38,9 +38,8 @@ class GiftsBrowseFragment : Fragment() {
         binding = FragmentGiftsBrowseBinding.inflate(inflater, container, false)
 
         viewModel.gifts.observe(viewLifecycleOwner) {
-            adapter.modifyList(it)
-
             onNavigateBack = false
+            adapter.modifyList(it)
         }
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {

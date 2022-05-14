@@ -2,7 +2,6 @@ package com.zoe.weshare.search.events
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,8 +35,8 @@ class EventsBrowseFragment : Fragment() {
         binding = FragmentEventsBrowseBinding.inflate(inflater, container, false)
 
         viewModel.events.observe(viewLifecycleOwner) {
-            adapter.modifyList(it)
             onNavigateBack = false
+            adapter.modifyList(it)
         }
 
         viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
@@ -106,5 +105,11 @@ class EventsBrowseFragment : Fragment() {
                 return true
             }
         })
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        onNavigateBack = true
     }
 }

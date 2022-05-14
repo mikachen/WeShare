@@ -14,11 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.storage.FirebaseStorage
+import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentEditInfoBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.hideNavigationBar
+import com.zoe.weshare.ext.showNavigationBar
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager.weShareUser
 
@@ -62,12 +65,16 @@ class EditInfoFragment : Fragment() {
 
         viewModel.isUploadingImage.observe(viewLifecycleOwner){
             if(it){
-                binding.imageUploadingHint.visibility = View.VISIBLE
+                (activity as MainActivity).binding.imageUploadingHint.visibility = View.VISIBLE
             }
         }
 
         viewModel.updateComplete.observe(viewLifecycleOwner) {
             if(it == LoadApiStatus.DONE) {
+                (activity as MainActivity).binding.layoutMainProgressBar.visibility = View.INVISIBLE
+                (activity as MainActivity).binding.imageUploadingHint.visibility = View.INVISIBLE
+
+                (activity as MainActivity).showNavigationBar()
                 findNavController().navigate(
                     NavGraphDirections.actionGlobalProfileFragment(weShareUser)
                 )
@@ -94,7 +101,7 @@ class EditInfoFragment : Fragment() {
 
         }
 
-        progressBar = binding.progressBar
+        progressBar = (activity as MainActivity).binding.progressBar
         progressBar.max = 100 * 100
     }
 
@@ -104,7 +111,9 @@ class EditInfoFragment : Fragment() {
 
         if (name.isNotEmpty()) {
             viewModel.checkIfImageChange(name, introMsg)
-            binding.layoutProgressLoading.visibility = View.VISIBLE
+            (activity as MainActivity).binding.layoutMainProgressBar.visibility = View.VISIBLE
+
+            (activity as MainActivity).hideNavigationBar()
         } else {
             Toast.makeText(requireContext(), "暱稱為必填項目", Toast.LENGTH_SHORT).show()
         }
