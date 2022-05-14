@@ -3,20 +3,27 @@ package com.zoe.weshare
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import com.google.android.material.badge.BadgeDrawable
+import com.google.android.material.bottomnavigation.BottomNavigationItemView
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private var isFabExpend: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
+    private lateinit var chatRoomBadge: BadgeDrawable
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -168,7 +176,7 @@ class MainActivity : AppCompatActivity() {
             it?.let {
                 viewModel.liveNotifications.observe(this) { notifications ->
                     notifications?.let {
-                        updateBadge(notifications)
+                        updateNotificationBadge(notifications)
                     }
                 }
             }
@@ -177,12 +185,17 @@ class MainActivity : AppCompatActivity() {
         viewModel.reObserveChatRoom.observe(this) {
             it?.let {
                 viewModel.liveChatRooms.observe(this) { chatRooms ->
-
                     chatRooms?.let {
-//                        viewModel.getAllLiveMessages(chatRooms)
-//                        updateBadge(notifications)
+                        viewModel.getUnreadRoom(chatRooms)
                     }
                 }
+            }
+        }
+
+        viewModel.roomBadgeCount.observe(this){
+            it?.let {
+                Log.d("roomBadgeCount","$it")
+                updateUnReadMsgBadge(it)
             }
         }
 
@@ -193,7 +206,19 @@ class MainActivity : AppCompatActivity() {
         setupFab()
     }
 
-    private fun updateBadge(list: List<OperationLog>) {
+    private fun updateUnReadMsgBadge(count: Int){
+
+        if (count > 0) {
+            chatRoomBadge.number = count
+            chatRoomBadge.isVisible = true
+        } else {
+            chatRoomBadge.isVisible = false
+            chatRoomBadge.clearNumber()
+        }
+    }
+
+
+    private fun updateNotificationBadge(list: List<OperationLog>) {
         val count = list.filter { !it.read }.size
 
         if (count == 0) {
@@ -226,9 +251,9 @@ class MainActivity : AppCompatActivity() {
     // 每導航新頁面重新assign currentFragmentType
     private fun setupNavController() {
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { navController: NavController, _: NavDestination, _: Bundle? ->
-//            if (isFabExpend) {
-//                onMainFabClick()
-//            }
+            if (isFabExpend) {
+                onMainFabClick()
+            }
 
             viewModel.currentFragmentType.value = when (navController.currentDestination?.id) {
                 R.id.homeFragment -> CurrentFragmentType.HOME
@@ -258,7 +283,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         binding.notification.setOnClickListener {
-//            onNotificationClick()
             findNavController(R.id.nav_host_fragment)
                 .navigate(NavGraphDirections.actionGlobalNotificationFragment())
         }
@@ -310,6 +334,8 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+
+        chatRoomBadge = binding.bottomNavView.getOrCreateBadge(R.id.navigation_messages)
     }
 
     private fun setupFab() {

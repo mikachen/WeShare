@@ -18,6 +18,9 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
     var reObserveNotification = MutableLiveData<Boolean>()
     var reObserveChatRoom = MutableLiveData<Boolean>()
 
+    var roomBadgeCount = MutableLiveData<Int>()
+
+
     fun getLiveNotificationResult() {
         liveNotifications = repository.getLiveNotifications(weShareUser!!.uid)
         reObserveNotification.value = true
@@ -28,11 +31,15 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
         reObserveChatRoom.value = true
     }
 
-//    fun getAllLiveMessages(rooms: List<ChatRoom>) {
-//
-//        for (i in rooms){
-//           val  liveMessages = repository.getLiveMessages(docId = i.id)
-//
-//        }
-//    }
+    fun getUnreadRoom(rooms: List<ChatRoom>) {
+
+        var unReadRoom = 0
+
+        for (room in rooms) {
+            if (!room.lastMsgRead.contains(weShareUser!!.uid)) {
+                unReadRoom += 1
+            }
+        }
+        roomBadgeCount.value = unReadRoom
+    }
 }
