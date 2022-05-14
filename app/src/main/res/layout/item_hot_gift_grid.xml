@@ -25,22 +25,28 @@
 
         <TextView
             android:id="@+id/text_hot_gift_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginVertical="4dp"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_hot_gift"
             tools:text="可愛喵喵" />
 
         <TextView
             android:id="@+id/text_hot_gift_location"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/text_hot_gift_title"
             app:layout_constraintTop_toBottomOf="@id/text_hot_gift_title"

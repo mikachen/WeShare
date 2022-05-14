@@ -53,7 +53,9 @@ class ChatRoomFragment : Fragment() {
 
         viewModel.navigateToTargetUser.observe(viewLifecycleOwner){
             it?.let{
-                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                findNavController().navigate(
+                    ChatRoomFragmentDirections.actionChatRoomFragmentToProfileFragment(it))
+
                 viewModel.navigateToProfileComplete()
             }
         }

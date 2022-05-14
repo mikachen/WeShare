@@ -111,7 +111,9 @@ class GiftDetailFragment : Fragment() {
 
         viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                findNavController().navigate(
+                    GiftDetailFragmentDirections.actionGiftDetailFragmentToProfileFragment(it))
+
                 viewModel.navigateToProfileComplete()
             }
         }
@@ -198,7 +200,7 @@ class GiftDetailFragment : Fragment() {
         }
         binding.imageProfileAvatar.setOnClickListener {
             findNavController().navigate(
-                NavGraphDirections.actionGlobalProfileFragment(gift.author)
+                GiftDetailFragmentDirections.actionGiftDetailFragmentToProfileFragment(gift.author)
             )
         }
     }

@@ -176,7 +176,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     }
                 }
             },
-            0, 3000
+            0, 5000
         )
     }
 
@@ -226,7 +226,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
 
                         logTickerRv.smoothSnapToPosition(manager.findLastVisibleItemPosition() + 1)
-                    } else if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
+                    } else{
 
                         logTickerRv.smoothSnapToPosition(0)
                     }

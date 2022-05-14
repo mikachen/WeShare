@@ -9,7 +9,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
@@ -43,8 +42,7 @@ class HeroRankFragment : Fragment() {
 
         viewModel.selectedUser.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(
-                    NavGraphDirections.actionGlobalProfileFragment(UserInfo(uid = it.uid)))
+                onNavigateToTargetProfile(it.uid)
                 viewModel.onNavigateComplete()
             }
         }
@@ -91,22 +89,24 @@ class HeroRankFragment : Fragment() {
                 getString(R.string.hero_contribution, thirdPlace.contribution?.totalContribution)
 
             first.setOnClickListener {
-                findNavController().navigate(
-                    NavGraphDirections.actionGlobalProfileFragment(UserInfo(uid = firstPlace.uid)))
+                onNavigateToTargetProfile(firstPlace.uid)
             }
 
             second.setOnClickListener {
-                findNavController().navigate(
-                    NavGraphDirections.actionGlobalProfileFragment(UserInfo(uid = secondPlace.uid)))
+                onNavigateToTargetProfile(secondPlace.uid)
             }
 
             third.setOnClickListener {
-                findNavController().navigate(
-                    NavGraphDirections.actionGlobalProfileFragment(UserInfo(uid = thirdPlace.uid)))
+                onNavigateToTargetProfile(thirdPlace.uid)
             }
         }
         binding.toolbarArrowBack.setOnClickListener {
             findNavController().navigateUp()
         }
+    }
+
+    fun onNavigateToTargetProfile(uid: String) {
+        findNavController().navigate(
+            HeroRankFragmentDirections.actionHeroRankFragmentToProfileFragment(UserInfo(uid = uid)))
     }
 }

@@ -129,7 +129,9 @@ class EventDetailFragment : Fragment() {
 
         viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                findNavController().navigate(
+                    EventDetailFragmentDirections.actionEventDetailFragmentToProfileFragment(it))
+
                 viewModel.navigateToProfileComplete()
             }
         }
@@ -309,7 +311,7 @@ class EventDetailFragment : Fragment() {
 
         binding.imageProfileAvatar.setOnClickListener {
             findNavController().navigate(
-                NavGraphDirections.actionGlobalProfileFragment(event.author)
+                EventDetailFragmentDirections.actionEventDetailFragmentToProfileFragment(event.author)
             )
         }
     }

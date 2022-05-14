@@ -73,7 +73,8 @@ class DistributeFragment : BottomSheetDialogFragment() {
 
         viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                findNavController().navigate(
+                    DistributeFragmentDirections.actionDistributeFragmentToProfileFragment(it))
                 viewModel.navigateToProfileComplete()
             }
         }

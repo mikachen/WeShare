@@ -115,7 +115,7 @@
         <entry key="app/src/main/res/layout/item_hero_rank.xml" value="0.5" />
         <entry key="app/src/main/res/layout/item_home_log_ticker.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/layout/item_home_user_logs.xml" value="0.231722958529286" />
-        <entry key="app/src/main/res/layout/item_hot_gift_grid.xml" value="0.10888252148997135" />
+        <entry key="app/src/main/res/layout/item_hot_gift_grid.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.375" />
         <entry key="app/src/main/res/layout/item_message_send.xml" value="0.335" />
         <entry key="app/src/main/res/layout/item_notifications.xml" value="0.5" />

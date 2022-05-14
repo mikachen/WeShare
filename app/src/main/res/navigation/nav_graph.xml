@@ -109,6 +109,9 @@
         <argument
             android:name="selectedRoom"
             app:argType="com.zoe.weshare.data.ChatRoom" />
+        <action
+            android:id="@+id/action_chatRoomFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 
 
@@ -128,6 +131,9 @@
         <action
             android:id="@+id/action_eventDetailFragment_to_eventCheckInFragment"
             app:destination="@id/eventCheckInFragment" />
+        <action
+            android:id="@+id/action_eventDetailFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
 
     </fragment>
 
@@ -146,6 +152,9 @@
         <action
             android:id="@+id/action_giftDetailFragment_to_creditFragment"
             app:destination="@id/creditFragment" />
+        <action
+            android:id="@+id/action_giftDetailFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 
     <dialog
@@ -219,6 +228,9 @@
         <argument
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
+        <action
+            android:id="@+id/action_distributeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </dialog>
     <dialog
         android:id="@+id/creditFragment"
@@ -319,7 +331,11 @@
         android:id="@+id/heroRankFragment"
         android:name="com.zoe.weshare.herorank.HeroRankFragment"
         android:label="fragment_hero_rank"
-        tools:layout="@layout/fragment_hero_rank" /><action android:id="@+id/action_global_heroRankFragment" app:destination="@id/heroRankFragment"/>
+        tools:layout="@layout/fragment_hero_rank" >
+        <action
+            android:id="@+id/action_heroRankFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment><action android:id="@+id/action_global_heroRankFragment" app:destination="@id/heroRankFragment"/>
 
 
 </navigation>
