@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.ChatRoom
+import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.source.WeShareRepository
@@ -18,8 +19,9 @@ import kotlinx.coroutines.launch
 class RoomListViewModel(
     private val repository: WeShareRepository,
     val userInfo: UserInfo?
-) :
-    ViewModel() {
+) : ViewModel() {
+
+    var allRooms = MutableLiveData<List<ChatRoom>>()
 
     private var _rooms = MutableLiveData<List<ChatRoom>>()
     val room: LiveData<List<ChatRoom>>
@@ -41,40 +43,15 @@ class RoomListViewModel(
     val error: LiveData<String?>
         get() = _error
 
-    fun searchChatRooms() {
-        userInfo?.let { getUserChatRooms(it.uid) }
+    fun onViewDisplay(liveData: MutableLiveData<List<ChatRoom>>) {
+        allRooms = liveData
     }
 
-    private fun getUserChatRooms(uid: String) {
-        coroutineScope.launch {
-            _status.value = LoadApiStatus.LOADING
+    fun orderByTime(rooms: List<ChatRoom>){
+        rooms as MutableList
+        rooms.sortByDescending { it.lastMsgSentTime }
 
-            val result = repository.getUserChatRooms(uid)
-
-            _rooms.value = when (result) {
-                is Result.Success -> {
-                    _error.value = null
-                    _status.value = LoadApiStatus.DONE
-                    result.data
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                    null
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                    null
-                }
-                else -> {
-                    _error.value =
-                        WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
-                    null
-                }
-            }
-        }
+        _rooms.value = rooms
     }
 
     fun displayRoomDetails(selectedRoom: ChatRoom) {

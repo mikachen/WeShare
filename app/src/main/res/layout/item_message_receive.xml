@@ -68,6 +68,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/layout_text_message"
         tools:text="9:11" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

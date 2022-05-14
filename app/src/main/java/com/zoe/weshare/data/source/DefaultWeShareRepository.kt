@@ -34,6 +34,10 @@ class DefaultWeShareRepository(
         return remoteDataSource.getLiveLogs()
     }
 
+    override fun getLiveRoomLists(uid: String): MutableLiveData<List<ChatRoom>>{
+        return remoteDataSource.getLiveRoomLists(uid)
+    }
+
     override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
         return remoteDataSource.getLiveMessages(docId)
     }
@@ -44,6 +48,10 @@ class DefaultWeShareRepository(
 
     override suspend fun getUserInfo(uid: String): Result<UserProfile?> {
         return remoteDataSource.getUserInfo(uid)
+    }
+
+    override suspend fun setLastMsgReadUser(docId: String, uidList: List<String>): Result<Boolean>{
+        return remoteDataSource.setLastMsgReadUser(docId, uidList)
     }
 
     override suspend fun newUserRegister(user: UserProfile): Result<Boolean> {

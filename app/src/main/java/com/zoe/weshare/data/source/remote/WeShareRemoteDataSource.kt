@@ -17,6 +17,7 @@ import com.zoe.weshare.util.Const.FIELD_LOG_TYPE
 import com.zoe.weshare.util.Const.FIELD_NOTIFICATION_READ
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
+import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MSG_READ
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_SENT_TIME
 import com.zoe.weshare.util.Const.FIELD_ROOM_PARTICIPANTS
 import com.zoe.weshare.util.Const.FIELD_ROOM_USERS_INFO
@@ -405,6 +406,33 @@ object WeShareRemoteDataSource : WeShareDataSource {
         return liveData
     }
 
+    override fun getLiveRoomLists(uid: String): MutableLiveData<List<ChatRoom>> {
+
+        val liveData = MutableLiveData<List<ChatRoom>>()
+
+        FirebaseFirestore.getInstance().collection(PATH_CHATROOM)
+            .whereArrayContains(FIELD_ROOM_PARTICIPANTS,uid)
+            .addSnapshotListener { snapshot, exception ->
+
+                Logger.i("addSnapshotListener detect")
+
+                exception?.let {
+                    Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                }
+
+                val list = mutableListOf<ChatRoom>()
+                for (document in snapshot!!) {
+                    Logger.d(document.id + " => " + document.data)
+
+                    val rooms = document.toObject(ChatRoom::class.java)
+                    list.add(rooms)
+                }
+                liveData.value = list
+            }
+
+        return liveData
+    }
+
     override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
 
         val liveData = MutableLiveData<List<MessageItem>>()
@@ -600,7 +628,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 .update(
                     mapOf(
                         FIELD_ROOM_LAST_MEG to message.content,
-                        FIELD_ROOM_LAST_SENT_TIME to message.createdTime
+                        FIELD_ROOM_LAST_SENT_TIME to message.createdTime,
                     )
                 )
                 .addOnCompleteListener { task ->
@@ -614,6 +642,35 @@ object WeShareRemoteDataSource : WeShareDataSource {
                             Logger.w(
                                 "[${this::class.simpleName}] " +
                                     "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun setLastMsgReadUser(docId: String, uidList: List<String>): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_CHATROOM).document(docId)
+                .update(mapOf(FIELD_ROOM_LAST_MSG_READ to uidList))
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("resetLastSeenMsg: $uidList")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                        "Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))

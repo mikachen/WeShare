@@ -16,11 +16,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/image_room_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"/>
+        <ImageView
+            android:id="@+id/image_room_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -40,13 +40,13 @@
         android:id="@+id/text_last_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="2dp"
-        android:textSize="14sp"
-        android:maxLines="2"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
-        app:layout_constraintEnd_toStartOf="@id/text_last_sent_time"
+        android:maxLines="2"
+        android:padding="2dp"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/text_last_sent_time"
         app:layout_constraintStart_toStartOf="@id/text_room_target_title"
         app:layout_constraintTop_toBottomOf="@id/text_room_target_title"
         tools:text="晚安 明天見！晚安 明天見！晚安 明天見！晚安 明天見！晚安 明天見！晚安 明天見！晚安 明天見！" />
@@ -60,5 +60,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_room_target_title"
         tools:text="9:57" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/unread_hint"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        tools:visibility="visible"
+        android:visibility="invisible"
+        android:layout_marginBottom="1dp"
+        android:backgroundTint="@color/gift_abandoned_red"
+        app:cardCornerRadius="90dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/text_last_sent_time">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:background="@color/white"
+            app:cardCornerRadius="90dp">
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

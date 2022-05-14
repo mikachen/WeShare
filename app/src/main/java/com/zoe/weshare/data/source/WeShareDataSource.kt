@@ -29,9 +29,13 @@ interface WeShareDataSource {
         subCollection: String,
     ): MutableLiveData<List<Comment>>
 
+    fun getLiveRoomLists(uid: String): MutableLiveData<List<ChatRoom>>
+
     fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>>
 
     fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>>
+
+    suspend fun setLastMsgReadUser(docId: String, uidList: List<String>): Result<Boolean>
 
     suspend fun newUserRegister(user: UserProfile): Result<Boolean>
     suspend fun getUserInfo(uid: String): Result<UserProfile?>

@@ -16,6 +16,10 @@ object Const {
 
     const val FIELD_ROOM_LAST_MEG = "lastMsg"
     const val FIELD_ROOM_LAST_SENT_TIME = "lastMsgSentTime"
+    const val FIELD_ROOM_LAST_MSG_READ = "lastMsgRead"
+
+    const val FIELD_MESSAGE_WHO_READ = "whoRead"
+
     const val FIELD_ROOM_PARTICIPANTS = "participants"
     const val FIELD_ROOM_USERS_INFO = "usersInfo"
 

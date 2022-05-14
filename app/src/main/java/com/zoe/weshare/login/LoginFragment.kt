@@ -48,6 +48,7 @@ class LoginFragment : Fragment() {
         viewModel.loginSuccess.observe(viewLifecycleOwner) {
 
             (activity as MainActivity).viewModel.getLiveNotificationResult()
+            (activity as MainActivity).viewModel.getLiveRoomResult()
             findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
         }
 

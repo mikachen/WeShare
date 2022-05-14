@@ -13,4 +13,5 @@ data class ChatRoom(
     var type: Int = -1,
     var eventTitle: String = "",
     var eventImage: String = "",
+    var lastMsgRead: List<String> = emptyList()
 ) : Parcelable

@@ -1,6 +1,7 @@
 package com.zoe.weshare.message.roomlist
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -57,6 +58,12 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
                 }
                 textLastMessage.text = room.lastMsg
                 textLastSentTime.text = room.lastMsgSentTime.toDisplaySentTime()
+
+                if (room.lastMsgRead.contains(weShareUser!!.uid)){
+                    unreadHint.visibility = View.INVISIBLE
+                }else{
+                    unreadHint.visibility = View.VISIBLE
+                }
             }
         }
 
@@ -69,6 +76,13 @@ class RoomListAdapter(private val onClickListener: RoomListOnClickListener) :
             }
         }
     }
+
+    fun modifyList(rooms: List<ChatRoom>){
+        val list = rooms.filterNot { it.lastMsgSentTime == -1L }
+
+        submitList(list)
+    }
+
 }
 
 class DiffCall : DiffUtil.ItemCallback<ChatRoom>() {
@@ -83,6 +97,6 @@ class DiffCall : DiffUtil.ItemCallback<ChatRoom>() {
         oldItem: ChatRoom,
         newItem: ChatRoom,
     ): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem == newItem
     }
 }

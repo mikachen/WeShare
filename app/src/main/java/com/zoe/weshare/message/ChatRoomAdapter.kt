@@ -1,5 +1,6 @@
 package com.zoe.weshare.message
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,7 +61,9 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
         val itemType = getItem(position)
         when (holder) {
             is SendViewHolder -> {
-                (itemType as MessageItem.OnSendSide).message?.let { holder.bind(it) }
+                (itemType as MessageItem.OnSendSide).message?.let {
+                    holder.bind(it, targetUsersList, roomType)
+                }
             }
             is ReceiveViewHolder -> {
                 (itemType as MessageItem.OnReceiveSide).message?.let {
@@ -72,22 +75,54 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     class SendViewHolder(private var binding: ItemMessageSendBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment) {
-            binding.textMessage.text = comment.content
-            binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
+        fun bind(comment: Comment, targetUsersList: List<UserInfo>, roomType: Int) {
+
+            binding.apply {
+                textMessage.text = comment.content
+                textSentTime.text = comment.createdTime.toDisplaySentTime()
+
+                when (roomType) {
+                    ChatRoomType.PRIVATE.value -> {
+                        val target = targetUsersList.single()
+
+                        if (comment.whoRead.contains(target.uid)) {
+                            unreadHint.text = "已讀"
+                        } else {
+                            unreadHint.text = "未讀"
+                        }
+
+                    }
+                    ChatRoomType.MULTIPLE.value -> {
+
+                        val isRead =
+                            comment.whoRead.any { user -> targetUsersList.any { user == it.uid } }
+
+                        if (isRead) {
+                            unreadHint.text = "已讀"
+                        } else {
+                            unreadHint.text = "未讀"
+                        }
+                    }
+                }
+            }
         }
     }
 
     class ReceiveViewHolder(private var binding: ItemMessageReceiveBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, usersList: List<UserInfo>, roomType: Int, viewModel: ChatRoomViewModel) {
-            binding.textMessage.text = comment.content
-            binding.textSentTime.text = comment.createdTime.toDisplaySentTime()
-
-            binding.baseTargetImage.setOnClickListener {
-                viewModel.onNavigateToTargetProfile(comment.uid)
+        fun bind(
+            comment: Comment,
+            usersList: List<UserInfo>,
+            roomType: Int,
+            viewModel: ChatRoomViewModel,
+        ) {
+            binding.apply {
+                textMessage.text = comment.content
+                textSentTime.text = comment.createdTime.toDisplaySentTime()
+                baseTargetImage.setOnClickListener {
+                    viewModel.onNavigateToTargetProfile(comment.uid)
+                }
             }
-
 
             if (usersList.isNotEmpty()) {
                 val speaker = usersList.single { it.uid == comment.uid }
@@ -108,7 +143,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
         }
 
         override fun areContentsTheSame(oldItem: MessageItem, newItem: MessageItem): Boolean {
-            return  oldItem.id == newItem.id
+            return oldItem == newItem
         }
 
         private const val ITEM_VIEW_TYPE_SEND = 0x00
