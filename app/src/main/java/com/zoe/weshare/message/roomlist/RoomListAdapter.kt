@@ -167,7 +167,8 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
             builder.apply {
                 setMessage(getString(R.string.leave_this_chatroom_message))
                 setPositiveButton(getString(R.string.confirm_yes)) { dialog, _ ->
-                    viewModel.leaveChatRoom(room)
+                    viewModel.onLeaveRoom(room)
+
                     dialog.cancel()
                 }
 

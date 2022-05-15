@@ -63,7 +63,7 @@ class RoomListFragment : Fragment() {
         }
 
         viewModel.leaveRoomComplete.observe(viewLifecycleOwner){
-            requireActivity().showToast("success leave")
+            requireActivity().showToast("已離開")
         }
 
         setUpView()

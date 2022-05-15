@@ -342,7 +342,11 @@ class ProfileViewModel(
 
         if (result.isNotEmpty()) {
             // there was chat room history with author & ChatRoomType is PRIVATE
-            _navigateToFormerRoom.value = result.single()
+                val formerRoom = result.single()
+
+            user.value?.let { formerRoom.targetProfile.add(it) }
+
+            _navigateToFormerRoom.value = formerRoom
         } else {
             // no private chat with author before
             onNewRoomPrepare()
@@ -352,8 +356,8 @@ class ProfileViewModel(
     fun onNewRoomPrepare() {
         val room = ChatRoom(
             type = ChatRoomType.PRIVATE.value,
-            participants = listOf(targetUser!!.uid, UserManager.weShareUser!!.uid),
-            usersInfo = listOf(targetUser, UserManager.weShareUser!!)
+            participants = listOf(targetUser!!.uid, weShareUser!!.uid),
+            usersInfo = listOf(targetUser, weShareUser!!)
         )
         createRoom(room)
     }
@@ -369,6 +373,7 @@ class ProfileViewModel(
 
                     _navigateToNewRoom.value = room.apply {
                         id = result.data
+                        user.value?.let { targetProfile.add(it) }
                     }
                 }
                 is Result.Fail -> {

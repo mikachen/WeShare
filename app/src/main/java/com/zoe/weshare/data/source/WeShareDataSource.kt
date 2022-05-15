@@ -106,4 +106,5 @@ interface WeShareDataSource {
     suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean>
     suspend fun updateUserContribution(uid: String, contribution: Contribution): Result<Boolean>
     suspend fun getHeroRanking(): Result<List<UserProfile>>
+    suspend fun removeDocument(collection: String, docId: String): Result<Boolean>
 }

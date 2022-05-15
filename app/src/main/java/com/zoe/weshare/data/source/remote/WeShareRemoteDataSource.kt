@@ -1315,4 +1315,32 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 }
         }
 
+    override suspend fun removeDocument(collection: String, docId: String): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(collection).document(docId)
+                .delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("removeDocument: $collection -> $docId")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                        " Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
 }

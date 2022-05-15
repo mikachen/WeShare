@@ -61,7 +61,7 @@ class RoomListViewModel(
 
         val filteredRoom = rooms.filter { it.type == ChatRoomType.PRIVATE.value }
 
-        if (filteredRoom.isNotEmpty()){
+        if (filteredRoom.isNotEmpty()) {
             searchCount.value = filteredRoom.size
 
             for (room in filteredRoom) {
@@ -124,6 +124,46 @@ class RoomListViewModel(
         _navigateToSelectedRoom.value = null
     }
 
+    fun onLeaveRoom(room: ChatRoom) {
+        if (room.participants.size == 1) {
+            removeChatRoom(room)
+        } else if (room.participants.size > 1) {
+            leaveChatRoom(room)
+        }
+    }
+
+    fun removeChatRoom(room: ChatRoom) {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+
+            when (
+                val result = repository.removeDocument(
+                    collection = PATH_CHATROOM,
+                    docId = room.id,
+                )
+            ) {
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+
+                    leaveRoomComplete.value = room
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = Util.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
     fun leaveChatRoom(room: ChatRoom) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
@@ -156,6 +196,5 @@ class RoomListViewModel(
                 }
             }
         }
-
     }
 }

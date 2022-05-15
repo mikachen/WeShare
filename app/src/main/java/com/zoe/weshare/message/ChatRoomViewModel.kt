@@ -10,9 +10,11 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.Const.FIELD_MESSAGE_WHO_READ
 import com.zoe.weshare.util.Const.PATH_CHATROOM
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
+import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,9 +30,7 @@ class ChatRoomViewModel(
 
     var msgDisplay = MutableLiveData<List<MessageItem>>()
 
-    private var _chatRoom = MutableLiveData<ChatRoom>()
-    val chatRoom: LiveData<ChatRoom>
-        get() = _chatRoom
+    private lateinit var chatRoom: ChatRoom
 
     var _newMessage = MutableLiveData<Comment>()
     val newMessage: LiveData<Comment>
@@ -54,10 +54,10 @@ class ChatRoomViewModel(
     var loopSize: Int = 0
 
 
-    fun onViewDisplay(chatRoom: ChatRoom) {
+    fun onViewDisplay(room: ChatRoom) {
 
-        _chatRoom.value = chatRoom
-        liveMessages = repository.getLiveMessages(docId = chatRoom.id)
+        chatRoom = room
+        liveMessages = repository.getLiveMessages(docId = room.id)
     }
 
 
@@ -153,7 +153,7 @@ class ChatRoomViewModel(
             when (
                 val result = repository.updateSubCollectionFieldValue(
                     collection = PATH_CHATROOM,
-                    docId = chatRoom.value!!.id,
+                    docId = chatRoom.id,
                     subCollection = SUB_PATH_CHATROOM_MESSAGE,
                     subDocId = message.id,
                     field = FIELD_MESSAGE_WHO_READ,
@@ -202,7 +202,7 @@ class ChatRoomViewModel(
 
             when (
                 val result = repository.setLastMsgReadUser(
-                    docId = chatRoom.value!!.id,
+                    docId = chatRoom.id,
                     uidList = message.whoRead
                 )
             ) {
@@ -236,5 +236,41 @@ class ChatRoomViewModel(
 
     fun navigateToProfileComplete() {
         _navigateToTargetUser.value = null
+    }
+
+    //TODO 邏輯複雜 再想一想
+    fun checkIfNewUserEntry(messages: List<MessageItem>): Boolean {
+        val receivedItems = messages.filter { it is MessageItem.OnReceiveSide }
+
+        val targetUid = chatRoom.participants.filterNot { it == weShareUser!!.uid }
+
+
+        if (targetUid.isNotEmpty()) {
+            //there's other target in this room
+
+            when (chatRoom.type) {
+                ChatRoomType.PRIVATE.value -> {
+
+                    return if(receivedItems.isNotEmpty()){
+
+                        chatRoom.targetProfile.isEmpty()
+
+                    }else{
+                        // target never speak
+                        false
+                    }
+                }
+                ChatRoomType.MULTIPLE.value -> {
+
+                }
+            }
+
+            return false
+
+        } else {
+            //no one else in this room except user self
+
+            return false
+        }
     }
 }

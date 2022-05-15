@@ -21,6 +21,10 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun removeDocument(collection: String, docId: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun setLastMsgReadUser(docId: String, uidList: List<String>): Result<Boolean> {
         TODO("Not yet implemented")
     }

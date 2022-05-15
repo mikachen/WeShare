@@ -218,4 +218,7 @@ class DefaultWeShareRepository(
         return remoteDataSource.getHeroRanking()
     }
 
+    override suspend fun removeDocument(collection: String, docId: String): Result<Boolean>{
+        return removeDocument(collection, docId)
+    }
 }
