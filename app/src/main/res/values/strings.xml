@@ -156,6 +156,8 @@
     <string name="block_this_person_title">確定要封鎖用戶：%s？</string>
     <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何評論與刊登。</string>
 
+    <string name="leave_this_chatroom_message">聊天室將會被刪除，確定要繼續嗎？</string>
+
     <string name="gift_status_opening">開放中</string>
     <string name="gift_status_closed">已結案</string>
     <string name="gift_status_abandoned">已下架</string>

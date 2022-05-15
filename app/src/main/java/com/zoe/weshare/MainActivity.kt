@@ -2,21 +2,15 @@ package com.zoe.weshare
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import com.google.android.material.badge.BadgeDrawable
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
@@ -194,7 +188,6 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.roomBadgeCount.observe(this){
             it?.let {
-                Log.d("roomBadgeCount","$it")
                 updateUnReadMsgBadge(it)
             }
         }

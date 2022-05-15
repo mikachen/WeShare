@@ -128,6 +128,7 @@
         <entry key="app/src/main/res/layout/test_view.xml" value="0.5" />
         <entry key="app/src/main/res/menu/block_popup_menu.xml" value="0.17272338606241983" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.25" />
+        <entry key="app/src/main/res/menu/chatroom_popup_menu.xml" value="0.13125267208208635" />
         <entry key="app/src/main/res/menu/event_more_menu.xml" value="0.10431808465156049" />
         <entry key="app/src/main/res/menu/profile_popup_menu.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/menu/toolbar_menu.xml" value="0.26979166666666665" />

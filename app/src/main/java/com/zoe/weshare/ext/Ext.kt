@@ -1,9 +1,13 @@
 package com.zoe.weshare.ext
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
@@ -73,6 +77,13 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
             .into(imgView)
     }
 }
+
+@SuppressLint("MissingPermission")
+fun getPhoneVibrate(context: Context){
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
+}
+
 
 /**
  * resize Map marker icon

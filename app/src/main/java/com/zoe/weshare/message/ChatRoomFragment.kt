@@ -84,18 +84,24 @@ class ChatRoomFragment : Fragment() {
 
         recyclerView.adapter = adapter
 
-        binding.textRoomTargetTitle.text =
-            when (chatRoom.type) {
-                ChatRoomType.PRIVATE.value ->
-                    chatRoom.usersInfo.single { it.uid != weShareUser!!.uid }.name
+        when (chatRoom.type) {
+            ChatRoomType.PRIVATE.value ->
+                if (chatRoom.targetProfile.isNotEmpty()) {
+                    binding.textRoomTargetTitle.text = chatRoom.targetProfile.single().name
 
-                ChatRoomType.MULTIPLE.value -> getStringWithStrParm(
-                    R.string.room_list_event_title,
-                    chatRoom.eventTitle
-                )
+                } else {
+                    binding.textRoomTargetTitle.text = "不明"
+                }
 
-                else -> "unKnow"
+            ChatRoomType.MULTIPLE.value -> {
+
+                binding.textRoomTargetTitle.text =
+                    getStringWithStrParm(
+                        R.string.room_list_event_title,
+                        chatRoom.eventTitle
+                    )
             }
+        }
     }
 
     private fun setupSendBtn() {

@@ -1,18 +1,17 @@
 package com.zoe.weshare.message.roomlist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.databinding.FragmentRoomListBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class RoomListFragment : Fragment() {
@@ -20,6 +19,8 @@ class RoomListFragment : Fragment() {
     private val viewModel by viewModels<RoomListViewModel> { getVmFactory(weShareUser) }
     lateinit var binding: FragmentRoomListBinding
     lateinit var adapter: RoomListAdapter
+
+    var hasSearchProfile = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,15 +32,25 @@ class RoomListFragment : Fragment() {
 
         // get live roomList
         val liveData = (activity as MainActivity).viewModel.liveChatRooms
+
         viewModel.onViewDisplay(liveData)
 
 
         viewModel.allRooms.observe(viewLifecycleOwner){
-            viewModel.orderByTime(it)
+            adapter.modifyList(it)
+
+
+            if(!hasSearchProfile){
+                hasSearchProfile = true
+
+                viewModel.onGetPrivateRoomUserProfile(it)
+            }
         }
 
-        viewModel.room.observe(viewLifecycleOwner) {
-            adapter.modifyList(it)
+        viewModel.searchCount.observe(viewLifecycleOwner) {
+            if (it == 0){
+                adapter.notifyDataSetChanged()
+            }
         }
 
         viewModel.navigateToSelectedRoom.observe(viewLifecycleOwner) {
@@ -51,17 +62,16 @@ class RoomListFragment : Fragment() {
             }
         }
 
+        viewModel.leaveRoomComplete.observe(viewLifecycleOwner){
+            requireActivity().showToast("success leave")
+        }
+
         setUpView()
         return binding.root
     }
 
     fun setUpView(){
-        adapter = RoomListAdapter(
-            RoomListAdapter.RoomListOnClickListener { selectedRoom ->
-                viewModel.displayRoomDetails(selectedRoom)
-            }
-        )
-
+        adapter = RoomListAdapter(viewModel,requireContext())
         binding.roomlistRecyclerView.adapter = adapter
     }
 }

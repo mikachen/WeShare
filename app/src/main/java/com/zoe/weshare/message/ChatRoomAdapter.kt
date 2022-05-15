@@ -1,6 +1,5 @@
 package com.zoe.weshare.message
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,18 +9,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.MessageItem
-import com.zoe.weshare.data.UserInfo
+import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.ItemMessageReceiveBinding
 import com.zoe.weshare.databinding.ItemMessageSendBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplaySentTime
 import com.zoe.weshare.util.ChatRoomType
-import com.zoe.weshare.util.UserManager.weShareUser
 
 class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
     ListAdapter<MessageItem, RecyclerView.ViewHolder>(DiffCallback) {
 
-    var targetUsersList = listOf<UserInfo>()
+    var targetUsersList = listOf<UserProfile>()
     var roomType: Int = -1
 
     init {
@@ -29,7 +27,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
     }
 
     fun getTargetUsers(room: ChatRoom) {
-        targetUsersList = room.usersInfo.filter { it.uid != weShareUser!!.uid }
+        targetUsersList = room.targetProfile
         roomType = room.type
     }
 
@@ -75,7 +73,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
     class SendViewHolder(private var binding: ItemMessageSendBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, targetUsersList: List<UserInfo>, roomType: Int) {
+        fun bind(comment: Comment, targetUsersList: List<UserProfile>, roomType: Int) {
 
             binding.apply {
                 textMessage.text = comment.content
@@ -83,14 +81,15 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
 
                 when (roomType) {
                     ChatRoomType.PRIVATE.value -> {
-                        val target = targetUsersList.single()
+                        if (targetUsersList.isNotEmpty()) {
+                            val target = targetUsersList.single()
 
-                        if (comment.whoRead.contains(target.uid)) {
-                            unreadHint.text = "已讀"
-                        } else {
-                            unreadHint.text = "未讀"
+                            if (comment.whoRead.contains(target.uid)) {
+                                unreadHint.text = "已讀"
+                            } else {
+                                unreadHint.text = "未讀"
+                            }
                         }
-
                     }
                     ChatRoomType.MULTIPLE.value -> {
 
@@ -112,13 +111,14 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             comment: Comment,
-            usersList: List<UserInfo>,
+            usersList: List<UserProfile>,
             roomType: Int,
             viewModel: ChatRoomViewModel,
         ) {
             binding.apply {
                 textMessage.text = comment.content
                 textSentTime.text = comment.createdTime.toDisplaySentTime()
+
                 baseTargetImage.setOnClickListener {
                     viewModel.onNavigateToTargetProfile(comment.uid)
                 }
@@ -127,12 +127,17 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel, chatRoom: ChatRoom) :
             if (usersList.isNotEmpty()) {
                 val speaker = usersList.single { it.uid == comment.uid }
 
+
                 bindImage(binding.imageTargeImage, speaker.image)
 
                 if (roomType == ChatRoomType.MULTIPLE.value) {
                     binding.textTargetName.visibility = View.VISIBLE
                     binding.textTargetName.text = speaker.name
                 }
+            }else{
+                //target has left the room
+                binding.textTargetName.visibility = View.VISIBLE
+                binding.textTargetName.text = "此人已離開聊天室"
             }
         }
     }

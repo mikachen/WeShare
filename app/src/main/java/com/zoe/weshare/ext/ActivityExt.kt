@@ -1,28 +1,9 @@
 package com.zoe.weshare.ext
 
-import android.Manifest
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.provider.Settings
 import android.view.Gravity
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
-import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.factory.ViewModelFactory
 
@@ -41,7 +22,7 @@ fun Activity?.showToast(message: String) {
     }
 }
 
-fun Activity.hideNavigationBar(){
+fun Activity.hideNavigationBar() {
     window.decorView.apply {
         // Hide both the navigation bar and the status bar.
         // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
@@ -51,7 +32,7 @@ fun Activity.hideNavigationBar(){
     }
 }
 
-fun Activity.showNavigationBar(){
+fun Activity.showNavigationBar() {
     window.decorView.apply {
         // Hide both the navigation bar and the status bar.
         // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
