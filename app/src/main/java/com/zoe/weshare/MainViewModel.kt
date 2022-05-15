@@ -51,7 +51,7 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
         var unReadRoom = 0
 
         for (room in rooms) {
-            if (!room.lastMsgRead.contains(weShareUser!!.uid)) {
+            if (!room.lastMsgRead.contains(weShareUser!!.uid) && room.lastMsgSentTime != -1L) {
                 unReadRoom += 1
             }
         }

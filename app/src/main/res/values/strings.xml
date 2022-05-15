@@ -132,7 +132,7 @@
     <string name="title_posted_time">刊登時間</string>
 
 
-    <string name="room_list_event_title">活動群聊：%1s</string>
+    <string name="room_list_event_title">群聊：%1s</string>
     <string name="leave_ask_for_gift_comment">索取留言</string>
     <string name="pls_leave_askforgift_comment">留言索取理由或感謝文。</string>
 
@@ -168,5 +168,7 @@
     <string name="status_all">全部</string>
 
     <string name="hero_contribution">%1$d 點貢獻</string>
+
+    <string name="message_whoRead_count">已讀%1$d</string>
 
 </resources>

@@ -10,7 +10,6 @@ data class ChatRoom(
     var lastMsgSentTime: Long = -1,
     var participants: List<String> = emptyList(),
     var usersInfo: List<UserInfo> = mutableListOf(),
-    var targetProfile: MutableList<UserProfile> = mutableListOf(),
     var type: Int = -1,
     var eventTitle: String = "",
     var eventImage: String = "",

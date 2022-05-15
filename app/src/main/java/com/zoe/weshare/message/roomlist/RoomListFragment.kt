@@ -20,8 +20,6 @@ class RoomListFragment : Fragment() {
     lateinit var binding: FragmentRoomListBinding
     lateinit var adapter: RoomListAdapter
 
-    var hasSearchProfile = false
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,21 +34,8 @@ class RoomListFragment : Fragment() {
         viewModel.onViewDisplay(liveData)
 
 
-        viewModel.allRooms.observe(viewLifecycleOwner){
+        viewModel.allRooms.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
-
-
-            if(!hasSearchProfile){
-                hasSearchProfile = true
-
-                viewModel.onGetPrivateRoomUserProfile(it)
-            }
-        }
-
-        viewModel.searchCount.observe(viewLifecycleOwner) {
-            if (it == 0){
-                adapter.notifyDataSetChanged()
-            }
         }
 
         viewModel.navigateToSelectedRoom.observe(viewLifecycleOwner) {
@@ -62,7 +47,7 @@ class RoomListFragment : Fragment() {
             }
         }
 
-        viewModel.leaveRoomComplete.observe(viewLifecycleOwner){
+        viewModel.leaveRoomComplete.observe(viewLifecycleOwner) {
             requireActivity().showToast("已離開")
         }
 
@@ -70,8 +55,8 @@ class RoomListFragment : Fragment() {
         return binding.root
     }
 
-    fun setUpView(){
-        adapter = RoomListAdapter(viewModel,requireContext())
+    fun setUpView() {
+        adapter = RoomListAdapter(viewModel, requireContext())
         binding.roomlistRecyclerView.adapter = adapter
     }
 }

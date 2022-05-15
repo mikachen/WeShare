@@ -79,16 +79,17 @@ class ChatRoomFragment : Fragment() {
     private fun setupView() {
 
         recyclerView = binding.messagesRecyclerView
-
-        adapter = ChatRoomAdapter(viewModel, chatRoom)
-
+        adapter = ChatRoomAdapter(viewModel)
         recyclerView.adapter = adapter
+
+
+        val targetsInfo = chatRoom.usersInfo.filter { it.uid != weShareUser!!.uid }
 
         when (chatRoom.type) {
             ChatRoomType.PRIVATE.value ->
-                if (chatRoom.targetProfile.isNotEmpty()) {
-                    binding.textRoomTargetTitle.text = chatRoom.targetProfile.single().name
+                if (chatRoom.participants.size == 2 ) {
 
+                    binding.textRoomTargetTitle.text = targetsInfo.single().name
                 } else {
                     binding.textRoomTargetTitle.text = "不明"
                 }

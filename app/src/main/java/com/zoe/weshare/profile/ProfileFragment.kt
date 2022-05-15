@@ -18,7 +18,6 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentProfileBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.Const
 import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
@@ -142,7 +141,7 @@ class ProfileFragment : Fragment() {
             }
 
             binding.buttonMessage.setOnClickListener {
-                viewModel.searchOnPrivateRoom(weShareUser!!)
+                viewModel.getUserAllRooms(weShareUser!!)
             }
 
         } else {

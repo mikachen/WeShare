@@ -19,8 +19,8 @@ import com.zoe.weshare.ext.getPhoneVibrate
 import com.zoe.weshare.ext.toDisplaySentTime
 import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager.weShareUser
-import com.zoe.weshare.util.Util
 import com.zoe.weshare.util.Util.getString
+import com.zoe.weshare.util.Util.getStringWithStrParm
 
 class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Context) :
     ListAdapter<ChatRoom, RoomListAdapter.RoomListViewHolder>(DiffCall()) {
@@ -38,20 +38,11 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
         holder.bind(room, viewModel)
 
         holder.itemView.setOnClickListener {
-            when (room.type) {
-                ChatRoomType.MULTIPLE.value -> {
-                    viewModel.displayRoomDetails(room)
+            viewModel.displayRoomDetails(room)
 
-                }
-                ChatRoomType.PRIVATE.value -> {
-                    val privateRooms =
-                        viewModel.roomsWithTargetProfile.filter { it.id == room.id }
-
-                    viewModel.displayRoomDetails(privateRooms.single())
-                }
-            }
         }
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     class RoomListViewHolder(
@@ -77,29 +68,19 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
                     ChatRoomType.MULTIPLE.value -> {
                         bindImage(imageRoomImage, room.eventImage)
                         textRoomTargetTitle.text =
-                            Util.getStringWithStrParm(R.string.room_list_event_title,
-                                room.eventTitle)
+                            getStringWithStrParm(R.string.room_list_event_title, room.eventTitle)
                     }
 
                     ChatRoomType.PRIVATE.value -> {
+                        if (room.participants.size == 1){
 
-                        if (viewModel.searchCount.value == 0) {
-                            val privateRooms =
-                                viewModel.roomsWithTargetProfile.filter { it.id == room.id }
+                            textRoomTargetTitle.text = "用戶已離開聊天室"
 
-                            if (privateRooms.isNotEmpty()) {
-                                val targetsObj = privateRooms.single().targetProfile
+                        }else{
+                            val target = room.usersInfo.single{ it.uid != weShareUser!!.uid }
 
-                                //targetsObj is an array, can be empty if target leave the room
-                                if (targetsObj.isNotEmpty()) {
-                                    bindImage(imageRoomImage, targetsObj.single().image)
-                                    textRoomTargetTitle.text = targetsObj.single().name
-                                } else {
-                                    textRoomTargetTitle.text = "此用戶已離開聊天室"
-                                }
-                            } else {
-                                //naturally won't draw anything
-                            }
+                            bindImage(imageRoomImage,target.image)
+                            textRoomTargetTitle.text = target.name
                         }
                     }
                 }

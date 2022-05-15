@@ -30,9 +30,9 @@ class ChatRoomViewModel(
 
     var msgDisplay = MutableLiveData<List<MessageItem>>()
 
-    private lateinit var chatRoom: ChatRoom
+    lateinit var chatRoom: ChatRoom
 
-    var _newMessage = MutableLiveData<Comment>()
+    private var _newMessage = MutableLiveData<Comment>()
     val newMessage: LiveData<Comment>
         get() = _newMessage
 
@@ -236,41 +236,5 @@ class ChatRoomViewModel(
 
     fun navigateToProfileComplete() {
         _navigateToTargetUser.value = null
-    }
-
-    //TODO 邏輯複雜 再想一想
-    fun checkIfNewUserEntry(messages: List<MessageItem>): Boolean {
-        val receivedItems = messages.filter { it is MessageItem.OnReceiveSide }
-
-        val targetUid = chatRoom.participants.filterNot { it == weShareUser!!.uid }
-
-
-        if (targetUid.isNotEmpty()) {
-            //there's other target in this room
-
-            when (chatRoom.type) {
-                ChatRoomType.PRIVATE.value -> {
-
-                    return if(receivedItems.isNotEmpty()){
-
-                        chatRoom.targetProfile.isEmpty()
-
-                    }else{
-                        // target never speak
-                        false
-                    }
-                }
-                ChatRoomType.MULTIPLE.value -> {
-
-                }
-            }
-
-            return false
-
-        } else {
-            //no one else in this room except user self
-
-            return false
-        }
     }
 }

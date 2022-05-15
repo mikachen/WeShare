@@ -14,7 +14,6 @@ import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWER
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWING
 import com.zoe.weshare.util.Const.PATH_USER
 import com.zoe.weshare.util.LogType
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
@@ -302,7 +301,7 @@ class ProfileViewModel(
         }
     }
 
-    fun searchOnPrivateRoom(user: UserInfo) {
+    fun getUserAllRooms(user: UserInfo) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
@@ -342,23 +341,30 @@ class ProfileViewModel(
 
         if (result.isNotEmpty()) {
             // there was chat room history with author & ChatRoomType is PRIVATE
-                val formerRoom = result.single()
+            _navigateToFormerRoom.value = result.single()
 
-            user.value?.let { formerRoom.targetProfile.add(it) }
-
-            _navigateToFormerRoom.value = formerRoom
         } else {
+
             // no private chat with author before
             onNewRoomPrepare()
         }
     }
 
     fun onNewRoomPrepare() {
+
+        val targetInfo = UserInfo(
+            name = user.value?.name ?: "",
+            image = user.value?.image ?: "",
+            uid = user.value?.uid ?: ""
+        )
+
+
         val room = ChatRoom(
             type = ChatRoomType.PRIVATE.value,
-            participants = listOf(targetUser!!.uid, weShareUser!!.uid),
-            usersInfo = listOf(targetUser, weShareUser!!)
+            participants = listOf(user.value!!.uid, weShareUser!!.uid),
+            usersInfo = listOf(targetInfo, weShareUser!!)
         )
+
         createRoom(room)
     }
 
@@ -373,7 +379,6 @@ class ProfileViewModel(
 
                     _navigateToNewRoom.value = room.apply {
                         id = result.data
-                        user.value?.let { targetProfile.add(it) }
                     }
                 }
                 is Result.Fail -> {

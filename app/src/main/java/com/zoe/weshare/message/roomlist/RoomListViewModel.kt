@@ -49,71 +49,9 @@ class RoomListViewModel(
 
     var leaveRoomComplete = MutableLiveData<ChatRoom>()
 
-    var roomsWithTargetProfile = mutableListOf<ChatRoom>()
-
-    var searchCount = MutableLiveData<Int>()
 
     fun onViewDisplay(liveData: MutableLiveData<List<ChatRoom>>) {
         allRooms = liveData
-    }
-
-    fun onGetPrivateRoomUserProfile(rooms: List<ChatRoom>) {
-
-        val filteredRoom = rooms.filter { it.type == ChatRoomType.PRIVATE.value }
-
-        if (filteredRoom.isNotEmpty()) {
-            searchCount.value = filteredRoom.size
-
-            for (room in filteredRoom) {
-                val targetUid = room.participants.filterNot { it == weShareUser!!.uid }
-
-                //it is possible that target user have left chatroom
-                if (targetUid.isNotEmpty()) {
-                    getUsersProfile(targetUid.single(), room)
-
-                } else {
-
-                    searchCount.value = searchCount.value?.minus(1)
-                    roomsWithTargetProfile.add(room)
-                }
-            }
-        }
-    }
-
-    private fun getUsersProfile(uid: String, rooms: ChatRoom) {
-        coroutineScope.launch {
-
-            _status.value = LoadApiStatus.LOADING
-
-            when (val result = repository.getUserInfo(uid)) {
-                is Result.Success -> {
-                    _error.value = null
-                    _status.value = LoadApiStatus.DONE
-
-
-                    //when find target's profile, reassign to targetProfile array
-                    result.data?.let {
-                        rooms.targetProfile.add(it)
-                    }
-
-                    roomsWithTargetProfile.add(rooms)
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                }
-                else -> {
-                    _error.value =
-                        Util.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
-                }
-            }
-            searchCount.value = searchCount.value?.minus(1)
-        }
     }
 
     fun displayRoomDetails(selectedRoom: ChatRoom) {
@@ -126,7 +64,10 @@ class RoomListViewModel(
 
     fun onLeaveRoom(room: ChatRoom) {
         if (room.participants.size == 1) {
-            removeChatRoom(room)
+            when(room.type){
+                ChatRoomType.MULTIPLE.value -> leaveChatRoom(room)
+                ChatRoomType.PRIVATE.value -> removeChatRoom(room)
+            }
         } else if (room.participants.size > 1) {
             leaveChatRoom(room)
         }

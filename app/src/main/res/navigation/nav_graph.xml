@@ -229,6 +229,11 @@
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
         <action
+            android:id="@+id/action_distributeFragment_to_giftManageFragment"
+            app:destination="@id/giftManageFragment"
+            app:popUpTo="@id/giftManageFragment"
+            app:popUpToInclusive="true" />
+        <action
             android:id="@+id/action_distributeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </dialog>
