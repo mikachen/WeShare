@@ -243,7 +243,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
             0 ->
                 showcaseView.apply {
-                    setShowcase(ViewTarget((activity as MainActivity).binding.fabsLayoutView), true)
+                    setShowcase(ViewTarget((activity as MainActivity).binding.fabsLayoutView), false)
                     setContentTitle("")
                     setContentText("點擊+按鈕可以刊登贈品或刊登活動")
                     (activity as MainActivity).onMainFabClick()
@@ -252,28 +252,28 @@ class HomeFragment : Fragment(), View.OnClickListener {
             1 -> showcaseView.apply {
                 (activity as MainActivity).onMainFabClick()
 
-                setShowcase(ViewTarget(binding.showcaseCenterLine), true)
+                setShowcase(ViewTarget(binding.showcaseCenterLine), false)
                 setContentText("點擊查看活動與查看贈品可以瀏覽當前最新的刊登項目")
             }
 
             2 -> showcaseView.apply {
-                setShowcase(ViewTarget(binding.buttonCurrentHeros), true)
+                setShowcase(ViewTarget(binding.buttonCurrentHeros), false)
                 setContentText("點擊英雄榜可以查看到用戶的貢獻排名")
             }
 
             3 -> showcaseView.apply {
-                setShowcase(ViewTarget((activity as MainActivity).binding.notification), true)
+                setShowcase(ViewTarget((activity as MainActivity).binding.notification), false)
                 setContentText("點擊小鈴鐺可以看到最新的通知訊息")
             }
 
             4 -> showcaseView.apply {
-                setShowcase(ViewTarget((activity as MainActivity).binding.notification), true)
-                setContentText("點擊小鈴鐺可以看到最新的通知訊息")
+                setTarget(NONE)
+                setContentText("您可以在個人頁面中找到並管理您刊登過的贈品與活動")
             }
 
             5 -> showcaseView.apply {
                 setTarget(NONE)
-                setContentTitle("WeShare:)祝您使用愉快")
+                setContentTitle("再次歡迎您的加入，馬上開始和大家們共享交流物資吧！ :)")
                 setContentText("")
                 setButtonText("關閉")
             }
