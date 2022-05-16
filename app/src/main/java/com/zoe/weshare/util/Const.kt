@@ -16,6 +16,10 @@ object Const {
 
     const val FIELD_ROOM_LAST_MEG = "lastMsg"
     const val FIELD_ROOM_LAST_SENT_TIME = "lastMsgSentTime"
+    const val FIELD_ROOM_LAST_MSG_READ = "lastMsgRead"
+
+    const val FIELD_MESSAGE_WHO_READ = "whoRead"
+
     const val FIELD_ROOM_PARTICIPANTS = "participants"
     const val FIELD_ROOM_USERS_INFO = "usersInfo"
 
@@ -30,9 +34,12 @@ object Const {
     const val FIELD_EVENT_VOLUNTEER = "whoVolunteer"
     const val FIELD_EVENT_CHECKED_IN = "whoCheckedIn"
 
+    const val FIELD_USER_UID = "uid"
     const val FIELD_USER_FOLLOWER = "follower"
     const val FIELD_USER_FOLLOWING = "following"
     const val FIELD_USER_BLACKLIST = "blackList"
+    const val FIELD_USER_CONTRIBUTION = "contribution"
+    const val FIELD_USER_TOTAL_CONTRIBUTION = "contribution.totalContribution"
 
     const val FIELD_USER_NAME = "name"
     const val FIELD_USER_INTRO_MSG = "introMsg"

@@ -78,7 +78,6 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
         _gifts.value = list
     }
 
-
     fun onNavigateGiftDetails(event: GiftPost) {
         _navigateToSelectedGift.value = event
     }

@@ -1,27 +1,9 @@
 package com.zoe.weshare.ext
 
-import android.Manifest
 import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.provider.Settings
 import android.view.Gravity
-import android.view.inputmethod.InputMethodManager
+import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
-import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.factory.ViewModelFactory
 
@@ -40,16 +22,36 @@ fun Activity?.showToast(message: String) {
     }
 }
 
+fun Activity.hideNavigationBar() {
+    window.decorView.apply {
+        // Hide both the navigation bar and the status bar.
+        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+        // a general rule, you should design your app to hide the status bar whenever you
+        // hide the navigation bar.
+        systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
+    }
+}
+
+fun Activity.showNavigationBar() {
+    window.decorView.apply {
+        // Hide both the navigation bar and the status bar.
+        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+        // a general rule, you should design your app to hide the status bar whenever you
+        // hide the navigation bar.
+        systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+    }
+}
+
 //
-//fun Activity.checkLocationPermission(): Boolean {
+// fun Activity.checkLocationPermission(): Boolean {
 //    // 檢查權限
 //    return ActivityCompat.checkSelfPermission(
 //        this,
 //        Manifest.permission.ACCESS_FINE_LOCATION
 //    ) == PackageManager.PERMISSION_GRANTED
-//}
+// }
 //
-//fun Activity.requestLocationPermissions() {
+// fun Activity.requestLocationPermissions() {
 //
 //    Dexter.withContext(this)
 //        .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -86,4 +88,4 @@ fun Activity?.showToast(message: String) {
 //                    .show()
 //            }
 //        }).check()
-//}
+// }

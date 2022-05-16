@@ -41,7 +41,8 @@ class EventManageFragment : Fragment() {
     private val viewModel by viewModels<EventManageViewModel> { getVmFactory(UserManager.weShareUser) }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
@@ -59,14 +60,14 @@ class EventManageFragment : Fragment() {
             }
         }
 
-        viewModel.firstEntryEmpty.observe(viewLifecycleOwner){
-            if(it){
+        viewModel.firstEntryEmpty.observe(viewLifecycleOwner) {
+            if (it) {
                 val tab = binding.filterTabs.getTabAt(3)
                 binding.filterTabs.selectTab(tab)
             }
         }
 
-        viewModel.qrcode.observe(viewLifecycleOwner){
+        viewModel.qrcode.observe(viewLifecycleOwner) {
             it?.let {
                 generateQrcode(it)
                 viewModel.generateQrcodeComplete()
@@ -79,10 +80,9 @@ class EventManageFragment : Fragment() {
             }
         }
 
-        viewModel.saveLogComplete.observe(viewLifecycleOwner){
+        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
             viewModel.refreshFilterView()
         }
-
 
         setupView()
         return binding.root
@@ -97,11 +97,13 @@ class EventManageFragment : Fragment() {
         }
 
         adapter = EventManageAdapter(
-            viewModel, EventManageAdapter.OnClickListener {
+            viewModel,
+            EventManageAdapter.OnClickListener {
             }
         )
 
-        manager = LinearLayoutManager(requireContext(),
+        manager = LinearLayoutManager(
+            requireContext(),
             LinearLayoutManager.VERTICAL, false
         )
 
@@ -149,7 +151,6 @@ class EventManageFragment : Fragment() {
                 it.visibility = View.GONE
                 binding.qrcodeHolder.visibility = View.GONE
             }
-
         } catch (e: WriterException) {
             // this method is called for
             // exception handling.
@@ -178,5 +179,4 @@ class EventManageFragment : Fragment() {
         val alter: AlertDialog = builder.create()
         alter.show()
     }
-
 }

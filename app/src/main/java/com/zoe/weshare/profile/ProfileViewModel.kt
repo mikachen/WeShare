@@ -9,11 +9,13 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.*
+import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWER
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWING
 import com.zoe.weshare.util.Const.PATH_USER
+import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.UserManager.weShareUser
+import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,6 +33,10 @@ class ProfileViewModel(
     private var _userLog = MutableLiveData<List<OperationLog>>()
     val userLog: LiveData<List<OperationLog>>
         get() = _userLog
+
+    private var _notificationMsg = MutableLiveData<OperationLog>()
+    val notificationMsg: LiveData<OperationLog>
+        get() = _notificationMsg
 
     private var _userChatRooms = MutableLiveData<List<ChatRoom>?>()
     val userChatRooms: LiveData<List<ChatRoom>?>
@@ -55,10 +61,11 @@ class ProfileViewModel(
     val navigateToNewRoom: LiveData<ChatRoom?>
         get() = _navigateToNewRoom
 
+    val onUpdateContribution = MutableLiveData<Contribution>()
+
     init {
         targetUser?.let {
             getUserInfo(it.uid)
-            getUserLogs(it.uid)
         }
     }
 
@@ -71,6 +78,7 @@ class ProfileViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+                    getUserLogs(uid)
 
                     _user.value = result.data!!
                 }
@@ -91,7 +99,7 @@ class ProfileViewModel(
         }
     }
 
-    private fun getUserLogs(uid: String) {
+    fun getUserLogs(uid: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
@@ -141,7 +149,7 @@ class ProfileViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    onSaveFollowingLog()
+                    updateTargetFollower(targetUid)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -158,6 +166,7 @@ class ProfileViewModel(
             }
         }
     }
+
     fun cancelUserFollowing(targetUid: String) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
@@ -173,6 +182,8 @@ class ProfileViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
+                    cancelTargetFollower(targetUid)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -189,7 +200,6 @@ class ProfileViewModel(
             }
         }
     }
-
 
     /** when a "user" click someone follow,
      * B. update " user's " following value = "target"
@@ -211,6 +221,7 @@ class ProfileViewModel(
                     _status.value = LoadApiStatus.DONE
 
                     getUserInfo(targetUid)
+                    onSendNotification()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -262,41 +273,20 @@ class ProfileViewModel(
         }
     }
 
-    fun onSaveFollowingLog() {
-        val log = OperationLog(
+    private fun onSendNotification() {
+        val message = OperationLog(
             postDocId = "none",
             logType = LogType.FOLLOWING.value,
             operatorUid = weShareUser!!.uid,
             logMsg = WeShareApplication.instance.getString(
-                R.string.log_msg_following_someone,
+                R.string.log_msg_start_following_you,
                 weShareUser!!.name,
-                targetUser!!.name
             )
         )
-        saveFollowingLog(log)
+        _notificationMsg.value = message
     }
 
-    private fun saveFollowingLog(log: OperationLog) {
-        coroutineScope.launch {
-
-            when (val result = repository.saveLog(log)) {
-                is Result.Success -> {
-                    _error.value = null
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                }
-                else -> {
-                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                }
-            }
-        }
-    }
-
-    fun searchOnPrivateRoom(user: UserInfo) {
+    fun getUserAllRooms(user: UserInfo) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
@@ -338,17 +328,26 @@ class ProfileViewModel(
             // there was chat room history with author & ChatRoomType is PRIVATE
             _navigateToFormerRoom.value = result.single()
         } else {
+
             // no private chat with author before
             onNewRoomPrepare()
         }
     }
 
     fun onNewRoomPrepare() {
+
+        val targetInfo = UserInfo(
+            name = user.value?.name ?: "",
+            image = user.value?.image ?: "",
+            uid = user.value?.uid ?: ""
+        )
+
         val room = ChatRoom(
             type = ChatRoomType.PRIVATE.value,
-            participants = listOf(targetUser!!.uid, UserManager.weShareUser!!.uid),
-            usersInfo = listOf(targetUser, UserManager.weShareUser!!)
+            participants = listOf(user.value!!.uid, weShareUser!!.uid),
+            usersInfo = listOf(targetInfo, weShareUser!!)
         )
+
         createRoom(room)
     }
 
@@ -386,5 +385,70 @@ class ProfileViewModel(
         _userChatRooms.value = null
         _navigateToFormerRoom.value = null
         _navigateToNewRoom.value = null
+    }
+
+    fun calculateContribution(userLogs: List<OperationLog>) {
+
+        val filterLogs = userLogs.filter {
+            it.logType != LogType.EVENT_STARTED.value &&
+                    it.logType != LogType.EVENT_ENDED.value &&
+                    it.logType != LogType.ABANDONED_GIFT.value &&
+                    it.logType != LogType.FOLLOWING.value &&
+                    it.logType != LogType.EVENT_GOT_FORCE_ENDED.value
+        }
+
+        val totalContribution = user.value?.contribution?.totalContribution ?: 0
+        var newValue = 0
+        val enumLogType = enumValues<LogType>()
+
+        for (log in filterLogs) {
+            val type = enumLogType.single { it.value == log.logType }
+            newValue += type.contribution
+        }
+
+        if (totalContribution < newValue) {
+
+            val contribution = Contribution(
+                totalContribution = newValue,
+                giftPostsCount = filterLogs.filter { it.logType == LogType.POST_GIFT.value }.size,
+                eventPostsCount = filterLogs.filter { it.logType == LogType.POST_EVENT.value }.size,
+                sendGiftsCount = filterLogs.filter { it.logType == LogType.SEND_GIFT.value }.size,
+                attendeesCount = filterLogs.filter { it.logType == LogType.ATTEND_EVENT.value }.size,
+                volunteerCount = filterLogs.filter { it.logType == LogType.VOLUNTEER_EVENT.value }.size,
+                checkInCount = filterLogs.filter { it.logType == LogType.EVENT_CHECK_IN.value }.size,
+                commentsCount = filterLogs.filter { it.logType == LogType.COMMENT_EVENT.value }.size,
+                requestGiftsCount = filterLogs.filter { it.logType == LogType.REQUEST_GIFT.value }.size
+            )
+            onUpdateContribution.value = contribution
+        }
+    }
+
+    fun updateContribution(contribution: Contribution) {
+        _status.value = LoadApiStatus.LOADING
+        coroutineScope.launch {
+            when (
+                val result = repository.updateUserContribution(
+                    uid = targetUser!!.uid,
+                    contribution = contribution
+                )
+            ) {
+                is Result.Success -> {
+                    _status.value = LoadApiStatus.DONE
+                    onUpdateContribution.value = null
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
     }
 }

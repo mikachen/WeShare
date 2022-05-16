@@ -18,8 +18,9 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentProfileBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.util.Const
+import com.zoe.weshare.ext.sendNotificationToTarget
 import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class ProfileFragment : Fragment() {
@@ -47,6 +48,7 @@ class ProfileFragment : Fragment() {
 
         viewModel.userLog.observe(viewLifecycleOwner) {
             setupBoardCountView(it)
+            viewModel.calculateContribution(it)
         }
 
         viewModel.userChatRooms.observe(viewLifecycleOwner) {
@@ -73,25 +75,35 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        viewModel.onUpdateContribution.observe(viewLifecycleOwner) {
+            it?.let {
+                viewModel.updateContribution(it)
+            }
+        }
+
+        viewModel.notificationMsg.observe(viewLifecycleOwner){
+            it?.let {
+                sendNotificationToTarget(targetUser.uid, it)
+            }
+        }
+
         return binding.root
     }
 
     private fun setupBoardCountView(logs: List<OperationLog>) {
-        if (logs.isNotEmpty()) {
-            binding.apply {
+        binding.apply {
 
-                textGiftPostCount.text =
-                    logs.filter { it.logType == LogType.POST_GIFT.value }.size.toString()
+            textGiftPostCount.text =
+                logs.filter { it.logType == LogType.POST_GIFT.value }.size.toString()
 
-                textGiftSentCount.text =
-                    logs.filter { it.logType == LogType.SEND_GIFT.value }.size.toString()
+            textGiftSentCount.text =
+                logs.filter { it.logType == LogType.SEND_GIFT.value }.size.toString()
 
-                textEventPostCount.text =
-                    logs.filter { it.logType == LogType.POST_EVENT.value }.size.toString()
+            textEventPostCount.text =
+                logs.filter { it.logType == LogType.ATTEND_EVENT.value }.size.toString()
 
-                textEventVolunteerCount.text =
-                    logs.filter { it.logType == LogType.VOLUNTEER_EVENT.value }.size.toString()
-            }
+            textEventVolunteerCount.text =
+                logs.filter { it.logType == LogType.VOLUNTEER_EVENT.value }.size.toString()
         }
     }
 
@@ -119,7 +131,7 @@ class ProfileFragment : Fragment() {
 
         if (targetUser.uid != weShareUser!!.uid) {
 
-            //target user profile
+            // target user profile
             binding.layoutSocialButton.visibility = View.VISIBLE
             binding.buttonFollow.isChecked = isFollowingTarget
 
@@ -133,38 +145,34 @@ class ProfileFragment : Fragment() {
             }
 
             binding.buttonMessage.setOnClickListener {
-                viewModel.searchOnPrivateRoom(weShareUser!!)
+                viewModel.getUserAllRooms(weShareUser!!)
             }
-
         } else {
 
-            //user self profile
+            // user self profile
             binding.buttonSettings.visibility = View.VISIBLE
             binding.buttonSettings.setOnClickListener {
-                showPopupMenu(it,0)
+                showPopupMenu(it, 0)
             }
         }
     }
 
     private fun followBtnClick() {
         if (isFollowingTarget) {
-                showPopupMenu(binding.buttonFollow, 1)
-
+            showPopupMenu(binding.buttonFollow, 1)
         } else {
-            viewModel.updateTargetFollower(targetUser.uid)
             viewModel.updateUserFollowing(targetUser.uid)
         }
     }
-
 
     private fun showPopupMenu(view: View, condition: Int) {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.profile_popup_menu, popupMenu.menu)
 
-        when(condition){
-            0->  popupMenu.menu.removeItem(R.id.action_cancel_following)
+        when (condition) {
+            0 -> popupMenu.menu.removeItem(R.id.action_cancel_following)
 
-            1-> {
+            1 -> {
                 popupMenu.menu.removeItem(R.id.edit_user_info)
                 popupMenu.menu.removeItem(R.id.action_gifts_manage)
                 popupMenu.menu.removeItem(R.id.action_events_manage)
@@ -188,12 +196,12 @@ class ProfileFragment : Fragment() {
                 )
 
                 R.id.action_cancel_following -> {
-                    viewModel.cancelTargetFollower(targetUser.uid)
                     viewModel.cancelUserFollowing(targetUser.uid)
                 }
 
                 R.id.action_log_out -> findNavController().navigate(
-                    NavGraphDirections.actionGlobalLoginFragment(true))
+                    NavGraphDirections.actionGlobalLoginFragment(true)
+                )
             }
             false
         }

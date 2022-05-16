@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,7 +53,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private val markersRef = mutableListOf<Marker>()
     private val viewModel by viewModels<MapViewModel> { getVmFactory(weShareUser) }
 
-    var needRefreshMap = false
+    private var needRefreshMap = false
+    private var firstEntryMap = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,8 +97,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             viewModel.snapPosition.observe(viewLifecycleOwner) {
                 // when rv scroll, trigger marker showInfoWindow and move camera
                 markersRef[it].showInfoWindow()
-                map.animateCamera(
-                    CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F))
+
+                if (!firstEntryMap) {
+                    map.animateCamera(
+                        CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F)
+                    )
+                } else {
+                    firstEntryMap = false
+                }
             }
 
             viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
@@ -127,7 +135,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             binding.mapView.getMapAsync(this)
 
             setupCardGallery()
-        }else{
+        } else {
             requestLocationPermissions()
         }
 
@@ -168,7 +176,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     }
                     markersRef.add(newMarker)
                     Logger.d("createMarker: ${it.title}")
-
                 }
             }
         }
@@ -216,6 +223,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     currentLocation = LatLng(location.latitude, location.longitude)
                     map.isMyLocationEnabled = true
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 13F))
+
+                    Log.d("currentLocation1", "$currentLocation")
                 }
             }
         }
@@ -283,7 +292,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         recyclerView = binding.cardsRecycleview
 
-        adapter = CardGalleryAdapter(viewModel,
+        adapter = CardGalleryAdapter(
+            viewModel,
             CardGalleryAdapter.CardOnClickListener { selectedCard ->
                 viewModel.displayCardDetails(selectedCard)
             }

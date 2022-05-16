@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.UserProfile
@@ -73,7 +72,9 @@ class DistributeFragment : BottomSheetDialogFragment() {
 
         viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                findNavController().navigate(
+                    DistributeFragmentDirections.actionDistributeFragmentToProfileFragment(it)
+                )
                 viewModel.navigateToProfileComplete()
             }
         }
@@ -86,7 +87,7 @@ class DistributeFragment : BottomSheetDialogFragment() {
             sendNotificationsToFollowers(it)
 
             Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
-//            findNavController().navigate(NavGraphDirections.actionGlobalGiftManageFragment())
+            findNavController().navigate(DistributeFragmentDirections.actionDistributeFragmentToGiftManageFragment())
         }
 
         setupBtn()

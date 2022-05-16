@@ -67,9 +67,9 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
                 viewModel.onNavigateToTargetProfile(comment.uid)
             }
 
-            if(comment.uid == weShareUser!!.uid){
+            if (comment.uid == weShareUser!!.uid) {
                 binding.moreBtn.visibility = View.INVISIBLE
-            }else{
+            } else {
                 binding.moreBtn.visibility = View.VISIBLE
             }
 

@@ -1,12 +1,18 @@
 package com.zoe.weshare.ext
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearSmoothScroller
@@ -40,6 +46,11 @@ fun View.hideKeyboard() {
     inputManager.hideSoftInputFromWindow(windowToken, 0)
 }
 
+fun AutoCompleteTextView.showDropdownMenu(adapter: ArrayAdapter<String>?) {
+    if (!TextUtils.isEmpty(this.text.toString())) {
+        adapter?.filter?.filter(null)
+    }
+}
 fun bindImage(imgView: ImageView, imgUrl: String?) {
 
     val drawable = CircularProgressDrawable(imgView.context)
@@ -63,6 +74,12 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
             )
             .into(imgView)
     }
+}
+
+@SuppressLint("MissingPermission")
+fun getPhoneVibrate(context: Context) {
+    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+    vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
 }
 
 /**

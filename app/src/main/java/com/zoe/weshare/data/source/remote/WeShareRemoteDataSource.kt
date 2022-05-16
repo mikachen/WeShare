@@ -12,18 +12,21 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 import com.zoe.weshare.ext.imageFileTimeFormat
-import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.Const.FIELD_LOG_TYPE
 import com.zoe.weshare.util.Const.FIELD_NOTIFICATION_READ
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MEG
+import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_MSG_READ
 import com.zoe.weshare.util.Const.FIELD_ROOM_LAST_SENT_TIME
 import com.zoe.weshare.util.Const.FIELD_ROOM_PARTICIPANTS
 import com.zoe.weshare.util.Const.FIELD_ROOM_USERS_INFO
 import com.zoe.weshare.util.Const.FIELD_STATUS
+import com.zoe.weshare.util.Const.FIELD_USER_CONTRIBUTION
 import com.zoe.weshare.util.Const.FIELD_USER_IMAGE
 import com.zoe.weshare.util.Const.FIELD_USER_INTRO_MSG
 import com.zoe.weshare.util.Const.FIELD_USER_NAME
+import com.zoe.weshare.util.Const.FIELD_USER_TOTAL_CONTRIBUTION
+import com.zoe.weshare.util.Const.FIELD_USER_UID
 import com.zoe.weshare.util.Const.FIELD_WHO_GET_GIFT
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.KEY_CREATED_TIME
@@ -184,7 +187,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         suspendCoroutine { continuation ->
             FirebaseFirestore.getInstance()
                 .collection(PATH_USER)
-                .whereEqualTo("uid", uid)
+                .whereEqualTo(FIELD_USER_UID, uid)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -402,6 +405,33 @@ object WeShareRemoteDataSource : WeShareDataSource {
         return liveData
     }
 
+    override fun getLiveRoomLists(uid: String): MutableLiveData<List<ChatRoom>> {
+
+        val liveData = MutableLiveData<List<ChatRoom>>()
+
+        FirebaseFirestore.getInstance().collection(PATH_CHATROOM)
+            .whereArrayContains(FIELD_ROOM_PARTICIPANTS, uid)
+            .addSnapshotListener { snapshot, exception ->
+
+                Logger.i("addSnapshotListener detect")
+
+                exception?.let {
+                    Logger.w("[${this::class.simpleName}] Error getting documents. ${it.message}")
+                }
+
+                val list = mutableListOf<ChatRoom>()
+                for (document in snapshot!!) {
+                    Logger.d(document.id + " => " + document.data)
+
+                    val rooms = document.toObject(ChatRoom::class.java)
+                    list.add(rooms)
+                }
+                liveData.value = list
+            }
+
+        return liveData
+    }
+
     override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
 
         val liveData = MutableLiveData<List<MessageItem>>()
@@ -597,12 +627,41 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 .update(
                     mapOf(
                         FIELD_ROOM_LAST_MEG to message.content,
-                        FIELD_ROOM_LAST_SENT_TIME to message.createdTime
+                        FIELD_ROOM_LAST_SENT_TIME to message.createdTime,
                     )
                 )
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Logger.i("saveLastMsgRecord: $message")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun setLastMsgReadUser(docId: String, uidList: List<String>): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_CHATROOM).document(docId)
+                .update(mapOf(FIELD_ROOM_LAST_MSG_READ to uidList))
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("resetLastSeenMsg: $uidList")
 
                         continuation.resume(Result.Success(true))
                     } else {
@@ -740,7 +799,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
         FirebaseFirestore.getInstance()
             .collection(PATH_LOG)
-            .whereLessThanOrEqualTo(FIELD_LOG_TYPE,5)
+            .whereLessThanOrEqualTo(FIELD_LOG_TYPE, 5)
 //            .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
             .limit(50)
             .addSnapshotListener { snapshot, exception ->
@@ -828,7 +887,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
                             Logger.w(
                                 "[${this::class.simpleName}] " +
-                                        "Error getting documents. ${it.message}"
+                                    "Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))
@@ -977,7 +1036,9 @@ object WeShareRemoteDataSource : WeShareDataSource {
                         }
                         continuation.resume(
                             Result.Fail(
-                                WeShareApplication.instance.getString(R.string.result_fail)))
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
@@ -1162,6 +1223,106 @@ object WeShareRemoteDataSource : WeShareDataSource {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Logger.i("readNotification -> $docId : $read")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                    " Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun updateUserContribution(
+        uid: String,
+        contribution: Contribution
+    ): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(PATH_USER)
+                .document(uid)
+                .update(FIELD_USER_CONTRIBUTION, contribution)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("updateUserContribution: $uid -> $contribution")
+
+                        continuation.resume(Result.Success(true))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}]" +
+                                    " Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun getHeroRanking(): Result<List<UserProfile>> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance()
+                .collection(PATH_USER)
+                .orderBy(FIELD_USER_TOTAL_CONTRIBUTION, Query.Direction.DESCENDING)
+                .limit(10)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val list = mutableListOf<UserProfile>()
+                        for (document in task.result!!) {
+                            Logger.d(document.id + " => " + document.data)
+
+                            val users = document.toObject(UserProfile::class.java)
+
+                            list.add(users)
+                        }
+                        continuation.resume(Result.Success(list))
+                    } else {
+                        task.exception?.let {
+
+                            Logger.w(
+                                "[${this::class.simpleName}] " +
+                                    "Error getting documents. ${it.message}"
+                            )
+
+                            continuation.resume(Result.Error(it))
+                            return@addOnCompleteListener
+                        }
+                        continuation.resume(
+                            Result.Fail(
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
+                    }
+                }
+        }
+
+    override suspend fun removeDocument(collection: String, docId: String): Result<Boolean> =
+        suspendCoroutine { continuation ->
+            FirebaseFirestore.getInstance().collection(collection).document(docId)
+                .delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Logger.i("removeDocument: $collection -> $docId")
 
                         continuation.resume(Result.Success(true))
                     } else {

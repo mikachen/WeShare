@@ -5,5 +5,6 @@ data class Comment(
     var uid: String = "",
     var content: String = "",
     var createdTime: Long = -1,
-    var whoLiked: List<String> = emptyList()
+    var whoLiked: List<String> = emptyList(),
+    var whoRead: List<String> = emptyList()
 )

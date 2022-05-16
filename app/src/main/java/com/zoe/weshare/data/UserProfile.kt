@@ -11,5 +11,19 @@ data class UserProfile(
     var follower: List<String> = emptyList(),
     var following: List<String> = emptyList(),
     var introMsg: String = "",
-    var blackList: MutableList<String> = mutableListOf()
+    var contribution: Contribution? = null,
+    var blackList: MutableList<String> = mutableListOf(),
+) : Parcelable
+
+@Parcelize
+data class Contribution(
+    val totalContribution: Int = 0,
+    var giftPostsCount: Int = 0,
+    var eventPostsCount: Int = 0,
+    var sendGiftsCount: Int = 0,
+    var attendeesCount: Int = 0,
+    var volunteerCount: Int = 0,
+    var checkInCount: Int = 0,
+    var commentsCount: Int = 0,
+    var requestGiftsCount: Int = 0,
 ) : Parcelable

@@ -111,7 +111,10 @@ class GiftDetailFragment : Fragment() {
 
         viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                findNavController().navigate(
+                    GiftDetailFragmentDirections.actionGiftDetailFragmentToProfileFragment(it)
+                )
+
                 viewModel.navigateToProfileComplete()
             }
         }
@@ -139,8 +142,10 @@ class GiftDetailFragment : Fragment() {
 
             textPostedLocation.text = gift.location?.locationName
 
-            textCreatedTime.text = getString(R.string.posted_time,
-                gift.createdTime.toDisplayFormat())
+            textCreatedTime.text = getString(
+                R.string.posted_time,
+                gift.createdTime.toDisplayFormat()
+            )
 
             textGiftSort.text = gift.sort
 
@@ -198,7 +203,7 @@ class GiftDetailFragment : Fragment() {
         }
         binding.imageProfileAvatar.setOnClickListener {
             findNavController().navigate(
-                NavGraphDirections.actionGlobalProfileFragment(gift.author)
+                GiftDetailFragmentDirections.actionGiftDetailFragmentToProfileFragment(gift.author)
             )
         }
     }

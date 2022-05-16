@@ -57,7 +57,7 @@ class HotGiftsAdapter(private val onClickListener: OnClickListener) :
         }
 
         override fun areContentsTheSame(oldItem: GiftPost, newItem: GiftPost): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem == newItem
         }
     }
 }

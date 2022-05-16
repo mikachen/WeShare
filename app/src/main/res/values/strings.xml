@@ -78,7 +78,7 @@
     <string name="force_end_no">取消</string>
 
     //送禮物Alert窗
-    <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶%2$1s 嗎?</string>
+    <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶 %2$1s 嗎?</string>
     <string name="send_gift_message">確認送出後將不可再作修改!</string>
     <string name="confirm_yes">確認</string>
     <string name="confirm_no">取消</string>
@@ -95,8 +95,8 @@
     <string name="log_msg_event_volunteering">&lt;b>%1s&lt;/b> 成為了活動：%2s 志工</string>
     <string name="log_msg_event_status_ongoing">&lt;b>活動：%s&lt;/b> 已經開始囉！</string>
     <string name="log_msg_event_status_ended">&lt;b>活動：%s&lt;/b> 已經結束了！</string>
-    <string name="log_msg_following_someone">&lt;b>%1s&lt;/b>追蹤了%2s！</string>
-    <string name="log_msg_event_check_in">&lt;b>%1s&lt;/b>已於活動：%2s 完成志工簽到！</string>
+    <string name="log_msg_start_following_you">&lt;b>%1s&lt;/b> 已開始追蹤你！</string>
+    <string name="log_msg_event_check_in">&lt;b>%1s&lt;/b> 已於活動：%2s 完成志工簽到！</string>
     <string name="log_msg_receive_gift">&lt;b>%1s&lt;/b> 已成功將贈品：%2s 送出給您，恭喜您！</string>
     <string name="log_msg_force_end_event">&lt;b>%1s&lt;/b> 強制關閉了活動：%2s</string>
 
@@ -132,7 +132,7 @@
     <string name="title_posted_time">刊登時間</string>
 
 
-    <string name="room_list_event_title">活動群聊：%1s</string>
+    <string name="room_list_event_title">群聊：%1s</string>
     <string name="leave_ask_for_gift_comment">索取留言</string>
     <string name="pls_leave_askforgift_comment">留言索取理由或感謝文。</string>
 
@@ -145,6 +145,9 @@
     <string name="profile_gift_post_count_string">贈品刊登</string>
     <string name="profile_event_post_count_string">活動刊登</string>
     <string name="profile_event_attend_count_string">活動參與</string>
+    <string name="profile_event_volunteer_count_string">志工參與</string>
+
+
     <string name="profile_defult_zero_count">-</string>
 
 
@@ -156,6 +159,8 @@
     <string name="block_this_person_title">確定要封鎖用戶：%s？</string>
     <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何評論與刊登。</string>
 
+    <string name="leave_this_chatroom_message">聊天室將會被刪除，確定要繼續嗎？</string>
+
     <string name="gift_status_opening">開放中</string>
     <string name="gift_status_closed">已結案</string>
     <string name="gift_status_abandoned">已下架</string>
@@ -165,5 +170,9 @@
     <string name="event_status_ended">已結束</string>
     <string name="status_all">全部</string>
 
+    <string name="hero_contribution">%1$d 點貢獻</string>
+
+    <string name="message_whoRead_count">已讀%1$d</string>
+    <string name="gift_card_detail_transition_name">tans</string>
 
 </resources>

@@ -1,6 +1,5 @@
 package com.zoe.weshare.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,7 +12,6 @@ import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.GiftStatusType
-import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -69,21 +67,17 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     }
 
     fun onFilteringLog(list: List<OperationLog>) {
-        filteredLogs.value = list
+        list as MutableList
+        list.sortByDescending { it.createdTime }
 
-//            list.filter {
-//            it.logType != LogType.REQUEST_GIFT.value &&
-//                    it.logType != LogType.FOLLOWING.value &&
-//                    it.logType != LogType.ABANDONED_GIFT.value &&
-//                    it.logType != LogType.VOLUNTEER_EVENT.value &&
-//                    it.logType != LogType.EVENT_GOT_FORCE_ENDED.value
-//        }
+        filteredLogs.value = list
     }
 
     private fun filterGift(gifts: List<GiftPost>) {
 
         val list = gifts.filter {
-            it.status != GiftStatusType.CLOSED.code && it.whoLiked.size >= 2 } as MutableList
+            it.status != GiftStatusType.CLOSED.code && it.whoLiked.size >= 2
+        } as MutableList
 
         list.sortByDescending { it.whoLiked.size }
 

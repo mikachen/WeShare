@@ -29,8 +29,13 @@ class DefaultWeShareRepository(
     override fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?> {
         return remoteDataSource.getLiveEventDetail(docId)
     }
+
     override fun getLiveLogs(): MutableLiveData<List<OperationLog>> {
         return remoteDataSource.getLiveLogs()
+    }
+
+    override fun getLiveRoomLists(uid: String): MutableLiveData<List<ChatRoom>> {
+        return remoteDataSource.getLiveRoomLists(uid)
     }
 
     override fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>> {
@@ -43,6 +48,10 @@ class DefaultWeShareRepository(
 
     override suspend fun getUserInfo(uid: String): Result<UserProfile?> {
         return remoteDataSource.getUserInfo(uid)
+    }
+
+    override suspend fun setLastMsgReadUser(docId: String, uidList: List<String>): Result<Boolean> {
+        return remoteDataSource.setLastMsgReadUser(docId, uidList)
     }
 
     override suspend fun newUserRegister(user: UserProfile): Result<Boolean> {
@@ -120,10 +129,9 @@ class DefaultWeShareRepository(
         return remoteDataSource.getUserAllGiftsPosts(uid)
     }
 
-    override suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>>{
+    override suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>> {
         return remoteDataSource.getUserAllEventsPosts(uid)
     }
-
 
     override suspend fun updateGiftStatus(
         docId: String,
@@ -157,7 +165,7 @@ class DefaultWeShareRepository(
         collection: String,
         docId: String,
         field: String,
-        value: FieldValue
+        value: FieldValue,
     ): Result<Boolean> {
         return remoteDataSource.updateFieldValue(collection, docId, field, value)
     }
@@ -170,7 +178,14 @@ class DefaultWeShareRepository(
         field: String,
         value: FieldValue,
     ): Result<Boolean> {
-        return remoteDataSource.updateSubCollectionFieldValue(collection, docId, subCollection, subDocId, field, value)
+        return remoteDataSource.updateSubCollectionFieldValue(
+            collection,
+            docId,
+            subCollection,
+            subDocId,
+            field,
+            value
+        )
     }
 
     override suspend fun uploadImage(imageUri: Uri): Result<String> {
@@ -180,10 +195,31 @@ class DefaultWeShareRepository(
     override suspend fun updateUserProfile(profile: UserProfile): Result<Boolean> {
         return remoteDataSource.updateUserProfile(profile)
     }
+
     override suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean> {
         return remoteDataSource.sendNotifications(targetUid, log)
     }
-    override suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean> {
+
+    override suspend fun readNotification(
+        uid: String,
+        docId: String,
+        read: Boolean,
+    ): Result<Boolean> {
         return remoteDataSource.readNotification(uid, docId, read)
+    }
+
+    override suspend fun updateUserContribution(
+        uid: String,
+        contribution: Contribution,
+    ): Result<Boolean> {
+        return remoteDataSource.updateUserContribution(uid, contribution)
+    }
+
+    override suspend fun getHeroRanking(): Result<List<UserProfile>> {
+        return remoteDataSource.getHeroRanking()
+    }
+
+    override suspend fun removeDocument(collection: String, docId: String): Result<Boolean> {
+        return remoteDataSource.removeDocument(collection, docId)
     }
 }

@@ -18,11 +18,11 @@ import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithStrParm
+import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.*
 
 class EventDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
@@ -68,7 +68,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private val _saveLogComplete = MutableLiveData<OperationLog>()
+    val _saveLogComplete = MutableLiveData<OperationLog>()
     val saveLogComplete: LiveData<OperationLog>
         get() = _saveLogComplete
 
@@ -468,8 +468,10 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
      */
     fun getChatRoomInfo() {
         coroutineScope.launch {
-            when (val result =
-                repository.getEventRoom(docId = onEventLiveDisplaying.value!!.roomId)) {
+            when (
+                val result =
+                    repository.getEventRoom(docId = onEventLiveDisplaying.value!!.roomId)
+            ) {
                 is Result.Success -> {
                     _error.value = null
 
@@ -536,12 +538,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun navigateToRoomComplete() {
-        _updateRoomStatus.value = null
-        _onNavigateToRoom.value = null
-        _room.value = null
-    }
-
     fun checkEventStatus(event: EventPost) {
         if (!isStatusChecked) {
             when (true) {
@@ -559,7 +555,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                             _statusTriggerChanged.value = EventStatusType.ONGOING.code
 
                             isStatusChecked = true
-
                         }
                     } else {
                         if (event.status != EventStatusType.ENDED.code) {
@@ -640,6 +635,17 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         _targetUser.value = null
     }
 
+    fun saveLogComplete() {
+        _userAttendType.value = null
+        _saveLogComplete.value = null
+    }
+
+    fun navigateToRoomComplete() {
+        _updateRoomStatus.value = null
+        _onNavigateToRoom.value = null
+        _room.value = null
+    }
+
     fun blockThisUser(target: UserProfile) {
         _status.value = LoadApiStatus.LOADING
 
@@ -683,5 +689,4 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         filterComment()
         blockUserComplete.value = null
     }
-
 }

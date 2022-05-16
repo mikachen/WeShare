@@ -80,20 +80,22 @@ class EventDetailFragment : Fragment() {
         }
 
         viewModel.userAttendType.observe(viewLifecycleOwner) {
-            if (it == FIELD_EVENT_ATTENDEE) {
-                viewModel.onSaveLog(
-                    logType = LogType.ATTEND_EVENT.value,
-                    logMsg = WeShareApplication.instance.getString(
-                        R.string.log_msg_event_attending, weShareUser!!.name, selectedEvent.title
+            it?.let {
+                if (it == FIELD_EVENT_ATTENDEE) {
+                    viewModel.onSaveLog(
+                        logType = LogType.ATTEND_EVENT.value,
+                        logMsg = WeShareApplication.instance.getString(
+                            R.string.log_msg_event_attending, weShareUser!!.name, selectedEvent.title
+                        )
                     )
-                )
-            } else if (it == FIELD_EVENT_VOLUNTEER) {
-                viewModel.onSaveLog(
-                    logType = LogType.VOLUNTEER_EVENT.value,
-                    logMsg = WeShareApplication.instance.getString(
-                        R.string.log_msg_event_volunteering, weShareUser!!.name, selectedEvent.title
+                } else if (it == FIELD_EVENT_VOLUNTEER) {
+                    viewModel.onSaveLog(
+                        logType = LogType.VOLUNTEER_EVENT.value,
+                        logMsg = WeShareApplication.instance.getString(
+                            R.string.log_msg_event_volunteering, weShareUser!!.name, selectedEvent.title
+                        )
                     )
-                )
+                }
             }
         }
 
@@ -105,8 +107,8 @@ class EventDetailFragment : Fragment() {
 
         viewModel.onNavigateToRoom.observe(viewLifecycleOwner) {
             it?.let {
-                viewModel.navigateToRoomComplete()
                 findNavController().navigate(NavGraphDirections.actionGlobalChatRoomFragment(it))
+                viewModel.navigateToRoomComplete()
             }
         }
 
@@ -129,16 +131,22 @@ class EventDetailFragment : Fragment() {
 
         viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalProfileFragment(it))
+                findNavController().navigate(
+                    EventDetailFragmentDirections.actionEventDetailFragmentToProfileFragment(it)
+                )
+
                 viewModel.navigateToProfileComplete()
             }
         }
 
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
-            if (it.logType == LogType.VOLUNTEER_EVENT.value) {
-                sendNotificationToTarget(selectedEvent.author!!.uid, it)
-            } else {
-                sendNotificationsToFollowers(it)
+            it?.let {
+                if (it.logType == LogType.VOLUNTEER_EVENT.value) {
+                    sendNotificationToTarget(selectedEvent.author!!.uid, it)
+                } else {
+                    sendNotificationsToFollowers(it)
+                }
+                viewModel.saveLogComplete()
             }
         }
 
@@ -149,7 +157,6 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-
         setupCommentBoard()
         return binding.root
     }
@@ -158,7 +165,6 @@ class EventDetailFragment : Fragment() {
         commentsBoard = binding.commentsRecyclerView
         adapter = EventCommentsAdapter(viewModel, requireContext())
         commentsBoard.adapter = adapter
-
     }
 
     private fun setupView(event: EventPost) {
@@ -203,7 +209,6 @@ class EventDetailFragment : Fragment() {
                 event.startTime.toDisplayDateFormat(),
                 event.endTime.toDisplayDateFormat()
             )
-
 
             if (isUserCheckedIn) {
                 checkinComplete.visibility = View.VISIBLE
@@ -281,7 +286,6 @@ class EventDetailFragment : Fragment() {
 
                 onSendComment()
                 true
-
             } else false
         }
 
@@ -309,7 +313,7 @@ class EventDetailFragment : Fragment() {
 
         binding.imageProfileAvatar.setOnClickListener {
             findNavController().navigate(
-                NavGraphDirections.actionGlobalProfileFragment(event.author)
+                EventDetailFragmentDirections.actionEventDetailFragmentToProfileFragment(event.author)
             )
         }
     }
@@ -399,12 +403,9 @@ class EventDetailFragment : Fragment() {
                     if (isUserVolunteer) {
                         viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
                         viewModel.cancelAttendEvent(FIELD_EVENT_VOLUNTEER)
-
-
                     } else {
                         viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
                     }
-
                 }
             }
             false
@@ -420,10 +421,7 @@ class EventDetailFragment : Fragment() {
         binding.buttonVolunteer.setOnCheckedChangeListener { btn, checked ->
             btn.isChecked = checked
         }
-
-
     }
-
 
     private fun onSendComment() {
         val message = binding.editCommentBox.text

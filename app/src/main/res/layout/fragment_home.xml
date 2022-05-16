@@ -47,7 +47,6 @@
                 <Button
                     android:id="@+id/button_newbie_hint"
                     style="@style/HomeButton"
-                    android:layout_marginStart="8dp"
                     android:drawableTop="@drawable/home_btn_newbie_smaller"
                     android:text="新手教學"
                     android:textColor="@color/black"
@@ -59,7 +58,7 @@
                 <Button
                     android:id="@+id/button_check_events"
                     style="@style/HomeButton"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="-1dp"
                     android:drawableTop="@drawable/home_btn_event_smaller"
                     android:text="查看活動"
                     app:layout_constraintEnd_toStartOf="@+id/button_check_gifts"
@@ -67,21 +66,28 @@
                     app:layout_constraintStart_toEndOf="@+id/button_newbie_hint"
                     app:layout_constraintTop_toTopOf="@+id/button_newbie_hint" />
 
+                <com.google.android.material.divider.MaterialDivider
+                    android:id="@+id/showcase_center_line"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    app:dividerColor="@color/transparent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <Button
                     android:id="@+id/button_check_gifts"
                     style="@style/HomeButton"
-                    android:layout_marginStart="8dp"
                     android:drawableTop="@drawable/home_btn_gift_smaller"
                     android:text="查看贈品"
                     app:layout_constraintEnd_toStartOf="@+id/button_current_heros"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/button_check_events"
                     app:layout_constraintTop_toTopOf="@+id/button_check_events" />
 
                 <Button
                     android:id="@+id/button_current_heros"
                     style="@style/HomeButton"
-                    android:layout_marginHorizontal="8dp"
                     android:drawableTop="@drawable/home_btn_hero_smaller"
                     android:text="英雄榜"
                     app:layout_constraintEnd_toEndOf="parent"

@@ -17,7 +17,6 @@ import com.zoe.weshare.databinding.FragmentGiftsBrowseBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.hideKeyboard
 
-
 class GiftsBrowseFragment : Fragment() {
 
     private lateinit var binding: FragmentGiftsBrowseBinding
@@ -38,9 +37,8 @@ class GiftsBrowseFragment : Fragment() {
         binding = FragmentGiftsBrowseBinding.inflate(inflater, container, false)
 
         viewModel.gifts.observe(viewLifecycleOwner) {
-            adapter.modifyList(it)
-
             onNavigateBack = false
+            adapter.modifyList(it)
         }
 
         viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
@@ -49,10 +47,10 @@ class GiftsBrowseFragment : Fragment() {
                 viewModel.onNavigateGiftDetailsComplete()
 
                 binding.giftsSearchview.apply {
-                    //close search view
+                    // close search view
                     isIconified = true
 
-                    //clear search view text
+                    // clear search view text
                     setQuery("", false)
                 }
             }
@@ -86,7 +84,6 @@ class GiftsBrowseFragment : Fragment() {
 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = manager
-
 
         recyclerView.setOnTouchListener { view, event ->
 

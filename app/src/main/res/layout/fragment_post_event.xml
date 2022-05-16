@@ -70,7 +70,7 @@
             android:layout_marginTop="-10dp"
             android:hint="活動名稱"
             app:counterEnabled="true"
-            app:counterMaxLength="16"
+            app:counterMaxLength="20"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,6 +80,7 @@
                 android:id="@+id/edit_title"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:maxLength="20"
                 android:gravity="center|start"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />

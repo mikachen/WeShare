@@ -27,7 +27,6 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
 
     var isUploadingImage = MutableLiveData<Boolean>()
 
-
     lateinit var profile: UserProfile
 
     private var viewModelJob = Job()
@@ -41,7 +40,6 @@ class EditInfoViewModel(val repository: WeShareRepository, val userInfo: UserInf
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
-
 
     fun onProfileDisplay(userProfile: UserProfile) {
         profile = userProfile

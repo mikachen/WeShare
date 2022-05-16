@@ -78,16 +78,27 @@
         <argument
             android:name="newGift"
             app:argType="com.zoe.weshare.data.GiftPost"
-            app:nullable="true" />
+            app:nullable="true"
+            android:defaultValue="@null" />
         <argument
             android:name="newEvent"
             app:argType="com.zoe.weshare.data.EventPost"
-            app:nullable="true" />
+            app:nullable="true"
+            android:defaultValue="@null" />
         <action
-            android:id="@+id/action_searchLocationFragment_to_homeFragment"
-            app:destination="@id/homeFragment"
-            app:popUpTo="@id/homeFragment"
+            android:id="@+id/action_searchLocationFragment_to_eventDetailFragment"
+            app:destination="@id/eventDetailFragment"
+            app:popUpTo="@id/eventDetailFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_searchLocationFragment_self"
+            app:destination="@id/searchLocationFragment" />
+        <action
+            android:id="@+id/action_searchLocationFragment_to_giftDetailFragment"
+            app:destination="@id/giftDetailFragment"
+            app:popUpTo="@id/giftDetailFragment"
+            app:popUpToInclusive="true" />
+
     </fragment>
 
     <fragment
@@ -98,6 +109,9 @@
         <argument
             android:name="selectedRoom"
             app:argType="com.zoe.weshare.data.ChatRoom" />
+        <action
+            android:id="@+id/action_chatRoomFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 
 
@@ -117,6 +131,9 @@
         <action
             android:id="@+id/action_eventDetailFragment_to_eventCheckInFragment"
             app:destination="@id/eventCheckInFragment" />
+        <action
+            android:id="@+id/action_eventDetailFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
 
     </fragment>
 
@@ -130,10 +147,14 @@
             app:argType="com.zoe.weshare.data.GiftPost" />
         <action
             android:id="@+id/action_giftDetailFragment_to_askForGiftFragment"
-            app:destination="@id/askForGiftFragment" />
+            app:destination="@id/askForGiftFragment"
+            />
         <action
             android:id="@+id/action_giftDetailFragment_to_creditFragment"
             app:destination="@id/creditFragment" />
+        <action
+            android:id="@+id/action_giftDetailFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 
     <dialog
@@ -144,6 +165,11 @@
         <argument
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
+        <action
+            android:id="@+id/action_askForGiftFragment_to_giftDetailFragment"
+            app:destination="@id/giftDetailFragment"
+            app:popUpTo="@id/giftDetailFragment"
+            app:popUpToInclusive="true" />
     </dialog>
 
 
@@ -167,7 +193,9 @@
 
     <action
         android:id="@+id/action_global_profileFragment"
-        app:destination="@id/profileFragment" />
+        app:destination="@id/profileFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
 
     <action
         android:id="@+id/navigate_to_post_event_fragment"
@@ -200,6 +228,14 @@
         <argument
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
+        <action
+            android:id="@+id/action_distributeFragment_to_giftManageFragment"
+            app:destination="@id/giftManageFragment"
+            app:popUpTo="@id/giftManageFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_distributeFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </dialog>
     <dialog
         android:id="@+id/creditFragment"
@@ -296,6 +332,15 @@
         android:name="com.zoe.weshare.manage.eventItem.EventManageFragment"
         android:label="EventManageFragment"
         tools:layout="@layout/fragment_event_manage" />
+    <fragment
+        android:id="@+id/heroRankFragment"
+        android:name="com.zoe.weshare.herorank.HeroRankFragment"
+        android:label="fragment_hero_rank"
+        tools:layout="@layout/fragment_hero_rank" >
+        <action
+            android:id="@+id/action_heroRankFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment><action android:id="@+id/action_global_heroRankFragment" app:destination="@id/heroRankFragment"/>
 
 
 </navigation>

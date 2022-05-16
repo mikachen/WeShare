@@ -25,12 +25,12 @@ object UserManager {
     }
 
     private const val USER_UID = "user_uid"
-    private const val USER_INFO = "user_info"
+    private const val CHECKED_NOTIFICATION = "checked_notification"
 
-    var userToken: String?
-        get() = preferences.getString(USER_UID, null)
-        set(token) = preferences.edit {
-            it.putString(USER_UID, token)
+    var hasCheckNotification: Boolean
+        get() = preferences.getBoolean(CHECKED_NOTIFICATION, false)
+        set(hasCheckNotification) = preferences.edit {
+            it.putBoolean(CHECKED_NOTIFICATION, hasCheckNotification)
         }
 
 //    var currentUser: UserInfo?

@@ -27,18 +27,20 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.MainActivity
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostGiftBinding
-import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.ext.requestLocationPermissions
+import com.zoe.weshare.ext.hideKeyboard
+import com.zoe.weshare.ext.showDropdownMenu
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostGiftFragment : Fragment() {
 
     private val PICK_IMAGE_REQUEST = 151
     private lateinit var filePath: Uri
+
+    private lateinit var sortAdapter: ArrayAdapter<String>
+    private lateinit var conditionAdapter: ArrayAdapter<String>
 
     private val whatToPostAnimate: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -82,14 +84,14 @@ class PostGiftFragment : Fragment() {
     }
 
     private fun setupViewNBtn() {
-        whatToPostAnimate.duration =500
+        whatToPostAnimate.duration = 500
 
         binding.titleWhatToPost.startAnimation(whatToPostAnimate)
 
         binding.nextButton.setOnClickListener {
             if (checkPermission()) {
                 dataCollecting()
-            }else{
+            } else {
                 requestPermissions()
             }
         }
@@ -178,28 +180,48 @@ class PostGiftFragment : Fragment() {
     }
 
     private fun setupDropdownMenu() {
+
         val sortsString = resources.getStringArray(R.array.gift_item_sort)
         val conditionString = resources.getStringArray(R.array.gift_item_condition)
 
-        val sortAdapter = ArrayAdapter(
+        sortAdapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1, sortsString
         )
-        binding.dropdownMenuSort.setAdapter(sortAdapter)
 
-        val conditionAdapter = ArrayAdapter(
+        binding.dropdownMenuSort.apply {
+            setAdapter(sortAdapter)
+
+            setOnClickListener {
+                this.hideKeyboard()
+                this.showDropdownMenu(sortAdapter)
+            }
+        }
+
+        conditionAdapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1, conditionString
         )
-        binding.dropdownMenuCondition.setAdapter(conditionAdapter)
+
+        binding.dropdownMenuCondition.apply {
+            setAdapter(conditionAdapter)
+
+            setOnClickListener {
+                this.hideKeyboard()
+                this.showDropdownMenu(conditionAdapter)
+            }
+        }
+
+        sortAdapter.setNotifyOnChange(true)
+        conditionAdapter.setNotifyOnChange(true)
     }
 
     private fun checkPermission(): Boolean {
         // 檢查權限
         return ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermissions() {

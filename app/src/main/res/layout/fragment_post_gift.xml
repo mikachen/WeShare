@@ -72,7 +72,7 @@
             android:layout_marginTop="-10dp"
             android:hint="贈品名稱"
             app:counterEnabled="true"
-            app:counterMaxLength="16"
+            app:counterMaxLength="20"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:gravity="center|start"
-                android:maxLength="16"
+                android:maxLength="20"
                 android:singleLine="true"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
 

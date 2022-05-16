@@ -9,8 +9,9 @@ data class ChatRoom(
     var lastMsg: String = "",
     var lastMsgSentTime: Long = -1,
     var participants: List<String> = emptyList(),
-    var usersInfo: List<UserInfo> = emptyList(),
+    var usersInfo: List<UserInfo> = mutableListOf(),
     var type: Int = -1,
     var eventTitle: String = "",
     var eventImage: String = "",
+    var lastMsgRead: List<String> = emptyList()
 ) : Parcelable

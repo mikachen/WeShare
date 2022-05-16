@@ -15,14 +15,17 @@ interface WeShareRepository {
     suspend fun getUserAllGiftsPosts(uid: String): Result<List<GiftPost>>
     suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>>
 
-
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
 
     fun getLiveLogs(): MutableLiveData<List<OperationLog>>
 
+    fun getLiveRoomLists(uid: String): MutableLiveData<List<ChatRoom>>
+
     fun getLiveMessages(docId: String): MutableLiveData<List<MessageItem>>
 
     fun getLiveNotifications(uid: String): MutableLiveData<List<OperationLog>>
+
+    suspend fun setLastMsgReadUser(docId: String, uidList: List<String>): Result<Boolean>
 
     suspend fun getUserInfo(uid: String): Result<UserProfile?>
     suspend fun newUserRegister(user: UserProfile): Result<Boolean>
@@ -95,4 +98,8 @@ interface WeShareRepository {
     suspend fun updateUserProfile(profile: UserProfile): Result<Boolean>
     suspend fun sendNotifications(targetUid: String, log: OperationLog): Result<Boolean>
     suspend fun readNotification(uid: String, docId: String, read: Boolean,): Result<Boolean>
+
+    suspend fun updateUserContribution(uid: String, contribution: Contribution): Result<Boolean>
+    suspend fun getHeroRanking(): Result<List<UserProfile>>
+    suspend fun removeDocument(collection: String, docId: String): Result<Boolean>
 }

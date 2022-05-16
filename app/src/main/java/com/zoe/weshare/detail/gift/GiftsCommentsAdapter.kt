@@ -79,9 +79,9 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
                 viewModel.onNavigateToTargetProfile(comment.uid)
             }
 
-            if(comment.uid == UserManager.weShareUser!!.uid){
+            if (comment.uid == UserManager.weShareUser!!.uid) {
                 binding.moreBtn.visibility = View.INVISIBLE
-            }else{
+            } else {
                 binding.moreBtn.visibility = View.VISIBLE
             }
 

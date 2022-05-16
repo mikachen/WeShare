@@ -17,6 +17,18 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override fun getLiveRoomLists(uid: String): MutableLiveData<List<ChatRoom>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun removeDocument(collection: String, docId: String): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun setLastMsgReadUser(docId: String, uidList: List<String>): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getAllGifts(): Result<List<GiftPost>> {
         TODO("Not yet implemented")
     }
@@ -186,6 +198,17 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         statusCode: Int,
         uid: String,
     ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateUserContribution(
+        uid: String,
+        contribution: Contribution,
+    ): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getHeroRanking(): Result<List<UserProfile>> {
         TODO("Not yet implemented")
     }
 }

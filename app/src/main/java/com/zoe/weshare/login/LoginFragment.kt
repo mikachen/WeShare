@@ -48,6 +48,7 @@ class LoginFragment : Fragment() {
         viewModel.loginSuccess.observe(viewLifecycleOwner) {
 
             (activity as MainActivity).viewModel.getLiveNotificationResult()
+            (activity as MainActivity).viewModel.getLiveRoomResult()
             findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
         }
 
@@ -64,7 +65,6 @@ class LoginFragment : Fragment() {
             .build()
 
         val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
-
 
         // signOut allow user to choose different account to login
         if (resetFastLogin) {

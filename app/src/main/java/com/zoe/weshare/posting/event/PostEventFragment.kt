@@ -31,6 +31,8 @@ import com.zoe.weshare.MainActivity
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPostEventBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.hideKeyboard
+import com.zoe.weshare.ext.showDropdownMenu
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostEventFragment : Fragment() {
@@ -39,6 +41,7 @@ class PostEventFragment : Fragment() {
     private lateinit var filePath: Uri
 
     private lateinit var binding: FragmentPostEventBinding
+    private lateinit var sortAdapter: ArrayAdapter<String>
 
     private val whatToPostAnimate: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -77,14 +80,14 @@ class PostEventFragment : Fragment() {
             binding.buttonImagePreviewHolder.setImageURI(it)
         }
 
-        setupViewNBtn()
+        setupViewAndBtn()
         setupDropdownMenu()
         setupDatePicker()
 
         return binding.root
     }
 
-    private fun setupViewNBtn() {
+    private fun setupViewAndBtn() {
         whatToPostAnimate.duration = 500
 
         binding.titleWhatToPost.startAnimation(whatToPostAnimate)
@@ -92,7 +95,7 @@ class PostEventFragment : Fragment() {
         binding.nextButton.setOnClickListener {
             if (checkPermission()) {
                 dataCollecting()
-            }else{
+            } else {
                 requestPermissions()
             }
         }
@@ -187,11 +190,19 @@ class PostEventFragment : Fragment() {
     private fun setupDropdownMenu() {
         val sortsString = resources.getStringArray(R.array.event_type_sort)
 
-        val sortAdapter = ArrayAdapter(
+        sortAdapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1, sortsString
         )
-        binding.dropdownMenuSort.setAdapter(sortAdapter)
+
+        binding.dropdownMenuSort.apply {
+            setAdapter(sortAdapter)
+
+            setOnClickListener {
+                this.hideKeyboard()
+                this.showDropdownMenu(sortAdapter)
+            }
+        }
     }
 
     private fun setupDatePicker() {
