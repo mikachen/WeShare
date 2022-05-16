@@ -34,6 +34,10 @@ class ProfileViewModel(
     val userLog: LiveData<List<OperationLog>>
         get() = _userLog
 
+    private var _notificationMsg = MutableLiveData<OperationLog>()
+    val notificationMsg: LiveData<OperationLog>
+        get() = _notificationMsg
+
     private var _userChatRooms = MutableLiveData<List<ChatRoom>?>()
     val userChatRooms: LiveData<List<ChatRoom>?>
         get() = _userChatRooms
@@ -145,7 +149,7 @@ class ProfileViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    onSaveFollowingLog()
+                    updateTargetFollower(targetUid)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -178,6 +182,8 @@ class ProfileViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
+                    cancelTargetFollower(targetUid)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -194,7 +200,6 @@ class ProfileViewModel(
             }
         }
     }
-
 
     /** when a "user" click someone follow,
      * B. update " user's " following value = "target"
@@ -216,6 +221,7 @@ class ProfileViewModel(
                     _status.value = LoadApiStatus.DONE
 
                     getUserInfo(targetUid)
+                    onSendNotification()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -267,38 +273,17 @@ class ProfileViewModel(
         }
     }
 
-    fun onSaveFollowingLog() {
-        val log = OperationLog(
+    private fun onSendNotification() {
+        val message = OperationLog(
             postDocId = "none",
             logType = LogType.FOLLOWING.value,
             operatorUid = weShareUser!!.uid,
             logMsg = WeShareApplication.instance.getString(
-                R.string.log_msg_following_someone,
+                R.string.log_msg_start_following_you,
                 weShareUser!!.name,
-                targetUser!!.name
             )
         )
-        saveFollowingLog(log)
-    }
-
-    private fun saveFollowingLog(log: OperationLog) {
-        coroutineScope.launch {
-
-            when (val result = repository.saveLog(log)) {
-                is Result.Success -> {
-                    _error.value = null
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                }
-                else -> {
-                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                }
-            }
-        }
+        _notificationMsg.value = message
     }
 
     fun getUserAllRooms(user: UserInfo) {
@@ -342,7 +327,6 @@ class ProfileViewModel(
         if (result.isNotEmpty()) {
             // there was chat room history with author & ChatRoomType is PRIVATE
             _navigateToFormerRoom.value = result.single()
-
         } else {
 
             // no private chat with author before
@@ -357,7 +341,6 @@ class ProfileViewModel(
             image = user.value?.image ?: "",
             uid = user.value?.uid ?: ""
         )
-
 
         val room = ChatRoom(
             type = ChatRoomType.PRIVATE.value,
@@ -421,7 +404,6 @@ class ProfileViewModel(
         for (log in filterLogs) {
             val type = enumLogType.single { it.value == log.logType }
             newValue += type.contribution
-
         }
 
         if (totalContribution < newValue) {

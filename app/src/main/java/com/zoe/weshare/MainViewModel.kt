@@ -57,5 +57,4 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
         roomBadgeCount.value = unReadRoom
     }
-
 }

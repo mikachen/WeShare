@@ -100,15 +100,15 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                         View.INVISIBLE
                     (activity as MainActivity).showNavigationBar()
 
-                    findNavController().navigate(SearchLocationFragmentDirections
-                        .actionSearchLocationFragmentToEventDetailFragment(EventPost(id = it.postDocId)))
+                    findNavController().navigate(
+                        SearchLocationFragmentDirections
+                            .actionSearchLocationFragmentToEventDetailFragment(EventPost(id = it.postDocId))
+                    )
                 }
 
                 eventViewModel.onPostEvent.observe(viewLifecycleOwner) {
                     eventViewModel.onNewRoomPrepare(it)
                 }
-
-
             } else {
                 giftViewModel._gift.value = newGift
 
@@ -121,8 +121,10 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                         View.INVISIBLE
                     (activity as MainActivity).showNavigationBar()
 
-                    findNavController().navigate(SearchLocationFragmentDirections
-                        .actionSearchLocationFragmentToGiftDetailFragment(GiftPost(id = it.postDocId)))
+                    findNavController().navigate(
+                        SearchLocationFragmentDirections
+                            .actionSearchLocationFragmentToGiftDetailFragment(GiftPost(id = it.postDocId))
+                    )
                 }
 
                 giftViewModel.postingProgress.observe(viewLifecycleOwner) {
@@ -250,7 +252,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                 }
             }
         }
-
 
         if (event != null) {
             binding.apply {

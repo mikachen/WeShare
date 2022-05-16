@@ -20,6 +20,8 @@
     <color name="app_work_light_green">#b5edeb</color>
     <color name="button_heart_shape_red">#df1533</color>
     <color name="event_awaiting_tag">#4285f4</color>
+    <color name="showcase_blue">#0b95ff</color>
+    <color name="showcase_blue_title">#7abefc</color>
 
 
     <color name="chatroom_edit_grey">#f5f5f5</color>

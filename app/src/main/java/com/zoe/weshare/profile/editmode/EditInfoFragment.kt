@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.storage.FirebaseStorage
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.data.UserProfile
@@ -43,7 +42,6 @@ class EditInfoFragment : Fragment() {
 
         binding = FragmentEditInfoBinding.inflate(inflater, container, false)
 
-
         val userProfile = EditInfoFragmentArgs.fromBundle(requireArguments()).userProfile
         viewModel.onProfileDisplay(userProfile)
 
@@ -51,7 +49,7 @@ class EditInfoFragment : Fragment() {
             viewModel.updateProfile(it)
         }
 
-        viewModel.updatingProgress.observe(viewLifecycleOwner){
+        viewModel.updatingProgress.observe(viewLifecycleOwner) {
             animation = ObjectAnimator.ofInt(
                 progressBar,
                 "progress",
@@ -63,14 +61,14 @@ class EditInfoFragment : Fragment() {
             animation.start()
         }
 
-        viewModel.isUploadingImage.observe(viewLifecycleOwner){
-            if(it){
+        viewModel.isUploadingImage.observe(viewLifecycleOwner) {
+            if (it) {
                 (activity as MainActivity).binding.imageUploadingHint.visibility = View.VISIBLE
             }
         }
 
         viewModel.updateComplete.observe(viewLifecycleOwner) {
-            if(it == LoadApiStatus.DONE) {
+            if (it == LoadApiStatus.DONE) {
                 (activity as MainActivity).binding.layoutMainProgressBar.visibility = View.INVISIBLE
                 (activity as MainActivity).binding.imageUploadingHint.visibility = View.INVISIBLE
 
@@ -98,7 +96,6 @@ class EditInfoFragment : Fragment() {
             imageProfileAvatar.setOnClickListener {
                 selectImage()
             }
-
         }
 
         progressBar = (activity as MainActivity).binding.progressBar

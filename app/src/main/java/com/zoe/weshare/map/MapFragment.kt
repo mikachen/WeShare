@@ -100,8 +100,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
                 if (!firstEntryMap) {
                     map.animateCamera(
-                        CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F))
-                }else{
+                        CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F)
+                    )
+                } else {
                     firstEntryMap = false
                 }
             }
@@ -175,7 +176,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     }
                     markersRef.add(newMarker)
                     Logger.d("createMarker: ${it.title}")
-
                 }
             }
         }
@@ -292,7 +292,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         recyclerView = binding.cardsRecycleview
 
-        adapter = CardGalleryAdapter(viewModel,
+        adapter = CardGalleryAdapter(
+            viewModel,
             CardGalleryAdapter.CardOnClickListener { selectedCard ->
                 viewModel.displayCardDetails(selectedCard)
             }

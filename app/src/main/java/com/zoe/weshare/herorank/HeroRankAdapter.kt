@@ -26,9 +26,7 @@ class HeroRankAdapter(private val onClickListener: HeroOnClickListener) :
                 user.contribution?.let {
                     textContribution.text =
                         getStringWithIntParm(R.string.hero_contribution, it.totalContribution)
-
                 }
-
             }
         }
 
@@ -81,5 +79,4 @@ class HeroRankAdapter(private val onClickListener: HeroOnClickListener) :
 
         submitList(users.slice(3 until users.size))
     }
-
 }

@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.icu.text.SimpleDateFormat
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.TextUtils
@@ -47,7 +46,6 @@ fun View.hideKeyboard() {
     inputManager.hideSoftInputFromWindow(windowToken, 0)
 }
 
-
 fun AutoCompleteTextView.showDropdownMenu(adapter: ArrayAdapter<String>?) {
     if (!TextUtils.isEmpty(this.text.toString())) {
         adapter?.filter?.filter(null)
@@ -79,11 +77,10 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 }
 
 @SuppressLint("MissingPermission")
-fun getPhoneVibrate(context: Context){
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+fun getPhoneVibrate(context: Context) {
+    val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
 }
-
 
 /**
  * resize Map marker icon

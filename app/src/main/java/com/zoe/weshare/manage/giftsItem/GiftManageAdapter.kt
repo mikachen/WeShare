@@ -141,12 +141,12 @@ class GiftManageAdapter(
             }
         }
 
-        //to enhance user experience
+        // to enhance user experience
         if (firstEntry) {
             firstEntry = false
             if (list.isEmpty()) {
                 viewModel.firstEntryEmpty.value = true
-            }else{
+            } else {
                 submitList(list)
             }
         } else {

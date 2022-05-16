@@ -15,7 +15,6 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -34,7 +33,6 @@ import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventCheckInBinding
-import com.zoe.weshare.ext.checkLocationPermission
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.sendNotificationToTarget
 import com.zoe.weshare.util.UserManager.weShareUser
@@ -68,7 +66,6 @@ class EventCheckInFragment : Fragment() {
         isPermissionGranted = checkCameraPermission()
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,7 +77,7 @@ class EventCheckInFragment : Fragment() {
         event = EventCheckInFragmentArgs.fromBundle(requireArguments()).event
         viewModel.event = event
 
-        if(isPermissionGranted){
+        if (isPermissionGranted) {
 
             binding.barcodeLine.startAnimation(aniSlide)
             setupControls()
@@ -98,8 +95,7 @@ class EventCheckInFragment : Fragment() {
                     Toast.makeText(requireContext(), "簽到成功", Toast.LENGTH_SHORT).show()
                 }
             }
-
-        }else{
+        } else {
             requestCameraPermissions()
         }
 
@@ -122,7 +118,6 @@ class EventCheckInFragment : Fragment() {
                     cholder = holder
                     // Start preview after 1s delay
                     cameraSource.start(holder)
-
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -149,8 +144,10 @@ class EventCheckInFragment : Fragment() {
 
         barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
             override fun release() {
-                Toast.makeText(requireContext(),
-                    "Scanner has been closed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Scanner has been closed", Toast.LENGTH_SHORT
+                ).show()
             }
 
             @SuppressLint("MissingPermission")
@@ -180,7 +177,7 @@ class EventCheckInFragment : Fragment() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun showErrorMsg(cameraSource:CameraSource) {
+    private fun showErrorMsg(cameraSource: CameraSource) {
         val builder = AlertDialog.Builder(requireActivity())
 
         builder.apply {
@@ -204,7 +201,6 @@ class EventCheckInFragment : Fragment() {
         alter.show()
     }
 
-
     private fun checkCameraPermission(): Boolean {
         // 檢查權限
         return ActivityCompat.checkSelfPermission(
@@ -219,7 +215,8 @@ class EventCheckInFragment : Fragment() {
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(response: PermissionGrantedResponse) {
                     findNavController().navigate(
-                        EventCheckInFragmentDirections.actionEventCheckInFragmentSelf(event))
+                        EventCheckInFragmentDirections.actionEventCheckInFragmentSelf(event)
+                    )
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) {
@@ -257,7 +254,7 @@ class EventCheckInFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if(isPermissionGranted){
+        if (isPermissionGranted) {
             cameraSource.stop()
         }
     }

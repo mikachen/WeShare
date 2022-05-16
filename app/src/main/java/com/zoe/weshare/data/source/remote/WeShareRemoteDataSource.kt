@@ -12,7 +12,6 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareDataSource
 import com.zoe.weshare.ext.imageFileTimeFormat
-import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.Const.FIELD_LOG_TYPE
 import com.zoe.weshare.util.Const.FIELD_NOTIFICATION_READ
 import com.zoe.weshare.util.Const.FIELD_OPERATOR_UID
@@ -411,7 +410,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
         val liveData = MutableLiveData<List<ChatRoom>>()
 
         FirebaseFirestore.getInstance().collection(PATH_CHATROOM)
-            .whereArrayContains(FIELD_ROOM_PARTICIPANTS,uid)
+            .whereArrayContains(FIELD_ROOM_PARTICIPANTS, uid)
             .addSnapshotListener { snapshot, exception ->
 
                 Logger.i("addSnapshotListener detect")
@@ -670,7 +669,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
                             Logger.w(
                                 "[${this::class.simpleName}] " +
-                                        "Error getting documents. ${it.message}"
+                                    "Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))
@@ -800,7 +799,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
         FirebaseFirestore.getInstance()
             .collection(PATH_LOG)
-            .whereLessThanOrEqualTo(FIELD_LOG_TYPE,5)
+            .whereLessThanOrEqualTo(FIELD_LOG_TYPE, 5)
 //            .orderBy(KEY_CREATED_TIME, Query.Direction.DESCENDING)
             .limit(50)
             .addSnapshotListener { snapshot, exception ->
@@ -888,7 +887,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
                             Logger.w(
                                 "[${this::class.simpleName}] " +
-                                        "Error getting documents. ${it.message}"
+                                    "Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))
@@ -1037,7 +1036,9 @@ object WeShareRemoteDataSource : WeShareDataSource {
                         }
                         continuation.resume(
                             Result.Fail(
-                                WeShareApplication.instance.getString(R.string.result_fail)))
+                                WeShareApplication.instance.getString(R.string.result_fail)
+                            )
+                        )
                     }
                 }
         }
@@ -1262,7 +1263,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
                             Logger.w(
                                 "[${this::class.simpleName}]" +
-                                        " Error getting documents. ${it.message}"
+                                    " Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))
@@ -1300,7 +1301,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
                             Logger.w(
                                 "[${this::class.simpleName}] " +
-                                        "Error getting documents. ${it.message}"
+                                    "Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))
@@ -1329,7 +1330,7 @@ object WeShareRemoteDataSource : WeShareDataSource {
 
                             Logger.w(
                                 "[${this::class.simpleName}]" +
-                                        " Error getting documents. ${it.message}"
+                                    " Error getting documents. ${it.message}"
                             )
 
                             continuation.resume(Result.Error(it))

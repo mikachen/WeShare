@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:transitionName="@string/gift_card_detail_transition_name"
     app:cardCornerRadius="10dp"
     android:layout_margin="4dp">
 

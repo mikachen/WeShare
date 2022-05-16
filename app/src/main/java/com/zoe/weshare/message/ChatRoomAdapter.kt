@@ -20,7 +20,6 @@ import com.zoe.weshare.util.Util.getStringWithIntParm
 class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
     ListAdapter<MessageItem, RecyclerView.ViewHolder>(DiffCallback) {
 
-
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is MessageItem.OnSendSide -> ITEM_VIEW_TYPE_SEND
@@ -88,16 +87,15 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
                     }
 
                     ChatRoomType.MULTIPLE.value -> {
-                        val targetList = allUsersList.filter { it.uid != weShareUser!!.uid }
 
                         val whoReadList = comment.whoRead as MutableList
                         whoReadList.remove(weShareUser!!.uid)
 
-//                        val isRead = whoReadList.any { user -> targetList.any { user == it.uid } }
-
                         if (whoReadList.isNotEmpty()) {
-                            unreadHint.text = getStringWithIntParm(R.string.message_whoRead_count,
-                                whoReadList.size)
+                            unreadHint.text = getStringWithIntParm(
+                                R.string.message_whoRead_count,
+                                whoReadList.size
+                            )
                         } else {
                             unreadHint.text = "未讀"
                         }
@@ -133,7 +131,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
                         bindImage(binding.imageTargeImage, target.image)
                         binding.textTargetName.visibility = View.GONE
                     } else {
-                        //target has left the room
+                        // target has left the room
                         binding.textTargetName.visibility = View.VISIBLE
                         binding.textTargetName.text = "此人已離開聊天室"
                     }
@@ -146,7 +144,7 @@ class ChatRoomAdapter(val viewModel: ChatRoomViewModel) :
                     binding.textTargetName.text = speaker.name
                     binding.textTargetName.visibility = View.VISIBLE
 
-                    //TODO deal with user who leave this room
+                    // TODO deal with user who leave this room
                 }
             }
         }

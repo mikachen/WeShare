@@ -112,7 +112,8 @@ class GiftDetailFragment : Fragment() {
         viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    GiftDetailFragmentDirections.actionGiftDetailFragmentToProfileFragment(it))
+                    GiftDetailFragmentDirections.actionGiftDetailFragmentToProfileFragment(it)
+                )
 
                 viewModel.navigateToProfileComplete()
             }
@@ -141,8 +142,10 @@ class GiftDetailFragment : Fragment() {
 
             textPostedLocation.text = gift.location?.locationName
 
-            textCreatedTime.text = getString(R.string.posted_time,
-                gift.createdTime.toDisplayFormat())
+            textCreatedTime.text = getString(
+                R.string.posted_time,
+                gift.createdTime.toDisplayFormat()
+            )
 
             textGiftSort.text = gift.sort
 

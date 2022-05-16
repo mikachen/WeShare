@@ -15,7 +15,6 @@ data class UserProfile(
     var blackList: MutableList<String> = mutableListOf(),
 ) : Parcelable
 
-
 @Parcelize
 data class Contribution(
     val totalContribution: Int = 0,

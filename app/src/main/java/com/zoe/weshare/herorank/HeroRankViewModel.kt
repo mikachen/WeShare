@@ -20,7 +20,6 @@ class HeroRankViewModel(private val repository: WeShareRepository) : ViewModel()
     val ranking: LiveData<List<UserProfile>>
         get() = _ranking
 
-
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -35,7 +34,6 @@ class HeroRankViewModel(private val repository: WeShareRepository) : ViewModel()
     private val _selectedUser = MutableLiveData<UserProfile>()
     val selectedUser: LiveData<UserProfile>
         get() = _selectedUser
-
 
     init {
         getRankResult()

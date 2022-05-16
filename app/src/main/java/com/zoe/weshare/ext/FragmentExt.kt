@@ -38,9 +38,9 @@ fun Fragment.getVmFactory(): ViewModelFactory {
 fun Fragment.checkLocationPermission(): Boolean {
     // 檢查權限
     return ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        requireContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
 fun Fragment.requestLocationPermissions() {
@@ -50,7 +50,8 @@ fun Fragment.requestLocationPermissions() {
         .withListener(object : PermissionListener {
             override fun onPermissionGranted(response: PermissionGrantedResponse) {
                 findNavController().navigate(
-                    NavGraphDirections.navigateToMapFragment())
+                    NavGraphDirections.navigateToMapFragment()
+                )
             }
 
             override fun onPermissionDenied(response: PermissionDeniedResponse) {
@@ -93,10 +94,10 @@ fun Fragment.sendNotificationsToFollowers(log: OperationLog) {
     requireContext().startService(intent)
 }
 
-fun Fragment.sendNotificationToTarget(authorUid: String, log: OperationLog) {
+fun Fragment.sendNotificationToTarget(targetUid: String, log: OperationLog) {
     val intent = Intent(requireContext(), SendNotificationService::class.java)
     intent.putExtra(SEND_TO_AUTHOR_MSG, log)
-    intent.putExtra(SEND_TO_AUTHOR_UID, authorUid)
+    intent.putExtra(SEND_TO_AUTHOR_UID, targetUid)
 
     requireContext().startService(intent)
 }

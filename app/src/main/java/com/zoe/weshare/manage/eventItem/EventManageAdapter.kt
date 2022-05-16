@@ -14,7 +14,6 @@ import com.zoe.weshare.databinding.ItemEventManageBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayDateFormat
 import com.zoe.weshare.util.EventStatusType
-import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.Logger
 
 class EventManageAdapter(
@@ -155,12 +154,12 @@ class EventManageAdapter(
             }
         }
 
-        //to enhance user experience
+        // to enhance user experience
         if (firstEntry) {
             firstEntry = false
             if (list.isEmpty()) {
                 viewModel.firstEntryEmpty.value = true
-            }else{
+            } else {
                 submitList(list)
             }
         } else {

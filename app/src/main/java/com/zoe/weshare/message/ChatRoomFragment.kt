@@ -15,7 +15,6 @@ import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getStringWithStrParm
 
-
 class ChatRoomFragment : Fragment() {
 
     private lateinit var chatRoom: ChatRoom
@@ -65,7 +64,8 @@ class ChatRoomFragment : Fragment() {
         viewModel.navigateToTargetUser.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    ChatRoomFragmentDirections.actionChatRoomFragmentToProfileFragment(it))
+                    ChatRoomFragmentDirections.actionChatRoomFragmentToProfileFragment(it)
+                )
 
                 viewModel.navigateToProfileComplete()
             }
@@ -82,12 +82,11 @@ class ChatRoomFragment : Fragment() {
         adapter = ChatRoomAdapter(viewModel)
         recyclerView.adapter = adapter
 
-
         val targetsInfo = chatRoom.usersInfo.filter { it.uid != weShareUser!!.uid }
 
         when (chatRoom.type) {
             ChatRoomType.PRIVATE.value ->
-                if (chatRoom.participants.size == 2 ) {
+                if (chatRoom.participants.size == 2) {
 
                     binding.textRoomTargetTitle.text = targetsInfo.single().name
                 } else {
@@ -128,13 +127,20 @@ class ChatRoomFragment : Fragment() {
         recyclerView.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
             override fun onLayoutChange(
                 v: View?,
-                left: Int, top: Int, right: Int, bottom: Int,
-                oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int,
+                left: Int,
+                top: Int,
+                right: Int,
+                bottom: Int,
+                oldLeft: Int,
+                oldTop: Int,
+                oldRight: Int,
+                oldBottom: Int,
             ) {
                 if (bottom < oldBottom) {
                     recyclerView.postDelayed({
                         recyclerView.smoothScrollToPosition(
-                            recyclerView.adapter!!.itemCount - 1)
+                            recyclerView.adapter!!.itemCount - 1
+                        )
                     }, 100)
                 }
             }

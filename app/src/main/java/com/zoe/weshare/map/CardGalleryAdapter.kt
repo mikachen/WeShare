@@ -103,5 +103,4 @@ class CardGalleryAdapter(
         likeAnimation.duration = 500
         likeAnimation.interpolator = BounceInterpolator()
     }
-
 }

@@ -34,7 +34,6 @@ object Const {
     const val FIELD_EVENT_VOLUNTEER = "whoVolunteer"
     const val FIELD_EVENT_CHECKED_IN = "whoCheckedIn"
 
-
     const val FIELD_USER_UID = "uid"
     const val FIELD_USER_FOLLOWER = "follower"
     const val FIELD_USER_FOLLOWING = "following"

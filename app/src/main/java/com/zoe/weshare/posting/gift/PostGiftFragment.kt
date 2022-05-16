@@ -184,7 +184,6 @@ class PostGiftFragment : Fragment() {
         val sortsString = resources.getStringArray(R.array.gift_item_sort)
         val conditionString = resources.getStringArray(R.array.gift_item_condition)
 
-
         sortAdapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_list_item_1, sortsString
@@ -268,5 +267,4 @@ class PostGiftFragment : Fragment() {
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
         )
     }
-
 }

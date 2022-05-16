@@ -1,21 +1,16 @@
 package com.zoe.weshare.detail.askgift
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.zoe.weshare.MainActivity
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentAskForGiftBinding
@@ -97,10 +92,10 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
             dialog.behavior.skipCollapsed = true
             dialog.behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-            //Disable Cancel on Touch Outside & on Back press
+            // Disable Cancel on Touch Outside & on Back press
             dialog.setCanceledOnTouchOutside(false)
 
-            //Disable from dragging
+            // Disable from dragging
             dialog.behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     if (newState == BottomSheetBehavior.STATE_DRAGGING) {

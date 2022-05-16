@@ -42,17 +42,16 @@ fun Activity.showNavigationBar() {
     }
 }
 
-
 //
-//fun Activity.checkLocationPermission(): Boolean {
+// fun Activity.checkLocationPermission(): Boolean {
 //    // 檢查權限
 //    return ActivityCompat.checkSelfPermission(
 //        this,
 //        Manifest.permission.ACCESS_FINE_LOCATION
 //    ) == PackageManager.PERMISSION_GRANTED
-//}
+// }
 //
-//fun Activity.requestLocationPermissions() {
+// fun Activity.requestLocationPermissions() {
 //
 //    Dexter.withContext(this)
 //        .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -89,4 +88,4 @@ fun Activity.showNavigationBar() {
 //                    .show()
 //            }
 //        }).check()
-//}
+// }

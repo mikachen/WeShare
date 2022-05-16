@@ -51,7 +51,6 @@ class EventManageViewModel(
     val onAlterMsgShowing: LiveData<EventPost>
         get() = _onAlterMsgShowing
 
-
     init {
         getUserAllEventsPosts()
     }
@@ -68,7 +67,7 @@ class EventManageViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _allEventsResult.value = result.data?: emptyList()
+                    _allEventsResult.value = result.data ?: emptyList()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -125,7 +124,7 @@ class EventManageViewModel(
             operatorUid = userInfo!!.uid,
             logType = LogType.EVENT_GOT_FORCE_ENDED.value,
             logMsg = WeShareApplication.instance
-                .getString(R.string.log_msg_force_end_event,userInfo.name,event.title)
+                .getString(R.string.log_msg_force_end_event, userInfo.name, event.title)
         )
 
         saveLog(log)
@@ -152,16 +151,15 @@ class EventManageViewModel(
         }
     }
 
-    fun generateQrcode(eventId: String){
+    fun generateQrcode(eventId: String) {
         _qrcode.value = eventId
     }
 
-    fun generateQrcodeComplete(){
+    fun generateQrcodeComplete() {
         _qrcode.value = null
     }
 
     fun refreshFilterView() {
         getUserAllEventsPosts()
     }
-
 }

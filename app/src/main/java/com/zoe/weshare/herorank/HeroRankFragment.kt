@@ -16,7 +16,6 @@ import com.zoe.weshare.databinding.FragmentHeroRankBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 
-
 class HeroRankFragment : Fragment() {
 
     private lateinit var binding: FragmentHeroRankBinding
@@ -26,14 +25,13 @@ class HeroRankFragment : Fragment() {
 
     private val viewModel by viewModels<HeroRankViewModel> { getVmFactory() }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
         binding = FragmentHeroRankBinding.inflate(inflater, container, false)
-
 
         viewModel.ranking.observe(viewLifecycleOwner) {
             setupView(it)
@@ -46,7 +44,6 @@ class HeroRankFragment : Fragment() {
                 viewModel.onNavigateComplete()
             }
         }
-
 
         return binding.root
     }
@@ -107,6 +104,7 @@ class HeroRankFragment : Fragment() {
 
     fun onNavigateToTargetProfile(uid: String) {
         findNavController().navigate(
-            HeroRankFragmentDirections.actionHeroRankFragmentToProfileFragment(UserInfo(uid = uid)))
+            HeroRankFragmentDirections.actionHeroRankFragmentToProfileFragment(UserInfo(uid = uid))
+        )
     }
 }

@@ -43,7 +43,6 @@ class PostEventFragment : Fragment() {
     private lateinit var binding: FragmentPostEventBinding
     private lateinit var sortAdapter: ArrayAdapter<String>
 
-
     private val whatToPostAnimate: Animation by lazy {
         AnimationUtils.loadAnimation(
             requireContext(),
@@ -277,5 +276,4 @@ class PostEventFragment : Fragment() {
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
         )
     }
-
 }

@@ -8,13 +8,20 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     tools:context=".MainActivity">
+
+    <FrameLayout
+        android:id="@+id/newbie_hint_cover_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="10dp"/>
+
     <!--    progressbar-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_main_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#BF000000"
-        android:elevation="10dp"
+        android:elevation="5dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,6 +55,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_appbar"
         android:layout_width="match_parent"
+        android:elevation="1dp"
         android:layout_height="wrap_content"
         android:background="@drawable/custom_theme_gradient">
 
@@ -161,7 +169,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <fragment
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -178,6 +185,7 @@
         android:id="@+id/bottomAppBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_bottom_app_bar"
+        app:elevation="1dp"
         android:layout_gravity="bottom"
         android:backgroundTint="@color/background_material_light">
 
@@ -199,9 +207,10 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fabs_layout_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:elevation="1dp"
         android:layout_marginBottom="@dimen/height_bottom_app_bar"
         android:visibility="gone"
         tools:visibility="visible">
@@ -323,7 +332,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:maxImageSize="48dp" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

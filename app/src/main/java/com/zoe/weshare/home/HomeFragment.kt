@@ -115,26 +115,28 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         val lps = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT)
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
 
         lps.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
         lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
 
         val margin = ((resources.displayMetrics.density * 24) as Number).toInt()
-        lps.setMargins(margin, margin, margin, margin * 10)
+        lps.setMargins(margin, margin, margin * 10, margin * 2)
 
         showcaseView = ShowcaseView.Builder(requireActivity())
             .setTarget(NONE)
-            .withMaterialShowcase()
+            .withNewStyleShowcase()
             .setStyle(R.style.CustomShowcaseTheme)
             .setContentTitle("歡迎進入WeShare，恭喜您已成功地完成共享的第一步！")
             .setContentText("讓我為您做個操作介紹吧:)")
             .setOnClickListener(this)
-            .hideOnTouchOutside()
             .build()
 
         showcaseView.setButtonPosition(lps)
         showcaseView.setButtonText("下一步")
+
+        setupHintCoverView()
     }
 
     private fun setupHeaderGallery() {
@@ -226,7 +228,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
 
                         logTickerRv.smoothSnapToPosition(manager.findLastVisibleItemPosition() + 1)
-                    } else{
+                    } else {
 
                         logTickerRv.smoothSnapToPosition(0)
                     }
@@ -241,37 +243,64 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
             0 ->
                 showcaseView.apply {
-                    setShowcase(ViewTarget((activity as MainActivity).binding.fabMain), true)
-                    setContentTitle("點擊+按鈕可以刊登贈品或刊登活動")
-                    setContentText("")
+                    setShowcase(ViewTarget((activity as MainActivity).binding.fabsLayoutView), true)
+                    setContentTitle("")
+                    setContentText("點擊+按鈕可以刊登贈品或刊登活動")
+                    (activity as MainActivity).onMainFabClick()
                 }
 
             1 -> showcaseView.apply {
-                setShowcase(ViewTarget(binding.buttonCheckEvents), true)
-                setContentTitle("點擊查看活動可以瀏覽當前最新的活動項目")
+                (activity as MainActivity).onMainFabClick()
+
+                setShowcase(ViewTarget(binding.showcaseCenterLine), true)
+                setContentText("點擊查看活動與查看贈品可以瀏覽當前最新的刊登項目")
             }
 
             2 -> showcaseView.apply {
-                setShowcase(ViewTarget(binding.buttonCheckGifts), true)
-                setContentTitle("點擊查看贈品可以瀏覽當前最新的贈品項目")
-            }
-            3 -> showcaseView.apply {
                 setShowcase(ViewTarget(binding.buttonCurrentHeros), true)
-                setContentTitle("點擊英雄榜可以查看到用戶的貢獻排名")
+                setContentText("點擊英雄榜可以查看到用戶的貢獻排名")
             }
+
+            3 -> showcaseView.apply {
+                setShowcase(ViewTarget((activity as MainActivity).binding.notification), true)
+                setContentText("點擊小鈴鐺可以看到最新的通知訊息")
+            }
+
             4 -> showcaseView.apply {
                 setShowcase(ViewTarget((activity as MainActivity).binding.notification), true)
-                setContentTitle("點擊小鈴鐺來看看最新的通知")
+                setContentText("點擊小鈴鐺可以看到最新的通知訊息")
+            }
+
+            5 -> showcaseView.apply {
+                setTarget(NONE)
+                setContentTitle("WeShare:)祝您使用愉快")
+                setContentText("")
                 setButtonText("關閉")
             }
-            5 -> {
+
+            6 -> {
                 showcaseView.hide()
+                hideCoverView()
             }
         }
+
         counter++
 
-        if (counter == 6) {
+        if (counter == 7) {
             counter = 0
         }
+    }
+
+    private fun setupHintCoverView() {
+
+        (activity as MainActivity).binding.newbieHintCoverView.apply {
+            setOnClickListener { }
+            visibility = View.VISIBLE
+        }
+
+    }
+
+    private fun hideCoverView() {
+        (activity as MainActivity).binding.newbieHintCoverView.visibility = View.GONE
     }
 }

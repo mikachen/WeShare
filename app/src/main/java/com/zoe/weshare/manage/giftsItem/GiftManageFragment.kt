@@ -19,7 +19,6 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager.weShareUser
 
-
 class GiftManageFragment : Fragment() {
 
     private lateinit var binding: FragmentGiftManageBinding
@@ -71,7 +70,8 @@ class GiftManageFragment : Fragment() {
         viewModel.onCommentsShowing.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    GiftManageFragmentDirections.actionGiftManageFragmentToDistributeFragment(it))
+                    GiftManageFragmentDirections.actionGiftManageFragmentToDistributeFragment(it)
+                )
 
                 viewModel.navigateToRequestComplete()
             }
@@ -117,7 +117,8 @@ class GiftManageFragment : Fragment() {
         }
 
         adapter = GiftManageAdapter(
-            viewModel, GiftManageAdapter.OnClickListener {
+            viewModel,
+            GiftManageAdapter.OnClickListener {
                 findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
             }
         )

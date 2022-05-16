@@ -13,7 +13,6 @@ import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.Const.FIELD_ROOM_PARTICIPANTS
 import com.zoe.weshare.util.Const.PATH_CHATROOM
-import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +29,6 @@ class RoomListViewModel(
     private var _rooms = MutableLiveData<List<ChatRoom>>()
     val room: LiveData<List<ChatRoom>>
         get() = _rooms
-
 
     private var _navigateToSelectedRoom = MutableLiveData<ChatRoom?>()
     val navigateToSelectedRoom: LiveData<ChatRoom?>
@@ -49,7 +47,6 @@ class RoomListViewModel(
 
     var leaveRoomComplete = MutableLiveData<ChatRoom>()
 
-
     fun onViewDisplay(liveData: MutableLiveData<List<ChatRoom>>) {
         allRooms = liveData
     }
@@ -64,7 +61,7 @@ class RoomListViewModel(
 
     fun onLeaveRoom(room: ChatRoom) {
         if (room.participants.size == 1) {
-            when(room.type){
+            when (room.type) {
                 ChatRoomType.MULTIPLE.value -> leaveChatRoom(room)
                 ChatRoomType.PRIVATE.value -> removeChatRoom(room)
             }

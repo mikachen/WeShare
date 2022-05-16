@@ -17,7 +17,7 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.CurrentFragmentType
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager
-
+import com.zoe.weshare.util.UserManager.hasCheckNotification
 
 class MainActivity : AppCompatActivity() {
 
@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
                 topAppbar.visibility = View.VISIBLE
                 layoutToolbarSubtitle.visibility = View.VISIBLE
                 toolbarFragmentTitleText.text = it.value
+                binding.notification.visibility = View.VISIBLE
 
                 when (it) {
                     // 顯示副標題+倒退鍵
@@ -135,8 +136,11 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     CurrentFragmentType.NOTIFICATION -> {
+                        binding.layoutBadge.visibility = View.INVISIBLE
+
                         showBottom()
                         fabsLayoutView.visibility = View.INVISIBLE
+                        binding.notification.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.EVENTMANAGE -> {
@@ -186,7 +190,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.roomBadgeCount.observe(this){
+        viewModel.roomBadgeCount.observe(this) {
             it?.let {
                 updateUnReadMsgBadge(it)
             }
@@ -199,7 +203,7 @@ class MainActivity : AppCompatActivity() {
         setupFab()
     }
 
-    private fun updateUnReadMsgBadge(count: Int){
+    private fun updateUnReadMsgBadge(count: Int) {
 
         if (count > 0) {
             chatRoomBadge.number = count
@@ -209,7 +213,6 @@ class MainActivity : AppCompatActivity() {
             chatRoomBadge.clearNumber()
         }
     }
-
 
     private fun updateNotificationBadge(list: List<OperationLog>) {
         val count = list.filter { !it.read }.size
@@ -296,7 +299,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_map -> {
 
-
                     findNavController(R.id.nav_host_fragment).navigate(
                         NavGraphDirections.navigateToMapFragment()
                     )
@@ -349,22 +351,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onMainFabClick() {
+    fun onMainFabClick() {
         setVisibility(isFabExpend)
         setAnimation(isFabExpend)
 
         isFabExpend = !isFabExpend
     }
-
-//    private fun onNotificationClick() {
-//        if (!notificationPageOpen) {
-//            findNavController(R.id.nav_host_fragment)
-//                .navigate(NavGraphDirections.actionGlobalNotificationFragment())
-//        } else {
-//            findNavController(R.id.nav_host_fragment).navigateUp()
-//        }
-//        notificationPageOpen = !notificationPageOpen
-//    }
 
     private fun setAnimation(isFabExpend: Boolean) {
 

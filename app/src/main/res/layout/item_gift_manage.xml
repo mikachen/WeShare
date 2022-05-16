@@ -42,8 +42,8 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardElevation="4dp"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="10dp"
+        app:cardElevation="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -59,10 +59,10 @@
                 android:layout_width="140dp"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                tools:src ="@drawable/upload_image_holder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/upload_image_holder" />
 
 
             <TextView
@@ -70,11 +70,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:layout_marginTop="16dp"
-                android:maxLines="1"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
                 android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
                 app:layout_constraintStart_toEndOf="@id/image_gift"
                 app:layout_constraintTop_toTopOf="parent"
@@ -93,13 +94,14 @@
                 android:id="@+id/text_posted_location"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="14sp"
+                android:layout_marginEnd="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:textColor="@color/black"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
                 app:layout_constraintStart_toEndOf="@id/ic_pin"
                 app:layout_constraintTop_toTopOf="@id/ic_pin"
-                app:layout_constraintEnd_toStartOf="@id/layout_status_tag"
                 tools:text="台北西門台北西門台北西門台北西門台北西門台北西門" />
 
 
@@ -107,9 +109,9 @@
                 android:id="@+id/ic_clock"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:scaleY="0.8"
-                android:scaleX="0.8"
                 android:layout_marginTop="8dp"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
                 android:src="@drawable/ic_clock"
                 app:layout_constraintStart_toStartOf="@id/text_title"
                 app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
@@ -121,9 +123,9 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ic_clock"
                 app:layout_constraintTop_toTopOf="@id/ic_clock"
-                app:layout_constraintEnd_toEndOf="parent"
                 tools:text="還有3小時結束" />
 
             <androidx.cardview.widget.CardView
@@ -151,13 +153,14 @@
                 android:id="@+id/btn_check_who_request"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp"
                 android:gravity="bottom"
                 android:text="\u003C 查看索取"
-                android:textStyle="bold"
                 android:textAlignment="center"
                 android:textColor="@color/greenTestColor"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 

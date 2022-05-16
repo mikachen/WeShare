@@ -10,11 +10,9 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.Const.FIELD_MESSAGE_WHO_READ
 import com.zoe.weshare.util.Const.PATH_CHATROOM
 import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
-import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,13 +51,11 @@ class ChatRoomViewModel(
 
     var loopSize: Int = 0
 
-
     fun onViewDisplay(room: ChatRoom) {
 
         chatRoom = room
         liveMessages = repository.getLiveMessages(docId = room.id)
     }
-
 
     fun onSending(inputMsg: String) {
         _newMessage.value = Comment(
@@ -81,7 +77,7 @@ class ChatRoomViewModel(
                     _status.value = LoadApiStatus.DONE
 
                     saveLastMsgRecord(docId) // 更新room最新訊息
-                    setLastMsgReadUser(comment) //更新最後訊息已讀的人
+                    setLastMsgReadUser(comment) // 更新最後訊息已讀的人
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -128,7 +124,7 @@ class ChatRoomViewModel(
     fun getUnReadItems(messages: List<MessageItem>) {
         val unReadItems = messages.filter {
             it is MessageItem.OnReceiveSide &&
-                    it.message?.whoRead?.contains(userInfo!!.uid) == false
+                it.message?.whoRead?.contains(userInfo!!.uid) == false
         }
 
         if (unReadItems.isNotEmpty()) {
@@ -163,7 +159,6 @@ class ChatRoomViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -209,7 +204,6 @@ class ChatRoomViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-
                 }
                 is Result.Fail -> {
                     _error.value = result.error

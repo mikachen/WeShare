@@ -66,7 +66,6 @@ class LoginFragment : Fragment() {
 
         val mGoogleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
-
         // signOut allow user to choose different account to login
         if (resetFastLogin) {
             mGoogleSignInClient.signOut()

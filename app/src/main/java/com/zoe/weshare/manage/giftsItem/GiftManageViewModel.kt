@@ -8,7 +8,6 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.Const.PATH_GIFT_POST
 import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
@@ -75,7 +74,7 @@ class GiftManageViewModel(
                     _error.value = null
                     _searchGiftsStatus.value = LoadApiStatus.DONE
 
-                    _allGiftsResult.value = result.data?: emptyList()
+                    _allGiftsResult.value = result.data ?: emptyList()
                 }
                 is Result.Fail -> {
                     _error.value = result.error

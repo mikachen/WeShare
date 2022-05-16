@@ -33,7 +33,6 @@ class RoomListFragment : Fragment() {
 
         viewModel.onViewDisplay(liveData)
 
-
         viewModel.allRooms.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
         }
@@ -41,7 +40,8 @@ class RoomListFragment : Fragment() {
         viewModel.navigateToSelectedRoom.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    NavGraphDirections.actionGlobalChatRoomFragment(it))
+                    NavGraphDirections.actionGlobalChatRoomFragment(it)
+                )
 
                 viewModel.displayRoomDetailsComplete()
             }

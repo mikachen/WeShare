@@ -133,7 +133,6 @@ class DefaultWeShareRepository(
         return remoteDataSource.getUserAllEventsPosts(uid)
     }
 
-
     override suspend fun updateGiftStatus(
         docId: String,
         statusCode: Int,
@@ -179,12 +178,14 @@ class DefaultWeShareRepository(
         field: String,
         value: FieldValue,
     ): Result<Boolean> {
-        return remoteDataSource.updateSubCollectionFieldValue(collection,
+        return remoteDataSource.updateSubCollectionFieldValue(
+            collection,
             docId,
             subCollection,
             subDocId,
             field,
-            value)
+            value
+        )
     }
 
     override suspend fun uploadImage(imageUri: Uri): Result<String> {

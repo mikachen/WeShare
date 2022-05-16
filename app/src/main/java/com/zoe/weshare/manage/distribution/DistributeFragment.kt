@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.UserProfile
@@ -74,7 +73,8 @@ class DistributeFragment : BottomSheetDialogFragment() {
         viewModel.targetUser.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    DistributeFragmentDirections.actionDistributeFragmentToProfileFragment(it))
+                    DistributeFragmentDirections.actionDistributeFragmentToProfileFragment(it)
+                )
                 viewModel.navigateToProfileComplete()
             }
         }

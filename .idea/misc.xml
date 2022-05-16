@@ -107,7 +107,7 @@
         <entry key="app/src/main/res/layout/item_comment_board.xml" value="0.375" />
         <entry key="app/src/main/res/layout/item_event_bulletin_board.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/item_event_cards_view.xml" value="0.2" />
-        <entry key="app/src/main/res/layout/item_event_manage.xml" value="0.45" />
+        <entry key="app/src/main/res/layout/item_event_manage.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_events_all_grid.xml" value="0.335" />
         <entry key="app/src/main/res/layout/item_gift_distribution_list.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_gift_distrubution_comment_list.xml" value="0.5" />

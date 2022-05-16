@@ -15,7 +15,6 @@ interface WeShareRepository {
     suspend fun getUserAllGiftsPosts(uid: String): Result<List<GiftPost>>
     suspend fun getUserAllEventsPosts(uid: String): Result<List<EventPost>>
 
-
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
 
     fun getLiveLogs(): MutableLiveData<List<OperationLog>>

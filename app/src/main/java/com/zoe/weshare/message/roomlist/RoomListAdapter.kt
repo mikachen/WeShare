@@ -39,10 +39,8 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
 
         holder.itemView.setOnClickListener {
             viewModel.displayRoomDetails(room)
-
         }
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     class RoomListViewHolder(
@@ -54,7 +52,6 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
         private lateinit var viewModel: RoomListViewModel
         private var onPressTime: Long = 0
 
-
         fun bind(room: ChatRoom, viewModel: RoomListViewModel) {
             this.room = room
             this.viewModel = viewModel
@@ -63,7 +60,7 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
                 textLastMessage.text = room.lastMsg
                 textLastSentTime.text = room.lastMsgSentTime.toDisplaySentTime()
 
-                //drawing room image, room title
+                // drawing room image, room title
                 when (room.type) {
                     ChatRoomType.MULTIPLE.value -> {
                         bindImage(imageRoomImage, room.eventImage)
@@ -72,14 +69,13 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
                     }
 
                     ChatRoomType.PRIVATE.value -> {
-                        if (room.participants.size == 1){
+                        if (room.participants.size == 1) {
 
                             textRoomTargetTitle.text = "用戶已離開聊天室"
+                        } else {
+                            val target = room.usersInfo.single { it.uid != weShareUser!!.uid }
 
-                        }else{
-                            val target = room.usersInfo.single{ it.uid != weShareUser!!.uid }
-
-                            bindImage(imageRoomImage,target.image)
+                            bindImage(imageRoomImage, target.image)
                             textRoomTargetTitle.text = target.name
                         }
                     }
@@ -102,7 +98,6 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
             if (event.action == MotionEvent.ACTION_DOWN) {
                 onPressTime = System.currentTimeMillis()
                 view.tag = true
-
             } else if (view.isPressed && view.tag == true) {
                 val eventDuration = event.eventTime - event.downTime
 
