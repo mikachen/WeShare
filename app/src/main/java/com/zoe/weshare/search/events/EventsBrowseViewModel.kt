@@ -9,6 +9,7 @@ import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
+import com.zoe.weshare.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,32 +45,38 @@ class EventsBrowseViewModel(private val repository: WeShareRepository) : ViewMod
     private fun getALLEventsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
-            val result = repository.getAllEvents()
 
-            _events.value = when (result) {
+            when (val result = repository.getAllEvents()) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data
+
+                    filterEvent(result.data)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
-                    null
                 }
             }
         }
+    }
+
+    private fun filterEvent(event: List<EventPost>) {
+        val list = event.filter {
+            !UserManager.userBlackList.contains(it.author!!.uid) } as MutableList
+
+        list.sortByDescending { it.createdTime }
+
+        _events.value = list
     }
 
     fun onNavigateEventDetails(event: EventPost) {

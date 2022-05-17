@@ -27,15 +27,12 @@ import kotlinx.coroutines.launch
 class EventDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
     ViewModel() {
 
-    var onEventLiveDisplaying = MutableLiveData<EventPost?>()
-
+    var liveEventDetailResult = MutableLiveData<EventPost?>()
     var liveComments = MutableLiveData<List<Comment>>()
 
     private var _filteredComments = MutableLiveData<List<Comment>>()
     val filteredComments: LiveData<List<Comment>>
         get() = _filteredComments
-
-    var blockUserComplete = MutableLiveData<UserProfile>()
 
     private var _room = MutableLiveData<ChatRoom?>()
     val room: LiveData<ChatRoom?>
@@ -88,28 +85,32 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val error: LiveData<String?>
         get() = _error
 
+    var blockUserComplete = MutableLiveData<UserProfile>()
+
+    private var _reportedTarget = MutableLiveData<String>()
+    val reportedTarget: LiveData<String>
+        get() = _reportedTarget
+
     fun onViewPrepare(event: EventPost) {
         getLiveEventDetail(event)
-        getLiveCommentResult(event)
+        getLiveComments(event)
     }
 
-    fun getLiveEventDetail(event: EventPost) {
-
-        onEventLiveDisplaying = repository.getLiveEventDetail(docId = event.id)
-
-        _status.value = LoadApiStatus.DONE
-        _refreshStatus.value = false
+    private fun getLiveEventDetail(event: EventPost) {
+        liveEventDetailResult = repository.getLiveEventDetail(docId = event.id)
     }
 
-    fun getLiveCommentResult(event: EventPost) {
+    private fun getLiveComments(event: EventPost) {
         liveComments = repository.getLiveComments(
             collection = PATH_EVENT_POST,
             docId = event.id,
             subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
         )
+    }
 
-        _status.value = LoadApiStatus.DONE
-        _refreshStatus.value = false
+    fun filterComment() {
+        _filteredComments.value =
+            liveComments.value?.filterNot { UserManager.userBlackList.contains(it.uid) }
     }
 
     fun onGetUsersProfile(comments: List<Comment>) {
@@ -256,7 +257,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.sendComment(
                     collection = PATH_EVENT_POST,
-                    docId = onEventLiveDisplaying.value!!.id,
+                    docId = liveEventDetailResult.value!!.id,
                     comment = comment,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
                 )
@@ -269,7 +270,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                         logMsg = WeShareApplication.instance.getString(
                             R.string.log_msg_send_event_comment,
                             userInfo!!.name,
-                            onEventLiveDisplaying.value!!.title
+                            liveEventDetailResult.value!!.title
                         )
                     )
                 }
@@ -290,7 +291,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         val log = OperationLog(
             logType = logType,
             logMsg = logMsg,
-            postDocId = onEventLiveDisplaying.value!!.id,
+            postDocId = liveEventDetailResult.value!!.id,
             operatorUid = userInfo!!.uid
         )
         saveLog(log)
@@ -334,7 +335,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.likeOnPostComment(
                     collection = PATH_EVENT_POST,
-                    docId = onEventLiveDisplaying.value!!.id,
+                    docId = liveEventDetailResult.value!!.id,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT,
                     subDocId = subDoc,
                     uid = userInfo!!.uid
@@ -367,7 +368,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.cancelLikeOnPostComment(
                     collection = PATH_EVENT_POST,
-                    docId = onEventLiveDisplaying.value!!.id,
+                    docId = liveEventDetailResult.value!!.id,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT,
                     subDocId = subDoc,
                     uid = userInfo!!.uid
@@ -400,7 +401,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.updateFieldValue(
                     collection = PATH_EVENT_POST,
-                    docId = onEventLiveDisplaying.value!!.id,
+                    docId = liveEventDetailResult.value!!.id,
                     field = fieldString,
                     value = FieldValue.arrayUnion(userInfo!!.uid)
                 )
@@ -434,7 +435,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.updateFieldValue(
                     collection = PATH_EVENT_POST,
-                    docId = onEventLiveDisplaying.value!!.id,
+                    docId = liveEventDetailResult.value!!.id,
                     field = fieldString,
                     value = FieldValue.arrayRemove(userInfo!!.uid)
                 )
@@ -470,7 +471,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         coroutineScope.launch {
             when (
                 val result =
-                    repository.getEventRoom(docId = onEventLiveDisplaying.value!!.roomId)
+                    repository.getEventRoom(docId = liveEventDetailResult.value!!.roomId)
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -512,7 +513,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
             when (
                 val result = repository.updateEventRoom(
-                    roomId = onEventLiveDisplaying.value!!.roomId,
+                    roomId = liveEventDetailResult.value!!.roomId,
                     user = userInfo!!
                 )
             ) {
@@ -576,7 +577,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
             when (
                 val result = repository.updateEventStatus(
-                    docId = onEventLiveDisplaying.value!!.id,
+                    docId = liveEventDetailResult.value!!.id,
                     code = newStatus
                 )
             ) {
@@ -600,7 +601,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     private fun onStatusChangedLog(status: Int) {
 
         val log = OperationLog(
-            postDocId = onEventLiveDisplaying.value!!.id,
+            postDocId = liveEventDetailResult.value!!.id,
             operatorUid = userInfo!!.uid
         )
 
@@ -609,7 +610,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 log.logType = LogType.EVENT_STARTED.value
                 log.logMsg = getStringWithStrParm(
                     R.string.log_msg_event_status_ongoing,
-                    onEventLiveDisplaying.value!!.title
+                    liveEventDetailResult.value!!.title
                 )
             }
 
@@ -617,7 +618,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 log.logType = LogType.EVENT_ENDED.value
                 log.logMsg = getStringWithStrParm(
                     R.string.log_msg_event_status_ended,
-                    onEventLiveDisplaying.value!!.title
+                    liveEventDetailResult.value!!.title
                 )
             }
         }
@@ -679,14 +680,17 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun filterComment() {
-        _filteredComments.value =
-            liveComments.value?.filterNot { UserManager.userBlackList.contains(it.uid) }
-    }
-
     fun refreshCommentBoard() {
 
         filterComment()
         blockUserComplete.value = null
+    }
+
+    fun onNavigateToReportDialog(target: UserProfile) {
+        _reportedTarget.value = target.uid
+    }
+
+    fun navigateToReportComplete(){
+        _reportedTarget.value = null
     }
 }

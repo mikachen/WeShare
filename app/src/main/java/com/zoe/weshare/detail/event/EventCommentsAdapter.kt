@@ -63,7 +63,7 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
 
-            binding.imageProfileAvatar.setOnClickListener {
+            binding.imageUserAvatar.setOnClickListener {
                 viewModel.onNavigateToTargetProfile(comment.uid)
             }
 
@@ -79,7 +79,7 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
                     val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
 
                     speaker?.let {
-                        bindImage(binding.imageProfileAvatar, speaker.image)
+                        bindImage(binding.imageUserAvatar, speaker.image)
                         binding.textProfileName.text = speaker.name
 
                         binding.moreBtn.setOnClickListener {
@@ -91,16 +91,18 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
         }
         private fun showPopupMenu(
             view: View,
-            sender: UserProfile,
+            target: UserProfile,
             context: Context,
             viewModel: EventDetailViewModel
         ) {
             val popupMenu = PopupMenu(view.context, view)
-            popupMenu.menuInflater.inflate(R.menu.block_popup_menu, popupMenu.menu)
+            popupMenu.menuInflater.inflate(R.menu.report_user_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_block -> { showAlterDialog(sender, context, viewModel) }
+                    R.id.action_block_user -> { showAlterDialog(target, context, viewModel) }
+
+                    R.id.action_report_violations -> {viewModel.onNavigateToReportDialog(target)}
                 }
                 false
             }

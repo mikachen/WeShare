@@ -24,7 +24,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/images"
+                android:id="@+id/event_image"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:scaleType="centerCrop"
@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@color/translucent"
-                app:layout_constraintBottom_toBottomOf="@id/images"
+                app:layout_constraintBottom_toBottomOf="@id/event_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -50,7 +50,7 @@
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/images"
+                app:layout_constraintBottom_toBottomOf="@id/event_image"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/translucent_view"
                 tools:text="募款：山區浪浪需要你" />
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/images">
+                app:layout_constraintTop_toBottomOf="@id/event_image">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/layout_status_tag"
@@ -317,7 +317,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/image_profile_avatar"
+                        android:id="@+id/image_author_avatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop" />
@@ -353,7 +353,7 @@
 
 
                 <TextView
-                    android:id="@+id/title_gift_location"
+                    android:id="@+id/title_event_location"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -373,7 +373,7 @@
                     android:textColor="@color/black"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
-                    app:layout_constraintTop_toBottomOf="@id/title_gift_location"
+                    app:layout_constraintTop_toBottomOf="@id/title_event_location"
                     tools:text="台北西門" />
 
 

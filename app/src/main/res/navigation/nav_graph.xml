@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/homeFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -179,23 +179,23 @@
         app:destination="@id/homeFragment"
         app:popUpTo="@id/nav_graph"
         app:popUpToInclusive="true" />
+
     <action
         android:id="@+id/navigate_to_map_fragment"
         app:destination="@id/mapFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true" />
+        app:popUpTo="@id/homeFragment"/>
+
 
     <action
         android:id="@+id/navigate_to_roomlist_fragment"
         app:destination="@id/roomListFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true" />
+        app:popUpTo="@id/homeFragment"/>
 
     <action
         android:id="@+id/action_global_profileFragment"
         app:destination="@id/profileFragment"
-        app:popUpTo="@id/nav_graph"
-        app:popUpToInclusive="true" />
+        app:popUpTo="@id/homeFragment"/>
+
 
     <action
         android:id="@+id/navigate_to_post_event_fragment"
@@ -341,6 +341,16 @@
             android:id="@+id/action_heroRankFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment><action android:id="@+id/action_global_heroRankFragment" app:destination="@id/heroRankFragment"/>
+    <dialog
+        android:id="@+id/reportViolationDialog"
+        android:name="com.zoe.weshare.report.ReportViolationDialog"
+        tools:layout="@layout/dialog_report_violation"
+        android:label="ReportViolationDialog" >
+        <argument
+            android:name="reportTarget"
+            app:argType="string" />
+    </dialog>
+    <action android:id="@+id/action_global_reportViolationDialog" app:destination="@id/reportViolationDialog" />
 
 
 </navigation>

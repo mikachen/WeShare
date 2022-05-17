@@ -14,6 +14,8 @@ import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
+import com.zoe.weshare.detail.getLikeCounts
+import com.zoe.weshare.detail.hasUserLikedBefore
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getTimeAgoString
 import com.zoe.weshare.util.UserManager
@@ -22,60 +24,54 @@ import com.zoe.weshare.util.Util.getStringWithIntParm
 import com.zoe.weshare.util.Util.getStringWithStrParm
 import com.zoe.weshare.util.Util.readInstanceProperty
 
-class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context) :
-    ListAdapter<Comment, GiftsCommentsAdapter.GiftCommentsViewHolder>(DiffCall()) {
+class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
+    ListAdapter<Comment, RequestGiftAdapter.ViewHolder>(DiffCall()) {
 
-    val context = mContext
-    val userInfo = readInstanceProperty<UserInfo>(viewModel, "userInfo")
+    private val mContext = context
+    private val userInfo = readInstanceProperty<UserInfo>(viewModel, "userInfo")
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
-    ): GiftCommentsViewHolder {
-        return GiftCommentsViewHolder.from(parent)
+    ): ViewHolder {
+        return ViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holderGift: GiftCommentsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comment = getItem(position)
-        holderGift.bind(comment, viewModel, context)
 
-        val whoLikedList = viewModel.updateCommentLike[position].whoLiked
-        val isUserLiked: Boolean = whoLikedList.contains(userInfo.uid)
+        holder.bind(comment, viewModel, mContext)
 
-        val userReceiveGift: Boolean =
-            viewModel.selectedGiftDisplay.value?.whoGetGift == comment.uid
+        val whoLikedList = comment.whoLiked
 
-        holderGift.binding.apply {
+        holder.binding.apply {
 
             if (whoLikedList.isNotEmpty()) {
                 textLikesCount.text =
-                    getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+                    getStringWithIntParm(R.string.number_who_liked, getLikeCounts(whoLikedList))
             } else {
                 textLikesCount.visibility = View.INVISIBLE
             }
 
-            buttonCommentLike.isLiked = isUserLiked
+            //change button state
+            buttonCommentLike.isLiked = hasUserLikedBefore(whoLikedList)
 
             buttonCommentLike.setOnClickListener {
-                viewModel.onCommentsLikePressed(comment, isUserLiked, position)
+                viewModel.onCommentsLikePressed(comment)
             }
 
-            if (userReceiveGift) {
-                lottieReceivedGift.visibility = View.VISIBLE
-            } else {
-                lottieReceivedGift.visibility = View.INVISIBLE
-            }
+
         }
     }
 
-    class GiftCommentsViewHolder(val binding: ItemCommentBoardBinding) :
+    class ViewHolder(val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(comment: Comment, viewModel: GiftDetailViewModel, context: Context) {
 
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
 
-            binding.imageProfileAvatar.setOnClickListener {
+            binding.imageUserAvatar.setOnClickListener {
                 viewModel.onNavigateToTargetProfile(comment.uid)
             }
 
@@ -86,15 +82,16 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
             }
 
             // displaying user's image and name
-            if (viewModel.onProfileSearchComplete.value == 0) {
+            if (viewModel.onProfileSearchLoop.value == 0) {
+
                 if (viewModel.profileList.isNotEmpty()) {
-                    val sender = viewModel.profileList.singleOrNull { it.uid == comment.uid }
-                    sender?.let {
-                        bindImage(binding.imageProfileAvatar, sender.image)
-                        binding.textProfileName.text = sender.name
+                    val target = viewModel.profileList.singleOrNull { it.uid == comment.uid }
+                    target?.let {
+                        bindImage(binding.imageUserAvatar, target.image)
+                        binding.textProfileName.text = target.name
 
                         binding.moreBtn.setOnClickListener {
-                            showPopupMenu(it, sender, context, viewModel)
+                            showPopupMenu(it, target, context, viewModel)
                         }
                     }
                 }
@@ -103,16 +100,17 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
 
         private fun showPopupMenu(
             view: View,
-            sender: UserProfile,
+            target: UserProfile,
             context: Context,
             viewModel: GiftDetailViewModel
         ) {
             val popupMenu = PopupMenu(view.context, view)
-            popupMenu.menuInflater.inflate(R.menu.block_popup_menu, popupMenu.menu)
+            popupMenu.menuInflater.inflate(R.menu.report_user_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_block -> { showAlterDialog(sender, context, viewModel) }
+                    R.id.action_block_user -> { showAlterDialog(target, context, viewModel) }
+                    R.id.action_report_violations -> {viewModel.onNavigateToReportDialog(target)}
                 }
                 false
             }
@@ -143,11 +141,11 @@ class GiftsCommentsAdapter(val viewModel: GiftDetailViewModel, mContext: Context
         }
 
         companion object {
-            fun from(parent: ViewGroup): GiftCommentsViewHolder {
+            fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemCommentBoardBinding.inflate(layoutInflater, parent, false)
 
-                return GiftCommentsViewHolder(binding)
+                return ViewHolder(binding)
             }
         }
     }

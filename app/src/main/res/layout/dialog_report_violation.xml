@@ -3,50 +3,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context=".detail.askgift.AskForGiftFragment">
+    android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/title_leave_comment"
+        android:id="@+id/title_leave_reason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/leave_ask_for_gift_comment"
-        android:textSize="20sp"
         android:layout_margin="16dp"
+        android:text="@string/title_report_user"
         android:textColor="@color/black"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_leave_comment"
+        android:id="@+id/layout_leave_reason"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        app:counterEnabled="true"
-        app:hintTextColor="@color/app_work_orange1"
+        android:layout_marginHorizontal="16dp"
+        android:hint="@string/toast_leave_report_reason"
         app:boxStrokeColor="@color/app_work_orange1"
+        app:counterEnabled="true"
         app:counterMaxLength="200"
         app:errorEnabled="true"
-        android:hint="@string/pls_leave_askforgift_comment"
+        app:hintTextColor="@color/app_work_orange1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/title_leave_comment"
-        app:layout_constraintTop_toBottomOf="@id/title_leave_comment">
+        app:layout_constraintStart_toStartOf="@id/title_leave_reason"
+        app:layout_constraintTop_toBottomOf="@id/title_leave_reason">
 
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_leave_comment"
+            android:id="@+id/edit_leave_reason"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="top|start"
-            android:scrollbars="vertical"
-            tools:text="googlegooglgoogleggooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogleooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogleegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogle"
-            android:singleLine="false"
             android:inputType="textMultiLine"
             android:maxLength="200"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2" />
+            android:scrollbars="vertical"
+            android:singleLine="false"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            tools:text="googlegooglgoogleggooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogleooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogleegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegooglegoogle" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -56,14 +55,14 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
         android:layout_marginEnd="8dp"
-        android:textSize="16sp"
-        android:textColor="@color/app_work_orange1"
-        android:text="@string/confirm_no"
         android:background="@drawable/button_white_ripple"
-        app:layout_constraintEnd_toStartOf="@id/button_submit"
-        app:layout_constraintStart_toStartOf="@id/title_leave_comment"
+        android:text="@string/confirm_no"
+        android:textColor="@color/app_work_orange1"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_leave_comment" />
+        app:layout_constraintEnd_toStartOf="@id/button_submit"
+        app:layout_constraintStart_toStartOf="@id/title_leave_reason"
+        app:layout_constraintTop_toBottomOf="@id/layout_leave_reason" />
 
     <Button
         android:id="@+id/button_submit"
@@ -71,13 +70,13 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
         android:layout_marginStart="8dp"
-        android:text="@string/preview_submit_btn_title"
-        android:textSize="16sp"
-        android:textColor="@color/white"
         android:background="@drawable/sl_profile_follow_button"
-        app:layout_constraintEnd_toEndOf="@id/layout_leave_comment"
-        app:layout_constraintStart_toEndOf="@id/button_cancel"
+        android:text="@string/preview_submit_btn_title"
+        android:textColor="@color/white"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_leave_comment" />
+        app:layout_constraintEnd_toEndOf="@id/layout_leave_reason"
+        app:layout_constraintStart_toEndOf="@id/button_cancel"
+        app:layout_constraintTop_toBottomOf="@id/layout_leave_reason" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

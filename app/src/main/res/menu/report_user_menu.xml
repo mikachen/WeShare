@@ -4,8 +4,13 @@
 
 
     <item
-        android:id="@+id/action_block"
+        android:id="@+id/action_block_user"
         android:title="封鎖"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_report_violations"
+        android:title="檢舉"
         app:showAsAction="never"/>
 
 </menu>

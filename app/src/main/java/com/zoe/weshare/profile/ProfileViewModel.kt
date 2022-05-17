@@ -9,13 +9,13 @@ import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.ChatRoomType
+import com.zoe.weshare.util.*
+import com.zoe.weshare.util.Const.FIELD_USER_BLACKLIST
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWER
 import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWING
 import com.zoe.weshare.util.Const.PATH_USER
-import com.zoe.weshare.util.LogType
+import com.zoe.weshare.util.UserManager.userBlackList
 import com.zoe.weshare.util.UserManager.weShareUser
-import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -62,6 +62,8 @@ class ProfileViewModel(
         get() = _navigateToNewRoom
 
     val onUpdateContribution = MutableLiveData<Contribution>()
+
+    var blockUserComplete = MutableLiveData<UserProfile>()
 
     init {
         targetUser?.let {
@@ -451,4 +453,37 @@ class ProfileViewModel(
             }
         }
     }
+
+    fun blockThisUser(target: UserProfile) {
+            _status.value = LoadApiStatus.LOADING
+
+            coroutineScope.launch {
+                when (
+                    val result = repository.updateFieldValue(
+                        collection = PATH_USER,
+                        docId = weShareUser!!.uid,
+                        field = FIELD_USER_BLACKLIST,
+                        value = FieldValue.arrayUnion(target.uid)
+                    )
+                ) {
+                    is Result.Success -> {
+
+                        userBlackList.add(target.uid)
+                        blockUserComplete.value = target
+                    }
+                    is Result.Fail -> {
+                        _error.value = result.error
+                        _status.value = LoadApiStatus.ERROR
+                    }
+                    is Result.Error -> {
+                        _error.value = result.exception.toString()
+                        _status.value = LoadApiStatus.ERROR
+                    }
+                    else -> {
+                        _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                        _status.value = LoadApiStatus.ERROR
+                    }
+                }
+            }
+        }
 }

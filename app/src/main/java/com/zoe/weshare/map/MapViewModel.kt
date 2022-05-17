@@ -13,12 +13,9 @@ import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.ext.toDisplayDateFormat
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.Const
+import com.zoe.weshare.util.*
 import com.zoe.weshare.util.Const.PATH_EVENT_POST
 import com.zoe.weshare.util.Const.PATH_GIFT_POST
-import com.zoe.weshare.util.EventStatusType
-import com.zoe.weshare.util.GiftStatusType
-import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -138,7 +135,10 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data.filterNot { it.status == GiftStatusType.CLOSED.code }
+
+                    result.data.filterNot {
+                        !UserManager.userBlackList.contains(it.author!!.uid) &&
+                        it.status == GiftStatusType.CLOSED.code }
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -170,7 +170,9 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data.filterNot { it.status == EventStatusType.WAITING.code }
+                    result.data.filterNot {
+                        !UserManager.userBlackList.contains(it.author!!.uid) &&
+                        it.status == EventStatusType.WAITING.code }
                 }
                 is Result.Fail -> {
                     _error.value = result.error

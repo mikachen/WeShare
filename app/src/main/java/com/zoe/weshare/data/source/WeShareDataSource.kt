@@ -21,6 +21,8 @@ interface WeShareDataSource {
 
     fun getLiveEventDetail(docId: String): MutableLiveData<EventPost?>
 
+    fun getLiveGiftDetail(docId: String): MutableLiveData<GiftPost?>
+
     fun getLiveLogs(): MutableLiveData<List<OperationLog>>
 
     fun getLiveComments(
@@ -107,4 +109,6 @@ interface WeShareDataSource {
     suspend fun updateUserContribution(uid: String, contribution: Contribution): Result<Boolean>
     suspend fun getHeroRanking(): Result<List<UserProfile>>
     suspend fun removeDocument(collection: String, docId: String): Result<Boolean>
+
+    suspend fun sendViolationReport(report: ViolationReport): Result<String>
 }

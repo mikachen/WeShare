@@ -1,4 +1,4 @@
-package com.zoe.weshare.detail.askgift
+package com.zoe.weshare.report
 
 import android.app.Dialog
 import android.os.Bundle
@@ -11,60 +11,48 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zoe.weshare.R
-import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.databinding.FragmentAskForGiftBinding
+import com.zoe.weshare.databinding.DialogReportViolationBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.hideKeyboard
-import com.zoe.weshare.ext.sendNotificationToTarget
 import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.util.UserManager.weShareUser
 
-class AskForGiftFragment : BottomSheetDialogFragment() {
+class ReportViolationDialog : BottomSheetDialogFragment() {
 
-    private lateinit var binding: FragmentAskForGiftBinding
-    private lateinit var selectedGift: GiftPost
-
-    private val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(weShareUser) }
+    private lateinit var binding: DialogReportViolationBinding
+    private val viewModel by viewModels<ReportViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
 
-        selectedGift = AskForGiftFragmentArgs.fromBundle(requireArguments()).selectedGift
-        binding = FragmentAskForGiftBinding.inflate(inflater, container, false)
+        binding = DialogReportViolationBinding.inflate(inflater, container, false)
 
-        viewModel.newRequestComment.observe(viewLifecycleOwner) {
-            viewModel.askForGiftRequest(selectedGift, it)
+        val targetUid = ReportViolationDialogArgs.fromBundle(requireArguments()).reportTarget
+
+        viewModel.reportSendComplete.observe(viewLifecycleOwner) {
+
+            activity.showToast(getString(R.string.toast_report_send_complete))
+            binding.editLeaveReason.text?.clear()
+            this.dismiss()
         }
 
-        viewModel.saveLogComplete.observe(viewLifecycleOwner) {
-            it?.let {
-                binding.editLeaveComment.text?.clear()
-
-                sendNotificationToTarget(selectedGift.author!!.uid, it)
-
-                viewModel.requestGiftComplete()
-
-                this.dismiss()
-            }
-        }
-
-        setupBtn()
+        setupBtn(targetUid)
         return binding.root
     }
 
-    private fun setupBtn() {
+    private fun setupBtn(target: String) {
 
         binding.buttonSubmit.setOnClickListener {
 
-            val message = binding.editLeaveComment.text.toString().trim()
+            val reason = binding.editLeaveReason.text.toString().trim()
 
-            if (message.isNotEmpty()) {
-                viewModel.onSendNewRequest(message, selectedGift)
+            if (reason.isNotEmpty()) {
+                viewModel.onSendReport(target, reason)
+
             } else {
-                activity.showToast(getString(R.string.pls_leave_askforgift_comment))
+                activity.showToast(getString(R.string.toast_leave_report_reason))
             }
 
             it.hideKeyboard()

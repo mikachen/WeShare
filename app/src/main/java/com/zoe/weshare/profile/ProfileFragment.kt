@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.PopupMenu
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -19,9 +21,10 @@ import com.zoe.weshare.databinding.FragmentProfileBinding
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.sendNotificationToTarget
+import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.util.LogType
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.weShareUser
+import com.zoe.weshare.util.Util
 
 class ProfileFragment : Fragment() {
 
@@ -81,9 +84,16 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        viewModel.notificationMsg.observe(viewLifecycleOwner){
+        viewModel.notificationMsg.observe(viewLifecycleOwner) {
             it?.let {
                 sendNotificationToTarget(targetUser.uid, it)
+            }
+        }
+
+        viewModel.blockUserComplete.observe(viewLifecycleOwner) {
+            it?.let {
+                activity.showToast(getString(R.string.block_this_person_complete))
+                findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
             }
         }
 
@@ -111,7 +121,8 @@ class ProfileFragment : Fragment() {
         isFollowingTarget = user.follower.contains(weShareUser!!.uid)
 
         binding.apply {
-            bindImage(imageProfileAvatar, user.image)
+            bindImage(imageUserAvatar, user.image)
+            bindImage(imageUserAvatar, user.image)
             textProfileName.text = user.name
             textFollowerNumber.text = (user.follower.size).toString()
             textFollowingNumber.text = (user.following.size).toString()
@@ -146,7 +157,14 @@ class ProfileFragment : Fragment() {
 
             binding.buttonMessage.setOnClickListener {
                 viewModel.getUserAllRooms(weShareUser!!)
+
             }
+            binding.buttonReportUser.visibility = View.VISIBLE
+            binding.buttonReportUser.setOnClickListener {
+                showReportMenu(it)
+            }
+
+
         } else {
 
             // user self profile
@@ -199,13 +217,60 @@ class ProfileFragment : Fragment() {
                     viewModel.cancelUserFollowing(targetUser.uid)
                 }
 
-                R.id.action_log_out -> findNavController().navigate(
-                    NavGraphDirections.actionGlobalLoginFragment(true)
-                )
+                R.id.action_log_out -> {
+                    (activity as MainActivity).viewModel.userLogout()
+
+                    findNavController().navigate(
+                        NavGraphDirections.actionGlobalLoginFragment(true)
+                    )
+                }
             }
             false
         }
         popupMenu.show()
+    }
+
+    private fun showReportMenu(view: View) {
+        val popupMenu = PopupMenu(requireContext(), view)
+        popupMenu.menuInflater.inflate(R.menu.report_user_menu, popupMenu.menu)
+
+        val target = viewModel.user.value!!
+
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.action_block_user -> {
+                    showAlterDialog(target)
+                }
+                R.id.action_report_violations -> {
+
+                    findNavController().navigate(NavGraphDirections
+                        .actionGlobalReportViolationDialog(target.uid))
+
+                }
+            }
+            false
+        }
+        popupMenu.show()
+    }
+
+    private fun showAlterDialog(target: UserProfile) {
+
+        val builder = AlertDialog.Builder(requireContext())
+
+        builder.apply {
+            setTitle(Util.getStringWithStrParm(R.string.block_this_person_title, target.name))
+            setMessage(Util.getString(R.string.block_this_person_message))
+            setPositiveButton(Util.getString(R.string.confirm_yes)) { dialog, _ ->
+                viewModel.blockThisUser(target)
+                dialog.cancel()
+            }
+
+            setNegativeButton(Util.getString(R.string.confirm_no)) { dialog, _ ->
+                dialog.cancel()
+            }
+        }
+
+        builder.create().show()
     }
 
     override fun onResume() {

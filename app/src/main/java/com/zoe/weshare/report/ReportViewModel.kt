@@ -1,26 +1,29 @@
-package com.zoe.weshare.search.gifts
+package com.zoe.weshare.report
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
-import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.data.Result
+import com.zoe.weshare.data.UserInfo
+import com.zoe.weshare.data.ViolationReport
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.GiftStatusType
-import com.zoe.weshare.util.UserManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewModel() {
+class ReportViewModel(
+    private val repository: WeShareRepository,
+    private val userInfo: UserInfo?,
+) : ViewModel() {
 
-    private var _gifts = MutableLiveData<List<GiftPost>>()
-    val gifts: LiveData<List<GiftPost>>
-        get() = _gifts
+
+    private val _reportSendComplete = MutableLiveData<String>()
+    val reportSendComplete: LiveData<String>
+        get() = _reportSendComplete
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -30,28 +33,35 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
         get() = _status
 
     private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?>
+    val error: LiveData<String?>?
         get() = _error
 
-    private val _navigateToSelectedGift = MutableLiveData<GiftPost?>()
-    val navigateToSelectedGift: LiveData<GiftPost?>
-        get() = _navigateToSelectedGift
 
-    var onSearchEmpty = MutableLiveData<Boolean>()
+    fun onSendReport(target: String, reason: String) {
+        val report = ViolationReport(
+            targetUid = target,
+            operatorUid = userInfo!!.uid,
+            reason = reason
+        )
 
-    init {
-        getGiftsResult()
+        sendViolationReport(report)
     }
 
-    private fun getGiftsResult() {
+    private fun sendViolationReport(report: ViolationReport) {
         coroutineScope.launch {
+
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getAllGifts()) {
+            when (
+                val result = repository.sendViolationReport(report)
+            ) {
+
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    filterGift(result.data)
+
+                    _reportSendComplete.value = result.data
+
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -62,31 +72,11 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
                     _status.value = LoadApiStatus.ERROR
                 }
                 else -> {
-                    _error.value =
-                        WeShareApplication.instance.getString(R.string.result_fail)
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
                 }
             }
         }
     }
 
-    private fun filterGift(gifts: List<GiftPost>) {
-
-        val list = gifts.filter {
-            !UserManager.userBlackList.contains(it.author!!.uid) &&
-            it.status != GiftStatusType.CLOSED.code } as MutableList
-
-        list.sortByDescending { it.whoLiked.size }
-
-        _gifts.value = list
-    }
-
-    fun onNavigateGiftDetails(event: GiftPost) {
-        _navigateToSelectedGift.value = event
-    }
-
-    fun onNavigateGiftDetailsComplete() {
-        _navigateToSelectedGift.value = null
-        onSearchEmpty.value = null
-    }
 }

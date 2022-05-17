@@ -22,6 +22,10 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
     val loginSuccess: LiveData<UserInfo>
         get() = _loginSuccess
 
+    private val _loginStatus = MutableLiveData<LoadApiStatus>()
+    val loginStatus: LiveData<LoadApiStatus>
+        get() = _loginStatus
+
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
@@ -40,12 +44,12 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
     fun checkIfMemberExist(user: UserInfo) {
         coroutineScope.launch {
 
-            _status.value = LoadApiStatus.LOADING
+            _loginStatus.value = LoadApiStatus.LOADING
 
             when (val result = repository.getUserInfo(user.uid)) {
                 is Result.Success -> {
                     _error.value = null
-                    _status.value = LoadApiStatus.DONE
+                    _loginStatus.value = LoadApiStatus.DONE
 
                     if (result.data == null) {
                         onCreateNewUser(user)
@@ -55,16 +59,16 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
+                    _loginStatus.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
+                    _loginStatus.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
+                    _loginStatus.value = LoadApiStatus.ERROR
                 }
             }
         }
@@ -115,9 +119,14 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
             image = profile.image,
             uid = profile.uid
         )
+
         UserManager.weShareUser = user
         UserManager.userBlackList = profile.blackList
 
         _loginSuccess.value = user
+    }
+
+    fun loginComplete() {
+        _loginSuccess.value = null
     }
 }

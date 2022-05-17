@@ -9,7 +9,7 @@ import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.Const.PATH_GIFT_POST
-import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_ASK_FOR
+import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_REQUEST
 import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.LogType
 import kotlinx.coroutines.CoroutineScope
@@ -72,7 +72,7 @@ class DistributeViewModel(
                 val result = repository.getAllComments(
                     collection = PATH_GIFT_POST,
                     docId = selectedGift.id,
-                    subCollection = SUB_PATH_GIFT_USER_WHO_ASK_FOR
+                    subCollection = SUB_PATH_GIFT_USER_WHO_REQUEST
                 )
             ) {
                 is Result.Success -> {

@@ -12,6 +12,8 @@ import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.GiftStatusType
+import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.userBlackList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -73,17 +75,6 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         filteredLogs.value = list
     }
 
-    private fun filterGift(gifts: List<GiftPost>) {
-
-        val list = gifts.filter {
-            it.status != GiftStatusType.CLOSED.code && it.whoLiked.size >= 2
-        } as MutableList
-
-        list.sortByDescending { it.whoLiked.size }
-
-        _gifts.value = list
-    }
-
     private fun getGiftsResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
@@ -113,8 +104,19 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
-    private fun filterEvent(event: List<EventPost>) {
-        _events.value = event.filter { it.whoAttended.size >= 4 }
+    private fun filterGift(gifts: List<GiftPost>) {
+
+        val list = gifts.filter {
+            !userBlackList.contains(it.author!!.uid) &&
+
+            it.status != GiftStatusType.CLOSED.code &&
+
+                    it.whoLiked.size >= 2
+        } as MutableList
+
+        list.sortByDescending { it.whoLiked.size }
+
+        _gifts.value = list
     }
 
     private fun getEventsResult() {
@@ -144,6 +146,12 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
             }
             _refreshStatus.value = false
         }
+    }
+
+    private fun filterEvent(event: List<EventPost>) {
+        _events.value = event.filter {
+            !userBlackList.contains(it.author!!.uid) &&
+                    it.whoAttended.size >= 4 }
     }
 
     fun displayEventDetails(event: EventPost) {

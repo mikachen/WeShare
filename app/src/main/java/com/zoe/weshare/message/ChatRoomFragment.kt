@@ -1,5 +1,6 @@
 package com.zoe.weshare.message
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.hideKeyboard
 import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getStringWithStrParm
@@ -76,11 +78,17 @@ class ChatRoomFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
 
         recyclerView = binding.messagesRecyclerView
         adapter = ChatRoomAdapter(viewModel)
         recyclerView.adapter = adapter
+
+        recyclerView.setOnTouchListener { view, event ->
+            view.hideKeyboard()
+            false
+        }
 
         val targetsInfo = chatRoom.usersInfo.filter { it.uid != weShareUser!!.uid }
 
