@@ -77,14 +77,14 @@
         tools:layout="@layout/fragment_search_location">
         <argument
             android:name="newGift"
+            android:defaultValue="@null"
             app:argType="com.zoe.weshare.data.GiftPost"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <argument
             android:name="newEvent"
+            android:defaultValue="@null"
             app:argType="com.zoe.weshare.data.EventPost"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_searchLocationFragment_to_eventDetailFragment"
             app:destination="@id/eventDetailFragment"
@@ -147,8 +147,7 @@
             app:argType="com.zoe.weshare.data.GiftPost" />
         <action
             android:id="@+id/action_giftDetailFragment_to_askForGiftFragment"
-            app:destination="@id/askForGiftFragment"
-            />
+            app:destination="@id/askForGiftFragment" />
         <action
             android:id="@+id/action_giftDetailFragment_to_creditFragment"
             app:destination="@id/creditFragment" />
@@ -183,18 +182,18 @@
     <action
         android:id="@+id/navigate_to_map_fragment"
         app:destination="@id/mapFragment"
-        app:popUpTo="@id/homeFragment"/>
+        app:popUpTo="@id/homeFragment" />
 
 
     <action
         android:id="@+id/navigate_to_roomlist_fragment"
         app:destination="@id/roomListFragment"
-        app:popUpTo="@id/homeFragment"/>
+        app:popUpTo="@id/homeFragment" />
 
     <action
         android:id="@+id/action_global_profileFragment"
         app:destination="@id/profileFragment"
-        app:popUpTo="@id/homeFragment"/>
+        app:popUpTo="@id/homeFragment" />
 
 
     <action
@@ -259,11 +258,11 @@
         android:id="@+id/loginFragment"
         android:name="com.zoe.weshare.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <argument
             android:name="resetFastLogin"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
     <action
         android:id="@+id/action_global_loginFragment"
@@ -284,7 +283,7 @@
         android:id="@+id/giftManageFragment"
         android:name="com.zoe.weshare.manage.giftsItem.GiftManageFragment"
         android:label="GiftManageFragment"
-        tools:layout="@layout/fragment_gift_manage" >
+        tools:layout="@layout/fragment_gift_manage">
         <action
             android:id="@+id/action_giftManageFragment_to_distributeFragment"
             app:destination="@id/distributeFragment" />
@@ -336,21 +335,40 @@
         android:id="@+id/heroRankFragment"
         android:name="com.zoe.weshare.herorank.HeroRankFragment"
         android:label="fragment_hero_rank"
-        tools:layout="@layout/fragment_hero_rank" >
+        tools:layout="@layout/fragment_hero_rank">
         <action
             android:id="@+id/action_heroRankFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
-    </fragment><action android:id="@+id/action_global_heroRankFragment" app:destination="@id/heroRankFragment"/>
+    </fragment>
+    <action
+        android:id="@+id/action_global_heroRankFragment"
+        app:destination="@id/heroRankFragment" />
     <dialog
         android:id="@+id/reportViolationDialog"
         android:name="com.zoe.weshare.report.ReportViolationDialog"
-        tools:layout="@layout/dialog_report_violation"
-        android:label="ReportViolationDialog" >
+        android:label="ReportViolationDialog"
+        tools:layout="@layout/dialog_report_violation">
         <argument
             android:name="reportTarget"
             app:argType="string" />
     </dialog>
-    <action android:id="@+id/action_global_reportViolationDialog" app:destination="@id/reportViolationDialog" />
+    <action
+        android:id="@+id/action_global_reportViolationDialog"
+        app:destination="@id/reportViolationDialog" />
+
+
+    <fragment
+        android:id="@+id/policyTermFragment"
+        android:name="com.zoe.weshare.report.PolicyTermFragment"
+        android:label="fragment_policy_term"
+        tools:layout="@layout/fragment_policy_term" >
+        <action
+            android:id="@+id/action_policyTermFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <action android:id="@+id/action_global_policyTermFragment" app:destination="@id/policyTermFragment" />
 
 
 </navigation>

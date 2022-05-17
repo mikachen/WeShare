@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -21,6 +20,7 @@ import com.zoe.weshare.databinding.FragmentLoginBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.util.Logger
+import com.zoe.weshare.util.UserManager.userConsentPolicy
 import com.zoe.weshare.util.Util
 
 class LoginFragment : Fragment() {
@@ -80,9 +80,18 @@ class LoginFragment : Fragment() {
 
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
-        binding.buttonSignin.setOnClickListener {
-            signIn()
+        if (userConsentPolicy) {
+            binding.disableCover.visibility = View.GONE
+            binding.buttonConsentPolicy.visibility = View.GONE
+            binding.buttonSignin.setOnClickListener {
+                signIn()
+            }
+        } else {
+            binding.buttonConsentPolicy.setOnClickListener {
+                findNavController().navigate(NavGraphDirections.actionGlobalPolicyTermFragment())
+            }
         }
+
 
         // signOut allow user to choose different account to login
         if (resetFastLogin) {

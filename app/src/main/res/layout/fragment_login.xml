@@ -19,7 +19,6 @@
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/button_signin"
-        android:padding="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:buttonSize="wide"
@@ -28,5 +27,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/welcome_sticker"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/button_consent_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="登入前請先同意使用者條款"
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toEndOf="@id/button_signin"
+        app:layout_constraintStart_toStartOf="@id/button_signin"
+        app:layout_constraintBottom_toTopOf="@id/button_signin"/>
+
+    <View
+        android:id="@+id/disable_cover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="4dp"
+        android:background="#66000000"
+        app:layout_constraintTop_toTopOf="@id/button_signin"
+        app:layout_constraintBottom_toBottomOf="@id/button_signin"
+        app:layout_constraintStart_toStartOf="@id/button_signin"
+        app:layout_constraintEnd_toEndOf="@id/button_signin"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
