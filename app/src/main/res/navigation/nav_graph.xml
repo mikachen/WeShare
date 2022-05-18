@@ -152,8 +152,8 @@
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
         <action
-            android:id="@+id/action_giftDetailFragment_to_askForGiftFragment"
-            app:destination="@id/askForGiftFragment" />
+            android:id="@+id/action_giftDetailFragment_to_requestGiftFragment"
+            app:destination="@id/requestGiftFragment" />
         <action
             android:id="@+id/action_giftDetailFragment_to_creditFragment"
             app:destination="@id/creditFragment" />
@@ -163,18 +163,13 @@
     </fragment>
 
     <dialog
-        android:id="@+id/askForGiftFragment"
-        android:name="com.zoe.weshare.detail.askgift.AskForGiftFragment"
-        android:label="fragment_ask_for_gift"
-        tools:layout="@layout/fragment_ask_for_gift">
+        android:id="@+id/requestGiftFragment"
+        android:name="com.zoe.weshare.detail.requestgift.RequestGiftFragment"
+        android:label="fragment_request_gift"
+        tools:layout="@layout/fragment_request_gift">
         <argument
             android:name="selectedGift"
             app:argType="com.zoe.weshare.data.GiftPost" />
-        <action
-            android:id="@+id/action_askForGiftFragment_to_giftDetailFragment"
-            app:destination="@id/giftDetailFragment"
-            app:popUpTo="@id/giftDetailFragment"
-            app:popUpToInclusive="true" />
     </dialog>
 
 
@@ -298,12 +293,12 @@
     </fragment>
     <fragment
         android:id="@+id/giftsBrowseFragment"
-        android:name="com.zoe.weshare.search.gifts.GiftsBrowseFragment"
+        android:name="com.zoe.weshare.browse.gifts.GiftsBrowseFragment"
         android:label="fragment_gifts_browse"
         tools:layout="@layout/fragment_gifts_browse" />
     <fragment
         android:id="@+id/eventsBrowseFragment"
-        android:name="com.zoe.weshare.search.events.EventsBrowseFragment"
+        android:name="com.zoe.weshare.browse.events.EventsBrowseFragment"
         android:label="fragment_events_browse"
         tools:layout="@layout/fragment_events_browse" />
     <action

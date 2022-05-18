@@ -21,14 +21,14 @@ class PostGiftViewModel(
     private val author: UserInfo?,
 ) : ViewModel() {
 
-    var postingProgress = MutableLiveData<Int>()
+    var postingProgress = MutableLiveData<Int?>()
 
-    var onPostGift = MutableLiveData<GiftPost>()
+    var onPostGift = MutableLiveData<GiftPost?>()
 
     var locationChoice: PostLocation? = null
 
-    private var _gift = MutableLiveData<GiftPost>()
-    val gift: LiveData<GiftPost>
+    private var _gift = MutableLiveData<GiftPost?>()
+    val gift: LiveData<GiftPost?>
         get() = _gift
 
     private var viewModelJob = Job()
@@ -38,8 +38,8 @@ class PostGiftViewModel(
     val postGiftStatus: LiveData<LoadApiStatus>
         get() = _postGiftStatus
 
-    private val _saveLogComplete = MutableLiveData<OperationLog>()
-    val saveLogComplete: LiveData<OperationLog>
+    private val _saveLogComplete = MutableLiveData<OperationLog?>()
+    val saveLogComplete: LiveData<OperationLog?>
         get() = _saveLogComplete
 
     private val _error = MutableLiveData<String?>()

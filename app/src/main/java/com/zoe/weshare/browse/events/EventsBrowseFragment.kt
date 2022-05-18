@@ -1,8 +1,7 @@
-package com.zoe.weshare.search.gifts
+package com.zoe.weshare.browse.events
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,20 +12,19 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
-import com.zoe.weshare.databinding.FragmentGiftsBrowseBinding
+import com.zoe.weshare.databinding.FragmentEventsBrowseBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.hideKeyboard
 
-class GiftsBrowseFragment : Fragment() {
+class EventsBrowseFragment : Fragment() {
 
-    private lateinit var binding: FragmentGiftsBrowseBinding
-    private lateinit var adapter: GiftsBrowseAdapter
+    private lateinit var binding: FragmentEventsBrowseBinding
+    private lateinit var adapter: EventsBrowseAdapter
     private lateinit var manager: GridLayoutManager
     private lateinit var recyclerView: RecyclerView
 
     private var onNavigateBack: Boolean = false
-
-    private val viewModel by viewModels<GiftsBrowseViewModel> { getVmFactory() }
+    private val viewModel by viewModels<EventsBrowseViewModel> { getVmFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,29 +32,27 @@ class GiftsBrowseFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        binding = FragmentGiftsBrowseBinding.inflate(inflater, container, false)
+        binding = FragmentEventsBrowseBinding.inflate(inflater, container, false)
 
-        viewModel.gifts.observe(viewLifecycleOwner) {
+        viewModel.events.observe(viewLifecycleOwner) {
             onNavigateBack = false
             adapter.modifyList(it)
         }
 
-        viewModel.navigateToSelectedGift.observe(viewLifecycleOwner) {
+        viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(NavGraphDirections.actionGlobalGiftDetailFragment(it))
-                viewModel.onNavigateGiftDetailsComplete()
+                findNavController().navigate(NavGraphDirections.actionGlobalEventDetailFragment(it))
+                viewModel.onNavigateEventDetailsComplete()
 
-                binding.giftsSearchview.apply {
-                    // close search view
+                binding.eventsSearchview.apply {
                     isIconified = true
-
-                    // clear search view text
                     setQuery("", false)
                 }
             }
         }
 
         viewModel.onSearchEmpty.observe(viewLifecycleOwner) {
+
             it?.let {
                 if (it) {
                     binding.hintNoItem.visibility = View.VISIBLE
@@ -73,9 +69,9 @@ class GiftsBrowseFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     fun setupView() {
 
-        adapter = GiftsBrowseAdapter(
-            GiftsBrowseAdapter.GiftsALLOnClickListener { selectedGift ->
-                viewModel.onNavigateGiftDetails(selectedGift)
+        adapter = EventsBrowseAdapter(
+            EventsBrowseAdapter.EventsAllOnClickListener { selectedEvent ->
+                viewModel.onNavigateEventDetails(selectedEvent)
             }
         )
 
@@ -83,32 +79,29 @@ class GiftsBrowseFragment : Fragment() {
         recyclerView = binding.recyclerview
 
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = manager
+        manager.also { recyclerView.layoutManager = it }
 
         recyclerView.setOnTouchListener { view, event ->
-
-            binding.giftsSearchview.isIconified = true
+            binding.eventsSearchview.isIconified = true
             view.hideKeyboard()
             false
         }
 
-        binding.giftsSearchview.setOnClickListener {
-            binding.giftsSearchview.isIconified = false
+        binding.eventsSearchview.setOnClickListener {
+            binding.eventsSearchview.isIconified = false
         }
 
-        binding.giftsSearchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.eventsSearchview.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
-                    Log.d("onQueryTextChange", "$newText")
                     if (!onNavigateBack) {
                         adapter.filter(newText, viewModel)
                     }
                 }
-
                 return true
             }
         })

@@ -1,4 +1,4 @@
-package com.zoe.weshare.search.events
+package com.zoe.weshare.browse.events
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

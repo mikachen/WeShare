@@ -192,8 +192,7 @@ class GiftDetailFragment : Fragment() {
         if (gift.status == GiftStatusType.OPENING.code) {
             binding.buttonAskForGift.setOnClickListener {
                 findNavController().navigate(
-                    GiftDetailFragmentDirections
-                        .actionGiftDetailFragmentToAskForGiftFragment(gift)
+                    GiftDetailFragmentDirections.actionGiftDetailFragmentToRequestGiftFragment(gift)
                 )
             }
         } else {

@@ -3,6 +3,7 @@ package com.zoe.weshare.ext
 import android.app.Activity
 import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.factory.ViewModelFactory
@@ -42,50 +43,6 @@ fun Activity.showNavigationBar() {
     }
 }
 
-//
-// fun Activity.checkLocationPermission(): Boolean {
-//    // 檢查權限
-//    return ActivityCompat.checkSelfPermission(
-//        this,
-//        Manifest.permission.ACCESS_FINE_LOCATION
-//    ) == PackageManager.PERMISSION_GRANTED
-// }
-//
-// fun Activity.requestLocationPermissions() {
-//
-//    Dexter.withContext(this)
-//        .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-//        .withListener(object : PermissionListener {
-//            override fun onPermissionGranted(response: PermissionGrantedResponse) {
-//                findNavController(R.id.nav_host_fragment).navigate(
-//                    NavGraphDirections.navigateToMapFragment())
-//            }
-//
-//            override fun onPermissionDenied(response: PermissionDeniedResponse) {
-//                AlertDialog.Builder(applicationContext)
-//                    .setTitle("請開啟位置權限")
-//                    .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
-//                    .setPositiveButton("確定") { _, _ ->
-//                        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-//                        startActivityForResult(intent, 111)
-//                    }
-//                    .setNegativeButton("取消") { _, _ -> }
-//                    .show()
-//            }
-//
-//            override fun onPermissionRationaleShouldBeShown(
-//                permission: PermissionRequest?,
-//                token: PermissionToken?,
-//            ) {
-//                AlertDialog.Builder(applicationContext)
-//                    .setTitle("請開啟位置權限")
-//                    .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
-//                    .setPositiveButton("確定") { _, _ ->
-//                        val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-//                        startActivityForResult(intent, 111)
-//                    }
-//                    .setNegativeButton("取消") { _, _ -> }
-//                    .show()
-//            }
-//        }).check()
-// }
+fun Activity.setSoftInputMode(flag: Int){
+    window.setSoftInputMode(flag)
+}

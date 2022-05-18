@@ -20,9 +20,9 @@ import kotlinx.coroutines.launch
 class PostEventViewModel(private val repository: WeShareRepository, private val author: UserInfo?) :
     ViewModel() {
 
-    var postingProgress = MutableLiveData<Int>()
+    var postingProgress = MutableLiveData<Int?>()
 
-    var onPostEvent = MutableLiveData<EventPost>()
+    var onPostEvent = MutableLiveData<EventPost?>()
 
     var locationChoice: PostLocation? = null
 
@@ -37,8 +37,8 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     val postEventStatus: LiveData<LoadApiStatus>
         get() = _postEventStatus
 
-    private val _saveLogComplete = MutableLiveData<OperationLog>()
-    val saveLogComplete: LiveData<OperationLog>
+    private val _saveLogComplete = MutableLiveData<OperationLog?>()
+    val saveLogComplete: LiveData<OperationLog?>
         get() = _saveLogComplete
 
     private val _error = MutableLiveData<String?>()
@@ -109,7 +109,6 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     /**
      * (C) reassign event roomId when done
      * */
-
     private fun createEventRoom(room: ChatRoom) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
@@ -148,7 +147,6 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     /**
      * (D) Post Event to firebase
      * */
-
     private fun newEventPost() {
         coroutineScope.launch {
             _postEventStatus.value = LoadApiStatus.LOADING

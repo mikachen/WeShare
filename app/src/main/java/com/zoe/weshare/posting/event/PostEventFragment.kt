@@ -10,7 +10,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
@@ -35,7 +35,9 @@ import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostEventFragment : Fragment() {
 
-    private val PICK_IMAGE_REQUEST = 151
+    companion object{
+        const val PICK_IMAGE_REQUEST = 151
+    }
 
     private var imagePathUri: Uri? = null
     private var startTime: Long? = null
@@ -51,7 +53,7 @@ class PostEventFragment : Fragment() {
         )
     }
 
-    val viewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
+    private val viewModel by viewModels<PostEventViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,7 +75,6 @@ class PostEventFragment : Fragment() {
             }
         }
 
-
         setupViewAndBtn()
         setupDropdownMenu()
         setupDatePicker()
@@ -90,7 +91,7 @@ class PostEventFragment : Fragment() {
             if (checkPermission()) {
                 dataCollecting()
             } else {
-                requestPermissions()
+                requestLocationPermissions()
             }
         }
 
@@ -100,17 +101,13 @@ class PostEventFragment : Fragment() {
     }
 
     private fun selectImage() {
-        // Defining Implicit Intent to mobile gallery
 
         val intent = Intent()
+
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(
-            Intent.createChooser(
-                intent,
-                "Select Image from here..."
-            ),
-            PICK_IMAGE_REQUEST
+            Intent.createChooser(intent, getString(R.string.select_image)), PICK_IMAGE_REQUEST
         )
     }
 
@@ -127,7 +124,7 @@ class PostEventFragment : Fragment() {
                 binding.buttonImagePreviewHolder.setImageURI(imagePathUri)
 
             } catch (e: Exception) {
-                // Log the exception
+
                 e.printStackTrace()
             }
         }
@@ -141,31 +138,63 @@ class PostEventFragment : Fragment() {
         val description = binding.editDescription.text.toString().trim()
         val datePick = binding.editDatePicker.text.toString()
 
-        when (true) {
+        if (checkDataIntegrity(title, sort, volunteerNeeds, description, datePick)) {
+            viewModel.fetchUserInput(
+                title,
+                sort,
+                volunteerNeeds,
+                description,
+                imagePathUri!!,
+                startTime!!,
+                endTime!!
+            )
+        } else {
+            return
+        }
+    }
+
+    private fun checkDataIntegrity(
+        title: String,
+        sort: String,
+        volunteerNeeds: String,
+        description: String,
+        datePick: String,
+    ): Boolean {
+
+        when {
             title.isEmpty() -> {
                 activity.showToast(getString(R.string.error_title_isEmpty))
+                return false
+            }
+
+            datePick.isEmpty() -> {
+                activity.showToast(getString(R.string.error_date_pick_isEmpty))
+                return false
             }
 
             sort.isEmpty() -> {
                 activity.showToast(getString(R.string.error_sort_isEmpty))
+                return false
             }
 
             volunteerNeeds.isEmpty() -> {
                 activity.showToast(getString(R.string.error_volunteer_need))
+                return false
             }
 
             description.isEmpty() -> {
                 activity.showToast(getString(R.string.error_description_isEmpty))
-            }
-            datePick.isEmpty() -> {
-                activity.showToast(getString(R.string.error_date_pick_isEmpty))
+                return false
             }
 
-            (imagePathUri == null) ->
+            (imagePathUri == null) -> {
                 activity.showToast(getString(R.string.error_image_isEmpty))
+                return false
+            }
 
-            else -> viewModel.fetchUserInput(
-                title, sort, volunteerNeeds, description, imagePathUri!!, startTime!!, endTime!!)
+            else -> {
+                return true
+            }
         }
     }
 
@@ -191,7 +220,7 @@ class PostEventFragment : Fragment() {
 
         val dateRangePicker =
             MaterialDatePicker.Builder.dateRangePicker()
-                .setTitleText("Select dates")
+                .setTitleText(getString(R.string.error_date_pick_isEmpty))
                 .build()
 
         binding.editDatePicker.setOnClickListener {
@@ -199,36 +228,29 @@ class PostEventFragment : Fragment() {
         }
 
         dateRangePicker.addOnPositiveButtonClickListener { datePick ->
-
             startTime = datePick.first
             endTime = datePick.second
 
-
             if (startTime != null && endTime != null) {
-                onDatePickDisplay(startTime!!, endTime!!)
+                val dateDisplay = getDatePickString(startTime!!, endTime!!)
+
+                binding.editDatePicker.setText(dateDisplay)
             }
         }
     }
 
-    fun onDatePickDisplay(startTime: Long, endTime: Long) {
-
-        val dateDisplay: String = WeShareApplication.instance.getString(
-            R.string.preview_event_time,
+    private fun getDatePickString(startTime: Long, endTime: Long): String {
+        return WeShareApplication.instance.getString(R.string.preview_event_time,
             startTime.toDisplayFormat(),
             endTime.toDisplayFormat())
-
-        binding.editDatePicker.setText(dateDisplay)
     }
 
     private fun checkPermission(): Boolean {
-        // 檢查權限
-        return ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        return ActivityCompat.checkSelfPermission(requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun requestPermissions() {
+    private fun requestLocationPermissions() {
         Dexter.withContext(requireContext())
             .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
             .withListener(object : PermissionListener {
@@ -237,38 +259,33 @@ class PostEventFragment : Fragment() {
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("請開啟位置權限")
-                        .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
-                        .setPositiveButton("確定") { _, _ ->
-                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                            startActivityForResult(intent, 111)
-                        }
-                        .setNegativeButton("取消") { _, _ -> }
-                        .show()
+
+                    showRationaleDialog()
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
                     permission: PermissionRequest?,
-                    token: PermissionToken?,
+                    token: PermissionToken?
                 ) {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("請開啟位置權限")
-                        .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
-                        .setPositiveButton("確定") { _, _ ->
-                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                            startActivityForResult(intent, 111)
-                        }
-                        .setNegativeButton("取消") { _, _ -> }
-                        .show()
+                    showRationaleDialog()
                 }
             }).check()
     }
 
+    private fun showRationaleDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.alert_require_location_permission))
+            .setMessage(getString(R.string.alert_require_location_permission_msg))
+            .setPositiveButton(getString(R.string.confirm_yes)) { _, _ ->
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivityForResult(intent, 111)
+            }
+            .setNegativeButton(getString(R.string.confirm_no)) { _, _ -> }
+            .show()
+    }
+
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).window.setSoftInputMode(
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
-        )
+        (activity as MainActivity).setSoftInputMode(SOFT_INPUT_ADJUST_PAN)
     }
 }

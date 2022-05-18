@@ -15,6 +15,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.NavGraphDirections
+import com.zoe.weshare.R
 import com.zoe.weshare.SendNotificationService
 import com.zoe.weshare.SendNotificationService.Companion.SEND_TO_ALL_FOLLOWERS
 import com.zoe.weshare.SendNotificationService.Companion.SEND_TO_AUTHOR_MSG
@@ -56,13 +57,13 @@ fun Fragment.requestLocationPermissions() {
 
             override fun onPermissionDenied(response: PermissionDeniedResponse) {
                 AlertDialog.Builder(requireContext())
-                    .setTitle("請開啟位置權限")
-                    .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
-                    .setPositiveButton("確定") { _, _ ->
+                    .setTitle(getString(R.string.alert_require_location_permission))
+                    .setMessage(getString(R.string.alert_require_location_permission_msg))
+                    .setPositiveButton(getString(R.string.confirm_yes)) { _, _ ->
                         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                         startActivityForResult(intent, 111)
                     }
-                    .setNegativeButton("取消") { _, _ ->
+                    .setNegativeButton(getString(R.string.confirm_no)) { _, _ ->
                         findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
                     }
                     .show()
@@ -73,13 +74,13 @@ fun Fragment.requestLocationPermissions() {
                 token: PermissionToken?,
             ) {
                 AlertDialog.Builder(requireContext())
-                    .setTitle("請開啟位置權限")
-                    .setMessage("此應用程式，位置權限已被關閉，需開啟才能正常使用")
-                    .setPositiveButton("確定") { _, _ ->
+                    .setTitle(getString(R.string.alert_require_location_permission))
+                    .setMessage(getString(R.string.alert_require_location_permission_msg))
+                    .setPositiveButton(getString(R.string.confirm_yes)) { _, _ ->
                         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                         startActivityForResult(intent, 111)
                     }
-                    .setNegativeButton("取消") { _, _ ->
+                    .setNegativeButton(getString(R.string.confirm_no)) { _, _ ->
                         findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
                     }
                     .show()
@@ -101,3 +102,5 @@ fun Fragment.sendNotificationToTarget(targetUid: String, log: OperationLog) {
 
     requireContext().startService(intent)
 }
+
+

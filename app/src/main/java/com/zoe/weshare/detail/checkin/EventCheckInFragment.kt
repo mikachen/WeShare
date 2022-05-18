@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -35,19 +34,14 @@ import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventCheckInBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.sendNotificationToTarget
+import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.util.UserManager.weShareUser
 import java.io.IOException
 
 class EventCheckInFragment : Fragment() {
-
-    lateinit var binding: FragmentEventCheckInBinding
-    lateinit var event: EventPost
-
-    private val requestCodeCameraPermission = 1001
-    private lateinit var cameraSource: CameraSource
-    private lateinit var barcodeDetector: BarcodeDetector
-    private lateinit var cholder: SurfaceHolder
-    private var isPermissionGranted = false
+    companion object {
+        const val requestCameraPermission = 1001
+    }
 
     private val aniSlide: Animation by lazy {
         AnimationUtils.loadAnimation(
@@ -56,14 +50,21 @@ class EventCheckInFragment : Fragment() {
         )
     }
 
+    private lateinit var binding: FragmentEventCheckInBinding
+    private lateinit var event: EventPost
+
+    private lateinit var cameraSource: CameraSource
+    private lateinit var barcodeDetector: BarcodeDetector
+    private lateinit var surfaceHolder: SurfaceHolder
+    private var isCameraPermissionGranted = false
     private var scannedValue = ""
     private var scanComplete = false
 
-    val viewModel by viewModels<CheckInViewModel> { getVmFactory(weShareUser) }
+    private val viewModel by viewModels<CheckInViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isPermissionGranted = checkCameraPermission()
+        isCameraPermissionGranted = checkCameraPermission()
     }
 
     override fun onCreateView(
@@ -75,24 +76,27 @@ class EventCheckInFragment : Fragment() {
         binding = FragmentEventCheckInBinding.inflate(inflater, container, false)
 
         event = EventCheckInFragmentArgs.fromBundle(requireArguments()).event
-        viewModel.event = event
 
-        if (isPermissionGranted) {
+        viewModel.fetchArg(event)
+
+        if (isCameraPermissionGranted) {
 
             binding.barcodeLine.startAnimation(aniSlide)
-            setupControls()
+            setupDetector()
+            setupSurfaceCallBack()
+
 
             viewModel.saveLogComplete.observe(viewLifecycleOwner) {
                 it?.let {
                     sendNotificationToTarget(event.author!!.uid, it)
 
-                    findNavController().navigate(
-                        EventCheckInFragmentDirections
-                            .actionEventCheckInFragmentToEventDetailFragment(event)
+                    findNavController().navigate(EventCheckInFragmentDirections
+                        .actionEventCheckInFragmentToEventDetailFragment(event)
                     )
 
-                    viewModel.navigateComplete()
-                    Toast.makeText(requireContext(), "簽到成功", Toast.LENGTH_SHORT).show()
+                    activity.showToast(getString(R.string.toast_check_in_successfully))
+
+                    viewModel.checkInComplete()
                 }
             }
         } else {
@@ -102,28 +106,62 @@ class EventCheckInFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupControls() {
-        barcodeDetector =
-            BarcodeDetector.Builder(requireContext()).setBarcodeFormats(Barcode.ALL_FORMATS).build()
+    @SuppressLint("MissingPermission")
+    private fun setupDetector() {
+        barcodeDetector = BarcodeDetector.Builder(requireContext())
+            .setBarcodeFormats(Barcode.ALL_FORMATS).build()
 
         cameraSource = CameraSource.Builder(requireContext(), barcodeDetector)
             .setRequestedPreviewSize(1920, 1080)
             .setAutoFocusEnabled(true) // you should add this feature
             .build()
 
+        barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
+            override fun release() {
+                activity.showToast(getString(R.string.scanner_has_been_closed))
+            }
+
+            override fun receiveDetections(detections: Detector.Detections<Barcode>) {
+                val barcodes = detections.detectedItems
+
+                if (barcodes.size() == 1) {
+                    scannedValue = barcodes.valueAt(0).rawValue
+
+                    //  must run on main thread
+                    (activity as MainActivity).runOnUiThread {
+
+                        cameraSource.stop()
+                        binding.barcodeLine.clearAnimation()
+
+                        //prevent double acquire data
+                        if (!scanComplete) {
+                            scanComplete = true
+
+                            if (isQrcodeDataCorrect()) {
+                                viewModel.checkInEvent(scannedValue)
+                            } else {
+                                showErrorMsg(cameraSource)
+                            }
+                        }
+                    } }
+            }
+        })
+    }
+
+    @SuppressLint("MissingPermission")
+    fun setupSurfaceCallBack() {
         binding.cameraSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
-            @SuppressLint("MissingPermission")
             override fun surfaceCreated(holder: SurfaceHolder) {
                 try {
-                    cholder = holder
+                    surfaceHolder = holder
                     // Start preview after 1s delay
                     cameraSource.start(holder)
+
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
             }
 
-            @SuppressLint("MissingPermission")
             override fun surfaceChanged(
                 holder: SurfaceHolder,
                 format: Int,
@@ -142,48 +180,19 @@ class EventCheckInFragment : Fragment() {
             }
         })
 
-        barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
-            override fun release() {
-                Toast.makeText(
-                    requireContext(),
-                    "Scanner has been closed", Toast.LENGTH_SHORT
-                ).show()
-            }
+    }
 
-            @SuppressLint("MissingPermission")
-            override fun receiveDetections(detections: Detector.Detections<Barcode>) {
-                val barcodes = detections.detectedItems
-                if (barcodes.size() == 1) {
-                    scannedValue = barcodes.valueAt(0).rawValue
-
-                    // Don't forget to add this line printing value or finishing activity must run on main thread
-                    (activity as MainActivity).runOnUiThread {
-                        cameraSource.stop()
-                        binding.barcodeLine.clearAnimation()
-
-                        if (!scanComplete) {
-                            scanComplete = true
-
-                            if (scannedValue == event.id) {
-                                viewModel.checkInEvent(scannedValue)
-                            } else {
-                                showErrorMsg(cameraSource)
-                            }
-                        }
-                    }
-                }
-            }
-        })
+    private fun isQrcodeDataCorrect(): Boolean {
+        return scannedValue == event.id
     }
 
     @SuppressLint("MissingPermission")
     private fun showErrorMsg(cameraSource: CameraSource) {
-        val builder = AlertDialog.Builder(requireActivity())
 
-        builder.apply {
-            setMessage("條碼與該活動不相符，請重新確認")
-            setPositiveButton("重新掃描") { dialog, id ->
-                cameraSource.start(cholder)
+        AlertDialog.Builder(requireActivity())
+            .setMessage(getString(R.string.error_check_in_with_wrong_id))
+            .setPositiveButton(getString(R.string.error_re_chceck_int)) { dialog, id ->
+                cameraSource.start(surfaceHolder)
                 binding.barcodeLine.startAnimation(aniSlide)
 
                 scanComplete = false
@@ -191,21 +200,14 @@ class EventCheckInFragment : Fragment() {
                 dialog.cancel()
             }
 
-            setNegativeButton("取消返回") { dialog, id ->
+            .setNegativeButton(getString(R.string.force_end_no)) { dialog, id ->
                 dialog.cancel()
                 findNavController().navigateUp()
-            }
-        }
-
-        val alter: AlertDialog = builder.create()
-        alter.show()
+            }.show()
     }
 
     private fun checkCameraPermission(): Boolean {
-        // 檢查權限
-        return ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.CAMERA
+        return ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -220,41 +222,37 @@ class EventCheckInFragment : Fragment() {
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("請開啟相機權限")
-                        .setMessage("此應用程式，相機權限已被關閉，需開啟才能正常使用掃描功能")
-                        .setPositiveButton("確定") { _, _ ->
-                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                            startActivityForResult(intent, requestCodeCameraPermission)
-                        }
-                        .setNegativeButton("取消") { _, _ ->
-                            findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
-                        }
-                        .show()
+                    showRationaleDialog()
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
                     permission: PermissionRequest?,
                     token: PermissionToken?,
                 ) {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("請開啟相機權限")
-                        .setMessage("此應用程式，相機權限已被關閉，需開啟才能正常使用掃描功能")
-                        .setPositiveButton("確定") { _, _ ->
-                            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                            startActivityForResult(intent, requestCodeCameraPermission)
-                        }
-                        .setNegativeButton("取消") { _, _ ->
-                            findNavController().navigate(NavGraphDirections.navigateToHomeFragment())
-                        }
-                        .show()
+                    showRationaleDialog()
                 }
             }).check()
     }
 
+    private fun showRationaleDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.alert_require_camera_permission))
+            .setMessage(getString(R.string.alert_require_camera_permission_msg))
+            .setPositiveButton(getString(R.string.confirm_yes)) { _, _ ->
+
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivityForResult(intent, requestCameraPermission)
+            }
+            .setNegativeButton(getString(R.string.confirm_no)) { _, _ ->
+
+                findNavController().navigate(
+                    NavGraphDirections.navigateToHomeFragment())
+            }.show()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        if (isPermissionGranted) {
+        if (isCameraPermissionGranted) {
             cameraSource.stop()
         }
     }

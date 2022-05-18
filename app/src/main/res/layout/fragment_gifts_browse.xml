@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/height_toolbar"
     android:layout_marginBottom="@dimen/height_bottom_app_bar"
     android:background="@color/home_background_grey"
-    tools:context=".search.gifts.GiftsBrowseFragment">
+    tools:context=".browse.gifts.GiftsBrowseFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/layout_search_bar"

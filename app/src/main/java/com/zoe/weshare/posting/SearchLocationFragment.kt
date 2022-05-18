@@ -332,12 +332,12 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
     }
 
 
-    fun userIsPostingEvent(): Boolean {
-        return giftArg != null
+    private fun userIsPostingEvent(): Boolean {
+        return eventArg != null
     }
 
-    fun userIsPostingGift(): Boolean {
-        return eventArg != null
+    private fun userIsPostingGift(): Boolean {
+        return giftArg != null
     }
 
 }

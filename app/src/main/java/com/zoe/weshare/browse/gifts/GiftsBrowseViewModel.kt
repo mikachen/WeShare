@@ -1,4 +1,4 @@
-package com.zoe.weshare.search.gifts
+package com.zoe.weshare.browse.gifts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
