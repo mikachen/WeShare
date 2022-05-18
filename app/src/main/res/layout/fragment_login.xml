@@ -28,17 +28,37 @@
         app:layout_constraintTop_toBottomOf="@id/welcome_sticker"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/button_consent_policy"
+    <CheckBox
+        android:id="@+id/consent_box"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="登入前請先同意使用者條款"
-        android:textSize="18sp"
+        android:layout_height="18dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintEnd_toEndOf="@id/button_signin"
+        android:focusable="false"
+        android:clickable="false"
+        android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="@id/button_signin"
         app:layout_constraintBottom_toTopOf="@id/button_signin"/>
 
+    <TextView
+        android:id="@+id/consent_policy1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="登入前請先同意"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/consent_box"
+        app:layout_constraintTop_toTopOf="@id/consent_box"
+        app:layout_constraintBottom_toBottomOf="@id/consent_box"/>
+    <TextView
+        android:id="@+id/consent_policy2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="32dp"
+        android:paddingEnd="32dp"
+        android:text=" 使用者條款"
+        android:textColor="@color/event_awaiting_tag"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/consent_policy1"
+        app:layout_constraintBottom_toBottomOf="@id/consent_policy1"/>
     <View
         android:id="@+id/disable_cover"
         android:layout_width="0dp"

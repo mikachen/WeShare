@@ -359,7 +359,7 @@
 
     <fragment
         android:id="@+id/policyTermFragment"
-        android:name="com.zoe.weshare.report.PolicyTermFragment"
+        android:name="com.zoe.weshare.login.PolicyTermFragment"
         android:label="fragment_policy_term"
         tools:layout="@layout/fragment_policy_term" >
         <action

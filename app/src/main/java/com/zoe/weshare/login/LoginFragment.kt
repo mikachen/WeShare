@@ -81,23 +81,22 @@ class LoginFragment : Fragment() {
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         if (userConsentPolicy) {
+            binding.consentBox.isChecked = true
             binding.disableCover.visibility = View.GONE
-            binding.buttonConsentPolicy.visibility = View.GONE
+
             binding.buttonSignin.setOnClickListener {
                 signIn()
             }
         } else {
-            binding.buttonConsentPolicy.setOnClickListener {
+            binding.consentPolicy2.setOnClickListener {
                 findNavController().navigate(NavGraphDirections.actionGlobalPolicyTermFragment())
             }
         }
-
 
         // signOut allow user to choose different account to login
         if (resetFastLogin) {
             googleSignInClient.signOut()
         }
-
     }
 
 

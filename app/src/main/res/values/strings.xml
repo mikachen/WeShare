@@ -176,8 +176,11 @@
 
     <string name="toast_login_success">登入成功</string>
     <string name="toast_leave_report_reason">請填寫檢舉原因</string>
+    <string name="toast_must_check_agree">請先勾選同意使用條款</string>
     <string name="toast_report_send_complete">已收到您的檢舉，我們會盡快為您審查處理！</string>
-
     <string name="title_report_user">檢舉用戶</string>
+    <string name="title_agree_policy">同意</string>
+    <string name="title_disagree_policy">不同意</string>
+
 
 </resources>
