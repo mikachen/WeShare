@@ -1,5 +1,6 @@
 package com.zoe.weshare.detail.event
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
@@ -19,6 +20,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventDetailBinding
+import com.zoe.weshare.detail.hasUserLikedBefore
 import com.zoe.weshare.ext.*
 import com.zoe.weshare.util.Const.FIELD_EVENT_ATTENDEE
 import com.zoe.weshare.util.Const.FIELD_EVENT_VOLUNTEER
@@ -31,7 +33,7 @@ class EventDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentEventDetailBinding
     private lateinit var adapter: EventCommentsAdapter
-    private lateinit var commentsBoard: RecyclerView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var selectedEvent: EventPost
 
     private val checkInAnimate: Animation by lazy {
@@ -64,13 +66,21 @@ class EventDetailFragment : Fragment() {
         selectedEvent = EventDetailFragmentArgs.fromBundle(requireArguments()).selectedEvent
         viewModel.onViewPrepare(selectedEvent)
 
-        viewModel.onEventLiveDisplaying.observe(viewLifecycleOwner) {
+        viewModel.liveEventDetailResult.observe(viewLifecycleOwner) {
             it?.let {
                 setupView(it)
                 setupBtn(it)
                 setupLikeBtn(it)
                 viewModel.checkEventStatus(it)
             }
+        }
+
+        viewModel.liveComments.observe(viewLifecycleOwner) {
+            viewModel.filterComment()
+        }
+
+        viewModel.filteredComments.observe(viewLifecycleOwner) {
+            viewModel.onGetUsersProfile(it)
         }
 
         viewModel.statusTriggerChanged.observe(viewLifecycleOwner) {
@@ -112,18 +122,11 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        viewModel.liveComments.observe(viewLifecycleOwner) {
-            viewModel.filterComment()
-        }
-        viewModel.filteredComments.observe(viewLifecycleOwner) {
-            viewModel.onGetUsersProfile(it)
-        }
-
         viewModel.onProfileSearchComplete.observe(viewLifecycleOwner) {
             if (it == 0) {
                 adapter.submitList(viewModel.filteredComments.value) {
-                    commentsBoard.post {
-                        commentsBoard.scrollToPosition(adapter.itemCount - 1)
+                    recyclerView.post {
+                        recyclerView.scrollToPosition(adapter.itemCount - 1)
                     }
                 }
             }
@@ -150,9 +153,18 @@ class EventDetailFragment : Fragment() {
             }
         }
 
+        viewModel.reportedTarget.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(
+                    NavGraphDirections.actionGlobalReportViolationDialog(it))
+
+                viewModel.navigateToReportComplete()
+            }
+        }
+
         viewModel.blockUserComplete.observe(viewLifecycleOwner) {
             it?.let {
-                Toast.makeText(requireContext(), "已封鎖用戶", Toast.LENGTH_SHORT).show()
+                activity.showToast(getString(R.string.block_this_person_complete))
                 viewModel.refreshCommentBoard()
             }
         }
@@ -161,10 +173,16 @@ class EventDetailFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupCommentBoard() {
-        commentsBoard = binding.commentsRecyclerView
+        recyclerView = binding.commentsRecyclerView
         adapter = EventCommentsAdapter(viewModel, requireContext())
-        commentsBoard.adapter = adapter
+        recyclerView.adapter = adapter
+
+        recyclerView.setOnTouchListener { view, event ->
+            view.hideKeyboard()
+            false
+        }
     }
 
     private fun setupView(event: EventPost) {
@@ -176,13 +194,13 @@ class EventDetailFragment : Fragment() {
         buttonStateReset()
 
         binding.apply {
-            bindImage(this.images, event.image)
+            bindImage(eventImage, event.image)
 
             textEventTitle.text = event.title
 
             textProfileName.text = event.author?.name
 
-            bindImage(this.imageProfileAvatar, event.author?.image)
+            bindImage(imageAuthorAvatar, event.author?.image)
 
             textPostedLocation.text = event.location?.locationName
 
@@ -200,7 +218,7 @@ class EventDetailFragment : Fragment() {
             textLikedNumber.text =
                 getString(R.string.number_who_liked, event.whoLiked.size)
 
-            buttonPressLike.isChecked = event.whoLiked.contains(weShareUser!!.uid) == true
+            buttonPressLike.isChecked = hasUserLikedBefore(event.whoLiked)
 
             textEventDescription.text = event.description
 
@@ -311,7 +329,7 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        binding.imageProfileAvatar.setOnClickListener {
+        binding.imageAuthorAvatar.setOnClickListener {
             findNavController().navigate(
                 EventDetailFragmentDirections.actionEventDetailFragmentToProfileFragment(event.author)
             )

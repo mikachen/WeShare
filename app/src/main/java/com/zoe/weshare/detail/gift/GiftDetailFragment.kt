@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.BounceInterpolator
 import android.view.animation.ScaleAnimation
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,8 +15,13 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftDetailBinding
+import com.zoe.weshare.detail.getLikeCounts
+import com.zoe.weshare.detail.hasUserLikedBefore
+import com.zoe.weshare.detail.hasUserRequestedBefore
+import com.zoe.weshare.detail.isUserThePostAuthor
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
 import com.zoe.weshare.util.UserManager.weShareUser
@@ -26,9 +30,9 @@ import com.zoe.weshare.util.Util
 class GiftDetailFragment : Fragment() {
 
     private lateinit var binding: FragmentGiftDetailBinding
-    private lateinit var adapter: GiftsCommentsAdapter
+    private lateinit var adapter: RequestGiftAdapter
 
-    val viewModel by viewModels<GiftDetailViewModel> { getVmFactory(weShareUser) }
+    private val viewModel by viewModels<GiftDetailViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,50 +43,37 @@ class GiftDetailFragment : Fragment() {
 
         val selectedGift = GiftDetailFragmentArgs.fromBundle(requireArguments()).selectedGift
 
-        viewModel.onGiftDisplay(selectedGift)
-        viewModel.getAskForGiftComments(selectedGift.id)
+        viewModel.onViewPrepare(selectedGift)
 
-        adapter = GiftsCommentsAdapter(viewModel, requireContext())
+        adapter = RequestGiftAdapter(viewModel, requireContext())
         binding.commentsRecyclerView.adapter = adapter
 
-        viewModel.selectedGiftDisplay.observe(viewLifecycleOwner) {
-            setupView(it)
-            setupBtn(it)
-            setupLikeBtn(it)
+        viewModel.liveGiftDetailResult.observe(viewLifecycleOwner) {
+            it?.let {
+                setupView(it)
+                setupBtn(it)
+                setupLikeBtn(it)
+            }
         }
 
-        viewModel.onCommentLikePressed.observe(viewLifecycleOwner) {
-            adapter.notifyItemChanged(it)
+        viewModel.liveRequestComments.observe(viewLifecycleOwner) {
+            viewModel.filterRequestComments()
         }
 
         viewModel.filteredComments.observe(viewLifecycleOwner) {
             adapter.submitList(it)
 
-            // make sure it only run one time
-            if (viewModel.onProfileSearchComplete.value == null) {
-                viewModel.searchUsersProfile(it)
-            }
-
-            if (!it.isNullOrEmpty()) {
-                setupRequestButton(it)
-                binding.textRegistrantsNumber.text =
-                    getString(R.string.gift_registrants_number, it.size)
-            }
+            viewModel.searchUsersProfile(it)
+            setupRequestButton(it)
         }
 
         // drawing the user avatar image and nickName after searching user's profile docs
-        viewModel.onProfileSearchComplete.observe(viewLifecycleOwner) {
-            if (it == 0) {
-                adapter.notifyDataSetChanged()
+        viewModel.onProfileSearchLoop.observe(viewLifecycleOwner) {
+            it?.let {
+                if (it == 0) {
+                    adapter.notifyDataSetChanged()
+                }
             }
-        }
-
-        viewModel.currentLikedNumber.observe(viewLifecycleOwner) {
-            binding.textLikedNumber.text = resources.getString(R.string.number_who_liked, it)
-        }
-
-        viewModel.isUserPressedLike.observe(viewLifecycleOwner) {
-            binding.buttonPressLike.isChecked = it
         }
 
         viewModel.userChatRooms.observe(viewLifecycleOwner) {
@@ -119,10 +110,18 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
+        viewModel.reportedTarget.observe(viewLifecycleOwner) {
+            it?.let {
+                findNavController().navigate(
+                    NavGraphDirections.actionGlobalReportViolationDialog(it))
+
+                viewModel.navigateToReportComplete()
+            }
+        }
+
         viewModel.blockUserComplete.observe(viewLifecycleOwner) {
             it?.let {
-                Toast.makeText(requireContext(), "已封鎖用戶", Toast.LENGTH_SHORT).show()
-
+                requireActivity().showToast(getString(R.string.block_this_person_complete))
                 viewModel.refreshCommentBoard()
             }
         }
@@ -132,13 +131,13 @@ class GiftDetailFragment : Fragment() {
 
     private fun setupView(gift: GiftPost) {
         binding.apply {
-            bindImage(this.images, gift.image)
+            bindImage(giftImage, gift.image)
 
             textGiftTitle.text = gift.title
 
             textProfileName.text = gift.author?.name
 
-            bindImage(this.imageProfileAvatar, gift.author?.image)
+            bindImage(imageAuthorAvatar, gift.author?.image)
 
             textPostedLocation.text = gift.location?.locationName
 
@@ -151,66 +150,64 @@ class GiftDetailFragment : Fragment() {
 
             textGiftCondition.text = gift.condition
 
+            buttonPressLike.isChecked = hasUserLikedBefore(gift.whoLiked)
+
             textLikedNumber.text =
-                getString(R.string.number_who_liked, gift.whoLiked.size)
+                getString(R.string.number_who_liked, getLikeCounts(gift.whoLiked))
 
             textGiftDescription.text = gift.description
 
             when (gift.status) {
                 GiftStatusType.OPENING.code -> {
-                    binding.textStatus.text = GiftStatusType.OPENING.tag
-                    binding.textStatus.setBackgroundResource(R.color.event_awaiting_tag)
+                    textStatus.text = GiftStatusType.OPENING.tag
+                    textStatus.setBackgroundResource(R.color.event_awaiting_tag)
                 }
                 GiftStatusType.CLOSED.code -> {
-                    binding.textStatus.text = GiftStatusType.CLOSED.tag
-                    binding.textStatus.setBackgroundResource(R.color.app_work_orange3)
+                    textStatus.text = GiftStatusType.CLOSED.tag
+                    textStatus.setBackgroundResource(R.color.app_work_orange3)
                 }
                 GiftStatusType.ABANDONED.code -> {
-                    binding.textStatus.text = GiftStatusType.ABANDONED.tag
-                    binding.textStatus.setBackgroundResource(R.color.app_work_light_grey)
+                    textStatus.text = GiftStatusType.ABANDONED.tag
+                    textStatus.setBackgroundResource(R.color.app_work_dark_grey)
                 }
             }
         }
     }
 
     private fun setupBtn(gift: GiftPost) {
-        binding.lottieBtnChatMe.setOnClickListener {
-            viewModel.searchOnPrivateRoom(weShareUser!!)
+
+        binding.imageAuthorAvatar.setOnClickListener {
+            viewModel.onNavigateToTargetProfile(gift.author!!.uid)
         }
 
-        when (true) {
-            // author he/herself hide the button
-            (gift.author!!.uid == weShareUser!!.uid) -> {
-                binding.lottieBtnChatMe.visibility = View.GONE
-                binding.layoutAskForGift.visibility = View.GONE
+        if (isUserThePostAuthor(gift.author!!.uid)) {
+            binding.lottieBtnChatMe.visibility = View.GONE
+            binding.layoutAskForGift.visibility = View.GONE
+        } else {
+            binding.lottieBtnChatMe.setOnClickListener {
+                viewModel.searchOnPrivateRoom(weShareUser!!)
             }
+        }
 
-            // gift status CLOSE or ABANDONED hide the button
-            (gift.status == GiftStatusType.CLOSED.code) -> {
-                binding.layoutAskForGift.visibility = View.GONE
+        if (gift.status == GiftStatusType.OPENING.code) {
+            binding.buttonAskForGift.setOnClickListener {
+                findNavController().navigate(
+                    GiftDetailFragmentDirections
+                        .actionGiftDetailFragmentToAskForGiftFragment(gift)
+                )
             }
-            (gift.status == GiftStatusType.ABANDONED.code) -> {
-                binding.layoutAskForGift.visibility = View.GONE
-            }
-            else -> {
-                binding.buttonAskForGift.setOnClickListener {
-                    findNavController().navigate(
-                        GiftDetailFragmentDirections
-                            .actionGiftDetailFragmentToAskForGiftFragment(gift)
-                    )
-                }
-            }
+        } else {
+            binding.layoutAskForGift.visibility = View.GONE
         }
-        binding.imageProfileAvatar.setOnClickListener {
-            findNavController().navigate(
-                GiftDetailFragmentDirections.actionGiftDetailFragmentToProfileFragment(gift.author)
-            )
-        }
+
     }
 
     private fun setupRequestButton(comments: List<Comment>) {
+        binding.textRegistrantsNumber.text =
+            getString(R.string.gift_registrants_number, comments.size)
+
         binding.buttonAskForGift.apply {
-            when (comments.none { it.uid == weShareUser!!.uid }) {
+            when (hasUserRequestedBefore(comments)) {
                 true -> {
                     isEnabled = true
                     text = Util.getString(R.string.request_gift)
@@ -223,7 +220,7 @@ class GiftDetailFragment : Fragment() {
         }
     }
 
-    private fun setupLikeBtn(selectedGift: GiftPost) {
+    private fun setupLikeBtn(gift: GiftPost) {
         val scaleAnimation = ScaleAnimation(
             0.7f,
             1.0f,
@@ -242,7 +239,7 @@ class GiftDetailFragment : Fragment() {
             it.startAnimation(scaleAnimation)
             playCreditScene()
 
-            viewModel.onPostLikePressed(selectedGift.id)
+            viewModel.onPostLikePressed(gift)
         }
 
         binding.buttonAdditionHeart1.setOnClickListener {

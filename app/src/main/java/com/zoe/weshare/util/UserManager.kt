@@ -45,4 +45,6 @@ object UserManager {
 
     val isLoggedIn: Boolean
         get() = weShareUser != null
+
+    var userConsentPolicy: Boolean = false
 }

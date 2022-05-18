@@ -19,6 +19,7 @@ import com.zoe.weshare.posting.event.PostEventViewModel
 import com.zoe.weshare.posting.gift.PostGiftViewModel
 import com.zoe.weshare.profile.ProfileViewModel
 import com.zoe.weshare.profile.editmode.EditInfoViewModel
+import com.zoe.weshare.report.ReportViewModel
 
 /**
  * Factory for all ViewModels which need [UserInfo].
@@ -89,6 +90,10 @@ class AuthorViewModelFactory(
 
         if (modelClass.isAssignableFrom(CheckInViewModel::class.java)) {
             return CheckInViewModel(repository, userInfo) as T
+        }
+
+        if (modelClass.isAssignableFrom(ReportViewModel::class.java)) {
+            return ReportViewModel(repository, userInfo) as T
         }
 
         throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")

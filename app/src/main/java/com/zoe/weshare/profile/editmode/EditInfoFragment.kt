@@ -85,7 +85,7 @@ class EditInfoFragment : Fragment() {
 
     private fun setupView(profile: UserProfile) {
         binding.apply {
-            bindImage(imageProfileAvatar, profile.image)
+            bindImage(imageAvatar, profile.image)
             editNickname.setText(profile.name)
             editIntroMsg.setText(profile.introMsg)
 
@@ -93,7 +93,7 @@ class EditInfoFragment : Fragment() {
                 collectUserInput()
             }
 
-            imageProfileAvatar.setOnClickListener {
+            imageAvatar.setOnClickListener {
                 selectImage()
             }
         }
@@ -142,7 +142,7 @@ class EditInfoFragment : Fragment() {
 
             try {
 
-                binding.imageProfileAvatar.setImageURI(filePath)
+                binding.imageAvatar.setImageURI(filePath)
                 viewModel.newImage = filePath
             } catch (e: Exception) {
                 // Log the exception

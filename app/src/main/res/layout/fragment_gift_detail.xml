@@ -23,7 +23,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/images"
+                android:id="@+id/gift_image"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:scaleType="centerCrop"
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@color/translucent"
-                app:layout_constraintBottom_toBottomOf="@id/images"
+                app:layout_constraintBottom_toBottomOf="@id/gift_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
@@ -49,7 +49,7 @@
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/images"
+                app:layout_constraintBottom_toBottomOf="@id/gift_image"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/translucent_view"
                 tools:text="萬能不沾鍋" />
@@ -62,7 +62,7 @@
                 android:layout_margin="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/images">
+                app:layout_constraintTop_toBottomOf="@id/gift_image">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/base_user_avatar"
@@ -75,7 +75,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
-                        android:id="@+id/image_profile_avatar"
+                        android:id="@+id/image_author_avatar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop" />

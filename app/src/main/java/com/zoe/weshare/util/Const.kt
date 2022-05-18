@@ -8,8 +8,10 @@ object Const {
     const val PATH_USER = "User"
     const val PATH_CHATROOM = "ChatRoom"
     const val PATH_LOG = "Log"
+    const val PATH_VIOLATION_REPORT = "ViolationReport"
 
-    const val SUB_PATH_GIFT_USER_WHO_ASK_FOR = "UserWhoRequest"
+
+    const val SUB_PATH_GIFT_USER_WHO_REQUEST = "UserWhoRequest"
     const val SUB_PATH_EVENT_USER_WHO_COMMENT = "UserWhoComment"
     const val SUB_PATH_CHATROOM_MESSAGE = "Messages"
     const val SUB_PATH_USER_NOTIFICATION = "Notifications"

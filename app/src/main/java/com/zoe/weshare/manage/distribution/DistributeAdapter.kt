@@ -38,7 +38,7 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
             binding.textComment.text = comment.content
             binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
 
-            binding.imageProfileAvatar.setOnClickListener {
+            binding.imageUserAvatar.setOnClickListener {
                 viewModel.onNavigateToTargetProfile(comment.uid)
             }
 
@@ -47,20 +47,34 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
                 if (viewModel.profileList.isNotEmpty()) {
                     val sender = viewModel.profileList.singleOrNull { it.uid == comment.uid }
                     sender?.let {
-                        bindImage(binding.imageProfileAvatar, sender.image)
+                        bindImage(binding.imageUserAvatar, sender.image)
                         binding.textProfileName.text = sender.name
                     }
                 }
             }
 
-            if (viewModel.gift.status == GiftStatusType.OPENING.code) {
-                binding.buttonSendGift.visibility = View.VISIBLE
+            when (viewModel.gift.status) {
 
-                binding.buttonSendGift.setOnClickListener {
-                    viewModel.userPressSendGift(comment)
+                GiftStatusType.OPENING.code -> {
+                    binding.buttonSendGift.visibility = View.VISIBLE
+                    binding.buttonSendGift.setOnClickListener {
+                        viewModel.userPressSendGift(comment)
+                    }
                 }
-            } else {
-                binding.buttonSendGift.isEnabled = false
+
+                GiftStatusType.CLOSED.code -> {
+                    val userReceiveGift: Boolean =
+                        viewModel.gift.whoGetGift == comment.uid
+
+                    if (userReceiveGift) {
+                        binding.lottieReceivedGift.visibility = View.VISIBLE
+                    } else {
+                        binding.lottieReceivedGift.visibility = View.INVISIBLE
+                    }
+                }
+
+                GiftStatusType.ABANDONED.code -> {}
+
             }
         }
 

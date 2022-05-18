@@ -2,6 +2,7 @@ package com.zoe.weshare
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -10,14 +11,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.material.badge.BadgeDrawable
 import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.showToast
+import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.CurrentFragmentType
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager
-import com.zoe.weshare.util.UserManager.hasCheckNotification
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,7 +64,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // lottie animation
-        loginAnimate()
+        showLoginAnimate()
+
+        if (didUserSignInBefore()) {
+            val uid = GoogleSignIn.getLastSignedInAccount(applicationContext)?.id ?: ""
+
+            viewModel.getUserProfile(uid)
+        } else {
+            requireLogin()
+        }
+
+        viewModel.loginStatus.observe(this) {
+            it?.let {
+                when (it) {
+                    LoadApiStatus.LOADING -> {}
+                    LoadApiStatus.DONE -> this.showToast(getString(R.string.toast_login_success))
+                    LoadApiStatus.ERROR -> {
+                        requireLogin()
+                    }
+                }
+            }
+        }
 
         // observe current fragment change, only for show info
         viewModel.currentFragmentType.observe(this) {
@@ -84,6 +107,8 @@ class MainActivity : AppCompatActivity() {
 
                     // 大主頁
                     CurrentFragmentType.HOME -> {
+                        binding.bottomNavView.menu.getItem(0).isChecked = true
+
                         showBottom()
                         toolbar.navigationIcon = null
                         toolbarLogoImage.visibility = View.VISIBLE
@@ -91,16 +116,22 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     CurrentFragmentType.MAP -> {
+                        binding.bottomNavView.menu.getItem(1).isChecked = true
+
                         showBottom()
                         fabsLayoutView.visibility = View.GONE
                     }
 
                     CurrentFragmentType.ROOMLIST -> {
+                        binding.bottomNavView.menu.getItem(2).isChecked = true
+
                         showBottom()
                         fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.PROFILE -> {
+                        binding.bottomNavView.menu.getItem(3).isChecked = true
+
                         showBottom()
                         topAppbar.visibility = View.GONE
                         fabsLayoutView.visibility = View.INVISIBLE
@@ -203,6 +234,15 @@ class MainActivity : AppCompatActivity() {
         setupFab()
     }
 
+    fun requireLogin() {
+        findNavController(R.id.nav_host_fragment).navigate(
+            NavGraphDirections.actionGlobalLoginFragment())
+    }
+
+    fun didUserSignInBefore(): Boolean {
+        return GoogleSignIn.getLastSignedInAccount(applicationContext) != null
+    }
+
     private fun updateUnReadMsgBadge(count: Int) {
 
         if (count > 0) {
@@ -236,7 +276,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomAppBar.performShow()
     }
 
-    private fun loginAnimate() {
+    private fun showLoginAnimate() {
         startActivity(
             Intent(this, LogoActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
@@ -244,9 +284,10 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    // 每導航新頁面重新assign currentFragmentType
     private fun setupNavController() {
-        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { navController: NavController, _: NavDestination, _: Bundle? ->
+        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener {
+                navController: NavController, _: NavDestination, _: Bundle? ->
+
             if (isFabExpend) {
                 onMainFabClick()
             }
@@ -380,9 +421,4 @@ class MainActivity : AppCompatActivity() {
             binding.layoutFabEvent.visibility = View.INVISIBLE
         }
     }
-
-//    override fun onBackPressed() {
-//        super.onBackPressed()
-//        finish()
-//    }
 }

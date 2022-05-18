@@ -30,6 +30,10 @@ class DefaultWeShareRepository(
         return remoteDataSource.getLiveEventDetail(docId)
     }
 
+    override fun getLiveGiftDetail(docId: String): MutableLiveData<GiftPost?>{
+        return remoteDataSource.getLiveGiftDetail(docId)
+    }
+
     override fun getLiveLogs(): MutableLiveData<List<OperationLog>> {
         return remoteDataSource.getLiveLogs()
     }
@@ -221,5 +225,9 @@ class DefaultWeShareRepository(
 
     override suspend fun removeDocument(collection: String, docId: String): Result<Boolean> {
         return remoteDataSource.removeDocument(collection, docId)
+    }
+
+    override suspend fun sendViolationReport(report: ViolationReport): Result<String>{
+        return remoteDataSource.sendViolationReport(report)
     }
 }

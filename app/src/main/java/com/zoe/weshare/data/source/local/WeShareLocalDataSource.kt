@@ -61,6 +61,14 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
+    override suspend fun sendViolationReport(report: ViolationReport): Result<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getLiveGiftDetail(docId: String): MutableLiveData<GiftPost?> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun updateFieldValue(
         collection: String,
         docId: String,

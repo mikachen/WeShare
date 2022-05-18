@@ -6,7 +6,7 @@
 
     <!-- Strings used for fragments for navigation -->
     <string name="home">首頁</string>
-    <string name="map">地圖</string>
+    <string name="map">周邊熱點</string>
     <string name="message">聊天</string>
     <string name="profile">個人</string>
     <string name="post_event">刊登活動</string>
@@ -15,8 +15,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="result_fail">Result Fail</string>
-    <string name="title_activity_maps">MapsActivity</string>
-
 
     <string-array name="gift_item_condition">
         <item>全新</item>
@@ -134,7 +132,7 @@
 
     <string name="room_list_event_title">群聊：%1s</string>
     <string name="leave_ask_for_gift_comment">索取留言</string>
-    <string name="pls_leave_askforgift_comment">留言索取理由或感謝文。</string>
+    <string name="pls_leave_askforgift_comment">請留言索取理由或感謝文。</string>
 
 
     <string name="notification_request_gift">索取</string>
@@ -158,6 +156,7 @@
 
     <string name="block_this_person_title">確定要封鎖用戶：%s？</string>
     <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何評論與刊登。</string>
+    <string name="block_this_person_complete">已封鎖用戶</string>
 
     <string name="leave_this_chatroom_message">聊天室將會被刪除，確定要繼續嗎？</string>
 
@@ -174,5 +173,14 @@
 
     <string name="message_whoRead_count">已讀%1$d</string>
     <string name="gift_card_detail_transition_name">tans</string>
+
+    <string name="toast_login_success">登入成功</string>
+    <string name="toast_leave_report_reason">請填寫檢舉原因</string>
+    <string name="toast_must_check_agree">請先勾選同意使用條款</string>
+    <string name="toast_report_send_complete">已收到您的檢舉，我們會盡快為您審查處理！</string>
+    <string name="title_report_user">檢舉用戶</string>
+    <string name="title_agree_policy">同意</string>
+    <string name="title_disagree_policy">不同意</string>
+
 
 </resources>
