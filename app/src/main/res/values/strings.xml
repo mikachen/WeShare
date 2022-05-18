@@ -181,6 +181,8 @@
     <string name="title_report_user">檢舉用戶</string>
     <string name="title_agree_policy">同意</string>
     <string name="title_disagree_policy">不同意</string>
+    <string name="toast_cant_find_this_place">查無此地</string>
+
 
 
 </resources>

@@ -56,7 +56,8 @@
         tools:layout="@layout/fragment_post_event">
         <action
             android:id="@+id/action_postEventFragment_to_searchLocationFragment"
-            app:destination="@id/searchLocationFragment" />
+            app:destination="@id/searchLocationFragment"
+            app:enterAnim="@anim/fragment_slide_from_left" />
     </fragment>
 
     <fragment
@@ -66,7 +67,8 @@
         tools:layout="@layout/fragment_post_gift">
         <action
             android:id="@+id/action_postGiftFragment_to_searchLocationFragment"
-            app:destination="@id/searchLocationFragment" />
+            app:destination="@id/searchLocationFragment"
+            app:enterAnim="@anim/fragment_slide_from_left" />
     </fragment>
 
 
@@ -86,17 +88,21 @@
             app:argType="com.zoe.weshare.data.EventPost"
             app:nullable="true" />
         <action
-            android:id="@+id/action_searchLocationFragment_to_eventDetailFragment"
+            android:id="@+id/action_postEventComplete_to_detail"
             app:destination="@id/eventDetailFragment"
-            app:popUpTo="@id/eventDetailFragment"
+            app:enterAnim="@anim/fragment_slide_from_left"
+            app:popUpTo="@id/postEventFragment"
             app:popUpToInclusive="true" />
+
         <action
             android:id="@+id/action_searchLocationFragment_self"
             app:destination="@id/searchLocationFragment" />
+
         <action
-            android:id="@+id/action_searchLocationFragment_to_giftDetailFragment"
+            android:id="@+id/action_postGiftComplete_to_detail"
             app:destination="@id/giftDetailFragment"
-            app:popUpTo="@id/giftDetailFragment"
+            app:enterAnim="@anim/fragment_slide_from_left"
+            app:popUpTo="@id/postGiftFragment"
             app:popUpToInclusive="true" />
 
     </fragment>
@@ -198,11 +204,13 @@
 
     <action
         android:id="@+id/navigate_to_post_event_fragment"
-        app:destination="@id/postEventFragment" />
+        app:destination="@id/postEventFragment"
+        app:enterAnim="@anim/fragment_slide_from_top" />
 
     <action
         android:id="@+id/navigate_to_post_gift_fragment"
-        app:destination="@id/postGiftFragment" />
+        app:destination="@id/postGiftFragment"
+        app:enterAnim="@anim/fragment_slide_from_top" />
 
     <action
         android:id="@+id/action_global_eventDetailFragment"
@@ -368,7 +376,11 @@
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
     </fragment>
-    <action android:id="@+id/action_global_policyTermFragment" app:destination="@id/policyTermFragment" />
+    <action
+        android:id="@+id/action_global_policyTermFragment"
+        app:destination="@id/policyTermFragment"
+        app:enterAnim="@anim/fragment_slide_from_bottom"
+        app:popExitAnim="@anim/fragment_slide_to_right" />
 
 
 </navigation>

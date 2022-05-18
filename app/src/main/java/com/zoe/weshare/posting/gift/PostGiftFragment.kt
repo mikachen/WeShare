@@ -32,12 +32,13 @@ import com.zoe.weshare.databinding.FragmentPostGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.hideKeyboard
 import com.zoe.weshare.ext.showDropdownMenu
+import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostGiftFragment : Fragment() {
 
     private val PICK_IMAGE_REQUEST = 151
-    private lateinit var filePath: Uri
+    private var imagePathUri: Uri? = null
 
     private lateinit var sortAdapter: ArrayAdapter<String>
     private lateinit var conditionAdapter: ArrayAdapter<String>
@@ -73,9 +74,6 @@ class PostGiftFragment : Fragment() {
             }
         }
 
-        viewModel.imageUri.observe(viewLifecycleOwner) {
-            binding.buttonImagePreviewHolder.setImageURI(it)
-        }
 
         setupViewNBtn()
         setupDropdownMenu()
@@ -121,10 +119,11 @@ class PostGiftFragment : Fragment() {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK &&
             data != null && data.data != null
         ) {
-            filePath = data.data!!
+            imagePathUri = data.data!!
 
             try {
-                viewModel.imageUri.value = filePath
+                binding.buttonImagePreviewHolder.setImageURI(imagePathUri)
+
             } catch (e: Exception) {
                 // Log the exception
                 e.printStackTrace()
@@ -140,42 +139,27 @@ class PostGiftFragment : Fragment() {
         val description = binding.editDescription.text.toString().trim()
 
         when (true) {
-            title.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_title_isEmpty),
-                    Toast.LENGTH_SHORT
-                ).show()
+            title.isEmpty() ->{
+                activity.showToast(getString(R.string.error_title_isEmpty))
+            }
 
-            sort.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_sort_isEmpty),
-                    Toast.LENGTH_SHORT
-                ).show()
+            sort.isEmpty() ->{
+                activity.showToast(getString(R.string.error_sort_isEmpty))
+            }
 
-            condition.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_condition_isEmpty),
-                    Toast.LENGTH_SHORT
-                ).show()
+            condition.isEmpty() ->{
+                activity.showToast(getString(R.string.error_condition_isEmpty))
+            }
 
-            description.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_description_isEmpty),
-                    Toast.LENGTH_SHORT
-                ).show()
+            description.isEmpty() ->{
+                activity.showToast(getString(R.string.error_description_isEmpty))
+            }
 
-            (viewModel.imageUri.value == null) ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_image_isEmpty),
-                    Toast.LENGTH_SHORT
-                ).show()
+            (imagePathUri == null) -> {
+                activity.showToast(getString(R.string.error_image_isEmpty))
+            }
 
-            else -> viewModel.onSaveUserInput(title, sort, condition, description)
+            else -> viewModel.onSaveUserInput(title, sort, condition, description, imagePathUri!!)
         }
     }
 

@@ -23,14 +23,13 @@ class PostGiftViewModel(
 
     var postingProgress = MutableLiveData<Int>()
 
-    var _gift = MutableLiveData<GiftPost?>()
-    val gift: LiveData<GiftPost?>
-        get() = _gift
-
     var onPostGift = MutableLiveData<GiftPost>()
 
-    var imageUri = MutableLiveData<Uri?>()
     var locationChoice: PostLocation? = null
+
+    private var _gift = MutableLiveData<GiftPost>()
+    val gift: LiveData<GiftPost>
+        get() = _gift
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -43,15 +42,59 @@ class PostGiftViewModel(
     val saveLogComplete: LiveData<OperationLog>
         get() = _saveLogComplete
 
-    // error: The internal MutableLiveData that stores the error of the most recent request
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
 
-    private val _postingStatus = MutableLiveData<LoadApiStatus>()
-    val postingStatus: LiveData<LoadApiStatus>
-        get() = _postingStatus
+    private val _status = MutableLiveData<LoadApiStatus>()
+    val status: LiveData<LoadApiStatus>
+        get() = _status
 
+    fun fetchArgument(gift: GiftPost) {
+        _gift.value = gift
+    }
+
+    /**
+     * (A) upload image
+     * reassign gift.image to firebase url string result
+     * */
+    fun uploadImage() {
+        coroutineScope.launch {
+            _status.value = LoadApiStatus.LOADING
+            postingProgress.value = 10
+
+            val imageUri = Uri.parse(gift.value!!.image)
+
+            when (val result = repository.uploadImage(imageUri)) {
+                is Result.Success -> {
+                    postingProgress.value = 30
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+
+                    val firebaseUrl = result.data
+
+                    _gift.value!!.image = firebaseUrl
+                    onPostGift.value = gift.value
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    /**
+     * (B) Post Gift to firebase
+     * */
     fun newGiftPost(gift: GiftPost) {
         coroutineScope.launch {
             _postGiftStatus.value = LoadApiStatus.LOADING
@@ -60,11 +103,14 @@ class PostGiftViewModel(
 
             when (val result = repository.postNewGift(gift)) {
                 is Result.Success -> {
+                    postingProgress.value = 80
                     _error.value = null
                     _postGiftStatus.value = LoadApiStatus.DONE
 
-                    onSaveGiftPostLog(result.data)
-                    postingProgress.value = 80
+                    val giftDocId = result.data
+
+
+                    onSaveGiftPostLog(giftDocId)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -81,6 +127,10 @@ class PostGiftViewModel(
             }
         }
     }
+
+    /**
+     * (C) prepare and post user's operation log
+     * */
 
     fun onSaveGiftPostLog(docId: String) {
         val log = OperationLog(
@@ -103,9 +153,9 @@ class PostGiftViewModel(
 
             when (val result = repository.saveLog(log)) {
                 is Result.Success -> {
+                    postingProgress.value = 100
                     _error.value = null
 
-                    postingProgress.value = 100
                     _saveLogComplete.value = log
                 }
                 is Result.Fail -> {
@@ -130,13 +180,19 @@ class PostGiftViewModel(
         _gift.value!!.location = locationChoice
     }
 
-    fun onSaveUserInput(title: String, sort: String, condition: String, description: String) {
+    fun onSaveUserInput(
+        title: String,
+        sort: String,
+        condition: String,
+        description: String,
+        imageUri: Uri,
+    ) {
         onPostGift.value = GiftPost(
             author = author,
             title = title,
             sort = sort,
             condition = condition,
-            image = imageUri.value.toString(),
+            image = imageUri.toString(),
             description = description
         )
         _gift.value = onPostGift.value
@@ -146,37 +202,10 @@ class PostGiftViewModel(
         _gift.value = null
     }
 
-    fun uploadImage() {
-        coroutineScope.launch {
-            _postingStatus.value = LoadApiStatus.LOADING
-
-            postingProgress.value = 10
-
-            val imageUri = Uri.parse(gift.value!!.image)
-            when (val result = repository.uploadImage(imageUri)) {
-                is Result.Success -> {
-                    _error.value = null
-
-                    _gift.value!!.image = result.data
-
-                    onPostGift.value = gift.value
-
-                    postingProgress.value = 30
-                    _postingStatus.value = LoadApiStatus.DONE
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _postingStatus.value = LoadApiStatus.ERROR
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _postingStatus.value = LoadApiStatus.ERROR
-                }
-                else -> {
-                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _postingStatus.value = LoadApiStatus.ERROR
-                }
-            }
-        }
+    fun postGiftComplete() {
+        postingProgress.value = null
+        _gift.value = null
+        onPostGift.value = null
+        _saveLogComplete.value = null
     }
 }

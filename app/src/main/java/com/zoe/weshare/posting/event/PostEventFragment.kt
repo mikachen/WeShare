@@ -14,7 +14,6 @@ import android.view.WindowManager
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -29,16 +28,18 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.R
+import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.databinding.FragmentPostEventBinding
-import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.ext.hideKeyboard
-import com.zoe.weshare.ext.showDropdownMenu
+import com.zoe.weshare.ext.*
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostEventFragment : Fragment() {
 
     private val PICK_IMAGE_REQUEST = 151
-    private lateinit var filePath: Uri
+
+    private var imagePathUri: Uri? = null
+    private var startTime: Long? = null
+    private var endTime: Long? = null
 
     private lateinit var binding: FragmentPostEventBinding
     private lateinit var sortAdapter: ArrayAdapter<String>
@@ -72,13 +73,6 @@ class PostEventFragment : Fragment() {
             }
         }
 
-        viewModel.datePick.observe(viewLifecycleOwner) {
-            binding.editDatePicker.setText(it)
-        }
-
-        viewModel.imageUri.observe(viewLifecycleOwner) {
-            binding.buttonImagePreviewHolder.setImageURI(it)
-        }
 
         setupViewAndBtn()
         setupDropdownMenu()
@@ -126,11 +120,12 @@ class PostEventFragment : Fragment() {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK &&
             data != null && data.data != null
         ) {
-            filePath = data.data!!
+            imagePathUri = data.data!!
 
             try {
 
-                viewModel.imageUri.value = filePath
+                binding.buttonImagePreviewHolder.setImageURI(imagePathUri)
+
             } catch (e: Exception) {
                 // Log the exception
                 e.printStackTrace()
@@ -144,46 +139,33 @@ class PostEventFragment : Fragment() {
         val sort = binding.dropdownMenuSort.text.toString().trim()
         val volunteerNeeds = binding.editVolunteer.text.toString().trim()
         val description = binding.editDescription.text.toString().trim()
-        val time = binding.editDatePicker.text.toString()
+        val datePick = binding.editDatePicker.text.toString()
 
         when (true) {
-            title.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_title_isEmpty), Toast.LENGTH_SHORT
-                ).show()
+            title.isEmpty() -> {
+                activity.showToast(getString(R.string.error_title_isEmpty))
+            }
 
-            sort.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_sort_isEmpty), Toast.LENGTH_SHORT
-                ).show()
+            sort.isEmpty() -> {
+                activity.showToast(getString(R.string.error_sort_isEmpty))
+            }
 
-            volunteerNeeds.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_volunteer_need), Toast.LENGTH_SHORT
-                ).show()
+            volunteerNeeds.isEmpty() -> {
+                activity.showToast(getString(R.string.error_volunteer_need))
+            }
 
-            description.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_description_isEmpty), Toast.LENGTH_SHORT
-                ).show()
+            description.isEmpty() -> {
+                activity.showToast(getString(R.string.error_description_isEmpty))
+            }
+            datePick.isEmpty() -> {
+                activity.showToast(getString(R.string.error_date_pick_isEmpty))
+            }
 
-            time.isEmpty() ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_date_pick_isEmpty), Toast.LENGTH_SHORT
-                ).show()
+            (imagePathUri == null) ->
+                activity.showToast(getString(R.string.error_image_isEmpty))
 
-            (viewModel.imageUri.value == null) ->
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_image_isEmpty), Toast.LENGTH_SHORT
-                ).show()
-
-            else -> viewModel.onSaveUserInput(title, sort, volunteerNeeds, description)
+            else -> viewModel.fetchUserInput(
+                title, sort, volunteerNeeds, description, imagePathUri!!, startTime!!, endTime!!)
         }
     }
 
@@ -212,17 +194,30 @@ class PostEventFragment : Fragment() {
                 .setTitleText("Select dates")
                 .build()
 
-        dateRangePicker.addOnPositiveButtonClickListener { datePick ->
-
-            val startDate = datePick.first
-            val secondDate = datePick.second
-
-            viewModel.onDatePickDisplay(startDate, secondDate)
-        }
-
         binding.editDatePicker.setOnClickListener {
             dateRangePicker.show(requireActivity().supportFragmentManager, "date_picker")
         }
+
+        dateRangePicker.addOnPositiveButtonClickListener { datePick ->
+
+            startTime = datePick.first
+            endTime = datePick.second
+
+
+            if (startTime != null && endTime != null) {
+                onDatePickDisplay(startTime!!, endTime!!)
+            }
+        }
+    }
+
+    fun onDatePickDisplay(startTime: Long, endTime: Long) {
+
+        val dateDisplay: String = WeShareApplication.instance.getString(
+            R.string.preview_event_time,
+            startTime.toDisplayFormat(),
+            endTime.toDisplayFormat())
+
+        binding.editDatePicker.setText(dateDisplay)
     }
 
     private fun checkPermission(): Boolean {
