@@ -1,11 +1,13 @@
 package com.zoe.weshare
 
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.animation.DecelerateInterpolator
+import android.widget.ProgressBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -16,6 +18,8 @@ import com.google.android.material.badge.BadgeDrawable
 import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.ActivityMainBinding
 import com.zoe.weshare.ext.getVmFactory
+import com.zoe.weshare.ext.hideNavigationBar
+import com.zoe.weshare.ext.showNavigationBar
 import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.CurrentFragmentType
@@ -49,12 +53,14 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    var notificationPageOpen: Boolean = false
+    private var notificationPageOpen: Boolean = false
     private var isFabExpend: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
     private lateinit var chatRoomBadge: BadgeDrawable
     lateinit var binding: ActivityMainBinding
+    private lateinit var progressBar: ProgressBar
+    private lateinit var animation: ObjectAnimator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -232,6 +238,7 @@ class MainActivity : AppCompatActivity() {
         setupBottomNav()
         setupToolbar()
         setupFab()
+        setupProgressBar()
     }
 
     fun requireLogin() {
@@ -285,8 +292,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupNavController() {
-        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener {
-                navController: NavController, _: NavDestination, _: Bundle? ->
+        findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { navController: NavController, _: NavDestination, _: Bundle? ->
 
             if (isFabExpend) {
                 onMainFabClick()
@@ -327,6 +333,12 @@ class MainActivity : AppCompatActivity() {
         binding.toolbarArrowBack.setOnClickListener {
             findNavController(R.id.nav_host_fragment).navigateUp()
         }
+
+    }
+
+    fun setupProgressBar(){
+        progressBar = binding.progressBar
+        progressBar.max = 100 * 100
     }
 
     private fun setupBottomNav() {
@@ -420,5 +432,34 @@ class MainActivity : AppCompatActivity() {
             binding.layoutFabGift.visibility = View.INVISIBLE
             binding.layoutFabEvent.visibility = View.INVISIBLE
         }
+    }
+
+    fun showProgressBar() {
+
+        binding.layoutMainProgressBar.visibility = View.VISIBLE
+        binding.imageUploadingHint.visibility = View.VISIBLE
+
+        hideNavigationBar()
+    }
+
+    fun hideProgressBar(){
+        binding.layoutMainProgressBar.visibility = View.INVISIBLE
+        binding.imageUploadingHint.visibility = View.INVISIBLE
+
+        progressBarLoading(0) // reset
+       showNavigationBar()
+    }
+
+    fun progressBarLoading(progress: Int){
+
+        animation = ObjectAnimator.ofInt(
+            progressBar,
+            "progress",
+            progressBar.progress,
+            progress * 100
+        )
+        animation.duration = 300
+        animation.interpolator = DecelerateInterpolator()
+        animation.start()
     }
 }

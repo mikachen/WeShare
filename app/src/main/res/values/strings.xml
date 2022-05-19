@@ -78,8 +78,6 @@
     //送禮物Alert窗
     <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶 %2$1s 嗎?</string>
     <string name="send_gift_message">確認送出後將不可再作修改!</string>
-    <string name="confirm_yes">確認</string>
-    <string name="confirm_no">取消</string>
     <string name="requested_comments">索取人留言</string>
 
     //Log Messages
@@ -109,6 +107,8 @@
     <string name="error_image_isEmpty">請上傳一張照片</string>
     <string name="error_event_location_isEmpty">請選擇活動地點</string>
     <string name="error_gift_location_isEmpty">請選擇取物地點</string>
+    <string name="error_check_in_with_wrong_id">條碼與該活動不相符，請重新確認</string>
+    <string name="error_re_chceck_int">重新掃描</string>
 
     //posting preview string
     <string name="preview_detail_title">刊登預覽</string>
@@ -181,6 +181,25 @@
     <string name="title_report_user">檢舉用戶</string>
     <string name="title_agree_policy">同意</string>
     <string name="title_disagree_policy">不同意</string>
+    <string name="toast_cant_find_this_place">查無此地</string>
+    <string name="toast_check_in_successfully">簽到成功</string>
+    <string name="scanner_has_been_closed">掃描已關閉</string>
+
+
+    //require permissions
+    <string name="confirm_yes">確認</string>
+    <string name="confirm_no">取消</string>
+    <string name="alert_require_camera_permission">請開啟相機權限</string>
+    <string name="alert_require_camera_permission_msg">此應用程式，相機權限已被關閉，需開啟才能正常使用掃描功能</string>
+    <string name="alert_require_location_permission">請開啟位置權限</string>
+    <string name="alert_require_location_permission_msg">此應用程式，位置權限已被關閉，需開啟才能正常使用</string>
+
+
+
+    //intent
+    <string name="select_image">請選擇一張照片</string>
+
+
 
 
 </resources>

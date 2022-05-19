@@ -1,4 +1,4 @@
-package com.zoe.weshare.detail.askgift
+package com.zoe.weshare.detail.requestgift
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,17 +16,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class AskForGiftViewModel(
+class RequestGiftViewModel(
     private val repository: WeShareRepository,
     private val userInfo: UserInfo?,
 ) : ViewModel() {
 
-    private val _newRequestComment = MutableLiveData<Comment>()
-    val newRequestComment: LiveData<Comment>
-        get() = _newRequestComment
+    private lateinit var gift: GiftPost
 
-    private val _saveLogComplete = MutableLiveData<OperationLog>()
-    val saveLogComplete: LiveData<OperationLog>
+    private val _saveLogComplete = MutableLiveData<OperationLog?>()
+    val saveLogComplete: LiveData<OperationLog?>
         get() = _saveLogComplete
 
     private var viewModelJob = Job()
@@ -37,20 +35,24 @@ class AskForGiftViewModel(
         get() = _requestGiftStatus
 
     private val _error = MutableLiveData<String?>()
-    val error: LiveData<String?>?
+    val error: LiveData<String?>
         get() = _error
 
-    fun onSendNewRequest(message: String, gift: GiftPost) {
+    fun fetchArg(arg: GiftPost) {
+        gift = arg
+    }
+
+    fun onSendNewRequest(message: String) {
         val comment = Comment(
             uid = userInfo!!.uid,
             content = message
         )
-        _newRequestComment.value = comment
+
+        askForGiftRequest(comment)
     }
 
-    fun askForGiftRequest(gift: GiftPost, comment: Comment) {
+    private fun askForGiftRequest(comment: Comment) {
         coroutineScope.launch {
-
             _requestGiftStatus.value = LoadApiStatus.LOADING
 
             when (

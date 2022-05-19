@@ -7,8 +7,8 @@ import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.herorank.HeroRankViewModel
 import com.zoe.weshare.home.HomeViewModel
 import com.zoe.weshare.login.LoginViewModel
-import com.zoe.weshare.search.events.EventsBrowseViewModel
-import com.zoe.weshare.search.gifts.GiftsBrowseViewModel
+import com.zoe.weshare.browse.events.EventsBrowseViewModel
+import com.zoe.weshare.browse.gifts.GiftsBrowseViewModel
 
 /**
  * Factory for all ViewModels.

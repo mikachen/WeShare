@@ -31,37 +31,51 @@ class ReportViolationDialog : BottomSheetDialogFragment() {
 
         val targetUid = ReportViolationDialogArgs.fromBundle(requireArguments()).reportTarget
 
-        viewModel.reportSendComplete.observe(viewLifecycleOwner) {
+        viewModel.fetchArg(targetUid)
 
-            activity.showToast(getString(R.string.toast_report_send_complete))
-            binding.editLeaveReason.text?.clear()
-            this.dismiss()
+        viewModel.reportSendComplete.observe(viewLifecycleOwner) {
+            it?.let {
+                activity.showToast(getString(R.string.toast_report_send_complete))
+                binding.editLeaveReason.text?.clear()
+
+                viewModel.reportComplete()
+                this.dismiss()
+            }
         }
 
-        setupBtn(targetUid)
+        setupBtn()
         return binding.root
     }
 
-    private fun setupBtn(target: String) {
-
+    private fun setupBtn() {
         binding.buttonSubmit.setOnClickListener {
-
-            val reason = binding.editLeaveReason.text.toString().trim()
-
-            if (reason.isNotEmpty()) {
-                viewModel.onSendReport(target, reason)
-
-            } else {
-                activity.showToast(getString(R.string.toast_leave_report_reason))
-            }
-
+            dataCollecting()
             it.hideKeyboard()
         }
 
         binding.buttonCancel.setOnClickListener {
             findNavController().navigateUp()
-
             it.hideKeyboard()
+        }
+    }
+
+    private fun dataCollecting() {
+        val reason = binding.editLeaveReason.text.toString().trim()
+
+        if (checkDataIntegrity(reason)) {
+
+            viewModel.onSendReport(reason)
+        } else {
+            return
+        }
+    }
+
+    private fun checkDataIntegrity(reason: String): Boolean {
+        return if (reason.isNotEmpty()) {
+            true
+        } else {
+            activity.showToast(getString(R.string.toast_leave_report_reason))
+            false
         }
     }
 

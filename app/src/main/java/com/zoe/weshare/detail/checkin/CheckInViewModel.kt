@@ -26,13 +26,13 @@ class CheckInViewModel(
     private val userInfo: UserInfo?,
 ) : ViewModel() {
 
-    lateinit var event: EventPost
+    private lateinit var targetEvent: EventPost
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private val _saveLogComplete = MutableLiveData<OperationLog>()
-    val saveLogComplete: LiveData<OperationLog>
+    private val _saveLogComplete = MutableLiveData<OperationLog?>()
+    val saveLogComplete: LiveData<OperationLog?>
         get() = _saveLogComplete
 
     private val _status = MutableLiveData<LoadApiStatus>()
@@ -42,6 +42,10 @@ class CheckInViewModel(
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
+
+    fun fetchArg(arg: EventPost) {
+        targetEvent = arg
+    }
 
     fun checkInEvent(doc: String) {
         coroutineScope.launch {
@@ -59,7 +63,7 @@ class CheckInViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    onSaveOperateLog(doc)
+                    onSaveLog(doc)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -77,15 +81,14 @@ class CheckInViewModel(
         }
     }
 
-    fun onSaveOperateLog(doc: String) {
+    fun onSaveLog(doc: String) {
         val log = OperationLog(
             logType = LogType.EVENT_CHECK_IN.value,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_event_check_in,
-                userInfo!!.name, event.title
-            ),
+                userInfo!!.name, targetEvent.title),
             postDocId = doc,
-            operatorUid = userInfo!!.uid
+            operatorUid = userInfo.uid
         )
         saveLog(log)
     }
@@ -111,7 +114,7 @@ class CheckInViewModel(
         }
     }
 
-    fun navigateComplete() {
+    fun checkInComplete() {
         _saveLogComplete.value = null
     }
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.source.WeShareRepository
-import com.zoe.weshare.detail.askgift.AskForGiftViewModel
+import com.zoe.weshare.detail.requestgift.RequestGiftViewModel
 import com.zoe.weshare.detail.checkin.CheckInViewModel
 import com.zoe.weshare.detail.event.EventDetailViewModel
 import com.zoe.weshare.detail.gift.GiftDetailViewModel
@@ -44,8 +44,8 @@ class AuthorViewModelFactory(
             return MapViewModel(repository, userInfo) as T
         }
 
-        if (modelClass.isAssignableFrom(AskForGiftViewModel::class.java)) {
-            return AskForGiftViewModel(repository, userInfo) as T
+        if (modelClass.isAssignableFrom(RequestGiftViewModel::class.java)) {
+            return RequestGiftViewModel(repository, userInfo) as T
         }
 
         if (modelClass.isAssignableFrom(ChatRoomViewModel::class.java)) {

@@ -1,4 +1,4 @@
-package com.zoe.weshare.detail.askgift
+package com.zoe.weshare.detail.requestgift
 
 import android.app.Dialog
 import android.os.Bundle
@@ -11,39 +11,34 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.zoe.weshare.R
-import com.zoe.weshare.data.GiftPost
-import com.zoe.weshare.databinding.FragmentAskForGiftBinding
+import com.zoe.weshare.databinding.FragmentRequestGiftBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.hideKeyboard
 import com.zoe.weshare.ext.sendNotificationToTarget
 import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.util.UserManager.weShareUser
 
-class AskForGiftFragment : BottomSheetDialogFragment() {
+class RequestGiftFragment : BottomSheetDialogFragment() {
 
-    private lateinit var binding: FragmentAskForGiftBinding
-    private lateinit var selectedGift: GiftPost
+    private lateinit var binding: FragmentRequestGiftBinding
 
-    private val viewModel by viewModels<AskForGiftViewModel> { getVmFactory(weShareUser) }
+    private val viewModel by viewModels<RequestGiftViewModel> { getVmFactory(weShareUser) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
+        binding = FragmentRequestGiftBinding.inflate(inflater, container, false)
 
-        selectedGift = AskForGiftFragmentArgs.fromBundle(requireArguments()).selectedGift
-        binding = FragmentAskForGiftBinding.inflate(inflater, container, false)
-
-        viewModel.newRequestComment.observe(viewLifecycleOwner) {
-            viewModel.askForGiftRequest(selectedGift, it)
-        }
+        val gift = RequestGiftFragmentArgs.fromBundle(requireArguments()).selectedGift
+        viewModel.fetchArg(gift)
 
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
             it?.let {
                 binding.editLeaveComment.text?.clear()
 
-                sendNotificationToTarget(selectedGift.author!!.uid, it)
+                sendNotificationToTarget(gift.author!!.uid, it)
 
                 viewModel.requestGiftComplete()
 
@@ -56,26 +51,37 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupBtn() {
-
         binding.buttonSubmit.setOnClickListener {
-
-            val message = binding.editLeaveComment.text.toString().trim()
-
-            if (message.isNotEmpty()) {
-                viewModel.onSendNewRequest(message, selectedGift)
-            } else {
-                activity.showToast(getString(R.string.pls_leave_askforgift_comment))
-            }
-
+            collectMessage()
             it.hideKeyboard()
         }
 
         binding.buttonCancel.setOnClickListener {
             findNavController().navigateUp()
-
             it.hideKeyboard()
         }
     }
+
+    private fun collectMessage() {
+        val message = binding.editLeaveComment.text.toString().trim()
+
+        if (checkIntegrity(message)) {
+            viewModel.onSendNewRequest(message)
+        } else {
+            return
+        }
+    }
+
+    private fun checkIntegrity(message: String): Boolean {
+
+        return if (message.isNotEmpty()) {
+            true
+        } else {
+            activity.showToast(getString(R.string.pls_leave_askforgift_comment))
+            false
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,8 +109,7 @@ class AskForGiftFragment : BottomSheetDialogFragment() {
                     }
                 }
 
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                }
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
             })
         }
         return dialog

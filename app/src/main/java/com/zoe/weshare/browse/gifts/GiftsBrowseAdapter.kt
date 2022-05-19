@@ -1,4 +1,4 @@
-package com.zoe.weshare.search.gifts
+package com.zoe.weshare.browse.gifts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

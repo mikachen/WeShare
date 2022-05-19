@@ -1,4 +1,4 @@
-package com.zoe.weshare.search.events
+package com.zoe.weshare.browse.events
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -24,6 +24,21 @@ class PolicyTermFragment : Fragment() {
         binding = FragmentPolicyTermBinding.inflate(inflater, container, false)
 
 
+        val isFromProfile = PolicyTermFragmentArgs.fromBundle(requireArguments()).fromProfile
+
+
+        if (isFromProfile){
+            binding.layoutConsentSection.visibility = View.GONE
+        }else {
+            binding.layoutConsentSection.visibility = View.VISIBLE
+            setupBtn()
+        }
+
+        return binding.root
+    }
+
+    private fun setupBtn(){
+
         binding.layoutConsentButton.setOnClickListener {
             if(!userConsentPolicy){
                 binding.consentBox.isChecked = true
@@ -46,7 +61,6 @@ class PolicyTermFragment : Fragment() {
             findNavController().navigate(PolicyTermFragmentDirections.actionPolicyTermFragmentToLoginFragment())
         }
 
-        return binding.root
     }
 
     fun hasUserAgreed(): Boolean {

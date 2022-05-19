@@ -20,9 +20,10 @@ class ReportViewModel(
     private val userInfo: UserInfo?,
 ) : ViewModel() {
 
+    private var targetUid: String? = null
 
-    private val _reportSendComplete = MutableLiveData<String>()
-    val reportSendComplete: LiveData<String>
+    private val _reportSendComplete = MutableLiveData<String?>()
+    val reportSendComplete: LiveData<String?>
         get() = _reportSendComplete
 
     private var viewModelJob = Job()
@@ -37,9 +38,15 @@ class ReportViewModel(
         get() = _error
 
 
-    fun onSendReport(target: String, reason: String) {
+    fun fetchArg(target: String) {
+        targetUid = target
+    }
+
+
+    fun onSendReport(reason: String) {
+
         val report = ViolationReport(
-            targetUid = target,
+            targetUid = targetUid!!,
             operatorUid = userInfo!!.uid,
             reason = reason
         )
@@ -49,7 +56,6 @@ class ReportViewModel(
 
     private fun sendViolationReport(report: ViolationReport) {
         coroutineScope.launch {
-
             _status.value = LoadApiStatus.LOADING
 
             when (
@@ -60,7 +66,7 @@ class ReportViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _reportSendComplete.value = result.data
+                    _reportSendComplete.value = result.data ?: ""
 
                 }
                 is Result.Fail -> {
@@ -79,4 +85,7 @@ class ReportViewModel(
         }
     }
 
+    fun reportComplete() {
+        _reportSendComplete.value = null
+    }
 }

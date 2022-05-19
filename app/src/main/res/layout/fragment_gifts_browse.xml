@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/height_toolbar"
     android:layout_marginBottom="@dimen/height_bottom_app_bar"
     android:background="@color/home_background_grey"
-    tools:context=".search.gifts.GiftsBrowseFragment">
+    tools:context=".browse.gifts.GiftsBrowseFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/layout_search_bar"
@@ -35,6 +35,7 @@
                 android:id="@+id/btn_change_layout"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
+                android:visibility="gone"
                 android:scaleX="0.6"
                 android:scaleY="0.6"
                 android:src="@drawable/ic_search_filter" />

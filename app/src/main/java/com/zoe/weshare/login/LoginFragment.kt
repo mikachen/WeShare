@@ -63,12 +63,6 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    private fun showDialog() {
-
-
-    }
-
-
     private fun setupGoogleClient() {
         val clientId = Util.getString(R.string.server_client_id)
 
