@@ -96,7 +96,7 @@
         <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_pager.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fragment_pager_filter.xml" value="0.1393758016246259" />
-        <entry key="app/src/main/res/layout/fragment_policy_term.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_policy_term.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.22" />

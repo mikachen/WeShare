@@ -194,6 +194,7 @@ class ProfileFragment : Fragment() {
                 popupMenu.menu.removeItem(R.id.edit_user_info)
                 popupMenu.menu.removeItem(R.id.action_gifts_manage)
                 popupMenu.menu.removeItem(R.id.action_events_manage)
+                popupMenu.menu.removeItem(R.id.action_ugc_policy)
                 popupMenu.menu.removeItem(R.id.action_log_out)
             }
         }
@@ -215,6 +216,12 @@ class ProfileFragment : Fragment() {
 
                 R.id.action_cancel_following -> {
                     viewModel.cancelUserFollowing(targetUser.uid)
+                }
+
+                R.id.action_ugc_policy -> {
+                    findNavController().navigate(
+                        ProfileFragmentDirections.actionProfileFragmentToPolicyTermFragment(true)
+                    )
                 }
 
                 R.id.action_log_out -> {
