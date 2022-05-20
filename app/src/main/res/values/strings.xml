@@ -60,6 +60,9 @@
     <string name="filter_abandoned">已下架</string>
     <string name="event_leave_a_comment">留個言吧…</string>
     <string name="chatroom_send_a_message">輸入訊息</string>
+    <string name="event_start">活動開始</string>
+    <string name="event_end">活動即結束</string>
+
 
 
     //贈品下架Alert窗
@@ -79,6 +82,14 @@
     <string name="send_gift_title">您確定要送出\u0022%1s\u0022給用戶 %2$1s 嗎?</string>
     <string name="send_gift_message">確認送出後將不可再作修改!</string>
     <string name="requested_comments">索取人留言</string>
+
+    //封鎖檢舉用戶
+    <string name="title_report_user">檢舉用戶</string>
+    <string name="title_agree_policy">同意</string>
+    <string name="title_disagree_policy">不同意</string>
+    <string name="block_this_person_title">確定要封鎖用戶：%s？</string>
+    <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何評論與刊登。</string>
+    <string name="block_this_person_complete">已封鎖用戶</string>
 
     //Log Messages
     <string name="log_msg_post_gift">&lt;b>%1s&lt;/b> 刊登了贈品：%2s</string>
@@ -154,10 +165,6 @@
     <string name="countdown_time3">倒數 %02d 分 %02d 秒</string>
     <string name="countdown_time4">倒數 %02d 秒</string>
 
-    <string name="block_this_person_title">確定要封鎖用戶：%s？</string>
-    <string name="block_this_person_message">封鎖後您將永遠看不到關於此用戶的任何評論與刊登。</string>
-    <string name="block_this_person_complete">已封鎖用戶</string>
-
     <string name="leave_this_chatroom_message">聊天室將會被刪除，確定要繼續嗎？</string>
 
     <string name="gift_status_opening">開放中</string>
@@ -170,21 +177,7 @@
     <string name="status_all">全部</string>
 
     <string name="hero_contribution">%1$d 點貢獻</string>
-
     <string name="message_whoRead_count">已讀%1$d</string>
-    <string name="gift_card_detail_transition_name">tans</string>
-
-    <string name="toast_login_success">登入成功</string>
-    <string name="toast_leave_report_reason">請填寫檢舉原因</string>
-    <string name="toast_must_check_agree">請先勾選同意使用條款</string>
-    <string name="toast_report_send_complete">已收到您的檢舉，我們會盡快為您審查處理！</string>
-    <string name="title_report_user">檢舉用戶</string>
-    <string name="title_agree_policy">同意</string>
-    <string name="title_disagree_policy">不同意</string>
-    <string name="toast_cant_find_this_place">查無此地</string>
-    <string name="toast_check_in_successfully">簽到成功</string>
-    <string name="scanner_has_been_closed">掃描已關閉</string>
-
 
     //require permissions
     <string name="confirm_yes">確認</string>
@@ -195,11 +188,20 @@
     <string name="alert_require_location_permission_msg">此應用程式，位置權限已被關閉，需開啟才能正常使用</string>
 
 
-
     //intent
     <string name="select_image">請選擇一張照片</string>
+    <string name="scanner_has_been_closed">掃描已關閉</string>
 
 
+    //toast message
+    <string name="toast_require_login">請先登入</string>
+    <string name="toast_login_success">登入成功</string>
+    <string name="toast_leave_report_reason">請填寫檢舉原因</string>
+    <string name="toast_must_check_agree">請先勾選同意使用條款</string>
+    <string name="toast_report_send_complete">已收到您的檢舉，我們會盡快為您審查處理！</string>
+    <string name="toast_cant_find_this_place">查無此地</string>
+    <string name="toast_check_in_successfully">簽到成功</string>
+    <string name="toast_check_in_reject">活動尚未開始！不能簽到</string>
 
 
 </resources>

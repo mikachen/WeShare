@@ -76,10 +76,10 @@ class GiftsBrowseAdapter(private val onClickListener: GiftsALLOnClickListener) :
         if (!query.isNullOrEmpty()) {
             list.addAll(
                 unfilteredList.filter {
-                    it.title.toLowerCase(Locale.getDefault())
-                        .contains(query.toString().toLowerCase(Locale.getDefault())) ||
-                        it.description.toLowerCase(Locale.getDefault())
-                            .contains(query.toString().toLowerCase(Locale.getDefault()))
+                    it.title.lowercase(Locale.getDefault())
+                        .contains(query.toString().lowercase(Locale.getDefault())) ||
+                        it.description.lowercase(Locale.getDefault())
+                            .contains(query.toString().lowercase(Locale.getDefault()))
                 }
             )
         } else {

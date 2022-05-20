@@ -138,26 +138,6 @@ class WeShareLocalDataSource(val context: Context) : WeShareDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun likeOnPostComment(
-        collection: String,
-        docId: String,
-        subCollection: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun cancelLikeOnPostComment(
-        collection: String,
-        docId: String,
-        subCollection: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun saveLastMsgRecord(
         docId: String,
         message: Comment,

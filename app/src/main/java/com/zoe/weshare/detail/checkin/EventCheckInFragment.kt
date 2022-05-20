@@ -88,7 +88,7 @@ class EventCheckInFragment : Fragment() {
 
             viewModel.saveLogComplete.observe(viewLifecycleOwner) {
                 it?.let {
-                    sendNotificationToTarget(event.author!!.uid, it)
+                    sendNotificationToTarget(event.author.uid, it)
 
                     findNavController().navigate(EventCheckInFragmentDirections
                         .actionEventCheckInFragmentToEventDetailFragment(event)

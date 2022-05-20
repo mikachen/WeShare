@@ -24,7 +24,6 @@ object UserManager {
         editor.apply()
     }
 
-    private const val USER_UID = "user_uid"
     private const val CHECKED_NOTIFICATION = "checked_notification"
 
     var hasCheckNotification: Boolean
@@ -33,18 +32,15 @@ object UserManager {
             it.putBoolean(CHECKED_NOTIFICATION, hasCheckNotification)
         }
 
-//    var currentUser: UserInfo?
-//        get() = preferences.getString(USER_INFO, UserInfo())
-//        set(UserInfo) = preferences.edit {
-//            it.putString(USER_INFO, com.zoe.weshare.data.UserInfo)
-//        }
+    var userInfo: UserInfo? = null
 
-    var weShareUser: UserInfo? = null
+    val weShareUser: UserInfo
+        get() = userInfo!!
+
+    // checked logged success before user enter this app
+    val hasUserLoggedIn: Boolean
+        get() = userInfo != null
 
     var userBlackList = mutableListOf<String>()
-
-    val isLoggedIn: Boolean
-        get() = weShareUser != null
-
     var userConsentPolicy: Boolean = false
 }

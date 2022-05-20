@@ -8,24 +8,28 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
+import com.zoe.weshare.detail.hasUserLikedBefore
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.Const
+import com.zoe.weshare.util.Const.FIELD_USER_BLACKLIST
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.PATH_EVENT_POST
+import com.zoe.weshare.util.Const.PATH_USER
 import com.zoe.weshare.util.Const.SUB_PATH_EVENT_USER_WHO_COMMENT
 import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.LogType
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.userBlackList
 import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithStrParm
-import java.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.util.*
 
-class EventDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
+class EventDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo) :
     ViewModel() {
+
+    private lateinit var event: EventPost
 
     var liveEventDetailResult = MutableLiveData<EventPost?>()
     var liveComments = MutableLiveData<List<Comment>>()
@@ -34,66 +38,58 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     val filteredComments: LiveData<List<Comment>>
         get() = _filteredComments
 
-    private var _room = MutableLiveData<ChatRoom?>()
-    val room: LiveData<ChatRoom?>
-        get() = _room
+    private var _onTargetAvatarClicked = MutableLiveData<UserInfo?>()
+    val onTargetAvatarClicked: LiveData<UserInfo?>
+        get() = _onTargetAvatarClicked
 
-    private var _targetUser = MutableLiveData<UserInfo>()
-    val targetUser: LiveData<UserInfo>
-        get() = _targetUser
-
-    private var _statusTriggerChanged = MutableLiveData<Int>()
-    val statusTriggerChanged: LiveData<Int>
-        get() = _statusTriggerChanged
-
-    private var isStatusChecked: Boolean = false
+    private var _eventStatusChanged = MutableLiveData<Int?>()
+    val eventStatusChanged: LiveData<Int?>
+        get() = _eventStatusChanged
 
     private var _onNavigateToRoom = MutableLiveData<ChatRoom?>()
     val onNavigateToRoom: LiveData<ChatRoom?>
         get() = _onNavigateToRoom
 
-    private val _refreshStatus = MutableLiveData<Boolean>()
-    val refreshStatus: LiveData<Boolean>
-        get() = _refreshStatus
+    val userProfileList = mutableListOf<UserProfile>()
 
-    private var _onProfileSearchComplete = MutableLiveData<Int>()
-    val onProfileSearchComplete: LiveData<Int>
-        get() = _onProfileSearchComplete
+    private var onSearchUserProfile = MutableLiveData<Int>()
 
-    val profileList = mutableListOf<UserProfile>()
+    private var _profileSearchComplete = MutableLiveData<Boolean>()
+    val profileSearchComplete: LiveData<Boolean>
+        get() = _profileSearchComplete
+
+    var onBlockListUser = MutableLiveData<UserProfile?>()
+
+    var onReportUserViolation = MutableLiveData<String?>()
+
+    private val _userAttendType = MutableLiveData<String?>()
+    val userAttendType: LiveData<String?>
+        get() = _userAttendType
+
+    private val _saveLogComplete = MutableLiveData<OperationLog?>()
+    val saveLogComplete: LiveData<OperationLog?>
+        get() = _saveLogComplete
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
-    val _saveLogComplete = MutableLiveData<OperationLog>()
-    val saveLogComplete: LiveData<OperationLog>
-        get() = _saveLogComplete
 
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    private val _updateRoomStatus = MutableLiveData<LoadApiStatus?>()
-    val updateRoomStatus: LiveData<LoadApiStatus?>
-        get() = _updateRoomStatus
-
-    private val _userAttendType = MutableLiveData<String>()
-    val userAttendType: LiveData<String>
-        get() = _userAttendType
-
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
 
-    var blockUserComplete = MutableLiveData<UserProfile>()
+    init {
+        _profileSearchComplete.value = false
+    }
 
-    private var _reportedTarget = MutableLiveData<String>()
-    val reportedTarget: LiveData<String>
-        get() = _reportedTarget
+    fun onViewPrepare(selectedEvent: EventPost) {
+        event = selectedEvent
 
-    fun onViewPrepare(event: EventPost) {
-        getLiveEventDetail(event)
-        getLiveComments(event)
+        getLiveEventDetail(selectedEvent)
+        getLiveComments(selectedEvent)
     }
 
     private fun getLiveEventDetail(event: EventPost) {
@@ -108,37 +104,84 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         )
     }
 
-    fun filterComment() {
+    fun excludeBlackListUser() {
         _filteredComments.value =
-            liveComments.value?.filterNot { UserManager.userBlackList.contains(it.uid) }
+            liveComments.value?.filterNot { userBlackList.contains(it.uid) }
     }
+
+    fun checkEventStatus(event: EventPost) {
+        when (true) {
+            (event.startTime > Calendar.getInstance().timeInMillis) -> {
+                if (event.status != EventStatusType.WAITING.code) {
+                    _eventStatusChanged.value = EventStatusType.WAITING.code
+
+                }
+            }
+
+            (event.startTime < Calendar.getInstance().timeInMillis) -> {
+                if (event.endTime > Calendar.getInstance().timeInMillis) {
+                    if (event.status != EventStatusType.ONGOING.code) {
+                        _eventStatusChanged.value = EventStatusType.ONGOING.code
+
+                    }
+                } else {
+                    if (event.status != EventStatusType.ENDED.code) {
+                        _eventStatusChanged.value = EventStatusType.ENDED.code
+
+                    }
+                }
+            }
+            else -> {}
+        }
+    }
+
+
+    /**
+     * in oder to show user's avatar image and user's name,
+     * this will decide if the user profile has been queried before,
+     * and only sort out the new user profile that we never get
+     * */
 
     fun onGetUsersProfile(comments: List<Comment>) {
 
         if (comments.isNotEmpty()) {
-            val filteredUser = comments.distinctBy { it.uid }
+            _profileSearchComplete.value = false
+
+            val excludedSameUserComments = comments.distinctBy { it.uid }
             val newUserUid = mutableListOf<String>()
 
-            if (profileList.isNotEmpty()) {
-                for (i in filteredUser) {
-                    if (!profileList.any { it.uid == i.uid }) {
-                        newUserUid.add(i.uid)
+            if (userProfileList.isNotEmpty()) {
+
+                for (comment in excludedSameUserComments) {
+                    if (alreadyGotUserProfile(comment)) {
+
+                        newUserUid.add(comment.uid)
                     }
                 }
-            }
-            // first time is always empty
-            else {
-                for (i in filteredUser) {
-                    newUserUid.add(i.uid)
+            } else {
+                // first entry is always empty
+
+                for (comment in excludedSameUserComments) {
+
+                    newUserUid.add(comment.uid)
                 }
             }
 
-            _onProfileSearchComplete.value = newUserUid.size
+            if (newUserUid.size == 0) {
+                _profileSearchComplete.value = true
 
-            for (uid in newUserUid) {
-                getUsersProfile(uid)
+            } else {
+                onSearchUserProfile.value = newUserUid.size
+
+                for (uid in newUserUid) {
+                    getUsersProfile(uid)
+                }
             }
         }
+    }
+
+    private fun alreadyGotUserProfile(comment: Comment): Boolean {
+        return !userProfileList.any { it.uid == comment.uid }
     }
 
     private fun getUsersProfile(uid: String) {
@@ -151,7 +194,11 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    profileList.add(result.data!!)
+                    val profile = result.data
+
+                    profile?.let {
+                        userProfileList.add(profile)
+                    }
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -167,15 +214,25 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     _status.value = LoadApiStatus.ERROR
                 }
             }
-            _onProfileSearchComplete.value = _onProfileSearchComplete.value?.minus(1)
+            onSearchUserProfile.value = onSearchUserProfile.value?.minus(1)
+
+            if (onSearchUserProfile.value == 0) {
+                _profileSearchComplete.value = true
+            }
         }
     }
 
-    fun onPostLikePressed(doc: String, isUserLiked: Boolean) {
-        if (!isUserLiked) {
-            sendLike(doc)
-        } else {
-            cancelLike(doc)
+    fun isGetProfileDone(): Boolean {
+        return profileSearchComplete.value == true && userProfileList.isNotEmpty()
+    }
+
+    fun onPostLikePressed() {
+        liveEventDetailResult.value?.let {
+            if (!hasUserLikedBefore(it.whoLiked)) {
+                sendLike(it.id)
+            } else {
+                cancelLike(it.id)
+            }
         }
     }
 
@@ -188,7 +245,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     collection = PATH_EVENT_POST,
                     docId = doc,
                     field = FIELD_WHO_LIKED,
-                    value = FieldValue.arrayUnion(userInfo!!.uid)
+                    value = FieldValue.arrayUnion(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -220,7 +277,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     collection = PATH_EVENT_POST,
                     docId = doc,
                     field = FIELD_WHO_LIKED,
-                    value = FieldValue.arrayRemove(userInfo!!.uid)
+                    value = FieldValue.arrayRemove(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -245,7 +302,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
     fun onSendNewComment(message: String) {
         val newComment = Comment(
-            uid = userInfo!!.uid,
+            uid = userInfo.uid,
             content = message
         )
         sendComment(newComment)
@@ -257,7 +314,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.sendComment(
                     collection = PATH_EVENT_POST,
-                    docId = liveEventDetailResult.value!!.id,
+                    docId = event.id,
                     comment = comment,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
                 )
@@ -269,8 +326,8 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                         logType = LogType.COMMENT_EVENT.value,
                         logMsg = WeShareApplication.instance.getString(
                             R.string.log_msg_send_event_comment,
-                            userInfo!!.name,
-                            liveEventDetailResult.value!!.title
+                            userInfo.name,
+                            event.title
                         )
                     )
                 }
@@ -291,8 +348,8 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         val log = OperationLog(
             logType = logType,
             logMsg = logMsg,
-            postDocId = liveEventDetailResult.value!!.id,
-            operatorUid = userInfo!!.uid
+            postDocId = event.id,
+            operatorUid = userInfo.uid
         )
         saveLog(log)
     }
@@ -305,7 +362,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                     _error.value = null
                     _saveLogComplete.value = log
 
-                    _statusTriggerChanged.value = null
+                    _eventStatusChanged.value = null
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -320,8 +377,9 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun onCommentsLikePressed(comment: Comment, isUserLiked: Boolean) {
-        if (!isUserLiked) {
+    fun onCommentsLikePressed(comment: Comment) {
+
+        if (!hasUserLikedBefore(comment.whoLiked)) {
             sendLikeOnComment(comment.id)
         } else {
             cancelLikeOnComment(comment.id)
@@ -333,12 +391,13 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             _status.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.likeOnPostComment(
+                val result = repository.updateSubCollectionFieldValue(
                     collection = PATH_EVENT_POST,
-                    docId = liveEventDetailResult.value!!.id,
+                    docId = event.id,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT,
                     subDocId = subDoc,
-                    uid = userInfo!!.uid
+                    field = FIELD_WHO_LIKED,
+                    value = FieldValue.arrayUnion(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -366,12 +425,13 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             _status.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.cancelLikeOnPostComment(
+                val result = repository.updateSubCollectionFieldValue(
                     collection = PATH_EVENT_POST,
-                    docId = liveEventDetailResult.value!!.id,
+                    docId = event.id,
                     subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT,
                     subDocId = subDoc,
-                    uid = userInfo!!.uid
+                    field = FIELD_WHO_LIKED,
+                    value = FieldValue.arrayRemove(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -401,9 +461,9 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.updateFieldValue(
                     collection = PATH_EVENT_POST,
-                    docId = liveEventDetailResult.value!!.id,
+                    docId = event.id,
                     field = fieldString,
-                    value = FieldValue.arrayUnion(userInfo!!.uid)
+                    value = FieldValue.arrayUnion(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -435,9 +495,9 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             when (
                 val result = repository.updateFieldValue(
                     collection = PATH_EVENT_POST,
-                    docId = liveEventDetailResult.value!!.id,
+                    docId = event.id,
                     field = fieldString,
-                    value = FieldValue.arrayRemove(userInfo!!.uid)
+                    value = FieldValue.arrayRemove(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -471,12 +531,14 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         coroutineScope.launch {
             when (
                 val result =
-                    repository.getEventRoom(docId = liveEventDetailResult.value!!.roomId)
+                    repository.getEventRoom(docId = event.roomId)
             ) {
                 is Result.Success -> {
                     _error.value = null
 
-                    _room.value = result.data
+                    val room = result.data
+
+                    checkRoomParticipants(room)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -491,82 +553,48 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         }
     }
 
-    fun checkUserInRoomBefore(room: ChatRoom) {
+    fun checkRoomParticipants(room: ChatRoom) {
 
-        if (room.participants.isNotEmpty()) {
-            if (room.participants.contains(userInfo!!.uid)) {
+        if (userJoinedRoomBefore(room)) {
 
-                _onNavigateToRoom.value = room
-            } else {
-                // a new user never been in room before
-                updateRoomParticipants(room)
-            }
+            _onNavigateToRoom.value = room
+
         } else {
-            // the first user want to enter this room
             updateRoomParticipants(room)
         }
     }
 
+    private fun userJoinedRoomBefore(room: ChatRoom): Boolean {
+        return room.participants.contains(userInfo.uid)
+    }
+
     fun updateRoomParticipants(room: ChatRoom) {
         coroutineScope.launch {
-            _updateRoomStatus.value = LoadApiStatus.LOADING
+            _status.value = LoadApiStatus.LOADING
 
             when (
                 val result = repository.updateEventRoom(
-                    roomId = liveEventDetailResult.value!!.roomId,
-                    user = userInfo!!
+                    roomId = event.roomId,
+                    user = userInfo
                 )
             ) {
                 is Result.Success -> {
                     _error.value = null
-                    _updateRoomStatus.value = LoadApiStatus.DONE
+                    _status.value = LoadApiStatus.DONE
 
                     _onNavigateToRoom.value = room
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _updateRoomStatus.value = LoadApiStatus.ERROR
+                    _status.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _updateRoomStatus.value = LoadApiStatus.ERROR
+                    _status.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value = getString(R.string.result_fail)
-                    _updateRoomStatus.value = LoadApiStatus.ERROR
-                }
-            }
-        }
-    }
-
-    fun checkEventStatus(event: EventPost) {
-        if (!isStatusChecked) {
-            when (true) {
-                (event.startTime > Calendar.getInstance().timeInMillis) -> {
-                    if (event.status != EventStatusType.WAITING.code) {
-                        _statusTriggerChanged.value = EventStatusType.WAITING.code
-
-                        isStatusChecked = true
-                    }
-                }
-
-                (event.startTime < Calendar.getInstance().timeInMillis) -> {
-                    if (event.endTime > Calendar.getInstance().timeInMillis) {
-                        if (event.status != EventStatusType.ONGOING.code) {
-                            _statusTriggerChanged.value = EventStatusType.ONGOING.code
-
-                            isStatusChecked = true
-                        }
-                    } else {
-                        if (event.status != EventStatusType.ENDED.code) {
-                            _statusTriggerChanged.value = EventStatusType.ENDED.code
-
-                            isStatusChecked = true
-                        }
-                    }
-                }
-                else -> {
-                    isStatusChecked = true
+                    _status.value = LoadApiStatus.ERROR
                 }
             }
         }
@@ -577,12 +605,13 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
 
             when (
                 val result = repository.updateEventStatus(
-                    docId = liveEventDetailResult.value!!.id,
+                    docId = event.id,
                     code = newStatus
                 )
             ) {
                 is Result.Success -> {
                     _error.value = null
+
                     onStatusChangedLog(newStatus)
                 }
                 is Result.Fail -> {
@@ -601,8 +630,8 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     private fun onStatusChangedLog(status: Int) {
 
         val log = OperationLog(
-            postDocId = liveEventDetailResult.value!!.id,
-            operatorUid = userInfo!!.uid
+            postDocId = event.id,
+            operatorUid = userInfo.uid
         )
 
         when (status) {
@@ -610,7 +639,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 log.logType = LogType.EVENT_STARTED.value
                 log.logMsg = getStringWithStrParm(
                     R.string.log_msg_event_status_ongoing,
-                    liveEventDetailResult.value!!.title
+                    event.title
                 )
             }
 
@@ -618,7 +647,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 log.logType = LogType.EVENT_ENDED.value
                 log.logMsg = getStringWithStrParm(
                     R.string.log_msg_event_status_ended,
-                    liveEventDetailResult.value!!.title
+                    event.title
                 )
             }
         }
@@ -629,40 +658,25 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
         val target = UserInfo()
         target.uid = uid
 
-        _targetUser.value = target
+        _onTargetAvatarClicked.value = target
     }
 
-    fun navigateToProfileComplete() {
-        _targetUser.value = null
-    }
-
-    fun saveLogComplete() {
-        _userAttendType.value = null
-        _saveLogComplete.value = null
-    }
-
-    fun navigateToRoomComplete() {
-        _updateRoomStatus.value = null
-        _onNavigateToRoom.value = null
-        _room.value = null
-    }
-
-    fun blockThisUser(target: UserProfile) {
+    fun blockUser(target: UserProfile) {
         _status.value = LoadApiStatus.LOADING
 
         coroutineScope.launch {
             when (
                 val result = repository.updateFieldValue(
-                    collection = Const.PATH_USER,
-                    docId = UserManager.weShareUser!!.uid,
-                    field = Const.FIELD_USER_BLACKLIST,
+                    collection = PATH_USER,
+                    docId = userInfo.uid,
+                    field = FIELD_USER_BLACKLIST,
                     value = FieldValue.arrayUnion(target.uid)
                 )
             ) {
                 is Result.Success -> {
 
-                    UserManager.userBlackList.add(target.uid)
-                    blockUserComplete.value = target
+                    userBlackList.add(target.uid)
+                    onBlockListUser.value = target
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -681,16 +695,34 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     }
 
     fun refreshCommentBoard() {
+        excludeBlackListUser()
 
-        filterComment()
-        blockUserComplete.value = null
+        onBlockListUser.value = null
+    }
+
+    //consider the case if get profile fail, return null
+    fun getSpeakerProfile(comment: Comment): UserProfile? {
+        return userProfileList.singleOrNull { it.uid == comment.uid }
+    }
+
+    fun navigateToProfileComplete() {
+        _onTargetAvatarClicked.value = null
+    }
+
+    fun saveLogComplete() {
+        _userAttendType.value = null
+        _saveLogComplete.value = null
+    }
+
+    fun navigateToRoomComplete() {
+        _onNavigateToRoom.value = null
     }
 
     fun onNavigateToReportDialog(target: UserProfile) {
-        _reportedTarget.value = target.uid
+        onReportUserViolation.value = target.uid
     }
 
-    fun navigateToReportComplete(){
-        _reportedTarget.value = null
+    fun navigateToReportDialogComplete() {
+        onReportUserViolation.value = null
     }
 }

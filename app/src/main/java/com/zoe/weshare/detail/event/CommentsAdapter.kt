@@ -11,19 +11,21 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.R
 import com.zoe.weshare.data.Comment
-import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
+import com.zoe.weshare.detail.hasUserLikedBefore
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getTimeAgoString
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
+import com.zoe.weshare.util.Util.getString
+import com.zoe.weshare.util.Util.getStringWithIntParm
+import com.zoe.weshare.util.Util.getStringWithStrParm
 
 class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Context) :
     ListAdapter<Comment, EventCommentsAdapter.EventCommentsViewHolder>(DiffCall()) {
 
     val context = mContext
-    val userInfo = Util.readInstanceProperty<UserInfo>(viewModel, "userInfo")
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -33,76 +35,85 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
     }
 
     override fun onBindViewHolder(holderEvent: EventCommentsViewHolder, position: Int) {
+
         val comment = getItem(position)
         holderEvent.bind(comment, viewModel, context)
-
-        val whoLikedThisComment = comment.whoLiked
-        val isUserLikeBefore: Boolean = whoLikedThisComment.contains(userInfo.uid)
-
-        holderEvent.binding.apply {
-
-            if (whoLikedThisComment.isNotEmpty()) {
-                textLikesCount.text =
-                    Util.getStringWithIntParm(R.string.number_who_liked, whoLikedThisComment.size)
-            } else {
-                textLikesCount.visibility = View.INVISIBLE
-            }
-
-            buttonCommentLike.isLiked = isUserLikeBefore
-
-            buttonCommentLike.setOnClickListener {
-                viewModel.onCommentsLikePressed(comment, isUserLikeBefore)
-            }
-        }
     }
 
     class EventCommentsViewHolder(val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(comment: Comment, viewModel: EventDetailViewModel, context: Context) {
 
-            binding.textComment.text = comment.content
-            binding.textCreatedTime.text = comment.createdTime.getTimeAgoString()
+            val whoLikedList = comment.whoLiked
 
-            binding.imageUserAvatar.setOnClickListener {
-                viewModel.onNavigateToTargetProfile(comment.uid)
+            binding.apply {
+
+                if (whoLikedList.isNotEmpty()) {
+                    textLikesCount.text =
+                        getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+
+                } else {
+                    textLikesCount.visibility = View.INVISIBLE
+                }
+
+                buttonCommentLike.isLiked = hasUserLikedBefore(whoLikedList)
+
+                buttonCommentLike.setOnClickListener {
+                    viewModel.onCommentsLikePressed(comment)
+                }
+
+                textComment.text = comment.content
+                textCreatedTime.text = comment.createdTime.getTimeAgoString()
+
+                imageUserAvatar.setOnClickListener {
+                    viewModel.onNavigateToTargetProfile(comment.uid)
+                }
+
+                if (speakerIsUserSelf(comment)) {
+                    moreBtn.visibility = View.INVISIBLE
+                } else {
+                    moreBtn.visibility = View.VISIBLE
+                }
             }
 
-            if (comment.uid == weShareUser!!.uid) {
-                binding.moreBtn.visibility = View.INVISIBLE
-            } else {
-                binding.moreBtn.visibility = View.VISIBLE
-            }
 
-            if (viewModel.onProfileSearchComplete.value == 0) {
+            if (viewModel.isGetProfileDone()) {
+                val speaker = viewModel.getSpeakerProfile(comment)
 
-                if (viewModel.profileList.isNotEmpty()) {
-                    val speaker = viewModel.profileList.singleOrNull { it.uid == comment.uid }
+                speaker?.let {
+                    bindImage(binding.imageUserAvatar, speaker.image)
+                    binding.textProfileName.text = speaker.name
 
-                    speaker?.let {
-                        bindImage(binding.imageUserAvatar, speaker.image)
-                        binding.textProfileName.text = speaker.name
-
-                        binding.moreBtn.setOnClickListener {
-                            showPopupMenu(it, speaker, context, viewModel)
-                        }
+                    binding.moreBtn.setOnClickListener {
+                        showPopupMenu(it, speaker, context, viewModel)
                     }
                 }
             }
         }
+
+        private fun speakerIsUserSelf(comment: Comment): Boolean {
+            return comment.uid == weShareUser.uid
+        }
+
         private fun showPopupMenu(
             view: View,
             target: UserProfile,
             context: Context,
-            viewModel: EventDetailViewModel
+            viewModel: EventDetailViewModel,
         ) {
             val popupMenu = PopupMenu(view.context, view)
             popupMenu.menuInflater.inflate(R.menu.report_user_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.action_block_user -> { showAlterDialog(target, context, viewModel) }
+                    R.id.action_block_user -> {
+                        showAlterDialog(target, context, viewModel)
+                    }
 
-                    R.id.action_report_violations -> {viewModel.onNavigateToReportDialog(target)}
+                    R.id.action_report_violations -> {
+                        viewModel.onNavigateToReportDialog(target)
+                    }
                 }
                 false
             }
@@ -112,15 +123,15 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
         private fun showAlterDialog(
             target: UserProfile,
             context: Context,
-            viewModel: EventDetailViewModel
+            viewModel: EventDetailViewModel,
         ) {
             val builder = AlertDialog.Builder(context)
 
             builder.apply {
-                setTitle(Util.getStringWithStrParm(R.string.block_this_person_title, target.name))
-                setMessage(Util.getString(R.string.block_this_person_message))
+                setTitle(getStringWithStrParm(R.string.block_this_person_title, target.name))
+                setMessage(getString(R.string.block_this_person_message))
                 setPositiveButton(Util.getString(R.string.confirm_yes)) { dialog, _ ->
-                    viewModel.blockThisUser(target)
+                    viewModel.blockUser(target)
                     dialog.cancel()
                 }
 

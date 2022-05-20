@@ -86,14 +86,14 @@ class EventsBrowseAdapter(private val onClickListener: EventsAllOnClickListener)
         if (!query.isNullOrEmpty()) {
             list.addAll(
                 unfilteredList.filter {
-                    it.title.toLowerCase(Locale.getDefault()).contains(
-                        query.toString().toLowerCase(
+                    it.title.lowercase(Locale.getDefault()).contains(
+                        query.toString().lowercase(
                             Locale.getDefault()
                         )
                     ) ||
-                        it.description.toLowerCase(Locale.getDefault())
+                        it.description.lowercase(Locale.getDefault())
                             .contains(
-                                query.toString().toLowerCase(
+                                query.toString().lowercase(
                                     Locale.getDefault()
                                 )
                             )

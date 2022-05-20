@@ -27,7 +27,7 @@ import com.zoe.weshare.report.ReportViewModel
 @Suppress("UNCHECKED_CAST")
 class AuthorViewModelFactory(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo?,
+    private val userInfo: UserInfo,
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

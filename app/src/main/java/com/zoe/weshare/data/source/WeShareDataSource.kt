@@ -63,22 +63,6 @@ interface WeShareDataSource {
     suspend fun sendMessage(docId: String, comment: Comment): Result<Boolean>
     suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean>
 
-    suspend fun likeOnPostComment(
-        collection: String,
-        docId: String,
-        subCollection: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean>
-
-    suspend fun cancelLikeOnPostComment(
-        collection: String,
-        docId: String,
-        subCollection: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean>
-
     suspend fun saveLog(log: OperationLog): Result<Boolean>
     suspend fun getUserLog(uid: String): Result<List<OperationLog>>
 

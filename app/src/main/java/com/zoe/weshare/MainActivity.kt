@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private var notificationPageOpen: Boolean = false
+
     private var isFabExpend: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
@@ -336,7 +336,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun setupProgressBar(){
+    fun setupProgressBar() {
         progressBar = binding.progressBar
         progressBar.max = 100 * 100
     }
@@ -366,17 +366,11 @@ class MainActivity : AppCompatActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.navigation_profile -> {
-                    if (!UserManager.isLoggedIn) {
-                        findNavController(R.id.nav_host_fragment).navigate(
-                            NavGraphDirections.actionGlobalLoginFragment()
+                    findNavController(R.id.nav_host_fragment).navigate(
+                        NavGraphDirections.actionGlobalProfileFragment(
+                            UserManager.weShareUser
                         )
-                    } else {
-                        findNavController(R.id.nav_host_fragment).navigate(
-                            NavGraphDirections.actionGlobalProfileFragment(
-                                UserManager.weShareUser
-                            )
-                        )
-                    }
+                    )
                     return@setOnItemSelectedListener true
                 }
             }
@@ -442,15 +436,15 @@ class MainActivity : AppCompatActivity() {
         hideNavigationBar()
     }
 
-    fun hideProgressBar(){
+    fun hideProgressBar() {
         binding.layoutMainProgressBar.visibility = View.INVISIBLE
         binding.imageUploadingHint.visibility = View.INVISIBLE
 
         progressBarLoading(0) // reset
-       showNavigationBar()
+        showNavigationBar()
     }
 
-    fun progressBarLoading(progress: Int){
+    fun progressBarLoading(progress: Int) {
 
         animation = ObjectAnimator.ofInt(
             progressBar,

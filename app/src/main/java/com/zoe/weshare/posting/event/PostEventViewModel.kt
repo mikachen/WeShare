@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class PostEventViewModel(private val repository: WeShareRepository, private val author: UserInfo?) :
+class PostEventViewModel(private val repository: WeShareRepository, private val userInfo: UserInfo) :
     ViewModel() {
 
     var postingProgress = MutableLiveData<Int?>()
@@ -187,10 +187,10 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         val log = OperationLog(
             postDocId = docId,
             logType = LogType.POST_EVENT.value,
-            operatorUid = author!!.uid,
+            operatorUid = userInfo!!.uid,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_post_event,
-                author.name,
+                userInfo.name,
                 event.value!!.title
             )
         )
@@ -230,7 +230,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             latitude = point.latitude.toString(),
             longitude = point.longitude.toString()
         )
-        _event.value!!.location = locationChoice
+        _event.value!!.location = locationChoice as PostLocation
     }
 
 
@@ -244,7 +244,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         endTime: Long,
     ) {
         onPostEvent.value = EventPost(
-            author = author,
+            author = userInfo,
             title = title,
             sort = sort,
             volunteerNeeds = volunteerNeeds.toInt(),

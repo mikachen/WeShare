@@ -15,7 +15,6 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.GiftPost
 import com.zoe.weshare.databinding.FragmentGiftDetailBinding
-import com.zoe.weshare.detail.getLikeCounts
 import com.zoe.weshare.detail.hasUserLikedBefore
 import com.zoe.weshare.detail.hasUserRequestedBefore
 import com.zoe.weshare.detail.isUserThePostAuthor
@@ -68,15 +67,15 @@ class GiftDetailFragment : Fragment() {
         }
 
         // drawing the user avatar image and nickName after searching user's profile docs
-        viewModel.onProfileSearchLoop.observe(viewLifecycleOwner) {
+        viewModel.profileSearchComplete.observe(viewLifecycleOwner) {
             it?.let {
-                if (it == 0) {
+                if (it) {
                     adapter.notifyDataSetChanged()
                 }
             }
         }
 
-        viewModel.userChatRooms.observe(viewLifecycleOwner) {
+        viewModel.userChatRoomsResult.observe(viewLifecycleOwner) {
             it?.let {
                 if (it.isNotEmpty()) {
                     viewModel.checkIfPrivateRoomExist(it)
@@ -100,7 +99,7 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
-        viewModel.targetUser.observe(viewLifecycleOwner) {
+        viewModel.onTargetAvatarClicked.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
                     GiftDetailFragmentDirections.actionGiftDetailFragmentToProfileFragment(it)
@@ -110,7 +109,7 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
-        viewModel.reportedTarget.observe(viewLifecycleOwner) {
+        viewModel.onReportUserViolation.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
                     NavGraphDirections.actionGlobalReportViolationDialog(it))
@@ -119,9 +118,9 @@ class GiftDetailFragment : Fragment() {
             }
         }
 
-        viewModel.blockUserComplete.observe(viewLifecycleOwner) {
+        viewModel.onBlockListUser.observe(viewLifecycleOwner) {
             it?.let {
-                requireActivity().showToast(getString(R.string.block_this_person_complete))
+                activity.showToast(getString(R.string.block_this_person_complete))
                 viewModel.refreshCommentBoard()
             }
         }
@@ -135,11 +134,11 @@ class GiftDetailFragment : Fragment() {
 
             textGiftTitle.text = gift.title
 
-            textProfileName.text = gift.author?.name
+            textProfileName.text = gift.author.name
 
-            bindImage(imageAuthorAvatar, gift.author?.image)
+            bindImage(imageAuthorAvatar, gift.author.image)
 
-            textPostedLocation.text = gift.location?.locationName
+            textPostedLocation.text = gift.location.locationName
 
             textCreatedTime.text = getString(
                 R.string.posted_time,
@@ -153,7 +152,7 @@ class GiftDetailFragment : Fragment() {
             buttonPressLike.isChecked = hasUserLikedBefore(gift.whoLiked)
 
             textLikedNumber.text =
-                getString(R.string.number_who_liked, getLikeCounts(gift.whoLiked))
+                getString(R.string.number_who_liked, gift.whoLiked.size)
 
             textGiftDescription.text = gift.description
 
@@ -176,27 +175,33 @@ class GiftDetailFragment : Fragment() {
 
     private fun setupBtn(gift: GiftPost) {
 
-        binding.imageAuthorAvatar.setOnClickListener {
-            viewModel.onNavigateToTargetProfile(gift.author!!.uid)
-        }
+        binding.apply {
 
-        if (isUserThePostAuthor(gift.author!!.uid)) {
-            binding.lottieBtnChatMe.visibility = View.GONE
-            binding.layoutAskForGift.visibility = View.GONE
-        } else {
-            binding.lottieBtnChatMe.setOnClickListener {
-                viewModel.searchOnPrivateRoom(weShareUser!!)
+            imageAuthorAvatar.setOnClickListener {
+                viewModel.onNavigateToTargetProfile(gift.author.uid)
             }
-        }
 
-        if (gift.status == GiftStatusType.OPENING.code) {
-            binding.buttonAskForGift.setOnClickListener {
-                findNavController().navigate(
-                    GiftDetailFragmentDirections.actionGiftDetailFragmentToRequestGiftFragment(gift)
-                )
+            if (isUserThePostAuthor(gift.author.uid)) {
+                lottieBtnChatMe.visibility = View.GONE
+                layoutAskForGift.visibility = View.GONE
+
+            } else {
+                lottieBtnChatMe.setOnClickListener {
+                    viewModel.searchOnPrivateRoom(weShareUser)
+                }
             }
-        } else {
-            binding.layoutAskForGift.visibility = View.GONE
+
+            if (gift.status == GiftStatusType.OPENING.code) {
+                buttonAskForGift.setOnClickListener {
+                    findNavController().navigate(
+                        GiftDetailFragmentDirections.actionGiftDetailFragmentToRequestGiftFragment(
+                            gift)
+                    )
+                }
+            } else {
+
+                layoutAskForGift.visibility = View.GONE
+            }
         }
 
     }

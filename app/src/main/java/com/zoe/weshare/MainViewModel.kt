@@ -7,7 +7,7 @@ import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.CurrentFragmentType
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.userInfo
 import com.zoe.weshare.util.UserManager.userBlackList
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
@@ -28,8 +28,8 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     var roomBadgeCount = MutableLiveData<Int>()
 
-    private val _loginStatus = MutableLiveData<LoadApiStatus>()
-    val loginStatus: LiveData<LoadApiStatus>
+    private val _loginStatus = MutableLiveData<LoadApiStatus?>()
+    val loginStatus: LiveData<LoadApiStatus?>
         get() = _loginStatus
 
     private var viewModelJob = Job()
@@ -45,12 +45,12 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
 
 
     fun getLiveNotificationResult() {
-        liveNotifications = repository.getLiveNotifications(weShareUser!!.uid)
+        liveNotifications = repository.getLiveNotifications(weShareUser.uid)
         reObserveNotification.value = true
     }
 
     fun getLiveRoomResult() {
-        liveChatRooms = repository.getLiveRoomLists(weShareUser!!.uid)
+        liveChatRooms = repository.getLiveRoomLists(weShareUser.uid)
         reObserveChatRoom.value = true
     }
 
@@ -59,11 +59,16 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
         var unReadRoom = 0
 
         for (room in rooms) {
-            if (!room.lastMsgRead.contains(weShareUser!!.uid) && room.lastMsgSentTime != -1L) {
+            if (hasUnreadMsg(room)) {
                 unReadRoom += 1
             }
         }
         roomBadgeCount.value = unReadRoom
+    }
+
+    fun hasUnreadMsg(room: ChatRoom):Boolean{
+        //exclude the room which has been created but no one speak yet.
+        return !room.lastMsgRead.contains(weShareUser.uid) && room.lastMsgSentTime != -1L
     }
 
     fun getUserProfile(uid: String) {
@@ -73,10 +78,16 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
             when (val result = repository.getUserInfo(uid)) {
                 is Result.Success -> {
                     _error.value = null
-                    _loginStatus.value = LoadApiStatus.DONE
 
-                    if(result.data != null){
-                        loginSuccess(result.data)
+                    val userProfile = result.data
+
+                    if(userProfile != null){
+
+                        getUserInfo(userProfile)
+
+                        getLiveNotificationResult()
+                        getLiveRoomResult()
+
                     }else{
                         _loginStatus.value = LoadApiStatus.ERROR
                     }
@@ -98,8 +109,8 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
-    fun loginSuccess(user: UserProfile){
-        weShareUser = UserInfo(
+    fun getUserInfo(user: UserProfile){
+        userInfo = UserInfo(
             name = user.name,
             image = user.image,
             uid = user.uid
@@ -107,16 +118,15 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
 
         userBlackList = user.blackList
 
-        getLiveNotificationResult()
-        getLiveRoomResult()
+        _loginStatus.value = LoadApiStatus.DONE
     }
 
     fun userLogout(){
-        liveNotifications.value = null
-        liveChatRooms.value = null
+        liveNotifications.value = listOf()
+        liveChatRooms.value = listOf()
         _loginStatus.value = null
 
-        weShareUser = null
+        userInfo = null
         userBlackList.clear()
     }
 }

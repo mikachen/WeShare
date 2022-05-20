@@ -66,7 +66,7 @@ class ReportViewModel(
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _reportSendComplete.value = result.data ?: ""
+                    _reportSendComplete.value = result.data
 
                 }
                 is Result.Fail -> {

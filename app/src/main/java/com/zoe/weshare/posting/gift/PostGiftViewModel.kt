@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class PostGiftViewModel(
     private val repository: WeShareRepository,
-    private val author: UserInfo?,
+    private val userInfo: UserInfo,
 ) : ViewModel() {
 
     var postingProgress = MutableLiveData<Int?>()
@@ -63,7 +63,7 @@ class PostGiftViewModel(
             _status.value = LoadApiStatus.LOADING
             postingProgress.value = 10
 
-            val imageUri = Uri.parse(gift.value!!.image)
+            val imageUri = Uri.parse(gift.value?.image)
 
             when (val result = repository.uploadImage(imageUri)) {
                 is Result.Success -> {
@@ -73,7 +73,7 @@ class PostGiftViewModel(
 
                     val firebaseUrl = result.data
 
-                    _gift.value!!.image = firebaseUrl
+                    _gift.value?.image = firebaseUrl
                     onPostGift.value = gift.value
                 }
                 is Result.Fail -> {
@@ -136,11 +136,11 @@ class PostGiftViewModel(
         val log = OperationLog(
             postDocId = docId,
             logType = LogType.POST_GIFT.value,
-            operatorUid = author!!.uid,
+            operatorUid = userInfo.uid,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_post_gift,
-                author.name,
-                gift.value!!.title
+                userInfo.name,
+                gift.value?.title?:""
             )
         )
         saveGiftPostLog(log)
@@ -177,7 +177,7 @@ class PostGiftViewModel(
             latitude = point.latitude.toString(),
             longitude = point.longitude.toString()
         )
-        _gift.value!!.location = locationChoice
+        _gift.value?.location = locationChoice as PostLocation
     }
 
     fun onSaveUserInput(
@@ -188,7 +188,7 @@ class PostGiftViewModel(
         imageUri: Uri,
     ) {
         onPostGift.value = GiftPost(
-            author = author,
+            author = userInfo,
             title = title,
             sort = sort,
             condition = condition,

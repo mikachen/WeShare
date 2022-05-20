@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class RequestGiftViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo?,
+    private val userInfo: UserInfo,
 ) : ViewModel() {
 
     private lateinit var gift: GiftPost
@@ -44,7 +44,7 @@ class RequestGiftViewModel(
 
     fun onSendNewRequest(message: String) {
         val comment = Comment(
-            uid = userInfo!!.uid,
+            uid = userInfo.uid,
             content = message
         )
 
@@ -90,7 +90,7 @@ class RequestGiftViewModel(
         val log = OperationLog(
             postDocId = gift.id,
             logType = LogType.REQUEST_GIFT.value,
-            operatorUid = userInfo!!.uid,
+            operatorUid = userInfo.uid,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_request_gift,
                 userInfo.name,

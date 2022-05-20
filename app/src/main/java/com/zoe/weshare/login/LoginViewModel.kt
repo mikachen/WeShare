@@ -11,6 +11,8 @@ import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.userBlackList
+import com.zoe.weshare.util.UserManager.userInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,8 +20,8 @@ import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
 
-    private var _loginSuccess = MutableLiveData<UserInfo>()
-    val loginSuccess: LiveData<UserInfo>
+    private var _loginSuccess = MutableLiveData<UserInfo?>()
+    val loginSuccess: LiveData<UserInfo?>
         get() = _loginSuccess
 
     private val _loginStatus = MutableLiveData<LoadApiStatus>()
@@ -51,10 +53,15 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
                     _error.value = null
                     _loginStatus.value = LoadApiStatus.DONE
 
-                    if (result.data == null) {
-                        onCreateNewUser(user)
+                    val profile = result.data
+
+                    if (profile != null) {
+                        //old member
+                        getUserInfo(profile)
+
                     } else {
-                        getMemberUserInfo(result.data)
+                        //new member
+                        onCreateNewUser(user)
                     }
                 }
                 is Result.Fail -> {
@@ -94,7 +101,7 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    getMemberUserInfo(profile)
+                    getUserInfo(profile)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -112,7 +119,7 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
-    private fun getMemberUserInfo(profile: UserProfile) {
+    private fun getUserInfo(profile: UserProfile) {
 
         val user = UserInfo(
             name = profile.name,
@@ -120,8 +127,8 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
             uid = profile.uid
         )
 
-        UserManager.weShareUser = user
-        UserManager.userBlackList = profile.blackList
+        userInfo = user
+        userBlackList = profile.blackList
 
         _loginSuccess.value = user
     }
