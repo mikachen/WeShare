@@ -2,7 +2,6 @@ package com.zoe.weshare.browse.gifts
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,6 @@ class GiftsBrowseFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
 
     private var onNavigateBack: Boolean = false
-
     private val viewModel by viewModels<GiftsBrowseViewModel> { getVmFactory() }
 
     override fun onCreateView(
@@ -56,7 +54,7 @@ class GiftsBrowseFragment : Fragment() {
             }
         }
 
-        viewModel.onSearchEmpty.observe(viewLifecycleOwner) {
+        viewModel.emptyQuery.observe(viewLifecycleOwner) {
             it?.let {
                 if (it) {
                     binding.hintNoItem.visibility = View.VISIBLE
@@ -88,6 +86,7 @@ class GiftsBrowseFragment : Fragment() {
         recyclerView.setOnTouchListener { view, event ->
 
             binding.giftsSearchview.isIconified = true
+
             view.hideKeyboard()
             false
         }
@@ -103,7 +102,6 @@ class GiftsBrowseFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
-                    Log.d("onQueryTextChange", "$newText")
                     if (!onNavigateBack) {
                         adapter.filter(newText, viewModel)
                     }
@@ -114,9 +112,9 @@ class GiftsBrowseFragment : Fragment() {
         })
     }
 
+    /** To prevent the searchView got triggered by query text */
     override fun onStop() {
         super.onStop()
-
         onNavigateBack = true
     }
 }

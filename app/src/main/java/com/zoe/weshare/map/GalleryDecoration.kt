@@ -12,12 +12,9 @@ class GalleryDecoration : RecyclerView.ItemDecoration() {
         outRect: Rect,
         view: View,
         parent: RecyclerView,
-        state: RecyclerView.State
+        state: RecyclerView.State,
     ) {
         super.getItemOffsets(outRect, view, parent, state)
-
-        val position = parent.getChildAdapterPosition(view)
-        val itemCount = parent.adapter?.itemCount ?: 0
 
         val lp = view.layoutParams as RecyclerView.LayoutParams
 

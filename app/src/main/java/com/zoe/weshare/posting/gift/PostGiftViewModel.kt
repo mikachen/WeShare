@@ -21,15 +21,17 @@ class PostGiftViewModel(
     private val userInfo: UserInfo,
 ) : ViewModel() {
 
+    private lateinit var giftDraft: GiftPost
+
     var postingProgress = MutableLiveData<Int?>()
 
     var onPostGift = MutableLiveData<GiftPost?>()
 
     var locationChoice: PostLocation? = null
 
-    private var _gift = MutableLiveData<GiftPost?>()
-    val gift: LiveData<GiftPost?>
-        get() = _gift
+    private var _tempGiftInput = MutableLiveData<GiftPost?>()
+    val tempGiftInput: LiveData<GiftPost?>
+        get() = _tempGiftInput
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -50,8 +52,8 @@ class PostGiftViewModel(
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    fun fetchArgument(gift: GiftPost) {
-        _gift.value = gift
+    fun fetchArgument(arg: GiftPost) {
+        giftDraft = arg
     }
 
     /**
@@ -63,7 +65,7 @@ class PostGiftViewModel(
             _status.value = LoadApiStatus.LOADING
             postingProgress.value = 10
 
-            val imageUri = Uri.parse(gift.value?.image)
+            val imageUri = Uri.parse(giftDraft.image)
 
             when (val result = repository.uploadImage(imageUri)) {
                 is Result.Success -> {
@@ -72,9 +74,9 @@ class PostGiftViewModel(
                     _status.value = LoadApiStatus.DONE
 
                     val firebaseUrl = result.data
+                    giftDraft.image = firebaseUrl
 
-                    _gift.value?.image = firebaseUrl
-                    onPostGift.value = gift.value
+                    onPostGift.value = giftDraft
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -109,7 +111,6 @@ class PostGiftViewModel(
 
                     val giftDocId = result.data
 
-
                     onSaveGiftPostLog(giftDocId)
                 }
                 is Result.Fail -> {
@@ -140,7 +141,7 @@ class PostGiftViewModel(
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_post_gift,
                 userInfo.name,
-                gift.value?.title?:""
+                giftDraft.title
             )
         )
         saveGiftPostLog(log)
@@ -177,7 +178,7 @@ class PostGiftViewModel(
             latitude = point.latitude.toString(),
             longitude = point.longitude.toString()
         )
-        _gift.value?.location = locationChoice as PostLocation
+        giftDraft.location = locationChoice as PostLocation
     }
 
     fun onSaveUserInput(
@@ -195,16 +196,20 @@ class PostGiftViewModel(
             image = imageUri.toString(),
             description = description
         )
-        _gift.value = onPostGift.value
+        _tempGiftInput.value = onPostGift.value
+    }
+
+    fun hasUserChooseLocation():Boolean {
+        return locationChoice != null
     }
 
     fun navigateNextComplete() {
-        _gift.value = null
+        _tempGiftInput.value = null
     }
 
     fun postGiftComplete() {
         postingProgress.value = null
-        _gift.value = null
+        _tempGiftInput.value = null
         onPostGift.value = null
         _saveLogComplete.value = null
     }

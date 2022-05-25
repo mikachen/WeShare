@@ -84,7 +84,7 @@
         <entry key="app/src/main/res/layout/fragment_event_manage.xml" value="0.41642228739002934" />
         <entry key="app/src/main/res/layout/fragment_events_all.xml" value="0.1774262505344164" />
         <entry key="app/src/main/res/layout/fragment_events_browse.xml" value="0.22231722958529285" />
-        <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/fragment_gift_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_gift_manage.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_gifts_all.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_gifts_browse.xml" value="0.33" />

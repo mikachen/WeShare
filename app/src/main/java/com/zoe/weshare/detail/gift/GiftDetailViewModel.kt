@@ -1,5 +1,6 @@
 package com.zoe.weshare.detail.gift
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -78,15 +79,16 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     }
 
     fun onViewPrepare(selectedGift: GiftPost) {
-        gift = selectedGift
-
         getLiveGiftDetail(selectedGift)
         getLiveRequestComments(selectedGift)
     }
 
+    fun fetchGift(gift: GiftPost){
+        this.gift = gift
+    }
+
     private fun getLiveGiftDetail(gift: GiftPost) {
         liveGiftDetailResult = repository.getLiveGiftDetail(gift.id)
-
     }
 
     private fun getLiveRequestComments(gift: GiftPost) {

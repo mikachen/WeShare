@@ -81,12 +81,12 @@
         android:label="fragment_search_location"
         tools:layout="@layout/fragment_search_location">
         <argument
-            android:name="newGift"
+            android:name="tempGift"
             android:defaultValue="@null"
             app:argType="com.zoe.weshare.data.GiftPost"
             app:nullable="true" />
         <argument
-            android:name="newEvent"
+            android:name="tempEvent"
             android:defaultValue="@null"
             app:argType="com.zoe.weshare.data.EventPost"
             app:nullable="true" />

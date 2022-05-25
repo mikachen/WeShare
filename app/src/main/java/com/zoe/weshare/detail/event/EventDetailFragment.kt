@@ -77,6 +77,8 @@ class EventDetailFragment : Fragment() {
 
         viewModel.liveEventDetailResult.observe(viewLifecycleOwner) {
             it?.let {
+                viewModel.fetchEvent(it)
+
                 checkUserAttendState(it)
                 setupView(it)
                 setupBtn(it)

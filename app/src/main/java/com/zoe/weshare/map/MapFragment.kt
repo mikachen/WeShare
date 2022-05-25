@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,11 +54,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private var needRefreshMap = false
     private var firstEntryMap = true
+    private var isPermissionGranted: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.isPermissionGranted = checkLocationPermission()
+        isPermissionGranted = checkLocationPermission()
     }
 
     override fun onCreateView(
@@ -71,25 +72,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         binding = FragmentMapBinding.inflate(inflater, container, false)
 
         if (needRefreshMap) {
-            Logger.d("needRefreshMap when navigateUp: $needRefreshMap")
+
+            Logger.d("needRefreshMap: $needRefreshMap")
             findNavController().navigate(MapFragmentDirections.actionMapFragmentSelf())
         }
 
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
 
             viewModel.gifts.observe(viewLifecycleOwner) {
-                viewModel.onCardPrepare(gifts = it, events = null)
+                viewModel.onGiftCardPrepare(it)
             }
 
             viewModel.events.observe(viewLifecycleOwner) {
-                viewModel.onCardPrepare(gifts = null, events = it)
+                viewModel.onEventCardPrepare(it)
             }
 
             viewModel.cards.observe(viewLifecycleOwner) {
-                if (viewModel.isEventCardsComplete && viewModel.isGiftCardsComplete) {
-                    // markers on map
+                if (viewModel.hasEventCardsCreated && viewModel.hasGiftCardsCreated) {
+                    // draw markers on map
                     createMarker(it)
-                    // cards recycler view
+
+                    // display cards recycler view
                     adapter.submitCards(it)
                 }
             }
@@ -98,12 +101,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 // when rv scroll, trigger marker showInfoWindow and move camera
                 markersRef[it].showInfoWindow()
 
-                if (!firstEntryMap) {
+                //make sure the camera set at user's actual location when first time entry
+                if (firstEntryMap) {
+                    firstEntryMap = false
+                } else {
                     map.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F)
                     )
-                } else {
-                    firstEntryMap = false
                 }
             }
 
@@ -112,7 +116,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     findNavController().navigate(
                         NavGraphDirections.actionGlobalGiftDetailFragment(it)
                     )
-
                     viewModel.displayCardDetailsComplete()
                 }
             }
@@ -126,9 +129,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     viewModel.displayCardDetailsComplete()
                 }
             }
-
-            fusedLocationClient =
-                LocationServices.getFusedLocationProviderClient(requireContext())
 
             binding.mapView.onCreate(savedInstanceState)
 
@@ -145,6 +145,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onMapReady(googleMap: GoogleMap) {
 
         map = googleMap
+        fusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
 
         setupMapSettings()
         getLastLocation()
@@ -155,7 +157,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         cards?.forEach {
             it.postLocation.let { location ->
 
-                val point = location!!.getLocation
+                val point = location.getLocation
 
                 val options = MarkerOptions().position(point).title(it.title)
 
@@ -175,7 +177,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                         )
                     }
                     markersRef.add(newMarker)
-                    Logger.d("createMarker: ${it.title}")
                 }
             }
         }
@@ -211,29 +212,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return false
     }
 
-    // Get current location
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
             fusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
+
                 val location: Location? = task.result
+
                 if (location == null) {
-                    requestNewLocationData()
+                    requestNewLocation()
                 } else {
                     currentLocation = LatLng(location.latitude, location.longitude)
+
                     map.isMyLocationEnabled = true
                     map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 13F))
-
-                    Log.d("currentLocation1", "$currentLocation")
                 }
             }
         }
     }
 
-    // Get current location, if shifted
-// from previous location
     @SuppressLint("MissingPermission")
-    private fun requestNewLocationData() {
+    private fun requestNewLocation() {
         val locationRequest = LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             interval = 0
@@ -248,31 +247,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest, locationCallback, Looper.myLooper()!!
-        )
-    }
 
-    private fun checkGooglePlayService(): Boolean {
-
-        val googleApiAvailability = GoogleApiAvailability.getInstance()
-        val result = googleApiAvailability.isGooglePlayServicesAvailable(requireContext())
-
-        if (result == ConnectionResult.SUCCESS) {
-            return true
-        } else if (googleApiAvailability.isUserResolvableError(result)) {
-
-            val dialog = googleApiAvailability.getErrorDialog(
-                requireActivity(),
-                result,
-                201
-            ) {
-                Toast.makeText(requireContext(), "User Cancel Dialog", Toast.LENGTH_LONG)
-                    .show()
-            }
-            dialog?.show()
+        Looper.myLooper()?.let {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest, locationCallback, it
+            )
         }
-        return false
     }
 
     private fun setupMapSettings() {
@@ -293,9 +273,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         recyclerView = binding.cardsRecycleview
 
         adapter = CardGalleryAdapter(
-            viewModel,
-            CardGalleryAdapter.CardOnClickListener { selectedCard ->
-                viewModel.displayCardDetails(selectedCard)
+            viewModel, CardGalleryAdapter.CardOnClickListener { selectedCard ->
+                viewModel.onNavigateToDetail(selectedCard)
             }
         )
 
@@ -322,28 +301,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onStart() {
         super.onStart()
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
             binding.mapView.onStart()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
             binding.mapView.onResume()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
             binding.mapView.onPause()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
             binding.mapView.onStop()
             needRefreshMap = true
         }
@@ -351,24 +330,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
             binding.mapView.onSaveInstanceState(outState)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
             binding.mapView.onDestroy()
         }
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-
-        if (viewModel.isPermissionGranted) {
+        if (isPermissionGranted) {
             binding.mapView.onLowMemory()
         }
     }

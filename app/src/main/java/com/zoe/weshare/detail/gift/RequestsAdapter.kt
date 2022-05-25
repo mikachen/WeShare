@@ -54,6 +54,8 @@ class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
                 if (whoLikedList.isNotEmpty()) {
                     textLikesCount.text =
                         getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+
+                    textLikesCount.visibility = View.VISIBLE
                 } else {
                     textLikesCount.visibility = View.INVISIBLE
                 }

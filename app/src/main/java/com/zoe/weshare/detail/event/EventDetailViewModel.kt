@@ -1,5 +1,6 @@
 package com.zoe.weshare.detail.event
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -86,8 +87,6 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
     }
 
     fun onViewPrepare(selectedEvent: EventPost) {
-        event = selectedEvent
-
         getLiveEventDetail(selectedEvent)
         getLiveComments(selectedEvent)
     }
@@ -101,12 +100,15 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
             collection = PATH_EVENT_POST,
             docId = event.id,
             subCollection = SUB_PATH_EVENT_USER_WHO_COMMENT
-        )
-    }
+        ) }
 
     fun excludeBlackListUser() {
         _filteredComments.value =
             liveComments.value?.filterNot { userBlackList.contains(it.uid) }
+    }
+
+    fun fetchEvent(event:EventPost){
+        this.event = event
     }
 
     fun checkEventStatus(event: EventPost) {
@@ -160,9 +162,7 @@ class EventDetailViewModel(private val repository: WeShareRepository, val userIn
                 }
             } else {
                 // first entry is always empty
-
                 for (comment in excludedSameUserComments) {
-
                     newUserUid.add(comment.uid)
                 }
             }

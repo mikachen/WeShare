@@ -12,6 +12,20 @@
     <string name="post_event">刊登活動</string>
     <string name="post_gift">刊登贈品</string>
 
+    // home newbie hints
+    <string name="hint_welcome_msg">歡迎進入WeShare，恭喜您已成功地完成共享的第一步！</string>
+    <string name="hint_welcome_msg_sub">讓我為您做個操作介紹吧:)</string>
+    <string name="hint_next_btn_text">下一步</string>
+    <string name="hint_close_btn_text">關閉</string>
+    <string name="hint_post_button">點擊+按鈕可以刊登贈品或刊登活動</string>
+    <string name="hint_browse_button">點擊查看活動與查看贈品可以瀏覽當前最新的刊登項目</string>
+    <string name="hint_hero_chart">點擊英雄榜可以查看到用戶的貢獻排名</string>
+    <string name="hint_notification_button">點擊小鈴鐺可以看到最新的通知訊息</string>
+    <string name="hint_profile">您可以在個人頁面中找到並管理您刊登過的贈品與活動</string>
+    <string name="hint_goodbye_title">再次歡迎您的加入，馬上開始和大家們共享交流物資吧！ :)</string>
+
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="result_fail">Result Fail</string>

@@ -80,30 +80,28 @@ class EventsBrowseAdapter(private val onClickListener: EventsAllOnClickListener)
     }
 
     fun filter(query: CharSequence?, viewModel: EventsBrowseViewModel) {
-        val list = mutableListOf<EventPost>()
+        val listResult = mutableListOf<EventPost>()
 
-        // perform the data filtering
         if (!query.isNullOrEmpty()) {
-            list.addAll(
+
+            val lowercaseQuery = query.toString().lowercase(Locale.getDefault())
+
+            listResult.addAll(
                 unfilteredList.filter {
-                    it.title.lowercase(Locale.getDefault()).contains(
-                        query.toString().lowercase(
-                            Locale.getDefault()
-                        )
-                    ) ||
-                        it.description.lowercase(Locale.getDefault())
-                            .contains(
-                                query.toString().lowercase(
-                                    Locale.getDefault()
-                                )
-                            )
+
+                    it.title.lowercase(Locale.getDefault())
+                        .contains(lowercaseQuery) ||
+
+                            it.description.lowercase(Locale.getDefault())
+                        .contains(lowercaseQuery)
                 }
             )
         } else {
-            list.addAll(unfilteredList)
+            listResult.addAll(unfilteredList)
         }
 
-        viewModel.onSearchEmpty.value = list.isEmpty()
-        submitList(list)
+        viewModel.onEmptyQuery(listResult.isEmpty())
+
+        submitList(listResult)
     }
 }

@@ -49,6 +49,7 @@ class GiftDetailFragment : Fragment() {
 
         viewModel.liveGiftDetailResult.observe(viewLifecycleOwner) {
             it?.let {
+                viewModel.fetchGift(it)
                 setupView(it)
                 setupBtn(it)
                 setupLikeBtn(it)

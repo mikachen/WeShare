@@ -16,7 +16,7 @@ class HotGiftsAdapter(private val onClickListener: OnClickListener) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(gift: GiftPost) {
             binding.apply {
-                textHotGiftLocation.text = gift.location?.locationName ?: ""
+                textHotGiftLocation.text = gift.location.locationName
                 textHotGiftTitle.text = gift.title
                 bindImage(imageHotGift, gift.image)
             }
@@ -47,8 +47,8 @@ class HotGiftsAdapter(private val onClickListener: OnClickListener) :
         }
     }
 
-    class OnClickListener(val doNothing: (gift: GiftPost) -> Unit) {
-        fun onClick(selectedGift: GiftPost) = doNothing(selectedGift)
+    class OnClickListener(val clicked: (gift: GiftPost) -> Unit) {
+        fun onClick(selectedGift: GiftPost) = clicked(selectedGift)
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<GiftPost>() {

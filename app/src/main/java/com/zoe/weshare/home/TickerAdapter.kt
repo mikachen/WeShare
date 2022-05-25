@@ -44,7 +44,7 @@ class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(
         }
 
         override fun areContentsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem == newItem
         }
     }
 }

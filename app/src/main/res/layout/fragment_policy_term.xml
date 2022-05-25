@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/height_bottom_app_bar"
     tools:context=".login.PolicyTermFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout

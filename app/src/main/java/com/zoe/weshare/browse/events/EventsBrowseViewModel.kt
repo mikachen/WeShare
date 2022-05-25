@@ -9,7 +9,7 @@ import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.userBlackList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,7 +36,7 @@ class EventsBrowseViewModel(private val repository: WeShareRepository) : ViewMod
     val navigateToSelectedEvent: LiveData<EventPost?>
         get() = _navigateToSelectedEvent
 
-    var onSearchEmpty = MutableLiveData<Boolean>()
+    var emptyQuery = MutableLiveData<Boolean?>()
 
     init {
         getALLEventsResult()
@@ -70,13 +70,24 @@ class EventsBrowseViewModel(private val repository: WeShareRepository) : ViewMod
         }
     }
 
-    private fun filterEvent(event: List<EventPost>) {
-        val list = event.filter {
-            !UserManager.userBlackList.contains(it.author!!.uid) } as MutableList
 
-        list.sortByDescending { it.createdTime }
+    /**
+     * exclude the authors in user's black list
+     * */
+    private fun filterEvent(events: List<EventPost>) {
+        val filteredList = events.filterNot {
+            userBlackList.contains(it.author.uid) } as MutableList
 
-        _events.value = list
+        filteredList.sortByDescending { it.createdTime }
+
+        _events.value = filteredList
+    }
+
+    /**
+     * observe and show error animation when there's no item to display.
+     * */
+    fun onEmptyQuery(result: Boolean) {
+        emptyQuery.value = result
     }
 
     fun onNavigateEventDetails(event: EventPost) {
@@ -85,6 +96,6 @@ class EventsBrowseViewModel(private val repository: WeShareRepository) : ViewMod
 
     fun onNavigateEventDetailsComplete() {
         _navigateToSelectedEvent.value = null
-        onSearchEmpty.value = null
+        emptyQuery.value = null
     }
 }

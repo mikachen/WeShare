@@ -73,17 +73,17 @@ class HeroRankFragment : Fragment() {
             bindImage(imageUserImage1, firstPlace.image)
             textUserName1.text = firstPlace.name
             textContribution1.text =
-                getString(R.string.hero_contribution, firstPlace.contribution?.totalContribution)
+                getString(R.string.hero_contribution, firstPlace.contribution.totalContribution)
 
             bindImage(imageUserImage2, secondPlace.image)
             textUserName2.text = secondPlace.name
             textContribution2.text =
-                getString(R.string.hero_contribution, secondPlace.contribution?.totalContribution)
+                getString(R.string.hero_contribution, secondPlace.contribution.totalContribution)
 
             bindImage(imageUserImage3, thirdPlace.image)
             textUserName3.text = thirdPlace.name
             textContribution3.text =
-                getString(R.string.hero_contribution, thirdPlace.contribution?.totalContribution)
+                getString(R.string.hero_contribution, thirdPlace.contribution.totalContribution)
 
             first.setOnClickListener {
                 onNavigateToTargetProfile(firstPlace.uid)

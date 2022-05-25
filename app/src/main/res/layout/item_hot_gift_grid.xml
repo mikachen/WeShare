@@ -42,7 +42,7 @@
             android:id="@+id/text_hot_gift_location"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:layout_marginBottom="8dp"
             android:ellipsize="end"
             android:maxLines="1"

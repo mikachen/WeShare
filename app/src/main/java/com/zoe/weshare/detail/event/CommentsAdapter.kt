@@ -50,9 +50,11 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
             binding.apply {
 
                 if (whoLikedList.isNotEmpty()) {
+
                     textLikesCount.text =
                         getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
 
+                    textLikesCount.visibility = View.VISIBLE
                 } else {
                     textLikesCount.visibility = View.INVISIBLE
                 }

@@ -51,6 +51,7 @@ fun AutoCompleteTextView.showDropdownMenu(adapter: ArrayAdapter<String>?) {
         adapter?.filter?.filter(null)
     }
 }
+
 fun bindImage(imgView: ImageView, imgUrl: String?) {
 
     val drawable = CircularProgressDrawable(imgView.context)
@@ -65,6 +66,7 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 
     imgUrl?.let {
         val imgUri = it.toUri().buildUpon().scheme("https").build()
+
         Glide.with(imgView.context)
             .load(imgUri)
             .apply(
