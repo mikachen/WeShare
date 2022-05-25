@@ -14,6 +14,7 @@ class HotGiftsAdapter(private val onClickListener: OnClickListener) :
 
     class HotGiftsViewHolder(var binding: ItemHotGiftGridBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(gift: GiftPost) {
             binding.apply {
                 textHotGiftLocation.text = gift.location.locationName
@@ -26,8 +27,7 @@ class HotGiftsAdapter(private val onClickListener: OnClickListener) :
             fun from(parent: ViewGroup): HotGiftsViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
 
-                return HotGiftsViewHolder(
-                    ItemHotGiftGridBinding
+                return HotGiftsViewHolder(ItemHotGiftGridBinding
                         .inflate(layoutInflater, parent, false)
                 )
             }

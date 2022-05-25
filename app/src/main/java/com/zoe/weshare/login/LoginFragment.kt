@@ -47,6 +47,9 @@ class LoginFragment : Fragment() {
 
         resetFastLogin = LoginFragmentArgs.fromBundle(requireArguments()).resetFastLogin
 
+
+        /** once login success,
+         * register user's notifications and chatroom live result with snapshot listener*/
         viewModel.loginSuccess.observe(viewLifecycleOwner) {
             it?.let {
                 (activity as MainActivity).viewModel.getLiveNotificationResult()
@@ -87,7 +90,7 @@ class LoginFragment : Fragment() {
             }
         }
 
-        // signOut allow user to choose different account to login
+        // once user sign out, clear out login cache
         if (resetFastLogin) {
             googleSignInClient.signOut()
         }

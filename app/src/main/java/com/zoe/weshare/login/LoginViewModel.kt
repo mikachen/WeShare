@@ -119,6 +119,8 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
+
+    /** store userInfo into UserManager singleton Object */
     private fun getUserInfo(profile: UserProfile) {
 
         val user = UserInfo(

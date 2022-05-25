@@ -20,7 +20,7 @@ class NotificationViewModel(
     private val userInfo: UserInfo?,
 ) : ViewModel() {
 
-    var allMessage = MutableLiveData<List<OperationLog>>()
+    private var allMessage = MutableLiveData<List<OperationLog>>()
 
     private val _notifications = MutableLiveData<List<OperationLog>>()
     val notifications: LiveData<List<OperationLog>>
@@ -44,9 +44,9 @@ class NotificationViewModel(
         }
     }
 
-    fun onViewDisplay(liveData: MutableLiveData<List<OperationLog>>) {
+    fun onViewDisplay(liveNotifications: MutableLiveData<List<OperationLog>>) {
 
-        allMessage = liveData
+        allMessage = liveNotifications
         _notifications.value = allMessage.value?.filter { !it.read }
     }
 

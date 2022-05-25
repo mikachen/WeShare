@@ -36,12 +36,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var tickerAdapter: TickerAdapter
     private lateinit var showcaseView: ShowcaseView
 
-    private var needRefreshHomePage: Boolean = false
+    private var refreshHomePage: Boolean = false
 
     val viewModel by viewModels<HomeViewModel> { getVmFactory() }
     private lateinit var binding: FragmentHomeBinding
 
-    var counter = 0
+    private var hintStepCounts = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,8 +51,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        if (needRefreshHomePage) {
-            needRefreshHomePage = false
+        if (refreshHomePage) {
+            refreshHomePage = false
             viewModel.refreshHomeDataResult()
         }
 
@@ -61,7 +61,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
 
         viewModel.events.observe(viewLifecycleOwner) {
-            // zero will cause headerAdapter crash cause i set infinity items adapter
             if (it.isNotEmpty()) {
                 headerAdapter.submitEvents(it)
             }
@@ -105,7 +104,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private fun setupButton() {
         binding.buttonNewbieHint.setOnClickListener {
-            setShowCase()
+            displayShowCase()
         }
         binding.buttonCheckEvents.setOnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalEventsBrowseFragment())
@@ -118,7 +117,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun setShowCase() {
+    fun displayShowCase() {
 
         val lps = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -143,7 +142,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         showcaseView.setButtonPosition(lps)
         showcaseView.setButtonText(getString(R.string.hint_next_btn_text))
 
-        setupHintCoverView()
+        showHintCoverView()
     }
 
     private fun setupHeaderGallery() {
@@ -177,7 +176,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             RecyclerView.State(),
                             manager.findLastVisibleItemPosition() + 1
                         )
-                    } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+                    } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1))
+                    {
                         manager.smoothScrollToPosition(
                             headerRv,
                             RecyclerView.State(), 0
@@ -218,7 +218,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         logTickerRv.adapter = tickerAdapter
         logTickerRv.layoutManager = manager
 
-        // disable user interact
+        // disable touch event
         logTickerRv.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 return true
@@ -246,10 +246,9 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        when (counter) {
+        when (hintStepCounts) {
 
-            0 ->
-                showcaseView.apply {
+            0 -> showcaseView.apply {
                     setShowcase(ViewTarget((activity as MainActivity).binding.fabsLayoutView),
                         false)
                     setContentTitle("")
@@ -291,14 +290,14 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 hideCoverView()
             }
         }
-        counter++
+        hintStepCounts++
 
-        if (counter == 7) {
-            counter = 0
+        if (hintStepCounts == 7) {
+            hintStepCounts = 0
         }
     }
 
-    private fun setupHintCoverView() {
+    private fun showHintCoverView() {
         (activity as MainActivity).binding.newbieHintCoverView.apply {
             setOnClickListener { }
             visibility = View.VISIBLE
@@ -311,6 +310,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     override fun onPause() {
         super.onPause()
-        needRefreshHomePage = true
+        refreshHomePage = true
     }
 }

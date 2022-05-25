@@ -13,6 +13,7 @@ class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(
 
     class TickerViewHolder(var binding: ItemHomeLogTickerBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(log: OperationLog) {
             binding.textTicker.text = Html.fromHtml(log.logMsg)
         }

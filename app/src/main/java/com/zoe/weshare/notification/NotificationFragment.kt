@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.tabs.TabLayout
 import com.zoe.weshare.MainActivity
+import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.databinding.FragmentNotificationBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.util.UserManager.weShareUser
@@ -31,34 +32,18 @@ class NotificationFragment : Fragment() {
 
         binding = FragmentNotificationBinding.inflate(inflater, container, false)
 
-        val liveData = (activity as MainActivity).viewModel.liveNotifications
-        viewModel.onViewDisplay(liveData)
+        //fetch notifications live result from MainViewModel
+        val notificationLiveResult = (activity as MainActivity).viewModel.liveNotifications
+        viewModel.onViewDisplay(notificationLiveResult)
 
-        liveData.observe(viewLifecycleOwner) {
+        notificationLiveResult.observe(viewLifecycleOwner) {
             viewModel.filterList(currentTabPosition)
         }
 
         viewModel.notifications.observe(viewLifecycleOwner) {
             adapter.submitList(it)
-
-            if (it.isEmpty()) {
-                binding.hintNoNews.visibility = View.VISIBLE
-            } else {
-                binding.hintNoNews.visibility = View.INVISIBLE
-            }
+            showNoNewsView(it)
         }
-
-        binding.notificationTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                currentTabPosition = tab.position
-
-                viewModel.filterList(currentTabPosition)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
 
         setupView()
         return binding.root
@@ -67,12 +52,30 @@ class NotificationFragment : Fragment() {
     private fun setupView() {
         adapter = NotificationAdapter(viewModel)
 
-        manager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.VERTICAL, false
-        )
+        manager = LinearLayoutManager(requireContext(),
+            LinearLayoutManager.VERTICAL, false)
 
         binding.notificationRv.adapter = adapter
         binding.notificationRv.layoutManager = manager
+
+        binding.notificationTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+
+                currentTabPosition = tab.position
+                viewModel.filterList(currentTabPosition)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+    private fun showNoNewsView(news: List<OperationLog>) {
+        if (news.isEmpty()) {
+            binding.hintNoNews.visibility = View.VISIBLE
+        } else {
+            binding.hintNoNews.visibility = View.INVISIBLE
+        }
     }
 }
