@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 class CheckInViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo,
+    private val userInfo: UserInfo
 ) : ViewModel() {
 
     private lateinit var event: EventPost
@@ -43,8 +43,8 @@ class CheckInViewModel(
     val error: LiveData<String?>
         get() = _error
 
-    fun fetchArg(arg: EventPost) {
-        event = arg
+    fun setEvent(event: EventPost) {
+        this.event = event
     }
 
     fun checkInEvent(doc: String) {

@@ -14,7 +14,6 @@ buildscript {
         version_navigation = '2.4.2'
         version_google_services = '4.3.10'
         version_compose = '1.1.1'
-
     }
 
 
@@ -24,12 +23,12 @@ buildscript {
         maven {
             url "https://plugins.gradle.org/m2/"
         }
-        }
+    }
 
     dependencies {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$version_navigation"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$version_kotlin_gradle_plugin"
-        classpath ("org.jlleitschuh.gradle:ktlint-gradle:$version_ktlint")
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:$version_ktlint")
         classpath "com.google.gms:google-services:$version_google_services"
         classpath 'com.android.tools.build:gradle:3.4.0'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'

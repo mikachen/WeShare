@@ -10,7 +10,6 @@ object Const {
     const val PATH_LOG = "Log"
     const val PATH_VIOLATION_REPORT = "ViolationReport"
 
-
     const val SUB_PATH_GIFT_USER_WHO_REQUEST = "UserWhoRequest"
     const val SUB_PATH_EVENT_USER_WHO_COMMENT = "UserWhoComment"
     const val SUB_PATH_CHATROOM_MESSAGE = "Messages"
@@ -19,15 +18,13 @@ object Const {
     const val FIELD_ROOM_LAST_MEG = "lastMsg"
     const val FIELD_ROOM_LAST_SENT_TIME = "lastMsgSentTime"
     const val FIELD_ROOM_LAST_MSG_READ = "lastMsgRead"
-
-    const val FIELD_MESSAGE_WHO_READ = "whoRead"
-
     const val FIELD_ROOM_PARTICIPANTS = "participants"
     const val FIELD_ROOM_USERS_INFO = "usersInfo"
+    const val FIELD_MESSAGE_WHO_READ = "whoRead"
 
+    const val FIELD_AUTHOR_UID = "author.uid"
     const val FIELD_STATUS = "status"
     const val FIELD_WHO_GET_GIFT = "whoGetGift"
-
     const val FIELD_OPERATOR_UID = "operatorUid"
     const val FIELD_LOG_TYPE = "logType"
 

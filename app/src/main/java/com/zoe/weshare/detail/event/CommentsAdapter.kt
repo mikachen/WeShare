@@ -13,7 +13,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
-import com.zoe.weshare.detail.hasUserLikedBefore
+import com.zoe.weshare.detail.isUserLikedBefore
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getTimeAgoString
 import com.zoe.weshare.util.UserManager.weShareUser
@@ -22,10 +22,8 @@ import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithIntParm
 import com.zoe.weshare.util.Util.getStringWithStrParm
 
-class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Context) :
+class EventCommentsAdapter(val viewModel: EventDetailViewModel) :
     ListAdapter<Comment, EventCommentsAdapter.EventCommentsViewHolder>(DiffCall()) {
-
-    val context = mContext
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,31 +33,20 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
     }
 
     override fun onBindViewHolder(holderEvent: EventCommentsViewHolder, position: Int) {
-
         val comment = getItem(position)
-        holderEvent.bind(comment, viewModel, context)
+        holderEvent.bind(comment, viewModel)
     }
 
     class EventCommentsViewHolder(val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(comment: Comment, viewModel: EventDetailViewModel, context: Context) {
+        fun bind(comment: Comment, viewModel: EventDetailViewModel) {
 
             val whoLikedList = comment.whoLiked
 
             binding.apply {
 
-                if (whoLikedList.isNotEmpty()) {
-
-                    textLikesCount.text =
-                        getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
-
-                    textLikesCount.visibility = View.VISIBLE
-                } else {
-                    textLikesCount.visibility = View.INVISIBLE
-                }
-
-                buttonCommentLike.isLiked = hasUserLikedBefore(whoLikedList)
+                buttonCommentLike.isLiked = isUserLikedBefore(whoLikedList)
 
                 buttonCommentLike.setOnClickListener {
                     viewModel.onCommentsLikePressed(comment)
@@ -72,11 +59,14 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
                     viewModel.onNavigateToTargetProfile(comment.uid)
                 }
 
-                if (speakerIsUserSelf(comment)) {
-                    moreBtn.visibility = View.INVISIBLE
-                } else {
-                    moreBtn.visibility = View.VISIBLE
-                }
+                textLikesCount.text =
+                    getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+
+                textLikesCount.visibility =
+                    if (whoLikedList.isEmpty()) { View.INVISIBLE } else { View.VISIBLE }
+
+                buttonMore.visibility =
+                    if (isSpeakerUserSelf(comment)) { View.INVISIBLE } else { View.VISIBLE }
             }
 
 
@@ -87,24 +77,25 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
                     bindImage(binding.imageUserAvatar, speaker.image)
                     binding.textProfileName.text = speaker.name
 
-                    binding.moreBtn.setOnClickListener {
-                        showPopupMenu(it, speaker, context, viewModel)
+                    binding.buttonMore.setOnClickListener {
+                        showPopupMenu(it, speaker, viewModel)
                     }
                 }
             }
         }
 
-        private fun speakerIsUserSelf(comment: Comment): Boolean {
+        private fun isSpeakerUserSelf(comment: Comment): Boolean {
             return comment.uid == weShareUser.uid
         }
 
         private fun showPopupMenu(
             view: View,
             target: UserProfile,
-            context: Context,
             viewModel: EventDetailViewModel,
         ) {
-            val popupMenu = PopupMenu(view.context, view)
+            val context = view.context
+            val popupMenu = PopupMenu(context, view)
+
             popupMenu.menuInflater.inflate(R.menu.report_user_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener {
@@ -148,7 +139,8 @@ class EventCommentsAdapter(val viewModel: EventDetailViewModel, mContext: Contex
         companion object {
             fun from(parent: ViewGroup): EventCommentsViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemCommentBoardBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemCommentBoardBinding
+                    .inflate(layoutInflater, parent, false)
 
                 return EventCommentsViewHolder(binding)
             }

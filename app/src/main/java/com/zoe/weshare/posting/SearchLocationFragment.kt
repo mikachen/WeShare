@@ -61,8 +61,8 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
-        giftArg = navArg.tempGift
-        eventArg = navArg.tempEvent
+        giftArg = navArg.draftGift
+        eventArg = navArg.draftEvent
 
         if (isPermissionGranted) {
             when (true) {

@@ -46,7 +46,7 @@ class PostEventFragment : Fragment() {
     private lateinit var binding: FragmentPostEventBinding
     private lateinit var sortAdapter: ArrayAdapter<String>
 
-    private val whatToPostAnimate: Animation by lazy {
+    private val helloMsgAnimate: Animation by lazy {
         AnimationUtils.loadAnimation(
             requireContext(),
             R.anim.event_checkin_success
@@ -63,12 +63,12 @@ class PostEventFragment : Fragment() {
 
         binding = FragmentPostEventBinding.inflate(inflater, container, false)
 
-        viewModel.tempEventInput.observe(viewLifecycleOwner) {
+        viewModel.draftEventInput.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment(
-                        tempEvent = it,
-                        tempGift = null
+                    PostEventFragmentDirections.actionPostEventToSearchLocation(
+                        draftEvent = it,
+                        draftGift = null
                     )
                 )
                 viewModel.navigateNextComplete()
@@ -83,9 +83,11 @@ class PostEventFragment : Fragment() {
     }
 
     private fun setupViewAndBtn() {
-        whatToPostAnimate.duration = 500
+        val duration = 500L
 
-        binding.titleWhatToPost.startAnimation(whatToPostAnimate)
+        helloMsgAnimate.duration = duration
+
+        binding.titleWhatToPost.startAnimation(helloMsgAnimate)
 
         binding.nextButton.setOnClickListener {
             if (checkPermission()) {
@@ -140,15 +142,17 @@ class PostEventFragment : Fragment() {
         val description = binding.editDescription.text.toString().trim()
         val datePick = binding.editDatePicker.text.toString()
 
-        if (collectDataComplete(title, sort, volunteerNeeds, description, datePick)) {
+        val isCollectComplete = verifyData(title, sort, volunteerNeeds, description, datePick)
+
+        if (isCollectComplete) {
             viewModel.fetchUserInput(
                 title,
                 sort,
                 volunteerNeeds,
                 description,
-                imagePathUri!!,
-                startTime!!,
-                endTime!!
+                imagePathUri ?: return,
+                startTime ?: return,
+                endTime ?: return
             )
         }
     }
@@ -157,12 +161,12 @@ class PostEventFragment : Fragment() {
     /**
      *  error handle all input data , and must not be empty or null
      * */
-    private fun collectDataComplete(
+    private fun verifyData(
         title: String,
         sort: String,
         volunteerNeeds: String,
         description: String,
-        datePick: String,
+        datePick: String
     ): Boolean {
 
         when {
@@ -221,6 +225,7 @@ class PostEventFragment : Fragment() {
     }
 
     private fun setupDatePicker() {
+        val tag = "date_picker"
 
         val dateRangePicker =
             MaterialDatePicker.Builder.dateRangePicker()
@@ -228,7 +233,7 @@ class PostEventFragment : Fragment() {
                 .build()
 
         binding.editDatePicker.setOnClickListener {
-            dateRangePicker.show(requireActivity().supportFragmentManager, "date_picker")
+            dateRangePicker.show(requireActivity().supportFragmentManager, tag)
         }
 
         dateRangePicker.addOnPositiveButtonClickListener { datePick ->

@@ -13,7 +13,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.data.Comment
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.ItemCommentBoardBinding
-import com.zoe.weshare.detail.hasUserLikedBefore
+import com.zoe.weshare.detail.isUserLikedBefore
 import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getTimeAgoString
 import com.zoe.weshare.util.UserManager
@@ -21,28 +21,23 @@ import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithIntParm
 import com.zoe.weshare.util.Util.getStringWithStrParm
 
-class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
+class RequestGiftAdapter(val viewModel: GiftDetailViewModel) :
     ListAdapter<Comment, RequestGiftAdapter.ViewHolder>(DiffCall()) {
 
-    private val mContext = context
-
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, ): ViewHolder {
         return ViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val comment = getItem(position)
-        holder.bind(comment, viewModel, mContext)
+        holder.bind(comment, viewModel)
     }
 
 
     class ViewHolder(val binding: ItemCommentBoardBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(comment: Comment, viewModel: GiftDetailViewModel, context: Context) {
+        fun bind(comment: Comment, viewModel: GiftDetailViewModel) {
 
             val whoLikedList = comment.whoLiked
 
@@ -51,17 +46,8 @@ class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
                 textComment.text = comment.content
                 textCreatedTime.text = comment.createdTime.getTimeAgoString()
 
-                if (whoLikedList.isNotEmpty()) {
-                    textLikesCount.text =
-                        getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
-
-                    textLikesCount.visibility = View.VISIBLE
-                } else {
-                    textLikesCount.visibility = View.INVISIBLE
-                }
-
                 //change button state
-                buttonCommentLike.isLiked = hasUserLikedBefore(whoLikedList)
+                buttonCommentLike.isLiked = isUserLikedBefore(whoLikedList)
 
                 buttonCommentLike.setOnClickListener {
                     viewModel.onCommentsLikePressed(comment)
@@ -71,11 +57,15 @@ class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
                     viewModel.onNavigateToTargetProfile(comment.uid)
                 }
 
-                if (speakerIsUserSelf(comment)) {
-                    moreBtn.visibility = View.INVISIBLE
-                } else {
-                    moreBtn.visibility = View.VISIBLE
-                }
+                textLikesCount.text =
+                    getStringWithIntParm(R.string.number_who_liked, whoLikedList.size)
+
+                textLikesCount.visibility =
+                    if (whoLikedList.isEmpty()) {View.INVISIBLE } else { View.VISIBLE }
+
+                buttonMore.visibility =
+                    if (speakerIsUserSelf(comment)) { View.INVISIBLE } else { View.VISIBLE }
+
             }
 
             if (viewModel.isGetProfileDone()) {
@@ -85,8 +75,8 @@ class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
                     bindImage(binding.imageUserAvatar, target.image)
                     binding.textProfileName.text = target.name
 
-                    binding.moreBtn.setOnClickListener {
-                        showPopupMenu(it, target, context, viewModel)
+                    binding.buttonMore.setOnClickListener {
+                        showPopupMenu(it, target, viewModel)
                     }
                 }
             }
@@ -101,10 +91,11 @@ class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
         private fun showPopupMenu(
             view: View,
             target: UserProfile,
-            context: Context,
-            viewModel: GiftDetailViewModel,
+            viewModel: GiftDetailViewModel
         ) {
-            val popupMenu = PopupMenu(view.context, view)
+            val context = view.context
+            val popupMenu = PopupMenu(context, view)
+
             popupMenu.menuInflater.inflate(R.menu.report_user_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener {
@@ -124,7 +115,7 @@ class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
         private fun showAlterDialog(
             target: UserProfile,
             context: Context,
-            viewModel: GiftDetailViewModel,
+            viewModel: GiftDetailViewModel
         ) {
             val builder = AlertDialog.Builder(context)
 
@@ -156,17 +147,11 @@ class RequestGiftAdapter(val viewModel: GiftDetailViewModel, context: Context) :
 }
 
 class DiffCall : DiffUtil.ItemCallback<Comment>() {
-    override fun areItemsTheSame(
-        oldItem: Comment,
-        newItem: Comment,
-    ): Boolean {
+    override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(
-        oldItem: Comment,
-        newItem: Comment,
-    ): Boolean {
+    override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
         return oldItem == newItem
     }
 }

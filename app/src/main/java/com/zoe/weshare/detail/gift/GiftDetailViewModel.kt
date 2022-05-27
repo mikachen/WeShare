@@ -1,6 +1,5 @@
 package com.zoe.weshare.detail.gift
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
-import com.zoe.weshare.detail.hasUserLikedBefore
+import com.zoe.weshare.detail.isUserLikedBefore
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.Const.FIELD_USER_BLACKLIST
@@ -41,7 +40,6 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         get() = _onTargetAvatarClicked
 
     val profileList = mutableListOf<UserProfile>()
-
     private var onSearchUserProfile = MutableLiveData<Int>()
 
     private var _profileSearchComplete = MutableLiveData<Boolean>()
@@ -59,6 +57,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     private val _navigateToNewRoom = MutableLiveData<ChatRoom?>()
     val navigateToNewRoom: LiveData<ChatRoom?>
         get() = _navigateToNewRoom
+
+    private val _navigateToRequest = MutableLiveData<GiftPost?>()
+    val navigateToRequest: LiveData<GiftPost?>
+        get() = _navigateToRequest
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -83,7 +85,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         getLiveRequestComments(selectedGift)
     }
 
-    fun fetchGift(gift: GiftPost){
+    fun setGift(gift: GiftPost){
         this.gift = gift
     }
 
@@ -101,11 +103,10 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
 
     /**
-     * in oder to show user's avatar image and user's name,
+     * To get user's avatar and name,
      * this will decide if the user profile has been queried before,
-     * and only sort out the new user profile that we never get
+     * and only sort out the new user profile that haven't been query
      * */
-
     fun searchUsersProfile(comments: List<Comment>) {
 
         if (comments.isNotEmpty()) {
@@ -187,7 +188,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     }
 
     fun onPostLikePressed(gift: GiftPost) {
-        if (!hasUserLikedBefore(gift.whoLiked)) {
+        if (!isUserLikedBefore(gift.whoLiked)) {
             sendLike(gift.id)
         } else {
             cancelLike(gift.id)
@@ -198,13 +199,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when (val result = repository.updateFieldValue(
                     collection = PATH_GIFT_POST,
                     docId = doc,
                     field = FIELD_WHO_LIKED,
-                    value = FieldValue.arrayUnion(userInfo.uid)
-                )
+                    value = FieldValue.arrayUnion(userInfo.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -231,13 +230,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when (val result = repository.updateFieldValue(
                     collection = PATH_GIFT_POST,
                     docId = doc,
                     field = FIELD_WHO_LIKED,
-                    value = FieldValue.arrayRemove(userInfo.uid)
-                )
+                    value = FieldValue.arrayRemove(userInfo.uid))
             ) {
 
                 is Result.Success -> {
@@ -263,7 +260,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
     fun onCommentsLikePressed(comment: Comment) {
 
-        if (!hasUserLikedBefore(comment.whoLiked)) {
+        if (!isUserLikedBefore(comment.whoLiked)) {
             sendLikeOnComment(comment.id)
         } else {
             cancelLikeOnComment(comment.id)
@@ -274,15 +271,13 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateSubCollectionFieldValue(
+            when (val result = repository.updateSubCollectionFieldValue(
                     collection = PATH_GIFT_POST,
                     docId = gift.id,
                     subCollection = SUB_PATH_GIFT_USER_WHO_REQUEST,
                     subDocId = subDoc,
                     field = FIELD_WHO_LIKED,
-                    value = FieldValue.arrayUnion(userInfo.uid)
-                )
+                    value = FieldValue.arrayUnion(userInfo.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -308,15 +303,13 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateSubCollectionFieldValue(
+            when (val result = repository.updateSubCollectionFieldValue(
                     collection = PATH_GIFT_POST,
                     docId = gift.id,
                     subCollection = SUB_PATH_GIFT_USER_WHO_REQUEST,
                     subDocId = subDoc,
                     field = FIELD_WHO_LIKED,
-                    value = FieldValue.arrayRemove(userInfo.uid)
-                )
+                    value = FieldValue.arrayRemove(userInfo.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -348,6 +341,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
                     result.data
                 }
                 is Result.Fail -> {
@@ -373,29 +367,23 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     fun checkIfPrivateRoomExist(rooms: List<ChatRoom>) {
 
         if (hasFormerRoomWithAuthor(rooms)) {
-
             _navigateToFormerRoom.value = getFormerRoom(rooms)
-
         } else {
 
-            // no private chat with author before
             onNewRoomPrepare()
         }
     }
 
     private fun hasFormerRoomWithAuthor(rooms: List<ChatRoom>): Boolean {
-        // true when there's a chatroom with author & ChatRoomType is PRIVATE
+        // return true if user already have a PRIVATE chatroom with author
         return rooms.any {
-            it.participants.contains(gift.author.uid) &&
-                    it.type == ChatRoomType.PRIVATE.value
+            it.participants.contains(gift.author.uid) && it.type == ChatRoomType.PRIVATE.value
         }
     }
 
     private fun getFormerRoom(rooms: List<ChatRoom>): ChatRoom {
-        return rooms.find {
-            it.participants.contains(gift.author.uid) &&
-                    it.type == ChatRoomType.PRIVATE.value
-        }!!
+        return rooms.single {
+            it.participants.contains(gift.author.uid) && it.type == ChatRoomType.PRIVATE.value }
     }
 
     fun onNewRoomPrepare() {
@@ -415,9 +403,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    _navigateToNewRoom.value = room.apply {
-                        id = result.data
-                    }
+
+                    val roomId = result.data
+                    room.id = roomId
+
+                    _navigateToNewRoom.value = room
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -444,17 +434,17 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         _status.value = LoadApiStatus.LOADING
 
         coroutineScope.launch {
-            when (
-                val result = repository.updateFieldValue(
+            when (val result = repository.updateFieldValue(
                     collection = PATH_USER,
                     docId = weShareUser.uid,
                     field = FIELD_USER_BLACKLIST,
-                    value = FieldValue.arrayUnion(target.uid)
-                )
+                    value = FieldValue.arrayUnion(target.uid))
             ) {
                 is Result.Success -> {
-                    userBlackList.add(target.uid)
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
 
+                    userBlackList.add(target.uid)
                     onBlockListUser.value = target
                 }
                 is Result.Fail -> {
@@ -490,6 +480,14 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         target.uid = uid
 
         _onTargetAvatarClicked.value = target
+    }
+
+    fun onNavigateToRequestDialog() {
+        _navigateToRequest.value = gift
+    }
+
+    fun onNavigateToRequestComplete() {
+        _navigateToRequest.value = null
     }
 
     fun navigateToRoomComplete() {

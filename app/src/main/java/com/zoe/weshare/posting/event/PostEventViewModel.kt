@@ -29,7 +29,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     var locationChoice: PostLocation? = null
 
     private val _tempEventInput = MutableLiveData<EventPost?>()
-    val tempEventInput: LiveData<EventPost?>
+    val draftEventInput: LiveData<EventPost?>
         get() = _tempEventInput
 
     private var viewModelJob = Job()

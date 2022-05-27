@@ -30,7 +30,7 @@ class PostGiftViewModel(
     var locationChoice: PostLocation? = null
 
     private var _tempGiftInput = MutableLiveData<GiftPost?>()
-    val tempGiftInput: LiveData<GiftPost?>
+    val draftGiftInput: LiveData<GiftPost?>
         get() = _tempGiftInput
 
     private var viewModelJob = Job()

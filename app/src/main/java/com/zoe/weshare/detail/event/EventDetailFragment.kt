@@ -23,7 +23,7 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.FragmentEventDetailBinding
-import com.zoe.weshare.detail.hasUserLikedBefore
+import com.zoe.weshare.detail.isUserLikedBefore
 import com.zoe.weshare.ext.*
 import com.zoe.weshare.util.Const.FIELD_EVENT_ATTENDEE
 import com.zoe.weshare.util.Const.FIELD_EVENT_VOLUNTEER
@@ -51,11 +51,11 @@ class EventDetailFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var selectedEvent: EventPost
 
-    private var hasAnimationPlayed: Boolean = false
-    private var hasUserAttend: Boolean = false
-    private var hasUserVolunteer: Boolean = false
-    private var hasUserCheckedIn: Boolean = false
-    private var hasCheckedStatus: Boolean = false
+    private var isAnimationFinished: Boolean = false
+    private var isUserAttendEvent: Boolean = false
+    private var isUserVolunteer: Boolean = false
+    private var isUserCheckedIn: Boolean = false
+    private var isEventStatusChecked: Boolean = false
 
     private val viewModel by viewModels<EventDetailViewModel> { getVmFactory(weShareUser) }
 
@@ -71,20 +71,19 @@ class EventDetailFragment : Fragment() {
         setupCheckInAnimation { }
         setupLikeBtn()
 
-
         selectedEvent = EventDetailFragmentArgs.fromBundle(requireArguments()).selectedEvent
         viewModel.onViewPrepare(selectedEvent)
 
         viewModel.liveEventDetailResult.observe(viewLifecycleOwner) {
             it?.let {
-                viewModel.fetchEvent(it)
+                viewModel.setEvent(it)
 
                 checkUserAttendState(it)
                 setupView(it)
                 setupBtn(it)
 
-                if (!hasCheckedStatus) {
-                    hasCheckedStatus = true
+                if (!isEventStatusChecked) {
+                    isEventStatusChecked = true
 
                     viewModel.checkEventStatus(it)
                 }
@@ -92,7 +91,7 @@ class EventDetailFragment : Fragment() {
         }
 
         viewModel.liveComments.observe(viewLifecycleOwner) {
-            viewModel.excludeBlackListUser()
+            viewModel.filterList()
         }
 
         viewModel.filteredComments.observe(viewLifecycleOwner) {
@@ -129,7 +128,7 @@ class EventDetailFragment : Fragment() {
             }
         }
 
-        viewModel.profileSearchComplete.observe(viewLifecycleOwner) {
+        viewModel.isProfileSearchComplete.observe(viewLifecycleOwner) {
             if (it) {
                 adapter.submitList(viewModel.filteredComments.value) {
                     recyclerView.post {
@@ -142,10 +141,19 @@ class EventDetailFragment : Fragment() {
         viewModel.onTargetAvatarClicked.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    EventDetailFragmentDirections.actionEventDetailFragmentToProfileFragment(it)
+                    EventDetailFragmentDirections.actionEventDetailToProfile(it)
                 )
 
                 viewModel.navigateToProfileComplete()
+            }
+        }
+
+        viewModel.onCheckInMenuClicked.observe(viewLifecycleOwner){
+            it?.let {
+                findNavController().navigate(
+                    EventDetailFragmentDirections.actionEventDetailToEventCheckIn(it))
+
+                viewModel.navigateToCheckInComplete()
             }
         }
 
@@ -189,7 +197,7 @@ class EventDetailFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     private fun setupCommentBoard() {
         recyclerView = binding.commentsRecyclerView
-        adapter = EventCommentsAdapter(viewModel, requireContext())
+        adapter = EventCommentsAdapter(viewModel)
         recyclerView.adapter = adapter
 
         recyclerView.setOnTouchListener { view, _ ->
@@ -204,10 +212,10 @@ class EventDetailFragment : Fragment() {
 
             override fun onAnimationEnd(p0: Animation?) {
 
-                if (!hasAnimationPlayed) {
+                if (!isAnimationFinished) {
 
-                    hasAnimationPlayed = true
-                    binding.checkinComplete.startAnimation(sneakyHideAnimate)
+                    isAnimationFinished = true
+                    binding.checkinAnimationView.startAnimation(sneakyHideAnimate)
 
                 } else {
                     //end at second time play
@@ -222,7 +230,7 @@ class EventDetailFragment : Fragment() {
             override fun onAnimationStart(p0: Animation?) = Unit
 
             override fun onAnimationEnd(p0: Animation?) {
-                binding.checkinComplete.startAnimation(checkInAnimate)
+                binding.checkinAnimationView.startAnimation(checkInAnimate)
             }
 
             override fun onAnimationRepeat(p0: Animation?) = Unit
@@ -230,9 +238,9 @@ class EventDetailFragment : Fragment() {
     }
 
     fun checkUserAttendState(event: EventPost) {
-        hasUserAttend = event.whoAttended.contains(weShareUser.uid)
-        hasUserVolunteer = event.whoVolunteer.contains(weShareUser.uid)
-        hasUserCheckedIn = event.whoCheckedIn.contains(weShareUser.uid)
+        isUserAttendEvent = event.whoAttended.contains(weShareUser.uid)
+        isUserVolunteer = event.whoVolunteer.contains(weShareUser.uid)
+        isUserCheckedIn = event.whoCheckedIn.contains(weShareUser.uid)
     }
 
     private fun setupView(event: EventPost) {
@@ -261,7 +269,7 @@ class EventDetailFragment : Fragment() {
             textLikedNumber.text =
                 getString(R.string.number_who_liked, event.whoLiked.size)
 
-            buttonPressLike.isChecked = hasUserLikedBefore(event.whoLiked)
+            buttonPressLike.isChecked = isUserLikedBefore(event.whoLiked)
 
             textEventDescription.text = event.description
 
@@ -271,12 +279,11 @@ class EventDetailFragment : Fragment() {
                 event.endTime.toDisplayDateFormat()
             )
 
-            if (!hasAnimationPlayed) {
-                if (hasUserCheckedIn) {
-                    checkinComplete.visibility = View.VISIBLE
-                    checkinComplete.startAnimation(checkInAnimate)
-                }
+            if (!isAnimationFinished && isUserCheckedIn) {
+                checkinAnimationView.visibility = View.VISIBLE
+                checkinAnimationView.startAnimation(checkInAnimate)
             }
+
 
             when (event.status) {
                 EventStatusType.WAITING.code -> {
@@ -307,19 +314,19 @@ class EventDetailFragment : Fragment() {
 
         binding.apply {
 
-            buttonAttend.isChecked = hasUserAttend
-            buttonVolunteer.isChecked = hasUserVolunteer
+            buttonAttend.isChecked = isUserAttendEvent
+            buttonVolunteer.isChecked = isUserVolunteer
 
             if (eventNotYetEnded(event)) {
                 //disable the toggle button check state changed
-                if (hasUserAttend) {
+                if (isUserAttendEvent) {
                     buttonAttend.setOnCheckedChangeListener { _, checked ->
                         buttonAttend.isChecked = !checked
                     }
                 }
 
                 //disable the toggle button check state changed
-                if (hasUserVolunteer) {
+                if (isUserVolunteer) {
                     buttonVolunteer.setOnCheckedChangeListener { _, checked ->
                         buttonVolunteer.isChecked = !checked
                     }
@@ -353,42 +360,35 @@ class EventDetailFragment : Fragment() {
 
 
             imageAuthorAvatar.setOnClickListener {
-                findNavController().navigate(EventDetailFragmentDirections
-                    .actionEventDetailFragmentToProfileFragment(event.author)
-                )
+                viewModel.onNavigateToTargetProfile(event.author.uid)
             }
         }
     }
 
     private fun attendBtnClick() {
-        if (!hasUserAttend) {
+
+        if (!isUserAttendEvent) {
             viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
 
-        } else {
-            if (!hasUserCheckedIn) {
-                //only allow user to cancel attendee if user not yet checkIn as volunteer member
+        } else if (isUserAttendEvent && !isUserCheckedIn) {
 
-                showAttendEventMenu(binding.buttonAttend)
-            } else {
-                return
-            }
+            //only allow user to cancel attendee if user not yet checkIn as volunteer member
+            showAttendEventMenu(binding.buttonAttend)
         }
     }
 
     private fun volunteerBtnClick() {
-        if (!hasUserVolunteer) {
 
-            // if click volunteer, user must attend event as well
-            if (!hasUserAttend) {
-                viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
-                viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
-
-            } else {
-                viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
-            }
+        if (isUserVolunteer) {
+            showAttendVolunteerMenu(binding.buttonVolunteer)
 
         } else {
-            showAttendVolunteerMenu(binding.buttonVolunteer)
+            // if join volunteer, user must attend event as well
+            if (!isUserAttendEvent) {
+                viewModel.onAttendEvent(FIELD_EVENT_ATTENDEE)
+            }
+
+            viewModel.onAttendEvent(FIELD_EVENT_VOLUNTEER)
         }
     }
 
@@ -397,17 +397,14 @@ class EventDetailFragment : Fragment() {
         popupMenu.menuInflater.inflate(R.menu.event_attend_menu, popupMenu.menu)
 
         popupMenu.setOnMenuItemClickListener {
-            when (it.itemId) {
 
-                R.id.action_cancel_attend -> {
-                    if (hasUserVolunteer) {
-                        viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
-                        viewModel.cancelAttendEvent(FIELD_EVENT_VOLUNTEER)
-                    } else {
-                        viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
-                    }
+                if (!isUserVolunteer) {
+                    viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
+                } else {
+                    viewModel.cancelAttendEvent(FIELD_EVENT_ATTENDEE)
+                    viewModel.cancelAttendEvent(FIELD_EVENT_VOLUNTEER)
                 }
-            }
+
             false
         }
         popupMenu.show()
@@ -417,7 +414,7 @@ class EventDetailFragment : Fragment() {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.volunteer_attend_menu, popupMenu.menu)
 
-        if (hasUserCheckedIn) {
+        if (isUserCheckedIn) {
             popupMenu.menu.removeItem(R.id.action_cancel_volunteer)
             popupMenu.menu.removeItem(R.id.action_check_in)
         }
@@ -433,9 +430,7 @@ class EventDetailFragment : Fragment() {
                         }
 
                         EventStatusType.ONGOING.code -> {
-                            findNavController().navigate(EventDetailFragmentDirections
-                                .actionEventDetailFragmentToEventCheckInFragment(selectedEvent)
-                            )
+                            viewModel.navigateToCheckedIn()
                         }
 
                         else -> {
@@ -478,19 +473,18 @@ class EventDetailFragment : Fragment() {
     }
 
     private fun setupLikeBtn() {
-        val scaleAnimation = ScaleAnimation(
-            0.7f,
-            1.0f,
-            0.7f,
-            1.0f,
-            Animation.RELATIVE_TO_SELF,
-            0.7f,
-            Animation.RELATIVE_TO_SELF,
-            0.7f
-        )
-        scaleAnimation.duration = 500
-
+        val fromScale = 0.7f
+        val toScale = 1.0f
+        val duration = 500L
         val bounceInterpolator = BounceInterpolator()
+
+        val scaleAnimation = ScaleAnimation(
+            fromScale, toScale, fromScale, toScale,
+            Animation.RELATIVE_TO_SELF, fromScale,
+            Animation.RELATIVE_TO_SELF, fromScale
+        )
+
+        scaleAnimation.duration = duration
         scaleAnimation.interpolator = bounceInterpolator
 
         binding.buttonPressLike.setOnClickListener {
@@ -518,7 +512,7 @@ class EventDetailFragment : Fragment() {
             binding.buttonPressLike.isChecked
         ) {
             findNavController().navigate(
-                EventDetailFragmentDirections.actionEventDetailFragmentToCreditFragment()
+                NavGraphDirections.actionGlobalCreditFragment()
             )
         }
     }

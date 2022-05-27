@@ -62,12 +62,12 @@ class PostGiftFragment : Fragment() {
 
         binding = FragmentPostGiftBinding.inflate(inflater, container, false)
 
-        viewModel.tempGiftInput.observe(viewLifecycleOwner) {
+        viewModel.draftGiftInput.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment(
-                        tempGift = it,
-                        tempEvent = null
+                    PostGiftFragmentDirections.actionPostGiftToSearchLocation(
+                        draftGift = it,
+                        draftEvent = null
                     )
                 )
                 viewModel.navigateNextComplete()
@@ -137,16 +137,17 @@ class PostGiftFragment : Fragment() {
         val condition = binding.dropdownMenuCondition.text.toString().trim()
         val description = binding.editDescription.text.toString().trim()
 
+        val isCollectComplete = verifyData(title, sort, condition, description)
 
-        if (collectDataComplete(title, sort, condition, description)) {
-            viewModel.onSaveUserInput(title, sort, condition, description, imagePathUri!!)
+        if (isCollectComplete) { viewModel.onSaveUserInput(
+                title, sort, condition, description, imagePathUri?: return)
         }
     }
 
     /**
      *  error handle all input data , and must not be empty or null
      * */
-    private fun collectDataComplete(
+    private fun verifyData(
         title: String,
         sort: String,
         condition: String,
