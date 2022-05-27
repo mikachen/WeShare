@@ -15,30 +15,29 @@ import com.zoe.weshare.util.UserManager
 class CardGalleryAdapter(
     val viewModel: MapViewModel,
     private val onClickListener: CardOnClickListener,
-) :
-    RecyclerView.Adapter<CardGalleryAdapter.CardsViewHolder>() {
+) : RecyclerView.Adapter<CardGalleryAdapter.CardsViewHolder>() {
 
     private var list: List<Cards>? = null
     private lateinit var likeAnimation: ScaleAnimation
 
     init {
-        setupLikeBtn()
+        setupLikeAnimation()
     }
 
     class CardsViewHolder(val binding: ItemCardGalleryViewBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: Cards) {
+        fun bind(card: Cards) {
 
             binding.apply {
 
-                textTitle.text = data.title
-                textPostedLocation.text = data.postLocation?.locationName
-                textPostedTime.text = data.createdTime.toDisplayFormat()
-                textDescriptionShort.text = data.description
-                bindImage(image, data.image)
+                textTitle.text = card.title
+                textPostedLocation.text = card.postLocation.locationName
+                textPostedTime.text = card.createdTime.toDisplayFormat()
+                textDescriptionShort.text = card.description
+                bindImage(image, card.image)
 
-                if (data.postType == EVENT_CARD) {
-                    textPostedTime.text = data.eventTime
+                if (card.postType == EVENT_CARD) {
+                    textPostedTime.text = card.eventTime
                 }
             }
         }
@@ -62,17 +61,18 @@ class CardGalleryAdapter(
         card?.let {
             holder.bind(card)
 
-            val isUserLiked = card.whoLiked.contains(UserManager.weShareUser!!.uid)
+            val hasUserLiked: Boolean = hasUserLikedBefore(card.whoLiked)
+
             holder.binding.clickableView.setOnClickListener {
                 onClickListener.onClick(card)
             }
             holder.binding.buttonLike.setOnClickListener {
 
                 it.startAnimation(likeAnimation)
-                viewModel.onPostLikePressed(card, isUserLiked)
+                viewModel.onPostLikePressed(card, hasUserLiked)
             }
 
-            holder.binding.buttonLike.isChecked = isUserLiked
+            holder.binding.buttonLike.isChecked = hasUserLiked
         }
     }
 
@@ -89,7 +89,7 @@ class CardGalleryAdapter(
         notifyDataSetChanged()
     }
 
-    private fun setupLikeBtn() {
+    private fun setupLikeAnimation() {
         likeAnimation = ScaleAnimation(
             0.7f,
             1.0f,
@@ -102,5 +102,9 @@ class CardGalleryAdapter(
         )
         likeAnimation.duration = 500
         likeAnimation.interpolator = BounceInterpolator()
+    }
+
+    private fun hasUserLikedBefore(list: List<String>): Boolean {
+        return list.contains(UserManager.weShareUser.uid)
     }
 }

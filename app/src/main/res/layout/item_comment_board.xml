@@ -70,17 +70,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:maxLines="1"
-        android:layout_marginTop="2dp"
+        android:layout_marginVertical="2dp"
         android:textColor="#A9A9A9"
-        android:textSize="13sp"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/layout_main_content"
         app:layout_constraintTop_toBottomOf="@id/layout_main_content"
         tools:text="3 hrs ago" />
 
     <ImageView
-        android:id="@+id/more_btn"
+        android:id="@+id/button_more"
         android:layout_width="wrap_content"
+        android:paddingBottom="8dp"
+        android:paddingStart="8dp"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_baseline_more_horiz_24"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,16 +91,17 @@
 
     <com.like.LikeButton
         android:id="@+id/button_comment_like"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="10dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginHorizontal="4dp"
         app:anim_scale_factor="2"
         app:icon_size="16dp"
+        android:paddingTop="12dp"
         app:icon_type="thumb"
         app:is_enabled="true"
         app:layout_constraintBottom_toBottomOf="@id/text_created_time"
+        app:layout_constraintEnd_toStartOf="@id/text_likes_count"
         app:layout_constraintStart_toEndOf="@id/text_created_time"
-        app:layout_constraintTop_toTopOf="@id/text_created_time"
         app:like_drawable="@drawable/thumb_on"
         app:liked="true"
         app:unlike_drawable="@drawable/thumb_off" />
@@ -108,12 +111,10 @@
         android:id="@+id/text_likes_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:maxLines="1"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/button_comment_like"
         app:layout_constraintTop_toTopOf="@id/text_created_time"
+        app:layout_constraintStart_toEndOf="@id/button_comment_like"
         tools:text="22人都說讚" />
 
 
@@ -122,7 +123,7 @@
         android:layout_width="50dp"
         android:layout_height="30dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toStartOf="@id/more_btn"
+        app:layout_constraintEnd_toStartOf="@id/button_more"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 

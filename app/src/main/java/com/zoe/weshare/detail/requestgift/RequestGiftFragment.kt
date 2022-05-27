@@ -38,7 +38,7 @@ class RequestGiftFragment : BottomSheetDialogFragment() {
             it?.let {
                 binding.editLeaveComment.text?.clear()
 
-                sendNotificationToTarget(gift.author!!.uid, it)
+                sendNotificationToTarget(gift.author.uid, it)
 
                 viewModel.requestGiftComplete()
 

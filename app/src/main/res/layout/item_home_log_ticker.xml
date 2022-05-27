@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="15sp"
+        android:textSize="13sp"
         android:ellipsize="end"
         tools:text="Zoe Lo刊登了贈品: 全新手機"
         android:maxLines="1"

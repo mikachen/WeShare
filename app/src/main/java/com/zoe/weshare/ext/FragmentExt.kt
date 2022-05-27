@@ -26,7 +26,7 @@ import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.factory.AuthorViewModelFactory
 import com.zoe.weshare.factory.ViewModelFactory
 
-fun Fragment.getVmFactory(userInfo: UserInfo?): AuthorViewModelFactory {
+fun Fragment.getVmFactory(userInfo: UserInfo): AuthorViewModelFactory {
     val repository = (requireContext().applicationContext as WeShareApplication).repository
     return AuthorViewModelFactory(repository, userInfo)
 }
@@ -103,4 +103,7 @@ fun Fragment.sendNotificationToTarget(targetUid: String, log: OperationLog) {
     requireContext().startService(intent)
 }
 
-
+fun Fragment.requireLogin(){
+    activity.showToast("require login")
+    findNavController().navigate(NavGraphDirections.actionGlobalLoginFragment())
+}

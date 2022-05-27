@@ -13,6 +13,6 @@ data class Cards(
     val eventTime: String,
     val postType: Int,
     val image: String,
-    val postLocation: PostLocation?,
+    val postLocation: PostLocation,
     val whoLiked: List<String>
 ) : Parcelable

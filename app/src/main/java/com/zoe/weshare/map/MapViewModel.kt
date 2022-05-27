@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.maps.GoogleMap
 import com.google.firebase.firestore.FieldValue
 import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
@@ -13,9 +12,13 @@ import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.ext.toDisplayDateFormat
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.*
+import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.PATH_EVENT_POST
 import com.zoe.weshare.util.Const.PATH_GIFT_POST
+import com.zoe.weshare.util.EventStatusType
+import com.zoe.weshare.util.GiftStatusType
+import com.zoe.weshare.util.UserManager.userBlackList
+import com.zoe.weshare.util.Util
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,11 +27,8 @@ import kotlinx.coroutines.launch
 const val GIFT_CARD = 0
 const val EVENT_CARD = 1
 
-class MapViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
+class MapViewModel(private val repository: WeShareRepository, val userInfo: UserInfo) :
     ViewModel() {
-
-    var googleMap: GoogleMap? = null
-    var isPermissionGranted: Boolean = false
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>
@@ -42,7 +42,6 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
     val cards: LiveData<List<Cards>>
         get() = _cards
 
-    // it for map marker choise
     private val _snapPosition = MutableLiveData<Int>()
     val snapPosition: LiveData<Int>
         get() = _snapPosition
@@ -50,20 +49,13 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    // status: The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<LoadApiStatus>()
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    // error: The internal MutableLiveData that stores the error of the most recent request
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
-
-    // status for the loading icon of swl
-    private val _refreshStatus = MutableLiveData<Boolean>()
-    val refreshStatus: LiveData<Boolean>
-        get() = _refreshStatus
 
     private val _navigateToSelectedGift = MutableLiveData<GiftPost?>()
     val navigateToSelectedGift: LiveData<GiftPost?>
@@ -73,57 +65,14 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
     val navigateToSelectedEvent: LiveData<EventPost?>
         get() = _navigateToSelectedEvent
 
-    val cardsViewList = mutableListOf<Cards>()
+    private val cardsViewList = mutableListOf<Cards>()
 
-    var isGiftCardsComplete: Boolean = false
-    var isEventCardsComplete: Boolean = false
+    var hasGiftCardsCreated: Boolean = false
+    var hasEventCardsCreated: Boolean = false
 
     init {
         getGiftsResult()
         getEventsResult()
-    }
-
-    fun onCardPrepare(gifts: List<GiftPost>?, events: List<EventPost>?) {
-
-        if (gifts != null) {
-            for (element in gifts) {
-                val newCard = Cards(
-                    id = element.id,
-                    title = element.title,
-                    description = element.description,
-                    createdTime = element.createdTime,
-                    eventTime = "",
-                    postType = GIFT_CARD,
-                    image = element.image,
-                    postLocation = element.location,
-                    whoLiked = element.whoLiked
-                )
-                cardsViewList.add(newCard)
-            }
-            isGiftCardsComplete = true
-        }
-        if (events != null) {
-            for (element in events) {
-                val newCard = Cards(
-                    id = element.id,
-                    title = element.title,
-                    description = element.description,
-                    createdTime = element.createdTime,
-                    eventTime = WeShareApplication.instance.getString(
-                        R.string.preview_event_time,
-                        element.startTime.toDisplayDateFormat(),
-                        element.endTime.toDisplayDateFormat()
-                    ),
-                    postType = EVENT_CARD,
-                    image = element.image,
-                    postLocation = element.location,
-                    whoLiked = element.whoLiked
-                )
-                cardsViewList.add(newCard)
-            }
-            isEventCardsComplete = true
-        }
-        _cards.value = cardsViewList.shuffled()
     }
 
     private fun getGiftsResult() {
@@ -136,9 +85,8 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    result.data.filterNot {
-                        !UserManager.userBlackList.contains(it.author!!.uid) &&
-                        it.status == GiftStatusType.CLOSED.code }
+                    val allGifts = result.data
+                    getFilteredGifts(allGifts)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -157,7 +105,16 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
                     null
                 }
             }
-            _refreshStatus.value = false
+        }
+    }
+
+    /**
+     * exclude the authors in user's black list, closed gifts
+     * */
+    private fun getFilteredGifts(allGifts: List<GiftPost>): List<GiftPost> {
+        return allGifts.filterNot {
+            userBlackList.contains(it.author.uid) &&
+                    it.status == GiftStatusType.CLOSED.code
         }
     }
 
@@ -170,9 +127,9 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    result.data.filterNot {
-                        !UserManager.userBlackList.contains(it.author!!.uid) &&
-                        it.status == EventStatusType.WAITING.code }
+
+                    val allEvents = result.data
+                    getFilteredEvents(allEvents)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -191,25 +148,79 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
                     null
                 }
             }
-            _refreshStatus.value = false
         }
     }
 
-    fun onPostLikePressed(card: Cards, isUserLiked: Boolean) {
-        val collection = when (card.postType) {
-            GIFT_CARD -> PATH_GIFT_POST
-            EVENT_CARD -> PATH_EVENT_POST
-            else -> {
-                "unknow"
-            }
+    /**
+     * exclude the authors in user's black list, closed gifts
+     * */
+    private fun getFilteredEvents(allEvents: List<EventPost>): List<EventPost> {
+        return allEvents.filterNot {
+            userBlackList.contains(it.author.uid) &&
+                    it.status == EventStatusType.WAITING.code
         }
+    }
 
-        val docId = card.id
+    fun onGiftCardPrepare(gifts: List<GiftPost>) {
+        if (gifts.isNotEmpty()) {
+            for (item in gifts) {
+                val newCard = Cards(
+                    id = item.id,
+                    title = item.title,
+                    description = item.description,
+                    createdTime = item.createdTime,
+                    eventTime = "",
+                    postType = GIFT_CARD,
+                    image = item.image,
+                    postLocation = item.location,
+                    whoLiked = item.whoLiked
+                )
+                cardsViewList.add(newCard)
+            }
+            hasGiftCardsCreated = true
+        }
+        _cards.value = cardsViewList.shuffled()
+    }
 
-        if (!isUserLiked) {
-            sendLike(collection, docId)
+    fun onEventCardPrepare(events: List<EventPost>) {
+        if (events.isNotEmpty()) {
+            for (item in events) {
+                val newCard = Cards(
+                    id = item.id,
+                    title = item.title,
+                    description = item.description,
+                    createdTime = item.createdTime,
+                    eventTime = WeShareApplication.instance.getString(
+                        R.string.preview_event_time,
+                        item.startTime.toDisplayDateFormat(),
+                        item.endTime.toDisplayDateFormat()
+                    ),
+                    postType = EVENT_CARD,
+                    image = item.image,
+                    postLocation = item.location,
+                    whoLiked = item.whoLiked
+                )
+                cardsViewList.add(newCard)
+            }
+            hasEventCardsCreated = true
+        }
+        _cards.value = cardsViewList.shuffled()
+    }
+
+    fun onPostLikePressed(card: Cards, hasUserLiked: Boolean) {
+        val collection =
+            when (card.postType) {
+                GIFT_CARD -> PATH_GIFT_POST
+                EVENT_CARD -> PATH_EVENT_POST
+                else -> {
+                    ""
+                }
+            }
+
+        if (!hasUserLiked) {
+            sendLike(collection, card.id)
         } else {
-            cancelLike(collection, docId)
+            cancelLike(collection, card.id)
         }
     }
 
@@ -221,8 +232,8 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
                 val result = repository.updateFieldValue(
                     collection = collection,
                     docId = doc,
-                    field = Const.FIELD_WHO_LIKED,
-                    value = FieldValue.arrayUnion(userInfo!!.uid)
+                    field = FIELD_WHO_LIKED,
+                    value = FieldValue.arrayUnion(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -253,8 +264,8 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
                 val result = repository.updateFieldValue(
                     collection = collection,
                     docId = doc,
-                    field = Const.FIELD_WHO_LIKED,
-                    value = FieldValue.arrayRemove(userInfo!!.uid)
+                    field = FIELD_WHO_LIKED,
+                    value = FieldValue.arrayRemove(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -277,11 +288,20 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
         }
     }
 
-    fun displayCardDetails(card: Cards) {
+    fun onNavigateToDetail(card: Cards) {
         when (card.postType) {
-            0 -> _navigateToSelectedGift.value = _gifts.value?.single { it.id == card.id }
-            1 -> _navigateToSelectedEvent.value = _events.value?.single { it.id == card.id }
+            GIFT_CARD -> _navigateToSelectedGift.value = getGiftResult(card)
+            EVENT_CARD -> _navigateToSelectedEvent.value = getEventResult(card)
         }
+    }
+
+    private fun getGiftResult(card: Cards): GiftPost? {
+        return _gifts.value?.find { it.id == card.id }
+    }
+
+
+    private fun getEventResult(card: Cards): EventPost? {
+        return _events.value?.find { it.id == card.id }
     }
 
     fun displayCardDetailsComplete() {
@@ -289,22 +309,25 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
         _navigateToSelectedEvent.value = null
     }
 
+
+    /**
+     * observe card recycleView position for map marker window reveal use
+     * */
     fun onGalleryScrollChange(
         layoutManager: RecyclerView.LayoutManager?,
         linearSnapHelper: LinearSnapHelper,
     ) {
-
         val snapView = linearSnapHelper.findSnapView(layoutManager)
+
         snapView?.let {
             layoutManager?.getPosition(snapView)?.let {
                 if (it != snapPosition.value) {
-                    _snapPosition.value = it % cards.value!!.size
+
+                    cards.value?.let { cards ->
+                        _snapPosition.value = it % cards.size
+                    }
                 }
             }
         }
-    }
-
-    fun saveMapInfo(map: GoogleMap) {
-        googleMap = map
     }
 }

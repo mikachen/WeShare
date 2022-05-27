@@ -35,7 +35,7 @@ import com.zoe.weshare.util.UserManager.weShareUser
 
 class PostEventFragment : Fragment() {
 
-    companion object{
+    companion object {
         const val PICK_IMAGE_REQUEST = 151
     }
 
@@ -46,7 +46,7 @@ class PostEventFragment : Fragment() {
     private lateinit var binding: FragmentPostEventBinding
     private lateinit var sortAdapter: ArrayAdapter<String>
 
-    private val whatToPostAnimate: Animation by lazy {
+    private val helloMsgAnimate: Animation by lazy {
         AnimationUtils.loadAnimation(
             requireContext(),
             R.anim.event_checkin_success
@@ -63,12 +63,12 @@ class PostEventFragment : Fragment() {
 
         binding = FragmentPostEventBinding.inflate(inflater, container, false)
 
-        viewModel.event.observe(viewLifecycleOwner) {
+        viewModel.draftEventInput.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    PostEventFragmentDirections.actionPostEventFragmentToSearchLocationFragment(
-                        newEvent = it,
-                        newGift = null
+                    PostEventFragmentDirections.actionPostEventToSearchLocation(
+                        draftEvent = it,
+                        draftGift = null
                     )
                 )
                 viewModel.navigateNextComplete()
@@ -83,9 +83,11 @@ class PostEventFragment : Fragment() {
     }
 
     private fun setupViewAndBtn() {
-        whatToPostAnimate.duration = 500
+        val duration = 500L
 
-        binding.titleWhatToPost.startAnimation(whatToPostAnimate)
+        helloMsgAnimate.duration = duration
+
+        binding.titleWhatToPost.startAnimation(helloMsgAnimate)
 
         binding.nextButton.setOnClickListener {
             if (checkPermission()) {
@@ -114,18 +116,20 @@ class PostEventFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK &&
-            data != null && data.data != null
-        ) {
-            imagePathUri = data.data!!
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
 
-            try {
+            if (data != null) {
+                imagePathUri = data.data
 
-                binding.buttonImagePreviewHolder.setImageURI(imagePathUri)
+                try {
 
-            } catch (e: Exception) {
+                    binding.buttonImagePreviewHolder.setImageURI(imagePathUri)
 
-                e.printStackTrace()
+                } catch (e: Exception) {
+
+                    e.printStackTrace()
+                }
+
             }
         }
     }
@@ -138,27 +142,31 @@ class PostEventFragment : Fragment() {
         val description = binding.editDescription.text.toString().trim()
         val datePick = binding.editDatePicker.text.toString()
 
-        if (checkDataIntegrity(title, sort, volunteerNeeds, description, datePick)) {
+        val isCollectComplete = verifyData(title, sort, volunteerNeeds, description, datePick)
+
+        if (isCollectComplete) {
             viewModel.fetchUserInput(
                 title,
                 sort,
                 volunteerNeeds,
                 description,
-                imagePathUri!!,
-                startTime!!,
-                endTime!!
+                imagePathUri ?: return,
+                startTime ?: return,
+                endTime ?: return
             )
-        } else {
-            return
         }
     }
 
-    private fun checkDataIntegrity(
+
+    /**
+     *  error handle all input data , and must not be empty or null
+     * */
+    private fun verifyData(
         title: String,
         sort: String,
         volunteerNeeds: String,
         description: String,
-        datePick: String,
+        datePick: String
     ): Boolean {
 
         when {
@@ -217,6 +225,7 @@ class PostEventFragment : Fragment() {
     }
 
     private fun setupDatePicker() {
+        val tag = "date_picker"
 
         val dateRangePicker =
             MaterialDatePicker.Builder.dateRangePicker()
@@ -224,7 +233,7 @@ class PostEventFragment : Fragment() {
                 .build()
 
         binding.editDatePicker.setOnClickListener {
-            dateRangePicker.show(requireActivity().supportFragmentManager, "date_picker")
+            dateRangePicker.show(requireActivity().supportFragmentManager, tag)
         }
 
         dateRangePicker.addOnPositiveButtonClickListener { datePick ->
@@ -259,13 +268,12 @@ class PostEventFragment : Fragment() {
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) {
-
                     showRationaleDialog()
                 }
 
                 override fun onPermissionRationaleShouldBeShown(
                     permission: PermissionRequest?,
-                    token: PermissionToken?
+                    token: PermissionToken?,
                 ) {
                     showRationaleDialog()
                 }
@@ -277,6 +285,7 @@ class PostEventFragment : Fragment() {
             .setTitle(getString(R.string.alert_require_location_permission))
             .setMessage(getString(R.string.alert_require_location_permission_msg))
             .setPositiveButton(getString(R.string.confirm_yes)) { _, _ ->
+
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivityForResult(intent, 111)
             }

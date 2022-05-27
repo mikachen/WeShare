@@ -66,7 +66,7 @@ class SendNotificationService : Service() {
 
             when (
                 val result =
-                    WeShareApplication.instance.repository.getUserInfo(weShareUser!!.uid)
+                    WeShareApplication.instance.repository.getUserInfo(weShareUser.uid)
             ) {
                 is Result.Success -> {
                     _error.value = null

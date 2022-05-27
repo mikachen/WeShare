@@ -23,10 +23,10 @@ import kotlinx.coroutines.launch
 
 class CheckInViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo?,
+    private val userInfo: UserInfo
 ) : ViewModel() {
 
-    private lateinit var targetEvent: EventPost
+    private lateinit var event: EventPost
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -43,8 +43,8 @@ class CheckInViewModel(
     val error: LiveData<String?>
         get() = _error
 
-    fun fetchArg(arg: EventPost) {
-        targetEvent = arg
+    fun setEvent(event: EventPost) {
+        this.event = event
     }
 
     fun checkInEvent(doc: String) {
@@ -56,7 +56,7 @@ class CheckInViewModel(
                     collection = PATH_EVENT_POST,
                     docId = doc,
                     field = FIELD_EVENT_CHECKED_IN,
-                    value = FieldValue.arrayUnion(userInfo!!.uid)
+                    value = FieldValue.arrayUnion(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
@@ -85,8 +85,7 @@ class CheckInViewModel(
         val log = OperationLog(
             logType = LogType.EVENT_CHECK_IN.value,
             logMsg = WeShareApplication.instance.getString(
-                R.string.log_msg_event_check_in,
-                userInfo!!.name, targetEvent.title),
+                R.string.log_msg_event_check_in, userInfo.name, event.title),
             postDocId = doc,
             operatorUid = userInfo.uid
         )

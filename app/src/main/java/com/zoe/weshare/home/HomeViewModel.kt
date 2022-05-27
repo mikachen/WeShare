@@ -12,7 +12,6 @@ import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.GiftStatusType
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.userBlackList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,8 +54,6 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
     val navigateToSelectedEvent: LiveData<EventPost?>
         get() = _navigateToSelectedEvent
 
-    var isGiftCardsComplete: Boolean = false
-    var isEventCardsComplete: Boolean = false
 
     init {
         getGiftsResult()
@@ -104,14 +101,17 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
+
+    /**
+     * exclude the authors in user's black list, closed gifts
+     * show gifts with like press > 5
+     * */
     private fun filterGift(gifts: List<GiftPost>) {
 
         val list = gifts.filter {
-            !userBlackList.contains(it.author!!.uid) &&
-
-            it.status != GiftStatusType.CLOSED.code &&
-
-                    it.whoLiked.size >= 2
+            !userBlackList.contains(it.author.uid) &&
+                    it.status != GiftStatusType.CLOSED.code &&
+                    it.whoLiked.size >= 5
         } as MutableList
 
         list.sortByDescending { it.whoLiked.size }
@@ -148,10 +148,13 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
+
+    /**
+     * exclude user's blacklist author
+     * */
     private fun filterEvent(event: List<EventPost>) {
         _events.value = event.filter {
-            !userBlackList.contains(it.author!!.uid) &&
-                    it.whoAttended.size >= 4 }
+            !userBlackList.contains(it.author.uid) }
     }
 
     fun displayEventDetails(event: EventPost) {
@@ -168,5 +171,11 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     fun displayGiftDetailsComplete() {
         _navigateToSelectedGift.value = null
+    }
+
+    fun refreshHomeDataResult() {
+        getGiftsResult()
+        getEventsResult()
+        getLiveAllLogsResult()
     }
 }

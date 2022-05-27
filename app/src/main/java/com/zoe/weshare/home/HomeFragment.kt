@@ -36,10 +36,12 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var tickerAdapter: TickerAdapter
     private lateinit var showcaseView: ShowcaseView
 
+    private var refreshHomePage: Boolean = false
+
     val viewModel by viewModels<HomeViewModel> { getVmFactory() }
     private lateinit var binding: FragmentHomeBinding
 
-    var counter = 0
+    private var hintStepCounts = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,12 +51,16 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        if (refreshHomePage) {
+            refreshHomePage = false
+            viewModel.refreshHomeDataResult()
+        }
+
         viewModel.gifts.observe(viewLifecycleOwner) {
             hotGiftAdapter.submitList(it)
         }
 
         viewModel.events.observe(viewLifecycleOwner) {
-            // zero will cause headerAdapter crash cause i set infinity items adapter
             if (it.isNotEmpty()) {
                 headerAdapter.submitEvents(it)
             }
@@ -98,7 +104,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private fun setupButton() {
         binding.buttonNewbieHint.setOnClickListener {
-            setShowCase()
+            displayShowCase()
         }
         binding.buttonCheckEvents.setOnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalEventsBrowseFragment())
@@ -111,7 +117,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun setShowCase() {
+    fun displayShowCase() {
 
         val lps = RelativeLayout.LayoutParams(
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -128,15 +134,15 @@ class HomeFragment : Fragment(), View.OnClickListener {
             .setTarget(NONE)
             .withNewStyleShowcase()
             .setStyle(R.style.CustomShowcaseTheme)
-            .setContentTitle("歡迎進入WeShare，恭喜您已成功地完成共享的第一步！")
-            .setContentText("讓我為您做個操作介紹吧:)")
+            .setContentTitle(getString(R.string.hint_welcome_msg))
+            .setContentText(getString(R.string.hint_welcome_msg_sub))
             .setOnClickListener(this)
             .build()
 
         showcaseView.setButtonPosition(lps)
-        showcaseView.setButtonText("下一步")
+        showcaseView.setButtonText(getString(R.string.hint_next_btn_text))
 
-        setupHintCoverView()
+        showHintCoverView()
     }
 
     private fun setupHeaderGallery() {
@@ -170,7 +176,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
                             RecyclerView.State(),
                             manager.findLastVisibleItemPosition() + 1
                         )
-                    } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+                    } else if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1))
+                    {
                         manager.smoothScrollToPosition(
                             headerRv,
                             RecyclerView.State(), 0
@@ -211,7 +218,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
         logTickerRv.adapter = tickerAdapter
         logTickerRv.layoutManager = manager
 
-        // disable user interact
+        // disable touch event
         logTickerRv.addOnItemTouchListener(object : RecyclerView.SimpleOnItemTouchListener() {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 return true
@@ -239,13 +246,13 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        when (counter) {
+        when (hintStepCounts) {
 
-            0 ->
-                showcaseView.apply {
-                    setShowcase(ViewTarget((activity as MainActivity).binding.fabsLayoutView), false)
+            0 -> showcaseView.apply {
+                    setShowcase(ViewTarget((activity as MainActivity).binding.fabsLayoutView),
+                        false)
                     setContentTitle("")
-                    setContentText("點擊+按鈕可以刊登贈品或刊登活動")
+                    setContentText(getString(R.string.hint_post_button))
                     (activity as MainActivity).onMainFabClick()
                 }
 
@@ -253,29 +260,29 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 (activity as MainActivity).onMainFabClick()
 
                 setShowcase(ViewTarget(binding.showcaseCenterLine), false)
-                setContentText("點擊查看活動與查看贈品可以瀏覽當前最新的刊登項目")
+                setContentText(getString(R.string.hint_browse_button))
             }
 
             2 -> showcaseView.apply {
                 setShowcase(ViewTarget(binding.buttonCurrentHeros), false)
-                setContentText("點擊英雄榜可以查看到用戶的貢獻排名")
+                setContentText(getString(R.string.hint_hero_chart))
             }
 
             3 -> showcaseView.apply {
                 setShowcase(ViewTarget((activity as MainActivity).binding.notification), false)
-                setContentText("點擊小鈴鐺可以看到最新的通知訊息")
+                setContentText(getString(R.string.hint_notification_button))
             }
 
             4 -> showcaseView.apply {
                 setTarget(NONE)
-                setContentText("您可以在個人頁面中找到並管理您刊登過的贈品與活動")
+                setContentText(getString(R.string.hint_profile))
             }
 
             5 -> showcaseView.apply {
                 setTarget(NONE)
-                setContentTitle("再次歡迎您的加入，馬上開始和大家們共享交流物資吧！ :)")
+                setContentTitle(getString(R.string.hint_goodbye_title))
                 setContentText("")
-                setButtonText("關閉")
+                setButtonText(getString(R.string.hint_close_btn_text))
             }
 
             6 -> {
@@ -283,24 +290,26 @@ class HomeFragment : Fragment(), View.OnClickListener {
                 hideCoverView()
             }
         }
+        hintStepCounts++
 
-        counter++
-
-        if (counter == 7) {
-            counter = 0
+        if (hintStepCounts == 7) {
+            hintStepCounts = 0
         }
     }
 
-    private fun setupHintCoverView() {
-
+    private fun showHintCoverView() {
         (activity as MainActivity).binding.newbieHintCoverView.apply {
             setOnClickListener { }
             visibility = View.VISIBLE
         }
-
     }
 
     private fun hideCoverView() {
         (activity as MainActivity).binding.newbieHintCoverView.visibility = View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        refreshHomePage = true
     }
 }

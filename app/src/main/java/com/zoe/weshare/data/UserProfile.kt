@@ -11,7 +11,7 @@ data class UserProfile(
     var follower: List<String> = emptyList(),
     var following: List<String> = emptyList(),
     var introMsg: String = "",
-    var contribution: Contribution? = null,
+    var contribution: Contribution = Contribution(),
     var blackList: MutableList<String> = mutableListOf(),
 ) : Parcelable
 

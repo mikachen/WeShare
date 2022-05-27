@@ -27,7 +27,6 @@ import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.single.PermissionListener
-import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.data.EventPost
@@ -58,7 +57,7 @@ class EventCheckInFragment : Fragment() {
     private lateinit var surfaceHolder: SurfaceHolder
     private var isCameraPermissionGranted = false
     private var scannedValue = ""
-    private var scanComplete = false
+    private var hasScanComplete = false
 
     private val viewModel by viewModels<CheckInViewModel> { getVmFactory(weShareUser) }
 
@@ -77,7 +76,7 @@ class EventCheckInFragment : Fragment() {
 
         event = EventCheckInFragmentArgs.fromBundle(requireArguments()).event
 
-        viewModel.fetchArg(event)
+        viewModel.setEvent(event)
 
         if (isCameraPermissionGranted) {
 
@@ -88,11 +87,10 @@ class EventCheckInFragment : Fragment() {
 
             viewModel.saveLogComplete.observe(viewLifecycleOwner) {
                 it?.let {
-                    sendNotificationToTarget(event.author!!.uid, it)
+                    sendNotificationToTarget(event.author.uid, it)
 
                     findNavController().navigate(EventCheckInFragmentDirections
-                        .actionEventCheckInFragmentToEventDetailFragment(event)
-                    )
+                        .actionEventCheckInFragmentToEventDetailFragment(event))
 
                     activity.showToast(getString(R.string.toast_check_in_successfully))
 
@@ -113,7 +111,7 @@ class EventCheckInFragment : Fragment() {
 
         cameraSource = CameraSource.Builder(requireContext(), barcodeDetector)
             .setRequestedPreviewSize(1920, 1080)
-            .setAutoFocusEnabled(true) // you should add this feature
+            .setAutoFocusEnabled(true)
             .build()
 
         barcodeDetector.setProcessor(object : Detector.Processor<Barcode> {
@@ -128,14 +126,14 @@ class EventCheckInFragment : Fragment() {
                     scannedValue = barcodes.valueAt(0).rawValue
 
                     //  must run on main thread
-                    (activity as MainActivity).runOnUiThread {
+                    requireActivity().runOnUiThread {
 
                         cameraSource.stop()
                         binding.barcodeLine.clearAnimation()
 
                         //prevent double acquire data
-                        if (!scanComplete) {
-                            scanComplete = true
+                        if (!hasScanComplete) {
+                            hasScanComplete = true
 
                             if (isQrcodeDataCorrect()) {
                                 viewModel.checkInEvent(scannedValue)
@@ -166,8 +164,8 @@ class EventCheckInFragment : Fragment() {
                 holder: SurfaceHolder,
                 format: Int,
                 width: Int,
-                height: Int,
-            ) {
+                height: Int) {
+
                 try {
                     cameraSource.start(holder)
                 } catch (e: IOException) {
@@ -195,20 +193,21 @@ class EventCheckInFragment : Fragment() {
                 cameraSource.start(surfaceHolder)
                 binding.barcodeLine.startAnimation(aniSlide)
 
-                scanComplete = false
+                hasScanComplete = false
 
                 dialog.cancel()
             }
 
             .setNegativeButton(getString(R.string.force_end_no)) { dialog, id ->
+
                 dialog.cancel()
                 findNavController().navigateUp()
             }.show()
     }
 
     private fun checkCameraPermission(): Boolean {
-        return ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA
-        ) == PackageManager.PERMISSION_GRANTED
+        return ActivityCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestCameraPermissions() {
@@ -216,6 +215,7 @@ class EventCheckInFragment : Fragment() {
             .withPermission(Manifest.permission.CAMERA)
             .withListener(object : PermissionListener {
                 override fun onPermissionGranted(response: PermissionGrantedResponse) {
+
                     findNavController().navigate(
                         EventCheckInFragmentDirections.actionEventCheckInFragmentSelf(event)
                     )
@@ -227,8 +227,8 @@ class EventCheckInFragment : Fragment() {
 
                 override fun onPermissionRationaleShouldBeShown(
                     permission: PermissionRequest?,
-                    token: PermissionToken?,
-                ) {
+                    token: PermissionToken?) {
+
                     showRationaleDialog()
                 }
             }).check()

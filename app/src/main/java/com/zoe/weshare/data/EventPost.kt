@@ -7,13 +7,13 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class EventPost(
     var id: String = "",
-    var author: UserInfo? = null,
+    var author: UserInfo = UserInfo(),
     var title: String = "",
     var sort: String = "",
     var volunteerNeeds: Int = -1,
     var description: String = "",
     var image: String = "",
-    var location: PostLocation? = null,
+    var location: PostLocation = PostLocation(),
     var endTime: Long = -1,
     var startTime: Long = -1,
     var createdTime: Long = -1,
@@ -24,4 +24,4 @@ data class EventPost(
     var whoVolunteer: List<String> = emptyList(),
     var whoCheckedIn: List<String> = emptyList(),
 
-) : Parcelable
+    ) : Parcelable

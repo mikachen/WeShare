@@ -91,32 +91,6 @@ class DefaultWeShareRepository(
         return remoteDataSource.sendMessage(docId, comment)
     }
 
-    override suspend fun likeOnPostComment(
-        collection: String,
-        docId: String,
-        subCollection: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.likeOnPostComment(collection, docId, subCollection, subDocId, uid)
-    }
-
-    override suspend fun cancelLikeOnPostComment(
-        collection: String,
-        docId: String,
-        subCollection: String,
-        subDocId: String,
-        uid: String,
-    ): Result<Boolean> {
-        return remoteDataSource.cancelLikeOnPostComment(
-            collection,
-            docId,
-            subCollection,
-            subDocId,
-            uid
-        )
-    }
-
     override suspend fun saveLastMsgRecord(docId: String, message: Comment): Result<Boolean> {
         return remoteDataSource.saveLastMsgRecord(docId, message)
     }

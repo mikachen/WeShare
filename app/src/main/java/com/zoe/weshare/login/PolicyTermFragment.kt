@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentPolicyTermBinding
 import com.zoe.weshare.ext.showToast
@@ -23,11 +22,10 @@ class PolicyTermFragment : Fragment() {
 
         binding = FragmentPolicyTermBinding.inflate(inflater, container, false)
 
+        val navigateFromProfile = PolicyTermFragmentArgs.fromBundle(requireArguments()).fromProfile
 
-        val isFromProfile = PolicyTermFragmentArgs.fromBundle(requireArguments()).fromProfile
 
-
-        if (isFromProfile){
+        if (navigateFromProfile){
             binding.layoutConsentSection.visibility = View.GONE
         }else {
             binding.layoutConsentSection.visibility = View.VISIBLE
@@ -51,14 +49,16 @@ class PolicyTermFragment : Fragment() {
 
         binding.buttonAgree.setOnClickListener {
             if (hasUserAgreed()){
-                findNavController().navigate(PolicyTermFragmentDirections.actionPolicyTermFragmentToLoginFragment())
+                findNavController().navigate(
+                    PolicyTermFragmentDirections.actionPolicyTermFragmentToLoginFragment())
             }else{
                 activity.showToast(getString(R.string.toast_must_check_agree))
             }
         }
 
         binding.buttonDisagree.setOnClickListener {
-            findNavController().navigate(PolicyTermFragmentDirections.actionPolicyTermFragmentToLoginFragment())
+            findNavController().navigate(
+                PolicyTermFragmentDirections.actionPolicyTermFragmentToLoginFragment())
         }
 
     }

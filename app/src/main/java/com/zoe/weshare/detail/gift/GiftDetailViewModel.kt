@@ -1,6 +1,5 @@
 package com.zoe.weshare.detail.gift
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,43 +8,47 @@ import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.*
 import com.zoe.weshare.data.source.WeShareRepository
-import com.zoe.weshare.detail.hasUserLikedBefore
+import com.zoe.weshare.detail.isUserLikedBefore
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.ChatRoomType
-import com.zoe.weshare.util.Const
+import com.zoe.weshare.util.Const.FIELD_USER_BLACKLIST
 import com.zoe.weshare.util.Const.FIELD_WHO_LIKED
 import com.zoe.weshare.util.Const.PATH_GIFT_POST
+import com.zoe.weshare.util.Const.PATH_USER
 import com.zoe.weshare.util.Const.SUB_PATH_GIFT_USER_WHO_REQUEST
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.userBlackList
+import com.zoe.weshare.util.UserManager.weShareUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class GiftDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo?) :
+class GiftDetailViewModel(private val repository: WeShareRepository, val userInfo: UserInfo) :
     ViewModel() {
+
+    private lateinit var gift: GiftPost
 
     var liveGiftDetailResult = MutableLiveData<GiftPost?>()
     var liveRequestComments = MutableLiveData<List<Comment>>()
-
 
     private var _filteredComments = MutableLiveData<List<Comment>>()
     val filteredComments: LiveData<List<Comment>>
         get() = _filteredComments
 
-    private var _targetUser = MutableLiveData<UserInfo?>()
-    val targetUser: LiveData<UserInfo?>
-        get() = _targetUser
+    private var _onTargetAvatarClicked = MutableLiveData<UserInfo?>()
+    val onTargetAvatarClicked: LiveData<UserInfo?>
+        get() = _onTargetAvatarClicked
 
-    private var _onProfileSearchLoop = MutableLiveData<Int>()
-    val onProfileSearchLoop: LiveData<Int>
-        get() = _onProfileSearchLoop
+    val profileList = mutableListOf<UserProfile>()
+    private var onSearchUserProfile = MutableLiveData<Int>()
 
+    private var _profileSearchComplete = MutableLiveData<Boolean>()
+    val profileSearchComplete: LiveData<Boolean>
+        get() = _profileSearchComplete
 
-    private var _userChatRooms = MutableLiveData<List<ChatRoom>?>()
-    val userChatRooms: LiveData<List<ChatRoom>?>
-        get() = _userChatRooms
+    private var _userChatRoomsResult = MutableLiveData<List<ChatRoom>?>()
+    val userChatRoomsResult: LiveData<List<ChatRoom>?>
+        get() = _userChatRoomsResult
 
     private val _navigateToFormerRoom = MutableLiveData<ChatRoom?>()
     val navigateToFormerRoom: LiveData<ChatRoom?>
@@ -55,13 +58,9 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     val navigateToNewRoom: LiveData<ChatRoom?>
         get() = _navigateToNewRoom
 
-    private var _reportedTarget = MutableLiveData<String>()
-    val reportedTarget: LiveData<String>
-        get() = _reportedTarget
-
-    var blockUserComplete = MutableLiveData<UserProfile>()
-
-    val profileList = mutableListOf<UserProfile>()
+    private val _navigateToRequest = MutableLiveData<GiftPost?>()
+    val navigateToRequest: LiveData<GiftPost?>
+        get() = _navigateToRequest
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -74,14 +73,24 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     val error: LiveData<String?>
         get() = _error
 
-    fun onViewPrepare(gift: GiftPost) {
-        getLiveGiftDetail(gift)
-        getLiveRequestComments(gift)
+    var onReportUserViolation = MutableLiveData<String?>()
+    var onBlockListUser = MutableLiveData<UserProfile?>()
+
+    init {
+        _profileSearchComplete.value = false
+    }
+
+    fun onViewPrepare(selectedGift: GiftPost) {
+        getLiveGiftDetail(selectedGift)
+        getLiveRequestComments(selectedGift)
+    }
+
+    fun setGift(gift: GiftPost){
+        this.gift = gift
     }
 
     private fun getLiveGiftDetail(gift: GiftPost) {
         liveGiftDetailResult = repository.getLiveGiftDetail(gift.id)
-
     }
 
     private fun getLiveRequestComments(gift: GiftPost) {
@@ -92,37 +101,48 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         )
     }
 
+
+    /**
+     * To get user's avatar and name,
+     * this will decide if the user profile has been queried before,
+     * and only sort out the new user profile that haven't been query
+     * */
     fun searchUsersProfile(comments: List<Comment>) {
 
         if (comments.isNotEmpty()) {
+            _profileSearchComplete.value = false
+
             val newUserUid = mutableListOf<String>()
 
             // first entry is always empty
             if (profileList.isEmpty()) {
-                for (i in comments) {
-                    newUserUid.add(i.uid)
+                for (comment in comments) {
+                    newUserUid.add(comment.uid)
                 }
 
-            }
-            else {
-                for (i in comments) {
-                    if (!profileList.any { it.uid == i.uid }) {
-                        newUserUid.add(i.uid)
+            } else {
+                for (comment in comments) {
+                    if (alreadyGotUserProfile(comment)) {
+                        newUserUid.add(comment.uid)
                     }
                 }
             }
 
-            _onProfileSearchLoop.value = newUserUid.size
+            if (newUserUid.size == 0) {
+                _profileSearchComplete.value = true
 
-            Log.d("newUserUid","$newUserUid,${_onProfileSearchLoop.value}")
-            for (uid in newUserUid) {
-                getUserProfile(uid)
+            } else {
+                onSearchUserProfile.value = newUserUid.size
+
+                for (uid in newUserUid) {
+                    getUserProfile(uid)
+                }
             }
         }
-        else{
-            //no comment case
-            return
-        }
+    }
+
+    private fun alreadyGotUserProfile(comment: Comment): Boolean {
+        return !profileList.any { it.uid == comment.uid }
     }
 
     private fun getUserProfile(uid: String) {
@@ -135,7 +155,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    profileList.add(result.data!!)
+                    val profile = result.data
+
+                    if (profile != null) {
+                        profileList.add(profile)
+                    }
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -151,12 +175,20 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                     _status.value = LoadApiStatus.ERROR
                 }
             }
-            _onProfileSearchLoop.value = _onProfileSearchLoop.value?.minus(1)
+            onSearchUserProfile.value = onSearchUserProfile.value?.minus(1)
+
+            if (onSearchUserProfile.value == 0) {
+                _profileSearchComplete.value = true
+            }
         }
     }
 
+    fun isGetProfileDone(): Boolean {
+        return profileSearchComplete.value == true && profileList.isNotEmpty()
+    }
+
     fun onPostLikePressed(gift: GiftPost) {
-        if (!hasUserLikedBefore(gift.whoLiked)) {
+        if (!isUserLikedBefore(gift.whoLiked)) {
             sendLike(gift.id)
         } else {
             cancelLike(gift.id)
@@ -167,13 +199,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when (val result = repository.updateFieldValue(
                     collection = PATH_GIFT_POST,
                     docId = doc,
                     field = FIELD_WHO_LIKED,
-                    value = FieldValue.arrayUnion(userInfo!!.uid)
-                )
+                    value = FieldValue.arrayUnion(userInfo.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -200,13 +230,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when (val result = repository.updateFieldValue(
                     collection = PATH_GIFT_POST,
                     docId = doc,
                     field = FIELD_WHO_LIKED,
-                    value = FieldValue.arrayRemove(userInfo!!.uid)
-                )
+                    value = FieldValue.arrayRemove(userInfo.uid))
             ) {
 
                 is Result.Success -> {
@@ -232,7 +260,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
     fun onCommentsLikePressed(comment: Comment) {
 
-        if (!hasUserLikedBefore(comment.whoLiked)) {
+        if (!isUserLikedBefore(comment.whoLiked)) {
             sendLikeOnComment(comment.id)
         } else {
             cancelLikeOnComment(comment.id)
@@ -243,14 +271,13 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.likeOnPostComment(
+            when (val result = repository.updateSubCollectionFieldValue(
                     collection = PATH_GIFT_POST,
-                    docId = liveGiftDetailResult.value!!.id,
+                    docId = gift.id,
                     subCollection = SUB_PATH_GIFT_USER_WHO_REQUEST,
                     subDocId = subDoc,
-                    uid = userInfo!!.uid
-                )
+                    field = FIELD_WHO_LIKED,
+                    value = FieldValue.arrayUnion(userInfo.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -276,14 +303,13 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.cancelLikeOnPostComment(
+            when (val result = repository.updateSubCollectionFieldValue(
                     collection = PATH_GIFT_POST,
-                    docId = liveGiftDetailResult.value!!.id,
+                    docId = gift.id,
                     subCollection = SUB_PATH_GIFT_USER_WHO_REQUEST,
                     subDocId = subDoc,
-                    uid = userInfo!!.uid
-                )
+                    field = FIELD_WHO_LIKED,
+                    value = FieldValue.arrayRemove(userInfo.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -311,10 +337,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
 
             val result = repository.getUserChatRooms(user.uid)
 
-            _userChatRooms.value = when (result) {
+            _userChatRoomsResult.value = when (result) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
                     result.data
                 }
                 is Result.Fail -> {
@@ -338,26 +365,32 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     }
 
     fun checkIfPrivateRoomExist(rooms: List<ChatRoom>) {
-        val userUid = liveGiftDetailResult.value!!.author!!.uid
 
-        val result = rooms.filter {
-            it.participants.contains(userUid) && it.type == ChatRoomType.PRIVATE.value
-        }
-
-        if (result.isNotEmpty()) {
-            // there was chat room history with author & ChatRoomType is PRIVATE
-            _navigateToFormerRoom.value = result.single()
+        if (hasFormerRoomWithAuthor(rooms)) {
+            _navigateToFormerRoom.value = getFormerRoom(rooms)
         } else {
-            // no private chat with author before
+
             onNewRoomPrepare()
         }
+    }
+
+    private fun hasFormerRoomWithAuthor(rooms: List<ChatRoom>): Boolean {
+        // return true if user already have a PRIVATE chatroom with author
+        return rooms.any {
+            it.participants.contains(gift.author.uid) && it.type == ChatRoomType.PRIVATE.value
+        }
+    }
+
+    private fun getFormerRoom(rooms: List<ChatRoom>): ChatRoom {
+        return rooms.single {
+            it.participants.contains(gift.author.uid) && it.type == ChatRoomType.PRIVATE.value }
     }
 
     fun onNewRoomPrepare() {
         val room = ChatRoom(
             type = ChatRoomType.PRIVATE.value,
-            participants = listOf(userInfo!!.uid, liveGiftDetailResult.value!!.author!!.uid),
-            usersInfo = listOf(userInfo, liveGiftDetailResult.value!!.author!!)
+            participants = listOf(userInfo.uid, gift.author.uid),
+            usersInfo = listOf(userInfo, gift.author)
         )
         createRoom(room)
     }
@@ -370,9 +403,11 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    _navigateToNewRoom.value = room.apply {
-                        id = result.data
-                    }
+
+                    val roomId = result.data
+                    room.id = roomId
+
+                    _navigateToNewRoom.value = room
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -391,39 +426,26 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
         }
     }
 
-    fun onNavigateToTargetProfile(uid: String) {
-        val target = UserInfo()
-        target.uid = uid
-
-        _targetUser.value = target
+    fun getSpeakerProfile(comment: Comment): UserProfile? {
+        return profileList.singleOrNull { it.uid == comment.uid }
     }
 
-    fun navigateToRoomComplete() {
-        _userChatRooms.value = null
-        _navigateToFormerRoom.value = null
-        _navigateToNewRoom.value = null
-    }
-
-    fun navigateToProfileComplete() {
-        _targetUser.value = null
-    }
-
-    fun blockThisUser(target: UserProfile) {
+    fun blockUser(target: UserProfile) {
         _status.value = LoadApiStatus.LOADING
 
         coroutineScope.launch {
-            when (
-                val result = repository.updateFieldValue(
-                    collection = Const.PATH_USER,
-                    docId = UserManager.weShareUser!!.uid,
-                    field = Const.FIELD_USER_BLACKLIST,
-                    value = FieldValue.arrayUnion(target.uid)
-                )
+            when (val result = repository.updateFieldValue(
+                    collection = PATH_USER,
+                    docId = weShareUser.uid,
+                    field = FIELD_USER_BLACKLIST,
+                    value = FieldValue.arrayUnion(target.uid))
             ) {
                 is Result.Success -> {
-                    userBlackList.add(target.uid)
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
 
-                    blockUserComplete.value = target
+                    userBlackList.add(target.uid)
+                    onBlockListUser.value = target
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -449,15 +471,40 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
     fun refreshCommentBoard() {
 
         filterRequestComments()
-        blockUserComplete.value = null
+        onBlockListUser.value = null
+    }
+
+
+    fun onNavigateToTargetProfile(uid: String) {
+        val target = UserInfo()
+        target.uid = uid
+
+        _onTargetAvatarClicked.value = target
+    }
+
+    fun onNavigateToRequestDialog() {
+        _navigateToRequest.value = gift
+    }
+
+    fun onNavigateToRequestComplete() {
+        _navigateToRequest.value = null
+    }
+
+    fun navigateToRoomComplete() {
+        _userChatRoomsResult.value = null
+        _navigateToFormerRoom.value = null
+        _navigateToNewRoom.value = null
+    }
+
+    fun navigateToProfileComplete() {
+        _onTargetAvatarClicked.value = null
     }
 
     fun onNavigateToReportDialog(target: UserProfile) {
-
-        _reportedTarget.value = target.uid
+        onReportUserViolation.value = target.uid
     }
 
-    fun navigateToReportComplete(){
-        _reportedTarget.value = null
+    fun navigateToReportComplete() {
+        onReportUserViolation.value = null
     }
 }

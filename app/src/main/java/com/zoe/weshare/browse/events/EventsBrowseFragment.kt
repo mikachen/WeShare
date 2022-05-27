@@ -45,14 +45,16 @@ class EventsBrowseFragment : Fragment() {
                 viewModel.onNavigateEventDetailsComplete()
 
                 binding.eventsSearchview.apply {
+                    // close search view
                     isIconified = true
+
+                    // clear search view text
                     setQuery("", false)
                 }
             }
         }
 
-        viewModel.onSearchEmpty.observe(viewLifecycleOwner) {
-
+        viewModel.emptyQuery.observe(viewLifecycleOwner) {
             it?.let {
                 if (it) {
                     binding.hintNoItem.visibility = View.VISIBLE
@@ -79,10 +81,11 @@ class EventsBrowseFragment : Fragment() {
         recyclerView = binding.recyclerview
 
         recyclerView.adapter = adapter
-        manager.also { recyclerView.layoutManager = it }
+        recyclerView.layoutManager = manager
 
         recyclerView.setOnTouchListener { view, event ->
             binding.eventsSearchview.isIconified = true
+
             view.hideKeyboard()
             false
         }
@@ -107,9 +110,9 @@ class EventsBrowseFragment : Fragment() {
         })
     }
 
+    /** To prevent the searchView got triggered by query text */
     override fun onStop() {
         super.onStop()
-
         onNavigateBack = true
     }
 }

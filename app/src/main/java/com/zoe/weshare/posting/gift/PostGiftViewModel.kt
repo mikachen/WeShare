@@ -18,8 +18,10 @@ import kotlinx.coroutines.launch
 
 class PostGiftViewModel(
     private val repository: WeShareRepository,
-    private val author: UserInfo?,
+    private val userInfo: UserInfo,
 ) : ViewModel() {
+
+    private lateinit var giftDraft: GiftPost
 
     var postingProgress = MutableLiveData<Int?>()
 
@@ -27,9 +29,9 @@ class PostGiftViewModel(
 
     var locationChoice: PostLocation? = null
 
-    private var _gift = MutableLiveData<GiftPost?>()
-    val gift: LiveData<GiftPost?>
-        get() = _gift
+    private var _tempGiftInput = MutableLiveData<GiftPost?>()
+    val draftGiftInput: LiveData<GiftPost?>
+        get() = _tempGiftInput
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -50,8 +52,8 @@ class PostGiftViewModel(
     val status: LiveData<LoadApiStatus>
         get() = _status
 
-    fun fetchArgument(gift: GiftPost) {
-        _gift.value = gift
+    fun fetchArgument(arg: GiftPost) {
+        giftDraft = arg
     }
 
     /**
@@ -63,7 +65,7 @@ class PostGiftViewModel(
             _status.value = LoadApiStatus.LOADING
             postingProgress.value = 10
 
-            val imageUri = Uri.parse(gift.value!!.image)
+            val imageUri = Uri.parse(giftDraft.image)
 
             when (val result = repository.uploadImage(imageUri)) {
                 is Result.Success -> {
@@ -72,9 +74,9 @@ class PostGiftViewModel(
                     _status.value = LoadApiStatus.DONE
 
                     val firebaseUrl = result.data
+                    giftDraft.image = firebaseUrl
 
-                    _gift.value!!.image = firebaseUrl
-                    onPostGift.value = gift.value
+                    onPostGift.value = giftDraft
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -109,7 +111,6 @@ class PostGiftViewModel(
 
                     val giftDocId = result.data
 
-
                     onSaveGiftPostLog(giftDocId)
                 }
                 is Result.Fail -> {
@@ -136,11 +137,11 @@ class PostGiftViewModel(
         val log = OperationLog(
             postDocId = docId,
             logType = LogType.POST_GIFT.value,
-            operatorUid = author!!.uid,
+            operatorUid = userInfo.uid,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_post_gift,
-                author.name,
-                gift.value!!.title
+                userInfo.name,
+                giftDraft.title
             )
         )
         saveGiftPostLog(log)
@@ -177,7 +178,7 @@ class PostGiftViewModel(
             latitude = point.latitude.toString(),
             longitude = point.longitude.toString()
         )
-        _gift.value!!.location = locationChoice
+        giftDraft.location = locationChoice as PostLocation
     }
 
     fun onSaveUserInput(
@@ -188,23 +189,27 @@ class PostGiftViewModel(
         imageUri: Uri,
     ) {
         onPostGift.value = GiftPost(
-            author = author,
+            author = userInfo,
             title = title,
             sort = sort,
             condition = condition,
             image = imageUri.toString(),
             description = description
         )
-        _gift.value = onPostGift.value
+        _tempGiftInput.value = onPostGift.value
+    }
+
+    fun hasUserChooseLocation():Boolean {
+        return locationChoice != null
     }
 
     fun navigateNextComplete() {
-        _gift.value = null
+        _tempGiftInput.value = null
     }
 
     fun postGiftComplete() {
         postingProgress.value = null
-        _gift.value = null
+        _tempGiftInput.value = null
         onPostGift.value = null
         _saveLogComplete.value = null
     }

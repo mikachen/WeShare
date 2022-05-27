@@ -70,23 +70,28 @@ class GiftsBrowseAdapter(private val onClickListener: GiftsALLOnClickListener) :
     }
 
     fun filter(query: CharSequence?, viewModel: GiftsBrowseViewModel) {
-        val list = mutableListOf<GiftPost>()
+        val listResult = mutableListOf<GiftPost>()
 
         // perform the data filtering
         if (!query.isNullOrEmpty()) {
-            list.addAll(
+            val lowercaseQuery = query.toString().lowercase(Locale.getDefault())
+
+            listResult.addAll(
                 unfilteredList.filter {
-                    it.title.toLowerCase(Locale.getDefault())
-                        .contains(query.toString().toLowerCase(Locale.getDefault())) ||
-                        it.description.toLowerCase(Locale.getDefault())
-                            .contains(query.toString().toLowerCase(Locale.getDefault()))
+
+                    it.title.lowercase(Locale.getDefault())
+                        .contains(lowercaseQuery) ||
+
+                            it.description.lowercase(Locale.getDefault())
+                                .contains(lowercaseQuery)
                 }
             )
         } else {
-            list.addAll(unfilteredList)
+            listResult.addAll(unfilteredList)
         }
 
-        viewModel.onSearchEmpty.value = list.isEmpty()
-        submitList(list)
+        viewModel.onEmptyQuery(listResult.isEmpty())
+
+        submitList(listResult)
     }
 }

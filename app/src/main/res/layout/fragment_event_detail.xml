@@ -26,7 +26,7 @@
             <ImageView
                 android:id="@+id/event_image"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="300dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
             <View
                 android:id="@+id/translucent_view"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:background="@color/translucent"
                 app:layout_constraintBottom_toBottomOf="@id/event_image"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -48,12 +48,34 @@
                 android:layout_margin="16dp"
                 android:layout_marginStart="8dp"
                 android:textColor="@color/white"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/event_image"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/translucent_view"
                 tools:text="募款：山區浪浪需要你" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/layout_status_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                app:cardCornerRadius="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/translucent_view">
+
+                <TextView
+                    android:id="@+id/text_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:padding="4dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    tools:background="@color/app_work_orange1"
+                    tools:text="已結案" />
+
+            </androidx.cardview.widget.CardView>
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -64,28 +86,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/event_image">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/layout_status_tag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    app:cardCornerRadius="4dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/text_status"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center_horizontal"
-                        android:padding="4dp"
-                        android:textColor="@color/white"
-                        android:textSize="18sp"
-                        tools:background="@color/app_work_orange1"
-                        tools:text="已結案" />
-
-                </androidx.cardview.widget.CardView>
-
                 <TextView
                     android:id="@+id/title_event_period"
                     android:layout_width="wrap_content"
@@ -94,7 +94,7 @@
                     android:layout_marginTop="8dp"
                     android:text="活動時間"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/title_event_period"
                     tools:text="2022.05.07 - 2022.05.08 " />
@@ -115,8 +115,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toTopOf="@id/checkin_complete"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toTopOf="@id/checkin_animation_view"
                     app:layout_constraintStart_toStartOf="@id/text_start_time"
                     app:layout_constraintTop_toBottomOf="@id/text_start_time"
                     tools:text="倒數3小時開始" />
@@ -124,13 +124,13 @@
                 <ToggleButton
                     android:id="@+id/button_attend"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="38dp"
                     android:layout_marginHorizontal="16dp"
                     android:background="@drawable/sl_profile_follow_button"
                     android:textColor="@color/white"
                     android:textOff="我要參加"
                     android:textOn="活動參與中"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toStartOf="@id/button_volunteer"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@id/button_volunteer" />
@@ -138,20 +138,20 @@
                 <ToggleButton
                     android:id="@+id/button_volunteer"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="38dp"
                     android:layout_marginTop="-4dp"
                     android:layout_marginEnd="16dp"
                     android:background="@drawable/sl_profile_message_button"
                     android:textColor="@color/app_work_orange1"
                     android:textOff="志工參與"
                     android:textOn="已登記志工  \u25BC"
-                    android:textSize="15sp"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/button_attend"
-                    app:layout_constraintTop_toBottomOf="@id/checkin_complete" />
+                    app:layout_constraintTop_toBottomOf="@id/checkin_animation_view" />
 
                 <TextView
-                    android:id="@+id/checkin_complete"
+                    android:id="@+id/checkin_animation_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="8dp"
@@ -182,15 +182,15 @@
                     android:layout_marginTop="4dp"
                     android:text="參與詳情"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider" />
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/layout_response_attendee_count"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
                     android:layout_marginTop="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/layout_response_volunteer_need"
@@ -202,30 +202,28 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_marginTop="4dp"
-                            android:text="參與人" />
+                            android:text="參與人"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/text_attendee_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_marginTop="4dp"
-                            android:textSize="18sp"
+                            android:textSize="15sp"
                             tools:text="16" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/layout_response_volunteer_need"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@id/layout_response_attendee_count"
                     app:layout_constraintEnd_toStartOf="@id/layout_response_volunteer_count"
@@ -237,30 +235,28 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_marginTop="4dp"
-                            android:text="志工需求" />
+                            android:text="志工需求"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/text_volunteer_need"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_marginTop="4dp"
-                            android:textSize="18sp"
+                            android:textSize="15sp"
                             tools:text="16" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/layout_response_volunteer_count"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
                     android:layout_marginStart="16dp"
                     app:layout_constraintBottom_toBottomOf="@id/layout_response_attendee_count"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -273,23 +269,21 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:gravity="center"
                         android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_marginTop="4dp"
-                            android:text="志工登記" />
+                            android:text="志工登記"
+                            android:textSize="13sp" />
 
                         <TextView
                             android:id="@+id/text_volunteer_count"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal|center_vertical"
-                            android:layout_marginTop="4dp"
-                            android:textSize="18sp"
-                            tools:text="16" />
+                            android:textSize="15sp"
+                            tools:text="12" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -308,10 +302,10 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/base_user_avatar"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="2dp"
                     app:cardCornerRadius="90dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -331,7 +325,7 @@
                     android:layout_marginStart="16dp"
                     android:maxLines="1"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@id/text_created_time"
                     app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
                     app:layout_constraintTop_toTopOf="@id/base_user_avatar"
@@ -345,7 +339,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="4dp"
                     android:maxLines="1"
-                    android:textSize="16sp"
+                    android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@+id/base_user_avatar"
                     app:layout_constraintStart_toEndOf="@+id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/text_profile_name"
@@ -360,7 +354,7 @@
                     android:maxLines="1"
                     android:text="位置："
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/base_user_avatar" />
 
@@ -371,7 +365,7 @@
                     android:layout_marginTop="4dp"
                     android:maxLines="1"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/title_event_location"
                     tools:text="台北西門" />
@@ -384,7 +378,7 @@
                     android:layout_marginTop="16dp"
                     android:text="分類："
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/text_posted_location" />
 
@@ -394,7 +388,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/title_sort"
                     tools:text="生活用品" />
@@ -407,7 +401,7 @@
                     android:gravity="start"
                     android:text="詳細說明："
                     android:textColor="@color/black"
-                    android:textSize="18sp"
+                    android:textSize="15sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/text_sort" />
 
@@ -421,7 +415,7 @@
                     android:justificationMode="inter_word"
                     android:maxEms="20"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/title_description"
@@ -429,9 +423,9 @@
 
                 <ToggleButton
                     android:id="@+id/button_press_like"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="32dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="28dp"
                     android:background="@drawable/button_toggle_like"
                     android:text=""
                     android:textOff=""
@@ -442,20 +436,20 @@
 
                 <ToggleButton
                     android:id="@+id/button_addition_heart1"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/button_toggle_like"
                     android:text=""
                     android:textOff=""
                     android:textOn=""
-                    app:layout_constraintEnd_toStartOf="@id/button_like"
+                    app:layout_constraintEnd_toStartOf="@id/button_addition_heart2"
                     app:layout_constraintStart_toEndOf="@id/button_press_like"
                     app:layout_constraintTop_toTopOf="@id/button_press_like" />
 
                 <ToggleButton
-                    android:id="@+id/button_like"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:id="@+id/button_addition_heart2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/button_toggle_like"
                     android:text=""
                     android:textOff=""
@@ -470,7 +464,7 @@
                     android:layout_marginStart="2dp"
                     android:layout_marginTop="4dp"
                     android:textColor="@color/black"
-                    android:textSize="16sp"
+                    android:textSize="13sp"
                     app:layout_constraintStart_toStartOf="@id/base_user_avatar"
                     app:layout_constraintTop_toBottomOf="@id/button_press_like"
                     tools:text="3人說讚" />
@@ -502,7 +496,7 @@
                     android:layout_marginStart="8dp"
                     android:text="@string/event＿comments"
                     android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

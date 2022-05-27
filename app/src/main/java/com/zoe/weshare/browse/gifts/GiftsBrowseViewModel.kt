@@ -10,7 +10,7 @@ import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.GiftStatusType
-import com.zoe.weshare.util.UserManager
+import com.zoe.weshare.util.UserManager.userBlackList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -37,7 +37,7 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
     val navigateToSelectedGift: LiveData<GiftPost?>
         get() = _navigateToSelectedGift
 
-    var onSearchEmpty = MutableLiveData<Boolean>()
+    var emptyQuery = MutableLiveData<Boolean?>()
 
     init {
         getGiftsResult()
@@ -51,6 +51,7 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
                     filterGift(result.data)
                 }
                 is Result.Fail -> {
@@ -70,15 +71,18 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
         }
     }
 
+    /**
+     * exclude the authors in user's black list and CLOSED gifts
+     * */
     private fun filterGift(gifts: List<GiftPost>) {
 
-        val list = gifts.filter {
-            !UserManager.userBlackList.contains(it.author!!.uid) &&
-            it.status != GiftStatusType.CLOSED.code } as MutableList
+        val filteredList = gifts.filterNot {
+            userBlackList.contains(it.author.uid) &&
+                    it.status == GiftStatusType.CLOSED.code } as MutableList
 
-        list.sortByDescending { it.whoLiked.size }
+        filteredList.sortByDescending { it.whoLiked.size }
 
-        _gifts.value = list
+        _gifts.value = filteredList
     }
 
     fun onNavigateGiftDetails(event: GiftPost) {
@@ -87,6 +91,10 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
 
     fun onNavigateGiftDetailsComplete() {
         _navigateToSelectedGift.value = null
-        onSearchEmpty.value = null
+        emptyQuery.value = null
+    }
+
+    fun onEmptyQuery(result: Boolean) {
+        emptyQuery.value = result
     }
 }

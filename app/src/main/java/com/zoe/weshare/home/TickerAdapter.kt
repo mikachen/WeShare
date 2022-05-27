@@ -13,6 +13,7 @@ class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(
 
     class TickerViewHolder(var binding: ItemHomeLogTickerBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(log: OperationLog) {
             binding.textTicker.text = Html.fromHtml(log.logMsg)
         }
@@ -44,7 +45,7 @@ class TickerAdapter : ListAdapter<OperationLog, TickerAdapter.TickerViewHolder>(
         }
 
         override fun areContentsTheSame(oldItem: OperationLog, newItem: OperationLog): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem == newItem
         }
     }
 }

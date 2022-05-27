@@ -13,10 +13,19 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
     private var list: List<EventPost>? = null
 
     class HeaderViewHolder(val binding: ItemHeaderTvBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
 
-    class HeaderOnClickListener(val doNothing: (selected: EventPost) -> Unit) {
-        fun onClick(selectedEvent: EventPost) = doNothing(selectedEvent)
+        fun bind(event: EventPost) {
+            binding.apply {
+
+                bindImage(headerImageTv, event.image)
+                textTvTitle.text = event.title
+            }
+        }
+    }
+
+    class HeaderOnClickListener(val clicked: (selected: EventPost) -> Unit) {
+        fun onClick(selectedEvent: EventPost) = clicked(selectedEvent)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderViewHolder {
@@ -28,14 +37,11 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
     }
 
     override fun onBindViewHolder(holder: HeaderViewHolder, position: Int) {
-        val data = list?.get(getRealPosition(position))
+        val event = list?.get(getRealPosition(position))
 
-        data?.let {
-            bindImage(holder.binding.headerImageTv, data.image)
-
-            holder.binding.textTvTitle.text = data.title
-
-            holder.itemView.setOnClickListener { onClickListener.onClick(data) }
+        event?.let {
+            holder.bind(it)
+            holder.itemView.setOnClickListener { onClickListener.onClick(event) }
         }
     }
 

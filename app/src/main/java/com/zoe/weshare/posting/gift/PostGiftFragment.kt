@@ -62,12 +62,12 @@ class PostGiftFragment : Fragment() {
 
         binding = FragmentPostGiftBinding.inflate(inflater, container, false)
 
-        viewModel.gift.observe(viewLifecycleOwner) {
+        viewModel.draftGiftInput.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(
-                    PostGiftFragmentDirections.actionPostGiftFragmentToSearchLocationFragment(
-                        newGift = it,
-                        newEvent = null
+                    PostGiftFragmentDirections.actionPostGiftToSearchLocation(
+                        draftGift = it,
+                        draftEvent = null
                     )
                 )
                 viewModel.navigateNextComplete()
@@ -114,16 +114,18 @@ class PostGiftFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK &&
-            data != null && data.data != null
-        ) {
-            imagePathUri = data.data!!
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
 
-            try {
-                binding.buttonImagePreviewHolder.setImageURI(imagePathUri)
+            if (data != null) {
+                imagePathUri = data.data
 
-            } catch (e: Exception) {
-                e.printStackTrace()
+                try {
+                    binding.buttonImagePreviewHolder.setImageURI(imagePathUri)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+
             }
         }
     }
@@ -135,15 +137,17 @@ class PostGiftFragment : Fragment() {
         val condition = binding.dropdownMenuCondition.text.toString().trim()
         val description = binding.editDescription.text.toString().trim()
 
+        val isCollectComplete = verifyData(title, sort, condition, description)
 
-        if (checkDataIntegrity(title, sort, condition, description)) {
-            viewModel.onSaveUserInput(title, sort, condition, description, imagePathUri!!)
-        } else {
-            return
+        if (isCollectComplete) { viewModel.onSaveUserInput(
+                title, sort, condition, description, imagePathUri?: return)
         }
     }
 
-    private fun checkDataIntegrity(
+    /**
+     *  error handle all input data , and must not be empty or null
+     * */
+    private fun verifyData(
         title: String,
         sort: String,
         condition: String,
@@ -234,7 +238,6 @@ class PostGiftFragment : Fragment() {
                 }
 
                 override fun onPermissionDenied(response: PermissionDeniedResponse) {
-
                     showRationaleDialog()
                 }
 

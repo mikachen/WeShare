@@ -31,8 +31,8 @@ class HeroRankViewModel(private val repository: WeShareRepository) : ViewModel()
     val error: LiveData<String?>
         get() = _error
 
-    private val _selectedUser = MutableLiveData<UserProfile>()
-    val selectedUser: LiveData<UserProfile>
+    private val _selectedUser = MutableLiveData<UserProfile?>()
+    val selectedUser: LiveData<UserProfile?>
         get() = _selectedUser
 
     init {

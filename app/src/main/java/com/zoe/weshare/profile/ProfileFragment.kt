@@ -118,19 +118,21 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupView(user: UserProfile) {
-        isFollowingTarget = user.follower.contains(weShareUser!!.uid)
+        isFollowingTarget = user.follower.contains(weShareUser.uid)
 
         binding.apply {
             bindImage(imageUserAvatar, user.image)
+            
             bindImage(imageUserAvatar, user.image)
+            
             textProfileName.text = user.name
+            
             textFollowerNumber.text = (user.follower.size).toString()
+            
             textFollowingNumber.text = (user.following.size).toString()
+            
             textIntroMessage.text =
-                when (user.introMsg.isBlank()) {
-                    true -> getString(R.string.request_leave_intro_message)
-                    false -> user.introMsg
-                }
+                user.introMsg.ifBlank { getString(R.string.request_leave_intro_message) }
         }
     }
 
@@ -140,7 +142,9 @@ class ProfileFragment : Fragment() {
             btn.isChecked = checked
         }
 
-        if (targetUser.uid != weShareUser!!.uid) {
+        val isVisitOtherUserPage = targetUser.uid != weShareUser.uid
+
+        if (isVisitOtherUserPage) {
 
             // target user profile
             binding.layoutSocialButton.visibility = View.VISIBLE
@@ -156,7 +160,7 @@ class ProfileFragment : Fragment() {
             }
 
             binding.buttonMessage.setOnClickListener {
-                viewModel.getUserAllRooms(weShareUser!!)
+                viewModel.getUserAllRooms(weShareUser)
 
             }
             binding.buttonReportUser.visibility = View.VISIBLE

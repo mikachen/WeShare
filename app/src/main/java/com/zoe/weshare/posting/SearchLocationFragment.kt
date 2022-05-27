@@ -61,13 +61,13 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
         binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
 
-        giftArg = navArg.newGift
-        eventArg = navArg.newEvent
+        giftArg = navArg.draftGift
+        eventArg = navArg.draftEvent
 
         if (isPermissionGranted) {
             when (true) {
                 userIsPostingEvent() -> {
-
+                    setupEventPreview(eventArg!!)
                     eventViewModel.fetchArgument(eventArg!!)
 
                     eventViewModel.postingProgress.observe(viewLifecycleOwner) {
@@ -78,7 +78,7 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
 
                     eventViewModel.onPostEvent.observe(viewLifecycleOwner) {
                         it?.let {
-                            eventViewModel.onNewRoomPrepare(it)
+                            eventViewModel.newEventPost(it)
                         }
                     }
 
@@ -94,11 +94,11 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                             eventViewModel.postEventComplete()
                         }
                     }
-                    setupEventPreview(eventArg!!)
                 }
 
                 userIsPostingGift() -> {
 
+                    setupGiftPreview(giftArg!!)
                     giftViewModel.fetchArgument(giftArg!!)
 
                     giftViewModel.postingProgress.observe(viewLifecycleOwner) {
@@ -126,7 +126,6 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
                             giftViewModel.postGiftComplete()
                         }
                     }
-                    setupGiftPreview(giftArg!!)
                 }
                 else -> {
                     findNavController().navigateUp()
@@ -221,11 +220,11 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             textEventTime.visibility = View.GONE
 
             buttonSubmit.setOnClickListener {
-                if (giftViewModel.locationChoice != null) {
+                if (giftViewModel.hasUserChooseLocation()) {
 
                     (activity as MainActivity).showProgressBar()
-
                     giftViewModel.uploadImage()
+
                 } else {
                     activity.showToast(getString(R.string.error_gift_location_isEmpty))
                 }
@@ -252,16 +251,18 @@ class SearchLocationFragment : Fragment(), OnMapReadyCallback {
             titleDescription.text = getString(R.string.preview_event_description_title)
 
             buttonSubmit.setOnClickListener {
-                if (eventViewModel.locationChoice != null) {
-                    (activity as MainActivity).showProgressBar()
+                if (eventViewModel.didUserChooseLocation()) {
 
+                    (activity as MainActivity).showProgressBar()
                     eventViewModel.uploadImage()
+
                 } else {
                     activity.showToast(getString(R.string.error_event_location_isEmpty))
                 }
             }
         }
     }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap

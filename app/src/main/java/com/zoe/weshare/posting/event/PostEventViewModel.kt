@@ -17,8 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class PostEventViewModel(private val repository: WeShareRepository, private val author: UserInfo?) :
+class PostEventViewModel(private val repository: WeShareRepository, private val userInfo: UserInfo) :
     ViewModel() {
+
+    private lateinit var eventDraft: EventPost
 
     var postingProgress = MutableLiveData<Int?>()
 
@@ -26,9 +28,9 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
 
     var locationChoice: PostLocation? = null
 
-    private val _event = MutableLiveData<EventPost?>()
-    val event: LiveData<EventPost?>
-        get() = _event
+    private val _tempEventInput = MutableLiveData<EventPost?>()
+    val draftEventInput: LiveData<EventPost?>
+        get() = _tempEventInput
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -50,8 +52,8 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         get() = _status
 
 
-    fun fetchArgument(event: EventPost) {
-        _event.value = event
+    fun fetchArgument(arg: EventPost) {
+        eventDraft = arg
     }
 
     /**
@@ -63,18 +65,21 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             _postEventStatus.value = LoadApiStatus.LOADING
             postingProgress.value = 10
 
-            val imageUri = Uri.parse(event.value!!.image)
+            val imageUri = Uri.parse(eventDraft.image)
 
             when (val result = repository.uploadImage(imageUri)) {
                 is Result.Success -> {
                     _error.value = null
                     postingProgress.value = 30
+
                     _postEventStatus.value = LoadApiStatus.DONE
 
                     val firebaseUrl = result.data
 
-                    _event.value!!.image = firebaseUrl
-                    onPostEvent.value = event.value
+                    //rewrite the image string value, then create room
+                    eventDraft.image = firebaseUrl
+
+                    onNewRoomPrepare(eventDraft)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -96,7 +101,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
      * (B) prepare and create multiple chatroom for event
      *  reassign event roomId when done
      * */
-    fun onNewRoomPrepare(event: EventPost) {
+    private fun onNewRoomPrepare(event: EventPost) {
         val eventRoom = ChatRoom(
             type = ChatRoomType.MULTIPLE.value,
             eventTitle = event.title,
@@ -122,9 +127,9 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
                     _status.value = LoadApiStatus.DONE
 
                     val chatRoomId = result.data
-                    _event.value!!.roomId = chatRoomId
+                    eventDraft.roomId = chatRoomId
 
-                    newEventPost()
+                    onPostEvent.value = eventDraft
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -147,13 +152,13 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
     /**
      * (D) Post Event to firebase
      * */
-    private fun newEventPost() {
+    fun newEventPost(event: EventPost) {
         coroutineScope.launch {
             _postEventStatus.value = LoadApiStatus.LOADING
 
             postingProgress.value = 70
 
-            when (val result = event.value?.let { repository.postNewEvent(it) }) {
+            when (val result = repository.postNewEvent(event)) {
                 is Result.Success -> {
                     _error.value = null
                     postingProgress.value = 80
@@ -187,11 +192,11 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         val log = OperationLog(
             postDocId = docId,
             logType = LogType.POST_EVENT.value,
-            operatorUid = author!!.uid,
+            operatorUid = userInfo.uid,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_post_event,
-                author.name,
-                event.value!!.title
+                userInfo.name,
+                eventDraft.title
             )
         )
         saveEventPostLog(log)
@@ -230,7 +235,7 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             latitude = point.latitude.toString(),
             longitude = point.longitude.toString()
         )
-        _event.value!!.location = locationChoice
+        eventDraft.location = locationChoice as PostLocation
     }
 
 
@@ -243,8 +248,8 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
         startTime: Long,
         endTime: Long,
     ) {
-        onPostEvent.value = EventPost(
-            author = author,
+        val event = EventPost(
+            author = userInfo,
             title = title,
             sort = sort,
             volunteerNeeds = volunteerNeeds.toInt(),
@@ -253,16 +258,20 @@ class PostEventViewModel(private val repository: WeShareRepository, private val 
             startTime = startTime,
             endTime = endTime
         )
-        _event.value = onPostEvent.value
+        _tempEventInput.value = event
+    }
+
+    fun didUserChooseLocation():Boolean {
+        return locationChoice != null
     }
 
     fun navigateNextComplete() {
-        _event.value = null
+        _tempEventInput.value = null
     }
 
     fun postEventComplete() {
         postingProgress.value = null
-        _event.value = null
+        _tempEventInput.value = null
         onPostEvent.value = null
         _saveLogComplete.value = null
     }

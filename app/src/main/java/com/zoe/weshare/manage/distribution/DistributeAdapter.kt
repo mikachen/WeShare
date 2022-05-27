@@ -17,8 +17,6 @@ import com.zoe.weshare.util.Util
 class DistributeAdapter(val viewModel: DistributeViewModel) :
     ListAdapter<Comment, DistributeAdapter.DistributionViewHolder>(DiffCall()) {
 
-    val userInfo = Util.readInstanceProperty<UserInfo>(viewModel, "userInfo")
-
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,

@@ -15,18 +15,18 @@ import com.zoe.weshare.util.Util.getStringWithIntParm
 class HeroRankAdapter(private val onClickListener: HeroOnClickListener) :
     ListAdapter<UserProfile, HeroRankAdapter.RankViewHolder>(DiffCallback) {
 
-    var rankNumber = 4
+    private var rankNumber = 4
 
     class RankViewHolder(var binding: ItemHeroRankBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(user: UserProfile) {
             binding.apply {
                 bindImage(imageUserImage, user.image)
                 textUserName.text = user.name
-                user.contribution?.let {
-                    textContribution.text =
-                        getStringWithIntParm(R.string.hero_contribution, it.totalContribution)
-                }
+                textContribution.text =
+                    getStringWithIntParm(R.string.hero_contribution,
+                        user.contribution.totalContribution)
             }
         }
 
@@ -51,6 +51,7 @@ class HeroRankAdapter(private val onClickListener: HeroOnClickListener) :
 
         holder.itemView.setOnClickListener { onClickListener.onClick(user) }
 
+        //hide last divider view
         if (position == itemCount - 1) {
             holder.binding.divider.visibility = View.GONE
         }
@@ -60,8 +61,8 @@ class HeroRankAdapter(private val onClickListener: HeroOnClickListener) :
         return RankViewHolder.from(parent)
     }
 
-    class HeroOnClickListener(val doNothing: (user: UserProfile) -> Unit) {
-        fun onClick(selectedUser: UserProfile) = doNothing(selectedUser)
+    class HeroOnClickListener(val clicked: (user: UserProfile) -> Unit) {
+        fun onClick(selectedUser: UserProfile) = clicked(selectedUser)
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<UserProfile>() {
@@ -75,8 +76,9 @@ class HeroRankAdapter(private val onClickListener: HeroOnClickListener) :
     }
 
     fun modifyList(users: List<UserProfile>) {
-        rankNumber = 4
 
-        submitList(users.slice(3 until users.size))
+        val removedTopThree = users.slice(3 until users.size)
+
+        submitList(removedTopThree)
     }
 }
