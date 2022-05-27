@@ -37,7 +37,7 @@
             tools:visibility="visible"
             app:layout_constraintEnd_toEndOf="@id/progress_bar"
             app:layout_constraintBottom_toTopOf="@id/progress_bar"
-            android:text="照片上傳中請稍等..."
+            android:text="上傳中請稍等..."
             android:textColor="@color/white"
             android:textSize="20sp"/>
 

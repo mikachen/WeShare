@@ -151,13 +151,10 @@ class HomeViewModel(private val repository: WeShareRepository) : ViewModel() {
 
     /**
      * exclude user's blacklist author
-     * show events with attendee > 5
      * */
     private fun filterEvent(event: List<EventPost>) {
         _events.value = event.filter {
-            !userBlackList.contains(it.author.uid) &&
-                    it.whoAttended.size >= 5
-        }
+            !userBlackList.contains(it.author.uid) }
     }
 
     fun displayEventDetails(event: EventPost) {

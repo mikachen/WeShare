@@ -1,27 +1,25 @@
-
-
 ## WeShare
 ![](https://img.shields.io/badge/Version-1.9.0-blue) ![GitHub](https://img.shields.io/github/license/Willy-Chuang/Meet-Tutor)  <img
 src="https://img.shields.io/badge/platform-Android-brightgreen"/>
 
 A platform for you to swap used goods and join charity events.
 
-![](https://i.imgur.com/JllZrHE.png =180x)
+<img src=https://github.com/mikachen/WeShare/blob/develop/images/weShare_logo_round.png height="200" />
 
-[![](https://i.imgur.com/eYcChmq.png =150x)
-](https://play.google.com/store/apps/details?id=com.zoe.weshare)
+<img src=https://github.com/mikachen/WeShare/blob/develop/images/google-play-badge.png height="80" />
 
-Test account:
-Email: weshare202206@gmail.com
+Test account:<br>
+Email: weshare202206@gmail.com<br>
 Password: wesharetest
-
 
 
 ## Features
 
 #### Post and Management
 * Friendly user interface for you to start sharing your old stuff or planning events.
-* Manage your posts status on your own profile's management page.
+* Manage your posts status on your own profile's management page
+
+<img src="https://github.com/mikachen/WeShare/blob/develop/images/posting_gift.gif?raw=true" width="200" />
 
 
 #### Nearby Spot
@@ -36,10 +34,8 @@ Password: wesharetest
 #### Socials
 * Signal your support simply by giving a Like-press or comments on the post.
 * Follows and notifications system that keeps track of users' social activities.
- 
 
-
-
+<img src="https://github.com/mikachen/WeShare/blob/develop/images/socials_like_requeset.gif?raw=true" width="200" />
 
 
 ## Libraries
@@ -49,36 +45,15 @@ Password: wesharetest
 * [SwipeRevealLayout](https://github.com/chthai64/SwipeRevealLayout)
 * [Like Button](https://github.com/jd-alexander/LikeButton)
 * [ShowcaseView](https://github.com/amlcurran/ShowcaseView)
+* [Lottie](https://github.com/airbnb/lottie-android)
 * [QRGenerator](https://github.com/androidmads/QRGenerator)
 
 
 
 ## Requirement
-SDK Version 28+
-Grandle Version 7.2
- 
+SDK Version 28+<br>
+Gradle Version 7.2
+
 ## Contact
 **Zoe Lo** : zoektm390@gmail.com
 
-
-
-
-<p align="right">(<a href="#top">Back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
