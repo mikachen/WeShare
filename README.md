@@ -8,6 +8,7 @@ A platform for you to swap used goods and join charity events.
 
 <img src=https://github.com/mikachen/WeShare/blob/develop/images/google-play-badge.png height="80" />
 
+LET'S SHARE NOW!! :)<br>
 Test account:<br>
 Email: weshare202206@gmail.com<br>
 Password: wesharetest
@@ -19,23 +20,30 @@ Password: wesharetest
 * Friendly user interface for you to start sharing your old stuff or planning events.
 * Manage your posts status on your own profile's management page
 
-<img src="https://github.com/mikachen/WeShare/blob/develop/images/posting_gift.gif?raw=true" width="200" />
+<img src="https://github.com/mikachen/WeShare/blob/develop/images/posting_gift.gif?raw=true" width="200" />  <img src="https://github.com/mikachen/WeShare/blob/develop/images/managements.gif?raw=true" width="200" />
 
 
 #### Nearby Spot
 * An embed Google Map view and card design for you to check on your nearby posts quickly.
 
+<img src="https://github.com/mikachen/WeShare/blob/develop/images/map_hot_spot.gif?raw=true" width="200" />
+
 #### QR Code Checked In
 * As an event volunteer, just simply check in with QR code scanner.
+
+<img src="https://github.com/mikachen/WeShare/blob/develop/images/qrcode_check_in.gif?raw=true" width="200" />
 
 #### Realtime Chat
 * Instant messaging service and support for private and multi-person chats.
 * Badges hint for rooms with unread messages.
+
+<img src="https://github.com/mikachen/WeShare/blob/develop/images/realtime_chats.gif?raw=true" width="200" />
+
 #### Socials
 * Signal your support simply by giving a Like-press or comments on the post.
 * Follows and notifications system that keeps track of users' social activities.
 
-<img src="https://github.com/mikachen/WeShare/blob/develop/images/socials_like_requeset.gif?raw=true" width="200" />
+<img src="https://github.com/mikachen/WeShare/blob/develop/images/socials_like_requeset.gif?raw=true" width="200" />  <img src="https://github.com/mikachen/WeShare/blob/develop/images/follows_notifications.gif?raw=true" width="200" />
 
 
 ## Libraries
