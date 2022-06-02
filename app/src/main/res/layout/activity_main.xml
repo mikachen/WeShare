@@ -10,12 +10,12 @@
     tools:context=".MainActivity">
 
     <FrameLayout
-        android:id="@+id/newbie_hint_cover_view"
+        android:id="@+id/prevent_touch_cover_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="10dp"/>
 
-    <!--    progressbar-->
+    <!--progressbar-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_main_progress_bar"
         android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                         android:src="@drawable/ic_baseline_notifications_active_24" />
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/layout_badge"
+                        android:id="@+id/layout_notification_badge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="2dp"

@@ -23,6 +23,7 @@ import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.GiftStatusType
+import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
 

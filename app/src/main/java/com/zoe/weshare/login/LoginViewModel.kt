@@ -10,7 +10,6 @@ import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.data.source.WeShareRepository
 import com.zoe.weshare.network.LoadApiStatus
-import com.zoe.weshare.util.UserManager
 import com.zoe.weshare.util.UserManager.userBlackList
 import com.zoe.weshare.util.UserManager.userInfo
 import kotlinx.coroutines.CoroutineScope
@@ -51,13 +50,12 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
             when (val result = repository.getUserInfo(user.uid)) {
                 is Result.Success -> {
                     _error.value = null
-                    _loginStatus.value = LoadApiStatus.DONE
 
                     val profile = result.data
 
                     if (profile != null) {
                         //old member
-                        getUserInfo(profile)
+                        setUserInfo(profile)
 
                     } else {
                         //new member
@@ -101,7 +99,7 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    getUserInfo(profile)
+                    setUserInfo(profile)
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -121,7 +119,7 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
 
 
     /** store userInfo into UserManager singleton Object */
-    private fun getUserInfo(profile: UserProfile) {
+    private fun setUserInfo(profile: UserProfile) {
 
         val user = UserInfo(
             name = profile.name,
@@ -133,6 +131,8 @@ class LoginViewModel(private val repository: WeShareRepository) : ViewModel() {
         userBlackList = profile.blackList
 
         _loginSuccess.value = user
+
+        _loginStatus.value = LoadApiStatus.DONE
     }
 
     fun loginComplete() {

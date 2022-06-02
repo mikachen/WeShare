@@ -7,20 +7,20 @@ enum class CurrentFragmentType(val value: String) {
     HOME(getString(R.string.home)),
     MAP(getString(R.string.map)),
     ROOMLIST(getString(R.string.message)),
-    CHATROOM(""), // 預期後面assign target user's name
+    CHATROOM(""), // assign target user's name after
     PROFILE(getString(R.string.profile)),
     POSTEVENT(getString(R.string.post_event)),
     POSTGIFT(getString(R.string.post_gift)),
-    GIFTDETAIL("贈品詳情"),
-    EVENTDETAIL("活動詳情"),
-    SEARCHLOCATION("請選擇地點"),
-    GIFTMANAGE("贈品管理"),
-    EVENTMANAGE("活動管理"),
-    NOTIFICATION("通知"),
-    LOGIN("登入"),
-    EDITPROFILE("會員資料更新"),
-    GIFTSBROWSE("贈品查詢"),
-    EVENTSBROWSE("活動查詢"),
-    EVENTCHECKIN("活動簽到掃描"),
-    HERORANK("英雄榜")
+    GIFTDETAIL(getString(R.string.preview_gift_description_title)),
+    EVENTDETAIL(getString(R.string.preview_event_description_title)),
+    SEARCHLOCATION(getString(R.string.choose_location)),
+    GIFTMANAGE(getString(R.string.gift_management)),
+    EVENTMANAGE(getString(R.string.event_management)),
+    NOTIFICATION(getString(R.string.notification)),
+    LOGIN(getString(R.string.login)),
+    EDITPROFILE(getString(R.string.edit_profile)),
+    GIFTSBROWSE(getString(R.string.gift_browse)),
+    EVENTSBROWSE(getString(R.string.event_browse)),
+    EVENTCHECKIN(getString(R.string.event_check_in)),
+    HERORANK(getString(R.string.hero_rank))
 }

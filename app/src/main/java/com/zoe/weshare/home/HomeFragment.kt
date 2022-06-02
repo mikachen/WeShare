@@ -229,19 +229,20 @@ class HomeFragment : Fragment(), View.OnClickListener {
         linearSnapHelper.attachToRecyclerView(logTickerRv)
 
         val timer = Timer()
-        timer.schedule(
-            object : TimerTask() {
+        timer.schedule( object : TimerTask() {
                 override fun run() {
                     if (manager.findLastVisibleItemPosition() < (tickerAdapter.itemCount - 1)) {
 
-                        logTickerRv.smoothSnapToPosition(manager.findLastVisibleItemPosition() + 1)
-                    } else {
+                        logTickerRv.smoothSnapToPosition(
+                            manager.findLastVisibleItemPosition() + 1)
 
-                        logTickerRv.smoothSnapToPosition(0)
+                    } else {
+                        requireActivity().runOnUiThread {
+                            logTickerRv.smoothScrollToPosition(0)
+                        }
                     }
                 }
-            },
-            0, 5000
+            }, 0, 5000
         )
     }
 
@@ -298,14 +299,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun showHintCoverView() {
-        (activity as MainActivity).binding.newbieHintCoverView.apply {
-            setOnClickListener { }
-            visibility = View.VISIBLE
-        }
+        (activity as MainActivity).binding.preventTouchCoverView.visibility = View.VISIBLE
     }
 
     private fun hideCoverView() {
-        (activity as MainActivity).binding.newbieHintCoverView.visibility = View.GONE
+        (activity as MainActivity).binding.preventTouchCoverView.visibility = View.GONE
     }
 
     override fun onPause() {

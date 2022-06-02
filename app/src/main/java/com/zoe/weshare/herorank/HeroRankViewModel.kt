@@ -3,7 +3,6 @@ package com.zoe.weshare.herorank
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.zoe.weshare.R
 import com.zoe.weshare.WeShareApplication
 import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.UserProfile
@@ -13,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+
 
 class HeroRankViewModel(private val repository: WeShareRepository) : ViewModel() {
 
@@ -60,7 +60,7 @@ class HeroRankViewModel(private val repository: WeShareRepository) : ViewModel()
                 }
                 else -> {
                     _error.value =
-                        WeShareApplication.instance.getString(R.string.result_fail)
+                        WeShareApplication.instance.getString(com.zoe.weshare.R.string.result_fail)
                     _status.value = LoadApiStatus.ERROR
                 }
             }
@@ -74,4 +74,5 @@ class HeroRankViewModel(private val repository: WeShareRepository) : ViewModel()
     fun onNavigateComplete() {
         _selectedUser.value = null
     }
+
 }

@@ -10,17 +10,6 @@ import kotlin.reflect.KProperty1
 
 object Util {
 
-    /**
-     * Determine and monitor the connectivity status
-     *
-     * https://developer.android.com/training/monitoring-device-state/connectivity-monitoring
-     */
-    fun isInternetConnected(): Boolean {
-
-        // TODO
-        return true
-    }
-
     fun getString(resourceId: Int): String {
         return WeShareApplication.instance.getString(resourceId)
     }

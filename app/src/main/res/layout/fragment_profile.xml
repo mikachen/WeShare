@@ -74,7 +74,7 @@
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/button_report_user"
+        android:id="@+id/button_more"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"

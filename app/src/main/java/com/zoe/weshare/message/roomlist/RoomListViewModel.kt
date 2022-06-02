@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class RoomListViewModel(
     private val repository: WeShareRepository,
-    val userInfo: UserInfo?,
+    val userInfo: UserInfo,
 ) : ViewModel() {
 
     var allRooms = MutableLiveData<List<ChatRoom>>()
@@ -111,7 +111,7 @@ class RoomListViewModel(
                     collection = PATH_CHATROOM,
                     docId = room.id,
                     field = FIELD_ROOM_PARTICIPANTS,
-                    value = FieldValue.arrayRemove(userInfo!!.uid)
+                    value = FieldValue.arrayRemove(userInfo.uid)
                 )
             ) {
                 is Result.Success -> {
