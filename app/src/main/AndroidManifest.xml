@@ -8,8 +8,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <uses-permission android:name="android.permission.VIBRATE" />
-
     <application
         android:name=".WeShareApplication"
         android:allowBackup="true"
@@ -29,6 +27,7 @@
 
         <activity
             android:name=".LogoActivity"
+            android:exported="false"
             android:theme="@style/Theme.WeShare" />
         <activity
             android:name=".MainActivity"

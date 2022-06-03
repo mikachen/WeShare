@@ -31,7 +31,7 @@ class ReportViolationDialog : BottomSheetDialogFragment() {
 
         val targetUid = ReportViolationDialogArgs.fromBundle(requireArguments()).reportTarget
 
-        viewModel.fetchArg(targetUid)
+        viewModel.setTargetUid(targetUid)
 
         viewModel.reportSendComplete.observe(viewLifecycleOwner) {
             it?.let {
@@ -62,15 +62,15 @@ class ReportViolationDialog : BottomSheetDialogFragment() {
     private fun dataCollecting() {
         val reason = binding.editLeaveReason.text.toString().trim()
 
-        if (checkDataIntegrity(reason)) {
+        val isCollectComplete = verifyData(reason)
 
+        if (isCollectComplete) {
             viewModel.onSendReport(reason)
-        } else {
-            return
         }
     }
 
-    private fun checkDataIntegrity(reason: String): Boolean {
+    private fun verifyData(reason: String): Boolean {
+
         return if (reason.isNotEmpty()) {
             true
         } else {

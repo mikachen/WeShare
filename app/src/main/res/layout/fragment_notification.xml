@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/height_toolbar"
     android:layout_marginBottom="@dimen/height_bottom_app_bar"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".notification.NotificationFragment">
 
@@ -37,6 +38,8 @@
         android:id="@+id/notification_rv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/background_material_light"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

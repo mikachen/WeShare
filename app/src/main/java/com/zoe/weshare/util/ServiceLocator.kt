@@ -19,17 +19,13 @@ object ServiceLocator {
 
     fun provideRepository(context: Context): WeShareRepository {
         synchronized(this) {
-            return repository
-                ?: repository
-                ?: createPublisherRepository(context)
+            return repository ?: createWeShareRepository(context)
         }
     }
 
-    private fun createPublisherRepository(context: Context): WeShareRepository {
+    private fun createWeShareRepository(context: Context): WeShareRepository {
         return DefaultWeShareRepository(
-            WeShareRemoteDataSource,
-            createLocalDataSource(context)
-        )
+            WeShareRemoteDataSource, createLocalDataSource(context))
     }
 
     private fun createLocalDataSource(context: Context): WeShareDataSource {

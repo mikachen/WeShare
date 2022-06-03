@@ -16,15 +16,14 @@ import com.zoe.weshare.util.Const.FIELD_USER_FOLLOWING
 import com.zoe.weshare.util.Const.PATH_USER
 import com.zoe.weshare.util.UserManager.userBlackList
 import com.zoe.weshare.util.UserManager.weShareUser
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class ProfileViewModel(
     private val repository: WeShareRepository,
-    val targetUser: UserInfo?,
+    val targetUser: UserInfo
 ) : ViewModel() {
+
+    lateinit var userProfile: UserProfile
 
     private var _user = MutableLiveData<UserProfile>()
     val user: LiveData<UserProfile>
@@ -41,6 +40,7 @@ class ProfileViewModel(
     private var _userChatRooms = MutableLiveData<List<ChatRoom>?>()
     val userChatRooms: LiveData<List<ChatRoom>?>
         get() = _userChatRooms
+
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -61,14 +61,12 @@ class ProfileViewModel(
     val navigateToNewRoom: LiveData<ChatRoom?>
         get() = _navigateToNewRoom
 
-    val onUpdateContribution = MutableLiveData<Contribution>()
+    val onUpdateContribution = MutableLiveData<Contribution?>()
 
     var blockUserComplete = MutableLiveData<UserProfile>()
 
     init {
-        targetUser?.let {
-            getUserInfo(it.uid)
-        }
+        getUserInfo(targetUser.uid)
     }
 
     private fun getUserInfo(uid: String) {
@@ -80,9 +78,15 @@ class ProfileViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
+
                     getUserLogs(uid)
 
-                    _user.value = result.data!!
+                    val user = result.data
+
+                    user?.let {
+                        _user.value = it
+                        userProfile = it
+                    }
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -105,12 +109,13 @@ class ProfileViewModel(
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (val result = repository.getUserLog(uid)) {
+            when ( val result = repository.getUserLog(uid)) {
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _userLog.value = result.data ?: emptyList()
+                    val logList = result.data
+                    _userLog.value = logList
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -139,13 +144,11 @@ class ProfileViewModel(
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when ( val result = repository.updateFieldValue(
                     collection = PATH_USER,
-                    docId = weShareUser!!.uid,
+                    docId = weShareUser.uid,
                     field = FIELD_USER_FOLLOWING,
-                    value = FieldValue.arrayUnion(targetUid)
-                )
+                    value = FieldValue.arrayUnion(targetUid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -173,13 +176,11 @@ class ProfileViewModel(
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when (val result = repository.updateFieldValue(
                     collection = PATH_USER,
-                    docId = weShareUser!!.uid,
+                    docId = weShareUser.uid,
                     field = FIELD_USER_FOLLOWING,
-                    value = FieldValue.arrayRemove(targetUid)
-                )
+                    value = FieldValue.arrayRemove(targetUid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -210,13 +211,11 @@ class ProfileViewModel(
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when (val result = repository.updateFieldValue(
                     collection = PATH_USER,
                     docId = targetUid,
                     field = FIELD_USER_FOLLOWER,
-                    value = FieldValue.arrayUnion(weShareUser!!.uid)
-                )
+                    value = FieldValue.arrayUnion(weShareUser.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -245,13 +244,11 @@ class ProfileViewModel(
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when (val result = repository.updateFieldValue(
                     collection = PATH_USER,
                     docId = targetUid,
                     field = FIELD_USER_FOLLOWER,
-                    value = FieldValue.arrayRemove(weShareUser!!.uid)
-                )
+                    value = FieldValue.arrayRemove(weShareUser.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -279,10 +276,10 @@ class ProfileViewModel(
         val message = OperationLog(
             postDocId = "none",
             logType = LogType.FOLLOWING.value,
-            operatorUid = weShareUser!!.uid,
+            operatorUid = weShareUser.uid,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_start_following_you,
-                weShareUser!!.name,
+                weShareUser.name,
             )
         )
         _notificationMsg.value = message
@@ -323,12 +320,14 @@ class ProfileViewModel(
     fun checkIfPrivateRoomExist(rooms: List<ChatRoom>) {
 
         val result = rooms.filter {
-            it.participants.contains(targetUser!!.uid) && it.type == ChatRoomType.PRIVATE.value
+            it.participants.contains(targetUser.uid) && it.type == ChatRoomType.PRIVATE.value
         }
 
         if (result.isNotEmpty()) {
+
             // there was chat room history with author & ChatRoomType is PRIVATE
             _navigateToFormerRoom.value = result.single()
+
         } else {
 
             // no private chat with author before
@@ -337,20 +336,25 @@ class ProfileViewModel(
     }
 
     fun onNewRoomPrepare() {
+        val targetInfo: UserInfo
+        val room: ChatRoom
 
-        val targetInfo = UserInfo(
-            name = user.value?.name ?: "",
-            image = user.value?.image ?: "",
-            uid = user.value?.uid ?: ""
-        )
+        user.value?.let {
 
-        val room = ChatRoom(
-            type = ChatRoomType.PRIVATE.value,
-            participants = listOf(user.value!!.uid, weShareUser!!.uid),
-            usersInfo = listOf(targetInfo, weShareUser!!)
-        )
+            targetInfo = UserInfo(
+                name = it.name,
+                image = it.image,
+                uid = it.uid
+            )
 
-        createRoom(room)
+            room = ChatRoom(
+                type = ChatRoomType.PRIVATE.value,
+                participants = listOf(it.uid, weShareUser.uid),
+                usersInfo = listOf(targetInfo, weShareUser)
+            )
+
+            createRoom(room)
+        }
     }
 
     private fun createRoom(room: ChatRoom) {
@@ -358,6 +362,7 @@ class ProfileViewModel(
             _status.value = LoadApiStatus.LOADING
 
             when (val result = repository.createNewChatRoom(room)) {
+
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
@@ -392,11 +397,12 @@ class ProfileViewModel(
     fun calculateContribution(userLogs: List<OperationLog>) {
 
         val filterLogs = userLogs.filter {
-            it.logType != LogType.EVENT_STARTED.value &&
-                    it.logType != LogType.EVENT_ENDED.value &&
-                    it.logType != LogType.ABANDONED_GIFT.value &&
-                    it.logType != LogType.FOLLOWING.value &&
-                    it.logType != LogType.EVENT_GOT_FORCE_ENDED.value
+
+            it.logType != LogType.EVENT_STARTED.value
+                    && it.logType != LogType.EVENT_ENDED.value
+                    && it.logType != LogType.ABANDONED_GIFT.value
+                    && it.logType != LogType.FOLLOWING.value
+                    && it.logType != LogType.EVENT_GOT_FORCE_ENDED.value
         }
 
         val totalContribution = user.value?.contribution?.totalContribution ?: 0
@@ -427,13 +433,12 @@ class ProfileViewModel(
 
     fun updateContribution(contribution: Contribution) {
         _status.value = LoadApiStatus.LOADING
+
         coroutineScope.launch {
-            when (
-                val result = repository.updateUserContribution(
-                    uid = targetUser!!.uid,
-                    contribution = contribution
-                )
-            ) {
+            when ( val result = repository.updateUserContribution(
+                    uid = targetUser.uid,
+                    contribution = contribution)
+            ){
                 is Result.Success -> {
                     _status.value = LoadApiStatus.DONE
                     onUpdateContribution.value = null
@@ -458,13 +463,11 @@ class ProfileViewModel(
             _status.value = LoadApiStatus.LOADING
 
             coroutineScope.launch {
-                when (
-                    val result = repository.updateFieldValue(
+                when (val result = repository.updateFieldValue(
                         collection = PATH_USER,
-                        docId = weShareUser!!.uid,
+                        docId = weShareUser.uid,
                         field = FIELD_USER_BLACKLIST,
-                        value = FieldValue.arrayUnion(target.uid)
-                    )
+                        value = FieldValue.arrayUnion(target.uid))
                 ) {
                     is Result.Success -> {
 
@@ -486,4 +489,7 @@ class ProfileViewModel(
                 }
             }
         }
+    fun onNavigateToEditInfoPage(){
+
+    }
 }

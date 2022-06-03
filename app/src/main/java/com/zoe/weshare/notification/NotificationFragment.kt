@@ -78,4 +78,25 @@ class NotificationFragment : Fragment() {
             binding.hintNoNews.visibility = View.INVISIBLE
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        hideTopBarNotificationIcon()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        showTopBarNotificationIcon()
+    }
+
+    private fun hideTopBarNotificationIcon(){
+        (activity as MainActivity).binding.apply {
+            notification.visibility = View.INVISIBLE
+            layoutNotificationBadge.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun showTopBarNotificationIcon(){
+        (activity as MainActivity).binding.notification.visibility = View.VISIBLE
+    }
 }

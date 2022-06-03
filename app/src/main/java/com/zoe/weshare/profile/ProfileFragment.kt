@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,10 +18,7 @@ import com.zoe.weshare.data.OperationLog
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.databinding.FragmentProfileBinding
-import com.zoe.weshare.ext.bindImage
-import com.zoe.weshare.ext.getVmFactory
-import com.zoe.weshare.ext.sendNotificationToTarget
-import com.zoe.weshare.ext.showToast
+import com.zoe.weshare.ext.*
 import com.zoe.weshare.util.LogType
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util
@@ -45,8 +42,10 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         viewModel.user.observe(viewLifecycleOwner) {
-            setupView(it)
-            setupSocialButtons()
+            it?.let {
+                setupView(it)
+                setupSocialButtons()
+            }
         }
 
         viewModel.userLog.observe(viewLifecycleOwner) {
@@ -122,15 +121,15 @@ class ProfileFragment : Fragment() {
 
         binding.apply {
             bindImage(imageUserAvatar, user.image)
-            
+
             bindImage(imageUserAvatar, user.image)
-            
+
             textProfileName.text = user.name
-            
+
             textFollowerNumber.text = (user.follower.size).toString()
-            
+
             textFollowingNumber.text = (user.following.size).toString()
-            
+
             textIntroMessage.text =
                 user.introMsg.ifBlank { getString(R.string.request_leave_intro_message) }
         }
@@ -138,43 +137,45 @@ class ProfileFragment : Fragment() {
 
     private fun setupSocialButtons() {
 
-        binding.buttonFollow.setOnCheckedChangeListener { btn, checked ->
-            btn.isChecked = checked
-        }
-
         val isVisitOtherUserPage = targetUser.uid != weShareUser.uid
 
-        if (isVisitOtherUserPage) {
+        binding.apply {
+            if (!isVisitOtherUserPage) {
 
-            // target user profile
-            binding.layoutSocialButton.visibility = View.VISIBLE
-            binding.buttonFollow.isChecked = isFollowingTarget
+                // user self profile page
+                binding.buttonSettings.visibility = View.VISIBLE
+                binding.buttonSettings.setOnClickListener {
+                    showPopupMenu(it, 0)
+                }
+            } else {
 
-            if (isFollowingTarget) {
-                binding.buttonFollow.setOnCheckedChangeListener { btn, checked ->
-                    btn.isChecked = !checked
+                // target user profile page
+                layoutSocialButton.visibility = View.VISIBLE
+                buttonFollow.isChecked = isFollowingTarget
+
+                if (isFollowingTarget) {
+                    buttonFollow.setOnCheckedChangeListener { btn, checked ->
+                        btn.isChecked = !checked
+                    }
+                }
+
+               buttonFollow.setOnClickListener {
+                    followBtnClick()
+                }
+
+                buttonMessage.setOnClickListener {
+                    viewModel.getUserAllRooms(weShareUser)
+
+                }
+
+                buttonMore.visibility = View.VISIBLE
+                buttonMore.setOnClickListener {
+                    showReportMenu(it)
                 }
             }
-            binding.buttonFollow.setOnClickListener {
-                followBtnClick()
-            }
 
-            binding.buttonMessage.setOnClickListener {
-                viewModel.getUserAllRooms(weShareUser)
-
-            }
-            binding.buttonReportUser.visibility = View.VISIBLE
-            binding.buttonReportUser.setOnClickListener {
-                showReportMenu(it)
-            }
-
-
-        } else {
-
-            // user self profile
-            binding.buttonSettings.visibility = View.VISIBLE
-            binding.buttonSettings.setOnClickListener {
-                showPopupMenu(it, 0)
+            buttonFollow.setOnCheckedChangeListener { btn, checked ->
+                btn.isChecked = checked
             }
         }
     }
@@ -206,16 +207,15 @@ class ProfileFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.edit_user_info -> findNavController().navigate(
-                    ProfileFragmentDirections
-                        .actionProfileFragmentToEditInfoFragment(viewModel.user.value!!)
+                    ProfileFragmentDirections.actionProfileToEditInfo(viewModel.userProfile)
                 )
 
                 R.id.action_gifts_manage -> findNavController().navigate(
-                    ProfileFragmentDirections.actionProfileFragmentToGiftManageFragment()
+                    ProfileFragmentDirections.actionProfileToGiftManage()
                 )
 
                 R.id.action_events_manage -> findNavController().navigate(
-                    ProfileFragmentDirections.actionProfileFragmentToEventManageFragment()
+                    ProfileFragmentDirections.actionProfileToEventManage()
                 )
 
                 R.id.action_cancel_following -> {
@@ -224,7 +224,7 @@ class ProfileFragment : Fragment() {
 
                 R.id.action_ugc_policy -> {
                     findNavController().navigate(
-                        ProfileFragmentDirections.actionProfileFragmentToPolicyTermFragment(true)
+                        ProfileFragmentDirections.actionProfileToPolicyTerm(true)
                     )
                 }
 
@@ -286,8 +286,8 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).window.setSoftInputMode(
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
-        )
+
+        (activity as MainActivity).setSoftInputMode(SOFT_INPUT_ADJUST_PAN)
+
     }
 }

@@ -128,7 +128,7 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
                 }
             }
 
-            if (newUserUid.size == 0) {
+            if (newUserUid.isEmpty()) {
                 _profileSearchComplete.value = true
 
             } else {

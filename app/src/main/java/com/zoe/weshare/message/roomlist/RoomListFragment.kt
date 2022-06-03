@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.zoe.weshare.MainActivity
 import com.zoe.weshare.NavGraphDirections
+import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentRoomListBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.showToast
@@ -23,15 +24,14 @@ class RoomListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentRoomListBinding.inflate(inflater, container, false)
 
         // get live roomList
-        val liveData = (activity as MainActivity).viewModel.liveChatRooms
-
-        viewModel.onViewDisplay(liveData)
+        val liveRoomList = (activity as MainActivity).viewModel.liveChatRooms
+        viewModel.setRoomList(liveRoomList)
 
         viewModel.allRooms.observe(viewLifecycleOwner) {
             adapter.modifyList(it)
@@ -39,16 +39,16 @@ class RoomListFragment : Fragment() {
 
         viewModel.navigateToSelectedRoom.observe(viewLifecycleOwner) {
             it?.let {
-                findNavController().navigate(
-                    NavGraphDirections.actionGlobalChatRoomFragment(it)
-                )
-
+                findNavController().navigate(NavGraphDirections.actionGlobalChatRoomFragment(it))
                 viewModel.displayRoomDetailsComplete()
             }
         }
 
         viewModel.leaveRoomComplete.observe(viewLifecycleOwner) {
-            requireActivity().showToast("已離開")
+            it?.let {
+                activity.showToast(getString(R.string.toast_has_leave_room))
+                viewModel.showToastDone()
+            }
         }
 
         setUpView()
@@ -56,7 +56,7 @@ class RoomListFragment : Fragment() {
     }
 
     fun setUpView() {
-        adapter = RoomListAdapter(viewModel, requireContext())
+        adapter = RoomListAdapter(viewModel)
         binding.roomlistRecyclerView.adapter = adapter
     }
 }

@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class ReportViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo?,
+    private val userInfo: UserInfo,
 ) : ViewModel() {
 
     private var targetUid: String? = null
@@ -38,7 +38,7 @@ class ReportViewModel(
         get() = _error
 
 
-    fun fetchArg(target: String) {
+    fun setTargetUid(target: String) {
         targetUid = target
     }
 
@@ -46,8 +46,8 @@ class ReportViewModel(
     fun onSendReport(reason: String) {
 
         val report = ViolationReport(
-            targetUid = targetUid!!,
-            operatorUid = userInfo!!.uid,
+            targetUid = targetUid?: "",
+            operatorUid = userInfo.uid,
             reason = reason
         )
 

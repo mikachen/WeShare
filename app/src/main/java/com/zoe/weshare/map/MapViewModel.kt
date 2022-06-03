@@ -27,8 +27,8 @@ import kotlinx.coroutines.launch
 const val GIFT_CARD = 0
 const val EVENT_CARD = 1
 
-class MapViewModel(private val repository: WeShareRepository, val userInfo: UserInfo) :
-    ViewModel() {
+class MapViewModel(
+    private val repository: WeShareRepository, val userInfo: UserInfo) : ViewModel() {
 
     private var _gifts = MutableLiveData<List<GiftPost>>()
     val gifts: LiveData<List<GiftPost>>
@@ -113,8 +113,7 @@ class MapViewModel(private val repository: WeShareRepository, val userInfo: User
      * */
     private fun getFilteredGifts(allGifts: List<GiftPost>): List<GiftPost> {
         return allGifts.filterNot {
-            userBlackList.contains(it.author.uid) &&
-                    it.status == GiftStatusType.CLOSED.code
+            userBlackList.contains(it.author.uid) || it.status == GiftStatusType.CLOSED.code
         }
     }
 
