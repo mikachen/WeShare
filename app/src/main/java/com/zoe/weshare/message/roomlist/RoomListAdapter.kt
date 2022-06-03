@@ -22,14 +22,11 @@ import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithStrParm
 
-class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Context) :
+class RoomListAdapter(val viewModel: RoomListViewModel) :
     ListAdapter<ChatRoom, RoomListAdapter.RoomListViewHolder>(DiffCall()) {
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int,
-    ): RoomListViewHolder {
-        return RoomListViewHolder.from(parent, mContext)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomListViewHolder {
+        return RoomListViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: RoomListViewHolder, position: Int) {
@@ -43,10 +40,8 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    class RoomListViewHolder(
-        private val binding: ItemRelatedRoomListBinding,
-        val context: Context,
-    ) : RecyclerView.ViewHolder(binding.root), View.OnTouchListener {
+    class RoomListViewHolder(private val binding: ItemRelatedRoomListBinding)
+        : RecyclerView.ViewHolder(binding.root), View.OnTouchListener {
 
         private lateinit var room: ChatRoom
         private lateinit var viewModel: RoomListViewModel
@@ -73,7 +68,7 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
 
                             textRoomTargetTitle.text = "用戶已離開聊天室"
                         } else {
-                            val target = room.usersInfo.single { it.uid != weShareUser!!.uid }
+                            val target = room.usersInfo.single { it.uid != weShareUser.uid }
 
                             bindImage(imageRoomImage, target.image)
                             textRoomTargetTitle.text = target.name
@@ -82,7 +77,7 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
                 }
 
                 // onCheck if there's unRead msg for weShareUser
-                if (room.lastMsgRead.contains(weShareUser!!.uid)) {
+                if (room.lastMsgRead.contains(weShareUser.uid)) {
                     unreadHint.visibility = View.INVISIBLE
                 } else {
                     unreadHint.visibility = View.VISIBLE
@@ -95,17 +90,19 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
         }
 
         override fun onTouch(view: View, event: MotionEvent): Boolean {
+
             if (event.action == MotionEvent.ACTION_DOWN) {
                 onPressTime = System.currentTimeMillis()
                 view.tag = true
+
             } else if (view.isPressed && view.tag == true) {
                 val eventDuration = event.eventTime - event.downTime
 
                 if (eventDuration > 300) {
                     view.tag = false
 
-                    showPopupMenu(binding.textLastSentTime, room, context, viewModel)
-                    getPhoneVibrate(context)
+                    showPopupMenu(binding.textLastSentTime, room, viewModel)
+                    getPhoneVibrate(view.context)
 
                     return true
                 }
@@ -113,13 +110,11 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
             return false
         }
 
-        fun showPopupMenu(
-            view: View,
-            room: ChatRoom,
-            context: Context,
-            viewModel: RoomListViewModel,
-        ) {
-            val popupMenu = PopupMenu(view.context, view)
+        fun showPopupMenu(view: View, room: ChatRoom, viewModel: RoomListViewModel) {
+
+            val context = view.context
+            val popupMenu = PopupMenu(context, view)
+
             popupMenu.menuInflater.inflate(R.menu.chatroom_popup_menu, popupMenu.menu)
 
             popupMenu.setOnMenuItemClickListener {
@@ -133,18 +128,15 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
             popupMenu.show()
         }
 
-        private fun showAlterDialog(
-            room: ChatRoom,
-            context: Context,
-            viewModel: RoomListViewModel,
-        ) {
+        private fun showAlterDialog(room: ChatRoom, context: Context, viewModel: RoomListViewModel) {
+
             val builder = AlertDialog.Builder(context)
 
             builder.apply {
                 setMessage(getString(R.string.leave_this_chatroom_message))
                 setPositiveButton(getString(R.string.confirm_yes)) { dialog, _ ->
-                    viewModel.onLeaveRoom(room)
 
+                    viewModel.onLeaveRoom(room)
                     dialog.cancel()
                 }
 
@@ -157,11 +149,12 @@ class RoomListAdapter(val viewModel: RoomListViewModel, private val mContext: Co
         }
 
         companion object {
-            fun from(parent: ViewGroup, mContext: Context): RoomListViewHolder {
+            fun from(parent: ViewGroup): RoomListViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ItemRelatedRoomListBinding.inflate(layoutInflater, parent, false)
+                val binding =
+                    ItemRelatedRoomListBinding.inflate(layoutInflater, parent, false)
 
-                return RoomListViewHolder(binding, mContext)
+                return RoomListViewHolder(binding)
             }
         }
     }

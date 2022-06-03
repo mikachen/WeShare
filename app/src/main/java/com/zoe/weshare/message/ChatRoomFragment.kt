@@ -37,16 +37,19 @@ class ChatRoomFragment : Fragment() {
 
         chatRoom = ChatRoomFragmentArgs.fromBundle(requireArguments()).selectedRoom
 
-        viewModel.onViewDisplay(chatRoom)
+        viewModel.setRoomAndMessages(chatRoom)
+
 
         viewModel.liveMessages.observe(viewLifecycleOwner) {
 
-            if (!hasLayoutSetup) {
-                if (it.isNotEmpty()) {
+            if (!hasLayoutSetup && it.isNotEmpty()) {
                     setupLayoutAct()
-                }
             }
 
+            /**
+             * everytime getting new message list, getUnReadItems and update to read first
+             * set flag on loopSize == 0 to prevent trigger when updating msg read.
+             * */
             if (viewModel.loopSize == 0) {
                 viewModel.getUnReadItems(it)
             }
@@ -57,10 +60,6 @@ class ChatRoomFragment : Fragment() {
             adapter.submitList(it) {
                 recyclerView.post { recyclerView.scrollToPosition(adapter.itemCount - 1) }
             }
-        }
-
-        viewModel.newMessage.observe(viewLifecycleOwner) {
-            viewModel.sendNewMessage(chatRoom.id, it)
         }
 
         viewModel.navigateToTargetUser.observe(viewLifecycleOwner) {
@@ -96,20 +95,29 @@ class ChatRoomFragment : Fragment() {
             ChatRoomType.PRIVATE.value ->
                 if (chatRoom.participants.size == 2) {
 
-                    binding.textRoomTargetTitle.text = targetsInfo.single().name
+                    setupTopBarTitle(targetsInfo.single().name)
+//                    binding.textRoomTargetTitle.text = targetsInfo.single().name
                 } else {
-                    binding.textRoomTargetTitle.text = "不明"
+                    setupTopBarTitle("不明")
+//                    binding.textRoomTargetTitle.text = "不明"
                 }
 
             ChatRoomType.MULTIPLE.value -> {
 
-                binding.textRoomTargetTitle.text =
-                    getStringWithStrParm(
-                        R.string.room_list_event_title,
-                        chatRoom.eventTitle
-                    )
+                setupTopBarTitle(getStringWithStrParm(
+                    R.string.room_list_event_title, chatRoom.eventTitle))
+//
+//                binding.textRoomTargetTitle.text =
+//                    getStringWithStrParm(
+//                        R.string.room_list_event_title,
+//                        chatRoom.eventTitle
+//                    )
             }
         }
+    }
+
+    fun setupTopBarTitle(title: String){
+        (activity as MainActivity).binding.toolbarFragmentTitleText.text = title
     }
 
     private fun setupSendBtn() {

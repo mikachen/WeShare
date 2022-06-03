@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class RoomListViewModel(
     private val repository: WeShareRepository,
-    val userInfo: UserInfo?,
+    val userInfo: UserInfo
 ) : ViewModel() {
 
     var allRooms = MutableLiveData<List<ChatRoom>>()
@@ -45,10 +45,10 @@ class RoomListViewModel(
     val error: LiveData<String?>
         get() = _error
 
-    var leaveRoomComplete = MutableLiveData<ChatRoom>()
+    var leaveRoomComplete = MutableLiveData<ChatRoom?>()
 
-    fun onViewDisplay(liveData: MutableLiveData<List<ChatRoom>>) {
-        allRooms = liveData
+    fun setRoomList(roomList: MutableLiveData<List<ChatRoom>>) {
+        allRooms = roomList
     }
 
     fun displayRoomDetails(selectedRoom: ChatRoom) {
@@ -60,6 +60,7 @@ class RoomListViewModel(
     }
 
     fun onLeaveRoom(room: ChatRoom) {
+
         if (room.participants.size == 1) {
             when (room.type) {
                 ChatRoomType.MULTIPLE.value -> leaveChatRoom(room)
@@ -74,11 +75,9 @@ class RoomListViewModel(
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.removeDocument(
+            when ( val result = repository.removeDocument(
                     collection = PATH_CHATROOM,
-                    docId = room.id,
-                )
+                    docId = room.id )
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -102,17 +101,15 @@ class RoomListViewModel(
         }
     }
 
-    fun leaveChatRoom(room: ChatRoom) {
+    private fun leaveChatRoom(room: ChatRoom) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateFieldValue(
+            when ( val result = repository.updateFieldValue(
                     collection = PATH_CHATROOM,
                     docId = room.id,
                     field = FIELD_ROOM_PARTICIPANTS,
-                    value = FieldValue.arrayRemove(userInfo!!.uid)
-                )
+                    value = FieldValue.arrayRemove(userInfo.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -134,5 +131,8 @@ class RoomListViewModel(
                 }
             }
         }
+    }
+    fun showToastDone(){
+        leaveRoomComplete.value = null
     }
 }

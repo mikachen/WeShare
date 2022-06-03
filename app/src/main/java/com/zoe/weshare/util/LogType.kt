@@ -7,7 +7,6 @@ enum class LogType(val value: Int, val contribution: Int) {
     EVENT_CHECK_IN(3, 100), // send notification to author only
     EVENT_STARTED(4, 0),
     EVENT_ENDED(5, 0),
-
     COMMENT_EVENT(6, 1),
     ABANDONED_GIFT(7, 0),
     ATTEND_EVENT(8, 5),

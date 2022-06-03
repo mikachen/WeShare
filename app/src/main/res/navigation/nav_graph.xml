@@ -40,16 +40,16 @@
             app:argType="com.zoe.weshare.data.UserInfo"
             app:nullable="true" />
         <action
-            android:id="@+id/action_profileFragment_to_editInfoFragment"
+            android:id="@+id/action_profile_to_editInfo"
             app:destination="@id/editInfoFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_giftManageFragment"
+            android:id="@+id/action_profile_to_giftManage"
             app:destination="@id/giftManageFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_eventManageFragment"
+            android:id="@+id/action_profile_to_eventManage"
             app:destination="@id/eventManageFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_policyTermFragment"
+            android:id="@+id/action_profile_to_policyTerm"
             app:destination="@id/policyTermFragment" />
     </fragment>
     <fragment

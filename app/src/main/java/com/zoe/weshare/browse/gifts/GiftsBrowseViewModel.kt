@@ -77,8 +77,8 @@ class GiftsBrowseViewModel(private val repository: WeShareRepository) : ViewMode
     private fun filterGift(gifts: List<GiftPost>) {
 
         val filteredList = gifts.filterNot {
-            userBlackList.contains(it.author.uid) &&
-                    it.status == GiftStatusType.CLOSED.code } as MutableList
+            userBlackList.contains(it.author.uid)
+                    || it.status == GiftStatusType.CLOSED.code } as MutableList
 
         filteredList.sortByDescending { it.whoLiked.size }
 

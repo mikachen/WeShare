@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class DistributeViewModel(
     val repository: WeShareRepository,
-    val userInfo: UserInfo?,
+    val userInfo: UserInfo,
 ) : ViewModel() {
 
     lateinit var gift: GiftPost
@@ -30,8 +30,8 @@ class DistributeViewModel(
     val comments: LiveData<List<Comment>>
         get() = _comments
 
-    private var _targetUser = MutableLiveData<UserInfo>()
-    val targetUser: LiveData<UserInfo>
+    private var _targetUser = MutableLiveData<UserInfo?>()
+    val targetUser: LiveData<UserInfo?>
         get() = _targetUser
 
     private var _onProfileSearchComplete = MutableLiveData<Int>()
@@ -54,10 +54,6 @@ class DistributeViewModel(
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?>
         get() = _error
-
-    private val _sendGiftStatus = MutableLiveData<LoadApiStatus>()
-    val sendGiftStatus: LiveData<LoadApiStatus>
-        get() = _sendGiftStatus
 
     private val _saveLogComplete = MutableLiveData<OperationLog>()
     val saveLogComplete: LiveData<OperationLog>
@@ -121,7 +117,10 @@ class DistributeViewModel(
                 is Result.Success -> {
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
-                    profileList.add(result.data!!)
+
+                    result.data?.let {
+                        profileList.add(it)
+                    }
                 }
                 is Result.Fail -> {
                     _error.value = result.error
@@ -147,7 +146,7 @@ class DistributeViewModel(
 
     fun sendGift(gift: GiftPost, user: UserProfile) {
         coroutineScope.launch {
-            _sendGiftStatus.value = LoadApiStatus.LOADING
+            _status.value = LoadApiStatus.LOADING
 
             when (
                 val result =
@@ -155,22 +154,22 @@ class DistributeViewModel(
             ) {
                 is Result.Success -> {
                     _error.value = null
-                    _sendGiftStatus.value = LoadApiStatus.DONE
+                    _status.value = LoadApiStatus.DONE
 
                     onSaveSendGiftLog()
                 }
                 is Result.Fail -> {
                     _error.value = result.error
-                    _sendGiftStatus.value = LoadApiStatus.ERROR
+                    _status.value = LoadApiStatus.ERROR
                 }
                 is Result.Error -> {
                     _error.value = result.exception.toString()
-                    _sendGiftStatus.value = LoadApiStatus.ERROR
+                    _status.value = LoadApiStatus.ERROR
                 }
                 else -> {
                     _error.value =
                         WeShareApplication.instance.getString(R.string.result_fail)
-                    _sendGiftStatus.value = LoadApiStatus.ERROR
+                    _status.value = LoadApiStatus.ERROR
                 }
             }
         }
@@ -180,7 +179,7 @@ class DistributeViewModel(
         val log = OperationLog(
             postDocId = gift.id,
             logType = LogType.SEND_GIFT.value,
-            operatorUid = userInfo!!.uid,
+            operatorUid = userInfo.uid,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_send_away_gift,
                 userInfo.name,
@@ -192,7 +191,7 @@ class DistributeViewModel(
         val msgToGiftReceiver = OperationLog(
             postDocId = gift.id,
             logType = LogType.SEND_GIFT.value,
-            operatorUid = onConfirmMsgShowing.value!!.uid,
+            operatorUid = onConfirmMsgShowing.value?.uid?:"",
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_receive_gift,
                 userInfo.name,

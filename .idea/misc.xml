@@ -65,7 +65,7 @@
         <entry key="app/src/main/res/font/graffiti.xml" value="0.23020833333333332" />
         <entry key="app/src/main/res/layout/activity_credit_scene.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/activity_logo.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.45" />
         <entry key="app/src/main/res/layout/activity_maps.xml" value="0.2" />
         <entry key="app/src/main/res/layout/badge_chatrooms_unread.xml" value="0.375" />
         <entry key="app/src/main/res/layout/custom_button.xml" value="0.25" />
@@ -90,7 +90,7 @@
         <entry key="app/src/main/res/layout/fragment_gifts_all.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_gifts_browse.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_hero_rank.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.43206256109481916" />
         <entry key="app/src/main/res/layout/fragment_home_cards.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.5475638051044084" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.1847206385404789" />

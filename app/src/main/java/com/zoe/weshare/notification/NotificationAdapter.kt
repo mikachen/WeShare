@@ -52,7 +52,7 @@ class NotificationAdapter(val viewModel: NotificationViewModel) :
                     }
 
                     else -> {
-                        layoutTag.visibility = View.GONE
+                        layoutTag.visibility = View.INVISIBLE
                     }
                 }
             }
@@ -81,6 +81,11 @@ class NotificationAdapter(val viewModel: NotificationViewModel) :
 
         holder.itemView.setOnClickListener {
             viewModel.userOnClickAndRead(notification)
+        }
+
+        //hide last divider view
+        if (position == itemCount - 1) {
+            holder.binding.divider.visibility = View.INVISIBLE
         }
     }
 

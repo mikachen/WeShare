@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-
     private var isFabExpend: Boolean = false
     val viewModel by viewModels<MainViewModel> { getVmFactory() }
 
@@ -74,8 +73,7 @@ class MainActivity : AppCompatActivity() {
 
         if (didUserSignInBefore()) {
             val uid = GoogleSignIn.getLastSignedInAccount(applicationContext)?.id ?: ""
-
-            viewModel.getUserProfile(uid)
+            viewModel.getUserLoginProfile(uid)
         } else {
             requireLogin()
         }
@@ -83,8 +81,20 @@ class MainActivity : AppCompatActivity() {
         viewModel.loginStatus.observe(this) {
             it?.let {
                 when (it) {
-                    LoadApiStatus.LOADING -> {}
-                    LoadApiStatus.DONE -> this.showToast(getString(R.string.toast_login_success))
+                    LoadApiStatus.LOADING -> {
+
+                        binding.preventTouchCoverView.apply {
+                            setOnClickListener { }
+                            visibility = View.VISIBLE
+                        }
+                        this.showToast(getString(R.string.toast_login_process))
+                    }
+
+                    LoadApiStatus.DONE -> {
+                        binding.preventTouchCoverView.visibility = View.GONE
+                        this.showToast(getString(R.string.toast_login_success))
+                    }
+
                     LoadApiStatus.ERROR -> {
                         requireLogin()
                     }
@@ -103,20 +113,13 @@ class MainActivity : AppCompatActivity() {
                 topAppbar.visibility = View.VISIBLE
                 layoutToolbarSubtitle.visibility = View.VISIBLE
                 toolbarFragmentTitleText.text = it.value
-                binding.notification.visibility = View.VISIBLE
 
                 when (it) {
-                    // 顯示副標題+倒退鍵
-                    CurrentFragmentType.SEARCHLOCATION -> {
-                        hideBottom()
-                    }
 
-                    // 大主頁
                     CurrentFragmentType.HOME -> {
                         binding.bottomNavView.menu.getItem(0).isChecked = true
 
-                        showBottom()
-                        toolbar.navigationIcon = null
+                        showBottomBar()
                         toolbarLogoImage.visibility = View.VISIBLE
                         layoutToolbarSubtitle.visibility = View.INVISIBLE
                     }
@@ -124,70 +127,44 @@ class MainActivity : AppCompatActivity() {
                     CurrentFragmentType.MAP -> {
                         binding.bottomNavView.menu.getItem(1).isChecked = true
 
-                        showBottom()
-                        fabsLayoutView.visibility = View.GONE
+                        showBottomBar()
+                        fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.ROOMLIST -> {
                         binding.bottomNavView.menu.getItem(2).isChecked = true
 
-                        showBottom()
+                        showBottomBar()
                         fabsLayoutView.visibility = View.INVISIBLE
                     }
 
                     CurrentFragmentType.PROFILE -> {
                         binding.bottomNavView.menu.getItem(3).isChecked = true
 
-                        showBottom()
-                        topAppbar.visibility = View.GONE
+                        showBottomBar()
                         fabsLayoutView.visibility = View.INVISIBLE
+                        topAppbar.visibility = View.GONE
                     }
 
+                    CurrentFragmentType.GIFTDETAIL,
+                    CurrentFragmentType.EVENTDETAIL,
+                    CurrentFragmentType.POSTGIFT,
+                    CurrentFragmentType.POSTEVENT,
+                    CurrentFragmentType.EDITPROFILE,
+                    CurrentFragmentType.SEARCHLOCATION,
                     CurrentFragmentType.CHATROOM -> {
-                        hideBottom()
-                        topAppbar.visibility = View.GONE
-                    }
-                    CurrentFragmentType.GIFTDETAIL -> {
-                        hideBottom()
-                    }
-                    CurrentFragmentType.EVENTDETAIL -> {
-                        hideBottom()
-                    }
-                    CurrentFragmentType.POSTGIFT -> {
-                        hideBottom()
-                    }
-                    CurrentFragmentType.POSTEVENT -> {
-                        hideBottom()
-                    }
-                    CurrentFragmentType.EDITPROFILE -> {
-                        hideBottom()
+                        hideBottomBar()
                     }
 
-                    CurrentFragmentType.GIFTSBROWSE -> {
-                        showBottom()
-                        fabsLayoutView.visibility = View.INVISIBLE
-                    }
-                    CurrentFragmentType.EVENTSBROWSE -> {
-                        showBottom()
-                        fabsLayoutView.visibility = View.INVISIBLE
-                    }
-
-                    CurrentFragmentType.NOTIFICATION -> {
-                        binding.layoutBadge.visibility = View.INVISIBLE
-
-                        showBottom()
-                        fabsLayoutView.visibility = View.INVISIBLE
-                        binding.notification.visibility = View.INVISIBLE
-                    }
-
-                    CurrentFragmentType.EVENTMANAGE -> {
-                        showBottom()
-                        fabsLayoutView.visibility = View.INVISIBLE
-                    }
+                    CurrentFragmentType.GIFTSBROWSE,
+                    CurrentFragmentType.EVENTSBROWSE,
+                    CurrentFragmentType.NOTIFICATION,
+                    CurrentFragmentType.EVENTMANAGE,
                     CurrentFragmentType.GIFTMANAGE -> {
-                        showBottom()
-                        fabsLayoutView.visibility = View.INVISIBLE
+                        showBottomBar()
+                        binding.fabsLayoutView.visibility = View.INVISIBLE
                     }
+
 
                     CurrentFragmentType.HERORANK -> {
                         topAppbar.visibility = View.INVISIBLE
@@ -242,8 +219,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun requireLogin() {
-        findNavController(R.id.nav_host_fragment).navigate(
-            NavGraphDirections.actionGlobalLoginFragment())
+        findNavController(R.id.nav_host_fragment)
+            .navigate(NavGraphDirections.actionGlobalLoginFragment())
     }
 
     fun didUserSignInBefore(): Boolean {
@@ -265,19 +242,19 @@ class MainActivity : AppCompatActivity() {
         val count = list.filter { !it.read }.size
 
         if (count == 0) {
-            binding.layoutBadge.visibility = View.INVISIBLE
+            binding.layoutNotificationBadge.visibility = View.INVISIBLE
         } else {
-            binding.layoutBadge.visibility = View.VISIBLE
+            binding.layoutNotificationBadge.visibility = View.VISIBLE
             binding.badgeCount.text = count.toString()
         }
     }
 
-    private fun hideBottom() {
+    private fun hideBottomBar() {
         binding.fabsLayoutView.visibility = View.INVISIBLE
         binding.bottomAppBar.performHide()
     }
 
-    private fun showBottom() {
+    private fun showBottomBar() {
         binding.fabsLayoutView.visibility = View.VISIBLE
         binding.bottomAppBar.visibility = View.VISIBLE
         binding.bottomAppBar.performShow()
@@ -336,7 +313,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun setupProgressBar() {
+    private fun setupProgressBar() {
         progressBar = binding.progressBar
         progressBar.max = 100 * 100
     }

@@ -11,6 +11,17 @@
     <string name="profile">個人</string>
     <string name="post_event">刊登活動</string>
     <string name="post_gift">刊登贈品</string>
+    <string name="choose_location">請選擇地點</string>
+    <string name="gift_management">贈品管理</string>
+    <string name="event_management">活動管理</string>
+    <string name="notification">通知</string>
+    <string name="login">登入</string>
+    <string name="edit_profile">會員資料更新</string>
+    <string name="gift_browse">贈品查詢</string>
+    <string name="event_browse">活動查詢</string>
+    <string name="event_check_in">活動簽到掃描</string>
+    <string name="hero_rank">活動查詢</string>
+
 
     // home newbie hints
     <string name="hint_welcome_msg">歡迎進入WeShare，恭喜您已成功地完成共享的第一步！</string>
@@ -209,6 +220,7 @@
 
     //toast message
     <string name="toast_require_login">請先登入</string>
+    <string name="toast_login_process">登入中，請稍候</string>
     <string name="toast_login_success">登入成功</string>
     <string name="toast_leave_report_reason">請填寫檢舉原因</string>
     <string name="toast_must_check_agree">請先勾選同意使用條款</string>
@@ -216,6 +228,7 @@
     <string name="toast_cant_find_this_place">查無此地</string>
     <string name="toast_check_in_successfully">簽到成功</string>
     <string name="toast_check_in_reject">活動尚未開始！不能簽到</string>
+    <string name="toast_has_leave_room">已離開</string>
 
 
 </resources>

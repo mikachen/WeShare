@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class GiftManageViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo?,
+    private val userInfo: UserInfo,
 ) : ViewModel() {
 
     private var _comments = MutableLiveData<List<Comment>>()
@@ -67,7 +67,7 @@ class GiftManageViewModel(
             _searchGiftsStatus.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.getUserAllGiftsPosts(uid = userInfo!!.uid)
+                val result = repository.getUserAllGiftsPosts(uid = userInfo.uid)
             ) {
 
                 is Result.Success -> {
@@ -141,7 +141,7 @@ class GiftManageViewModel(
         val log = OperationLog(
             postDocId = gift.id,
             logType = LogType.ABANDONED_GIFT.value,
-            operatorUid = userInfo!!.uid,
+            operatorUid = userInfo.uid,
             logMsg = WeShareApplication.instance.getString(
                 R.string.log_msg_abandon_gift,
                 userInfo.name,

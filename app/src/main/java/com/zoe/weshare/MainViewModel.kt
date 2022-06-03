@@ -71,7 +71,7 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
         return !room.lastMsgRead.contains(weShareUser.uid) && room.lastMsgSentTime != -1L
     }
 
-    fun getUserProfile(uid: String) {
+    fun getUserLoginProfile(uid: String) {
         coroutineScope.launch {
             _loginStatus.value = LoadApiStatus.LOADING
 
@@ -83,7 +83,7 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
 
                     if(userProfile != null){
 
-                        getUserInfo(userProfile)
+                        setUserInfo(userProfile)
 
                         getLiveNotificationResult()
                         getLiveRoomResult()
@@ -109,7 +109,8 @@ class MainViewModel(private val repository: WeShareRepository) : ViewModel() {
         }
     }
 
-    fun getUserInfo(user: UserProfile){
+    fun setUserInfo(user: UserProfile){
+
         userInfo = UserInfo(
             name = user.name,
             image = user.image,

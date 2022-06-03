@@ -40,6 +40,7 @@ import com.zoe.weshare.util.Const.SUB_PATH_CHATROOM_MESSAGE
 import com.zoe.weshare.util.Const.SUB_PATH_USER_NOTIFICATION
 import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
+import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -179,12 +180,16 @@ object WeShareRemoteDataSource : WeShareDataSource {
         }
 
     override suspend fun getUserInfo(uid: String): Result<UserProfile?> =
+
+
         suspendCoroutine { continuation ->
-            FirebaseFirestore.getInstance()
+
+                FirebaseFirestore.getInstance ()
                 .collection(PATH_USER)
                 .whereEqualTo(FIELD_USER_UID, uid)
                 .get()
                 .addOnCompleteListener { task ->
+
                     if (task.isSuccessful) {
                         var user: UserProfile? = null
 

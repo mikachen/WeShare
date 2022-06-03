@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class ChatRoomViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo?,
+    private val userInfo: UserInfo
 ) : ViewModel() {
 
     var liveMessages = MutableLiveData<List<MessageItem>>()
@@ -30,12 +30,8 @@ class ChatRoomViewModel(
 
     lateinit var chatRoom: ChatRoom
 
-    private var _newMessage = MutableLiveData<Comment>()
-    val newMessage: LiveData<Comment>
-        get() = _newMessage
-
-    private var _navigateToTargetUser = MutableLiveData<UserInfo>()
-    val navigateToTargetUser: LiveData<UserInfo>
+    private var _navigateToTargetUser = MutableLiveData<UserInfo?>()
+    val navigateToTargetUser: LiveData<UserInfo?>
         get() = _navigateToTargetUser
 
     private var viewModelJob = Job()
@@ -49,85 +45,26 @@ class ChatRoomViewModel(
     val error: LiveData<String?>
         get() = _error
 
+    //default 0
     var loopSize: Int = 0
 
-    fun onViewDisplay(room: ChatRoom) {
-
+    fun setRoomAndMessages(room: ChatRoom) {
         chatRoom = room
         liveMessages = repository.getLiveMessages(docId = room.id)
     }
 
-    fun onSending(inputMsg: String) {
-        _newMessage.value = Comment(
-            uid = userInfo!!.uid,
-            content = inputMsg,
-            createdTime = Calendar.getInstance().timeInMillis,
-            whoRead = listOf(userInfo.uid)
-        )
-    }
-
-    fun sendNewMessage(docId: String, comment: Comment) {
-        coroutineScope.launch {
-
-            _status.value = LoadApiStatus.LOADING
-
-            when (val result = repository.sendMessage(docId, comment)) {
-                is Result.Success -> {
-                    _error.value = null
-                    _status.value = LoadApiStatus.DONE
-
-                    saveLastMsgRecord(docId) // 更新room最新訊息
-                    setLastMsgReadUser(comment) // 更新最後訊息已讀的人
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                }
-                else -> {
-                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
-                }
-            }
-        }
-    }
-
-    private fun saveLastMsgRecord(docId: String) {
-        coroutineScope.launch {
-
-            _status.value = LoadApiStatus.LOADING
-
-            when (val result = repository.saveLastMsgRecord(docId, newMessage.value!!)) {
-                is Result.Success -> {
-                    _error.value = null
-                    _status.value = LoadApiStatus.DONE
-                }
-                is Result.Fail -> {
-                    _error.value = result.error
-                    _status.value = LoadApiStatus.ERROR
-                }
-                is Result.Error -> {
-                    _error.value = result.exception.toString()
-                    _status.value = LoadApiStatus.ERROR
-                }
-                else -> {
-                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
-                    _status.value = LoadApiStatus.ERROR
-                }
-            }
-        }
-    }
-
     fun getUnReadItems(messages: List<MessageItem>) {
+
         val unReadItems = messages.filter {
             it is MessageItem.OnReceiveSide &&
-                it.message?.whoRead?.contains(userInfo!!.uid) == false
+                    it.message?.whoRead?.contains(userInfo.uid) == false
         }
 
-        if (unReadItems.isNotEmpty()) {
+        if (unReadItems.isEmpty()) {
+
+            msgDisplay.value = messages
+
+        } else {
             loopSize = unReadItems.size
 
             for (item in unReadItems) {
@@ -137,24 +74,21 @@ class ChatRoomViewModel(
                     updateMsgRead(it)
                 }
             }
-        } else {
-            msgDisplay.value = messages
         }
     }
 
-    fun updateMsgRead(message: Comment) {
+    /** update firebase read user array on each unRead  */
+    private fun updateMsgRead(message: Comment) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.updateSubCollectionFieldValue(
-                    collection = PATH_CHATROOM,
-                    docId = chatRoom.id,
-                    subCollection = SUB_PATH_CHATROOM_MESSAGE,
-                    subDocId = message.id,
-                    field = FIELD_MESSAGE_WHO_READ,
-                    value = FieldValue.arrayUnion(userInfo!!.uid)
-                )
+            when (val result = repository.updateSubCollectionFieldValue(
+                collection = PATH_CHATROOM,
+                docId = chatRoom.id,
+                subCollection = SUB_PATH_CHATROOM_MESSAGE,
+                subDocId = message.id,
+                field = FIELD_MESSAGE_WHO_READ,
+                value = FieldValue.arrayUnion(userInfo.uid))
             ) {
                 is Result.Success -> {
                     _error.value = null
@@ -173,33 +107,103 @@ class ChatRoomViewModel(
                     _status.value = LoadApiStatus.ERROR
                 }
             }
+
             loopSize -= 1
 
             if (loopSize == 0) {
-
                 msgDisplay.value = liveMessages.value
+
                 liveMessages.value?.let { getLastMsgItem(it) }
             }
         }
     }
 
     fun getLastMsgItem(messages: List<MessageItem>) {
-
         when (val item = messages.last()) {
-            is MessageItem.OnSendSide -> item.message?.let { setLastMsgReadUser(it) }
-            is MessageItem.OnReceiveSide -> item.message?.let { setLastMsgReadUser(it) }
+            is MessageItem.OnSendSide -> item.message?.let { updateLastMsgReadUser(it) }
+            is MessageItem.OnReceiveSide -> item.message?.let { updateLastMsgReadUser(it) }
         }
     }
 
-    fun setLastMsgReadUser(message: Comment) {
+    fun onSending(inputMsg: String) {
+
+        val message = Comment(
+            uid = userInfo.uid,
+            content = inputMsg,
+            createdTime = Calendar.getInstance().timeInMillis,
+            whoRead = listOf(userInfo.uid)
+        )
+
+        sendNewMessage(chatRoom.id, message)
+    }
+
+
+    /** everytime sending a new msg out,
+     * update LastMsgRecord(Message Collection) & LastMsgReadUser(ChatRoom Doc) */
+    fun sendNewMessage(docId: String, message: Comment) {
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when ( val result = repository.sendMessage(docId, message)) {
+
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+
+                    saveLastMsgRecord(docId,message)
+                    updateLastMsgReadUser(message)
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    private fun saveLastMsgRecord(docId: String, message: Comment) {
+        coroutineScope.launch {
+
+            _status.value = LoadApiStatus.LOADING
+
+            when (val result = repository.saveLastMsgRecord(docId, message)) {
+
+                is Result.Success -> {
+                    _error.value = null
+                    _status.value = LoadApiStatus.DONE
+                }
+                is Result.Fail -> {
+                    _error.value = result.error
+                    _status.value = LoadApiStatus.ERROR
+                }
+                is Result.Error -> {
+                    _error.value = result.exception.toString()
+                    _status.value = LoadApiStatus.ERROR
+                }
+                else -> {
+                    _error.value = WeShareApplication.instance.getString(R.string.result_fail)
+                    _status.value = LoadApiStatus.ERROR
+                }
+            }
+        }
+    }
+
+    fun updateLastMsgReadUser(message: Comment) {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.setLastMsgReadUser(
-                    docId = chatRoom.id,
-                    uidList = message.whoRead
-                )
+            when ( val result = repository.setLastMsgReadUser(
+                docId = chatRoom.id,
+                uidList = message.whoRead )
             ) {
                 is Result.Success -> {
                     _error.value = null

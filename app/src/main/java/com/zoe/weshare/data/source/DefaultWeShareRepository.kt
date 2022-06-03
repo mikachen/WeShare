@@ -7,7 +7,7 @@ import com.zoe.weshare.data.*
 
 class DefaultWeShareRepository(
     private val remoteDataSource: WeShareDataSource,
-    private val localDataSource: WeShareDataSource,
+    private val localDataSource: WeShareDataSource
 ) : WeShareRepository {
 
     override suspend fun postNewEvent(event: EventPost): Result<String> {

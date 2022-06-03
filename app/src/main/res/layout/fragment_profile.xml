@@ -67,14 +67,14 @@
         tools:visibility="visible">
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_baseline_settings_24" />
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/button_report_user"
+        android:id="@+id/button_more"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
@@ -85,8 +85,8 @@
         tools:visibility="visible">
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_baseline_more_horiz_24" />
     </FrameLayout>

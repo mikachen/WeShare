@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class EventManageViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo?,
+    private val userInfo: UserInfo,
 ) : ViewModel() {
 
     private val _allEventsResult = MutableLiveData<List<EventPost>>()
@@ -60,7 +60,7 @@ class EventManageViewModel(
             _status.value = LoadApiStatus.LOADING
 
             when (
-                val result = repository.getUserAllEventsPosts(uid = userInfo!!.uid)
+                val result = repository.getUserAllEventsPosts(uid = userInfo.uid)
             ) {
 
                 is Result.Success -> {
@@ -121,7 +121,7 @@ class EventManageViewModel(
     private fun onStatusChangedLog(event: EventPost) {
         val log = OperationLog(
             postDocId = event.id,
-            operatorUid = userInfo!!.uid,
+            operatorUid = userInfo.uid,
             logType = LogType.EVENT_GOT_FORCE_ENDED.value,
             logMsg = WeShareApplication.instance
                 .getString(R.string.log_msg_force_end_event, userInfo.name, event.title)
