@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class NotificationViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo,
+    private val userInfo: UserInfo
 ) : ViewModel() {
 
     private var allMessage = MutableLiveData<List<OperationLog>>()

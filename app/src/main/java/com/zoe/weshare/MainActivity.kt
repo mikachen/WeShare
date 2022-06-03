@@ -73,7 +73,6 @@ class MainActivity : AppCompatActivity() {
 
         if (didUserSignInBefore()) {
             val uid = GoogleSignIn.getLastSignedInAccount(applicationContext)?.id ?: ""
-
             viewModel.getUserLoginProfile(uid)
         } else {
             requireLogin()
@@ -147,22 +146,22 @@ class MainActivity : AppCompatActivity() {
                         topAppbar.visibility = View.GONE
                     }
 
-
                     CurrentFragmentType.GIFTDETAIL,
                     CurrentFragmentType.EVENTDETAIL,
                     CurrentFragmentType.POSTGIFT,
                     CurrentFragmentType.POSTEVENT,
                     CurrentFragmentType.EDITPROFILE,
                     CurrentFragmentType.SEARCHLOCATION,
-                    CurrentFragmentType.CHATROOM,
-                    CurrentFragmentType.EVENTMANAGE,
-                    CurrentFragmentType.GIFTMANAGE,
-                    CurrentFragmentType.NOTIFICATION-> {
+                    CurrentFragmentType.CHATROOM -> {
                         hideBottomBar()
                     }
 
                     CurrentFragmentType.GIFTSBROWSE,
-                    CurrentFragmentType.EVENTSBROWSE -> {
+                    CurrentFragmentType.EVENTSBROWSE,
+                    CurrentFragmentType.NOTIFICATION,
+                    CurrentFragmentType.EVENTMANAGE,
+                    CurrentFragmentType.GIFTMANAGE -> {
+                        showBottomBar()
                         binding.fabsLayoutView.visibility = View.INVISIBLE
                     }
 

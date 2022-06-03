@@ -144,8 +144,8 @@
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_baseline_arrow_back_ios_new_24" />
                     </FrameLayout>
@@ -155,10 +155,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginStart="8dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_marginEnd="70dp"
                         android:textColor="@color/white"
-                        android:textSize="24sp"
-                        tools:text="選擇地點" />
+                        android:textSize="22sp"
+                        tools:text="選擇地點選擇地點選擇地點選擇地點選擇地點" />
 
                 </LinearLayout>
 

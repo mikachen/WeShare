@@ -228,6 +228,7 @@
     <string name="toast_cant_find_this_place">查無此地</string>
     <string name="toast_check_in_successfully">簽到成功</string>
     <string name="toast_check_in_reject">活動尚未開始！不能簽到</string>
+    <string name="toast_has_leave_room">已離開</string>
 
 
 </resources>

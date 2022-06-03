@@ -53,7 +53,7 @@ class HeroRankAdapter(private val onClickListener: HeroOnClickListener) :
 
         //hide last divider view
         if (position == itemCount - 1) {
-            holder.binding.divider.visibility = View.GONE
+            holder.binding.divider.visibility = View.INVISIBLE
         }
     }
 
