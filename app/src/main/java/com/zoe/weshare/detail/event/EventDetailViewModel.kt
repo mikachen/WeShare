@@ -138,23 +138,23 @@ class EventDetailViewModel(
      * and only sort out the new user profile that we never get
      * */
     fun onGetUsersProfile(comments: List<Comment>) {
+        _isProfileSearchComplete.value = false
 
         if (comments.isNotEmpty()) {
-            _isProfileSearchComplete.value = false
-
             val excludedSameUserComments = comments.distinctBy { it.uid }
             val newUserUid = mutableListOf<String>()
 
             if (userProfileList.isEmpty()) {
                 // first entry the page is always empty
                 for (comment in excludedSameUserComments) {
+
                     newUserUid.add(comment.uid)
                 }
 
             } else {
                 for (comment in excludedSameUserComments) {
-                    if (alreadyGotUserProfile(comment)) {
 
+                    if (alreadyGotUserProfile(comment)) {
                         newUserUid.add(comment.uid)
                     }
                 }

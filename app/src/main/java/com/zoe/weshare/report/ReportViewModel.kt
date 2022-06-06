@@ -43,12 +43,13 @@ class ReportViewModel(
     }
 
 
-    fun onSendReport(reason: String) {
+    fun onSendReport(reason: String, sort: String) {
 
         val report = ViolationReport(
             targetUid = targetUid?: "",
             operatorUid = userInfo.uid,
-            reason = reason
+            reason = reason,
+            sort = sort
         )
 
         sendViolationReport(report)

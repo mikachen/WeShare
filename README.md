@@ -60,7 +60,7 @@ Password: wesharetest
 
 
 ## Requirement
-SDK Version 28+<br>
+SDK Version 26+<br>
 Gradle Version 7.2
 
 ## Contact

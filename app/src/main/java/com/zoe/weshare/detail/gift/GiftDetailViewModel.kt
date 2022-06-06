@@ -108,10 +108,9 @@ class GiftDetailViewModel(private val repository: WeShareRepository, val userInf
      * and only sort out the new user profile that haven't been query
      * */
     fun searchUsersProfile(comments: List<Comment>) {
+        _profileSearchComplete.value = false
 
         if (comments.isNotEmpty()) {
-            _profileSearchComplete.value = false
-
             val newUserUid = mutableListOf<String>()
 
             // first entry is always empty

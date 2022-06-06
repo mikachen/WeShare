@@ -5,5 +5,6 @@ data class ViolationReport(
     var targetUid: String = "",
     var operatorUid: String = "",
     var reason: String = "",
-    var createdTime: Long = -1,
+    var sort:String ="",
+    var createdTime: Long = -1
 )

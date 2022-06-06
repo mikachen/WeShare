@@ -18,6 +18,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_flag_menu"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="不當內容分類"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintStart_toStartOf="@id/title_leave_reason"
+        app:layout_constraintTop_toBottomOf="@id/title_leave_reason">
+
+        <AutoCompleteTextView
+            android:id="@+id/dropdown_menu_sort"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:focusable="false"
+            android:gravity="center|start"
+            android:inputType="none"
+            android:textAppearance="@style/customHintLabel" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layout_leave_reason"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
@@ -32,7 +55,7 @@
         app:hintTextColor="@color/app_work_orange1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/title_leave_reason"
-        app:layout_constraintTop_toBottomOf="@id/title_leave_reason">
+        app:layout_constraintTop_toBottomOf="@id/layout_flag_menu">
 
 
         <com.google.android.material.textfield.TextInputEditText

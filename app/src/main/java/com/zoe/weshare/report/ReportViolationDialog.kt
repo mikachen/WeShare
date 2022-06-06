@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -14,13 +15,16 @@ import com.zoe.weshare.R
 import com.zoe.weshare.databinding.DialogReportViolationBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.hideKeyboard
+import com.zoe.weshare.ext.showDropdownMenu
 import com.zoe.weshare.ext.showToast
 import com.zoe.weshare.util.UserManager.weShareUser
+import java.util.*
 
 class ReportViolationDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogReportViolationBinding
     private val viewModel by viewModels<ReportViewModel> { getVmFactory(weShareUser) }
+    private lateinit var sortAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +48,7 @@ class ReportViolationDialog : BottomSheetDialogFragment() {
         }
 
         setupBtn()
+        setupDropdownMenu()
         return binding.root
     }
 
@@ -61,23 +66,50 @@ class ReportViolationDialog : BottomSheetDialogFragment() {
 
     private fun dataCollecting() {
         val reason = binding.editLeaveReason.text.toString().trim()
+        val sort = binding.dropdownMenuSort.text.toString().trim()
 
-        val isCollectComplete = verifyData(reason)
+        val isCollectComplete = verifyData(reason,sort)
 
         if (isCollectComplete) {
-            viewModel.onSendReport(reason)
+            viewModel.onSendReport(reason,sort)
         }
     }
 
-    private fun verifyData(reason: String): Boolean {
+    private fun verifyData(reason: String, sort:String): Boolean {
 
-        return if (reason.isNotEmpty()) {
-            true
-        } else {
+        return if (reason.isEmpty()) {
             activity.showToast(getString(R.string.toast_leave_report_reason))
             false
-        }
+        } else (if(sort.isEmpty()){
+            activity.showToast(getString(R.string.toast_choose_report_flag))
+            false
+        } else  {
+            true
+        })
     }
+
+    private fun setupDropdownMenu() {
+
+        val sortsString = resources.getStringArray(R.array.violation_sort)
+
+        sortAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_1, sortsString
+        )
+
+        binding.dropdownMenuSort.apply {
+            setAdapter(sortAdapter)
+
+            setOnClickListener {
+                this.hideKeyboard()
+                this.showDropdownMenu(sortAdapter)
+            }
+        }
+
+
+        sortAdapter.setNotifyOnChange(true)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -70,6 +70,19 @@
         <item>其他</item>
     </string-array>
 
+    <string-array name="violation_sort">
+        <item>暴力或令人厭惡的內容</item>
+        <item>色情內容</item>
+        <item>仇恨或惡意內容</item>
+        <item>有害的危險行為</item>
+        <item>虐待兒童</item>
+        <item>宣傳恐怖主義</item>
+        <item>垃圾內容或誤導性內容</item>
+        <item>權利侵犯</item>
+        <item>詐騙/詐欺</item>
+        <item>其他</item>
+    </string-array>
+
     <string name="posted_time">%s 刊登</string>
     <string name="gift_post_sort">物品分類: %1$s</string>
     <string name="event_post_sort">活動分類: %1$s</string>
@@ -223,6 +236,7 @@
     <string name="toast_login_process">登入中，請稍候</string>
     <string name="toast_login_success">登入成功</string>
     <string name="toast_leave_report_reason">請填寫檢舉原因</string>
+    <string name="toast_choose_report_flag">請選擇不當內容分類</string>
     <string name="toast_must_check_agree">請先勾選同意使用條款</string>
     <string name="toast_report_send_complete">已收到您的檢舉，我們會盡快為您審查處理！</string>
     <string name="toast_cant_find_this_place">查無此地</string>
