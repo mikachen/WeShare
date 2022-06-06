@@ -44,10 +44,7 @@ class PostGiftFragment : Fragment() {
     private lateinit var conditionAdapter: ArrayAdapter<String>
 
     private val whatToPostAnimate: Animation by lazy {
-        AnimationUtils.loadAnimation(
-            requireContext(),
-            R.anim.event_checkin_success
-        )
+        AnimationUtils.loadAnimation(requireContext(), R.anim.event_checkin_success)
     }
 
     private lateinit var binding: FragmentPostGiftBinding
