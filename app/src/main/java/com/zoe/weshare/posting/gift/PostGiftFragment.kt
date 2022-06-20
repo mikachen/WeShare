@@ -136,8 +136,9 @@ class PostGiftFragment : Fragment() {
 
         val isCollectComplete = verifyData(title, sort, condition, description)
 
-        if (isCollectComplete) { viewModel.onSaveUserInput(
-                title, sort, condition, description, imagePathUri?: return)
+        if (isCollectComplete) {
+            viewModel.onSaveUserInput(
+                title, sort, condition, description, imagePathUri ?: return)
         }
     }
 

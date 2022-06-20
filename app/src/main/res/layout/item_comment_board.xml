@@ -26,9 +26,8 @@
 
     <FrameLayout
         android:id="@+id/layout_main_content"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@id/lottie_received_gift"
         app:layout_constraintStart_toEndOf="@+id/base_profile_avatar"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -58,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginTop="1dp"
+                android:maxEms="15"
                 android:textSize="14sp"
                 tools:text="每年都要參加der拉～～每年都要參加der拉～～～" />
         </LinearLayout>
@@ -68,9 +68,9 @@
         android:id="@+id/text_created_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="2dp"
         android:layout_marginStart="8dp"
         android:maxLines="1"
-        android:layout_marginVertical="2dp"
         android:textColor="#A9A9A9"
         android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -81,9 +81,9 @@
     <ImageView
         android:id="@+id/button_more"
         android:layout_width="wrap_content"
-        android:paddingBottom="8dp"
-        android:paddingStart="8dp"
         android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingBottom="8dp"
         android:src="@drawable/ic_baseline_more_horiz_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/layout_main_content" />
@@ -94,9 +94,9 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginHorizontal="4dp"
-        app:anim_scale_factor="2"
-        app:icon_size="16dp"
         android:paddingTop="12dp"
+        app:anim_scale_factor="2"
+        app:icon_size="13dp"
         app:icon_type="thumb"
         app:is_enabled="true"
         app:layout_constraintBottom_toBottomOf="@id/text_created_time"
@@ -113,18 +113,9 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textSize="12sp"
-        app:layout_constraintTop_toTopOf="@id/text_created_time"
         app:layout_constraintStart_toEndOf="@id/button_comment_like"
+        app:layout_constraintTop_toTopOf="@id/text_created_time"
         tools:text="22人都說讚" />
 
-
-    <View
-        android:id="@+id/lottie_received_gift"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toStartOf="@id/button_more"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

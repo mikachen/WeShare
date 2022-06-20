@@ -204,6 +204,7 @@
     <string name="countdown_time4">倒數 %02d 秒</string>
 
     <string name="leave_this_chatroom_message">聊天室將會被刪除，確定要繼續嗎？</string>
+    <string name="user_had_left_chatroom">用戶已離開聊天室</string>
 
     <string name="gift_status_opening">開放中</string>
     <string name="gift_status_closed">已結案</string>
@@ -243,6 +244,7 @@
     <string name="toast_check_in_successfully">簽到成功</string>
     <string name="toast_check_in_reject">活動尚未開始！不能簽到</string>
     <string name="toast_has_leave_room">已離開</string>
+    <string name="toast_gift_has_been_sent_out">送出成功</string>
 
 
 </resources>

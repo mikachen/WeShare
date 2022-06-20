@@ -78,6 +78,7 @@ class EventCheckInFragment : Fragment() {
 
         viewModel.setEvent(event)
 
+
         if (isCameraPermissionGranted) {
 
             binding.barcodeLine.startAnimation(aniSlide)

@@ -39,7 +39,7 @@ class HeroRankViewModel(private val repository: WeShareRepository) : ViewModel()
         getRankResult()
     }
 
-    private fun getRankResult() {
+    fun getRankResult() {
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
@@ -48,7 +48,8 @@ class HeroRankViewModel(private val repository: WeShareRepository) : ViewModel()
                     _error.value = null
                     _status.value = LoadApiStatus.DONE
 
-                    _ranking.value = result.data ?: emptyList()
+                    val rankList = result.data
+                    _ranking.value = rankList
                 }
                 is Result.Fail -> {
                     _error.value = result.error

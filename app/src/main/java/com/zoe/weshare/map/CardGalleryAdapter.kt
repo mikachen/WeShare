@@ -12,10 +12,8 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayFormat
 import com.zoe.weshare.util.UserManager
 
-class CardGalleryAdapter(
-    val viewModel: MapViewModel,
-    private val onClickListener: CardOnClickListener,
-) : RecyclerView.Adapter<CardGalleryAdapter.CardsViewHolder>() {
+class CardGalleryAdapter(val viewModel: MapViewModel, val clickListener: (Cards) -> Unit) :
+    RecyclerView.Adapter<CardGalleryAdapter.CardsViewHolder>() {
 
     private var list: List<Cards>? = null
     private lateinit var likeAnimation: ScaleAnimation
@@ -43,10 +41,6 @@ class CardGalleryAdapter(
         }
     }
 
-    class CardOnClickListener(val clickListener: (selectedProduct: Cards) -> Unit) {
-        fun onClick(selectedCard: Cards) = clickListener(selectedCard)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardsViewHolder {
         return CardsViewHolder(
             ItemCardGalleryViewBinding.inflate(
@@ -63,16 +57,17 @@ class CardGalleryAdapter(
 
             val hasUserLiked: Boolean = hasUserLikedBefore(card.whoLiked)
 
-            holder.binding.clickableView.setOnClickListener {
-                onClickListener.onClick(card)
-            }
-            holder.binding.buttonLike.setOnClickListener {
+            holder.binding.apply {
+                clickableView.setOnClickListener { clickListener(card) }
 
-                it.startAnimation(likeAnimation)
-                viewModel.onPostLikePressed(card, hasUserLiked)
-            }
+                buttonLike.setOnClickListener {
 
-            holder.binding.buttonLike.isChecked = hasUserLiked
+                    it.startAnimation(likeAnimation)
+                    viewModel.onPostLikePressed(card, hasUserLiked)
+                }
+
+                buttonLike.isChecked = hasUserLiked
+            }
         }
     }
 

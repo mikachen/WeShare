@@ -18,6 +18,7 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getPhoneVibrate
 import com.zoe.weshare.ext.toDisplaySentTime
 import com.zoe.weshare.util.ChatRoomType
+import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithStrParm
@@ -66,7 +67,7 @@ class RoomListAdapter(val viewModel: RoomListViewModel) :
                     ChatRoomType.PRIVATE.value -> {
                         if (room.participants.size == 1) {
 
-                            textRoomTargetTitle.text = "用戶已離開聊天室"
+                            textRoomTargetTitle.text = getString(R.string.user_had_left_chatroom)
                         } else {
                             val target = room.usersInfo.single { it.uid != weShareUser.uid }
 

@@ -7,7 +7,7 @@ import com.zoe.weshare.data.EventPost
 import com.zoe.weshare.databinding.ItemHeaderTvBinding
 import com.zoe.weshare.ext.bindImage
 
-class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
+class HeaderAdapter(val listener: (EventPost) -> Unit) :
     RecyclerView.Adapter<HeaderAdapter.HeaderViewHolder>() {
 
     private var list: List<EventPost>? = null
@@ -24,10 +24,6 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
         }
     }
 
-    class HeaderOnClickListener(val clicked: (selected: EventPost) -> Unit) {
-        fun onClick(selectedEvent: EventPost) = clicked(selectedEvent)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeaderViewHolder {
         return HeaderViewHolder(
             ItemHeaderTvBinding.inflate(
@@ -41,7 +37,7 @@ class HeaderAdapter(private val onClickListener: HeaderOnClickListener) :
 
         event?.let {
             holder.bind(it)
-            holder.itemView.setOnClickListener { onClickListener.onClick(event) }
+            holder.itemView.setOnClickListener { listener(event) }
         }
     }
 

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class DistributeViewModel(
     val repository: WeShareRepository,
-    val userInfo: UserInfo,
+    val userInfo: UserInfo
 ) : ViewModel() {
 
     lateinit var gift: GiftPost
@@ -64,12 +64,10 @@ class DistributeViewModel(
         coroutineScope.launch {
             _status.value = LoadApiStatus.LOADING
 
-            when (
-                val result = repository.getAllComments(
+            when ( val result = repository.getAllComments(
                     collection = PATH_GIFT_POST,
                     docId = selectedGift.id,
-                    subCollection = SUB_PATH_GIFT_USER_WHO_REQUEST
-                )
+                    subCollection = SUB_PATH_GIFT_USER_WHO_REQUEST )
             ) {
                 is Result.Success -> {
                     _error.value = null

@@ -10,18 +10,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.zoe.weshare.NavGraphDirections
 import com.zoe.weshare.databinding.FragmentEventsBrowseBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.hideKeyboard
 
+
 class EventsBrowseFragment : Fragment() {
 
     private lateinit var binding: FragmentEventsBrowseBinding
-    private lateinit var adapter: EventsBrowseAdapter
-    private lateinit var manager: GridLayoutManager
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var eventsBrowseAdapter: EventsBrowseAdapter
 
     private var onNavigateBack: Boolean = false
     private val viewModel by viewModels<EventsBrowseViewModel> { getVmFactory() }
@@ -36,7 +34,7 @@ class EventsBrowseFragment : Fragment() {
 
         viewModel.events.observe(viewLifecycleOwner) {
             onNavigateBack = false
-            adapter.modifyList(it)
+            eventsBrowseAdapter.modifyList(it)
         }
 
         viewModel.navigateToSelectedEvent.observe(viewLifecycleOwner) {
@@ -71,23 +69,19 @@ class EventsBrowseFragment : Fragment() {
     @SuppressLint("ClickableViewAccessibility")
     fun setupView() {
 
-        adapter = EventsBrowseAdapter(
-            EventsBrowseAdapter.EventsAllOnClickListener { selectedEvent ->
-                viewModel.onNavigateEventDetails(selectedEvent)
+        eventsBrowseAdapter = EventsBrowseAdapter{ viewModel.onNavigateEventDetails(it)}
+
+        binding.recyclerview.run{
+            adapter = eventsBrowseAdapter
+
+            layoutManager = GridLayoutManager(requireContext(), 2)
+
+            setOnTouchListener { view, event ->
+                binding.eventsSearchview.isIconified = true
+
+                view.hideKeyboard()
+                false
             }
-        )
-
-        manager = GridLayoutManager(requireContext(), 2)
-        recyclerView = binding.recyclerview
-
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = manager
-
-        recyclerView.setOnTouchListener { view, event ->
-            binding.eventsSearchview.isIconified = true
-
-            view.hideKeyboard()
-            false
         }
 
         binding.eventsSearchview.setOnClickListener {
@@ -102,7 +96,7 @@ class EventsBrowseFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let {
                     if (!onNavigateBack) {
-                        adapter.filter(newText, viewModel)
+                        eventsBrowseAdapter.filter(newText, viewModel)
                     }
                 }
                 return true
