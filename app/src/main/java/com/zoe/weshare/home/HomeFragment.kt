@@ -22,6 +22,14 @@ import com.zoe.weshare.R
 import com.zoe.weshare.databinding.FragmentHomeBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.smoothSnapToPosition
+import com.zoe.weshare.util.Const.HINT_STEP_DEFAULT
+import com.zoe.weshare.util.Const.HINT_STEP_END
+import com.zoe.weshare.util.Const.HINT_STEP_FIVE
+import com.zoe.weshare.util.Const.HINT_STEP_FOUR
+import com.zoe.weshare.util.Const.HINT_STEP_ONE
+import com.zoe.weshare.util.Const.HINT_STEP_SIX
+import com.zoe.weshare.util.Const.HINT_STEP_THREE
+import com.zoe.weshare.util.Const.HINT_STEP_TWO
 import java.util.*
 
 class HomeFragment : Fragment(), View.OnClickListener {
@@ -29,7 +37,6 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var headerRv: RecyclerView
     private lateinit var headerAdapter: HeaderAdapter
 
-    private lateinit var hotGiftsRv: RecyclerView
     private lateinit var hotGiftAdapter: HotGiftsAdapter
 
     private lateinit var logTickerRv: RecyclerView
@@ -44,6 +51,17 @@ class HomeFragment : Fragment(), View.OnClickListener {
     private lateinit var binding: FragmentHomeBinding
 
     private var hintStepCounts = 0
+
+    override fun onStart() {
+        super.onStart()
+        starLogTicker()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        refreshHomePage = true
+        logTickerTimer.cancel()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -105,9 +123,8 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setupButton() {
-        binding.buttonNewbieHint.setOnClickListener {
-            displayShowCase()
-        }
+        binding.buttonNewbieHint.setOnClickListener { displayShowCase() }
+
         binding.buttonCheckEvents.setOnClickListener {
             findNavController().navigate(NavGraphDirections.actionGlobalEventsBrowseFragment())
         }
@@ -151,19 +168,17 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
         headerRv = binding.headerEventRv
 
-        headerAdapter = HeaderAdapter(
-            HeaderAdapter.HeaderOnClickListener { selectedEvent ->
-                viewModel.displayEventDetails(selectedEvent)
-            }
-        )
+        headerAdapter = HeaderAdapter{
+          viewModel.displayEventDetails(it)
+        }
 
         val manager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL, false
-        )
+            requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        headerRv.adapter = headerAdapter
-        headerRv.layoutManager = manager
+        headerRv.run {
+            adapter = headerAdapter
+            layoutManager = manager
+        }
 
         val linearSnapHelper = LinearSnapHelper()
         linearSnapHelper.attachToRecyclerView(headerRv)
@@ -173,10 +188,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
             object : TimerTask() {
                 override fun run() {
                     if (manager.findLastVisibleItemPosition() < (headerAdapter.itemCount - 1)) {
+
                         manager.smoothScrollToPosition(
                             headerRv,
-                            RecyclerView.State(),
-                            manager.findLastVisibleItemPosition() + 1
+                            RecyclerView.State(), manager.findLastVisibleItemPosition() + 1
                         )
 
                     } else if (
@@ -193,20 +208,17 @@ class HomeFragment : Fragment(), View.OnClickListener {
         )
     }
 
+
     private fun setupHotGiftsGallery() {
 
-        hotGiftsRv = binding.hotGiftRv
+        hotGiftAdapter = HotGiftsAdapter{
+            viewModel.displayGiftDetails(it)
+        }
 
-        hotGiftAdapter = HotGiftsAdapter(
-            HotGiftsAdapter.OnClickListener { selectedGift ->
-                viewModel.displayGiftDetails(selectedGift)
-            }
-        )
-
-        val manager = GridLayoutManager(requireContext(), 2)
-
-        hotGiftsRv.adapter = hotGiftAdapter
-        hotGiftsRv.layoutManager = manager
+        binding.hotGiftRv.run{
+            adapter = hotGiftAdapter
+            layoutManager = GridLayoutManager(requireContext(), 2)
+        }
     }
 
     private fun setupLogTicker() {
@@ -254,7 +266,7 @@ class HomeFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when (hintStepCounts) {
 
-            0 -> showcaseView.apply {
+            HINT_STEP_DEFAULT -> showcaseView.apply {
                     setShowcase(ViewTarget((activity as MainActivity).binding.fabsLayoutView),
                         false)
                     setContentTitle("")
@@ -262,44 +274,45 @@ class HomeFragment : Fragment(), View.OnClickListener {
                     (activity as MainActivity).onMainFabClick()
                 }
 
-            1 -> showcaseView.apply {
+            HINT_STEP_ONE -> showcaseView.apply {
                 (activity as MainActivity).onMainFabClick()
 
                 setShowcase(ViewTarget(binding.showcaseCenterLine), false)
                 setContentText(getString(R.string.hint_browse_button))
             }
 
-            2 -> showcaseView.apply {
+            HINT_STEP_TWO -> showcaseView.apply {
                 setShowcase(ViewTarget(binding.buttonCurrentHeros), false)
                 setContentText(getString(R.string.hint_hero_chart))
             }
 
-            3 -> showcaseView.apply {
-                setShowcase(ViewTarget((activity as MainActivity).binding.notification), false)
+            HINT_STEP_THREE -> showcaseView.apply {
+                setShowcase(
+                    ViewTarget((activity as MainActivity).binding.notification), false)
                 setContentText(getString(R.string.hint_notification_button))
             }
 
-            4 -> showcaseView.apply {
+            HINT_STEP_FOUR -> showcaseView.apply {
                 setTarget(NONE)
                 setContentText(getString(R.string.hint_profile))
             }
 
-            5 -> showcaseView.apply {
+            HINT_STEP_FIVE -> showcaseView.apply {
                 setTarget(NONE)
                 setContentTitle(getString(R.string.hint_goodbye_title))
                 setContentText("")
                 setButtonText(getString(R.string.hint_close_btn_text))
             }
 
-            6 -> {
+            HINT_STEP_SIX -> {
                 showcaseView.hide()
                 hideCoverView()
             }
         }
         hintStepCounts++
 
-        if (hintStepCounts == 7) {
-            hintStepCounts = 0
+        if (hintStepCounts == HINT_STEP_END) {
+            hintStepCounts = HINT_STEP_DEFAULT
         }
     }
 
@@ -309,16 +322,5 @@ class HomeFragment : Fragment(), View.OnClickListener {
 
     private fun hideCoverView() {
         (activity as MainActivity).binding.preventTouchCoverView.visibility = View.GONE
-    }
-
-    override fun onStart() {
-        super.onStart()
-        starLogTicker()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        refreshHomePage = true
-        logTickerTimer.cancel()
     }
 }

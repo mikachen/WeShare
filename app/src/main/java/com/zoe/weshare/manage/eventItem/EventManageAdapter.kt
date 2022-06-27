@@ -16,10 +16,8 @@ import com.zoe.weshare.ext.toDisplayDateFormat
 import com.zoe.weshare.util.EventStatusType
 import com.zoe.weshare.util.Logger
 
-class EventManageAdapter(
-    val viewModel: EventManageViewModel,
-    private val onClickListener: OnClickListener,
-) : ListAdapter<EventPost, EventManageAdapter.EventItemViewHolder>(DiffCallback) {
+class EventManageAdapter( val viewModel: EventManageViewModel) :
+    ListAdapter<EventPost, EventManageAdapter.EventItemViewHolder>(DiffCallback) {
 
     val viewBinderHelper = ViewBinderHelper()
     private var unfilteredList = listOf<EventPost>()
@@ -32,7 +30,7 @@ class EventManageAdapter(
             binding.apply {
                 bindImage(imageEvent, event.image)
                 textTitle.text = event.title
-                textPostedLocation.text = event.location!!.locationName
+                textPostedLocation.text = event.location.locationName
 
                 textEventPeriodTime.text = WeShareApplication.instance.getString(
                     R.string.preview_event_time,
@@ -72,8 +70,7 @@ class EventManageAdapter(
                 val layoutInflater = LayoutInflater.from(parent.context)
 
                 return EventItemViewHolder(
-                    ItemEventManageBinding
-                        .inflate(layoutInflater, parent, false)
+                    ItemEventManageBinding.inflate(layoutInflater, parent, false)
                 )
             }
         }
@@ -99,10 +96,6 @@ class EventManageAdapter(
         event?.let {
             holder.bind(event)
 
-            holder.itemView.setOnClickListener {
-                onClickListener.onClick(event)
-            }
-
             holder.binding.buttonForceEnd.setOnClickListener {
                 viewModel.userClickForceEnd(event)
             }
@@ -111,10 +104,6 @@ class EventManageAdapter(
                 viewModel.generateQrcode(event.id)
             }
         }
-    }
-
-    class OnClickListener(val clickListener: (event: EventPost) -> Unit) {
-        fun onClick(selectedEvent: EventPost) = clickListener(selectedEvent)
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<EventPost>() {

@@ -26,10 +26,8 @@
 
     <FrameLayout
         android:id="@+id/layout_main_content"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        app:layout_constraintEnd_toStartOf="@id/button_send_gift"
         app:layout_constraintStart_toEndOf="@+id/base_profile_avatar"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -37,6 +35,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:background="@drawable/shape_comment_box_roundconer"
             android:orientation="vertical"
             android:paddingHorizontal="8dp"
@@ -44,7 +43,7 @@
 
             <TextView
                 android:id="@+id/text_profile_name"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:maxLines="1"
@@ -54,16 +53,16 @@
 
             <TextView
                 android:id="@+id/text_comment"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
+                android:maxEms="15"
                 android:layout_marginTop="1dp"
                 android:textSize="14sp"
                 tools:text="每年都要參加der拉每年都要參加der拉每年都要參加der拉每年都要參加der拉每年都要參加der拉每年都要參加der拉每年都要參加der拉～～每年都要參加der拉～～～" />
         </LinearLayout>
 
     </FrameLayout>
-
 
     <TextView
         android:id="@+id/text_created_time"
@@ -72,7 +71,7 @@
         android:layout_marginStart="4dp"
         android:maxLines="1"
         android:textColor="#A9A9A9"
-        android:textSize="13sp"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/layout_main_content"
         app:layout_constraintTop_toBottomOf="@id/layout_main_content"
@@ -103,24 +102,20 @@
         app:layout_constraintTop_toTopOf="@id/text_created_time"
         tools:text="22人都說讚" />
 
-
-
-
-        <Button
-            android:id="@+id/button_send_gift"
-            android:layout_width="64dp"
-            android:layout_height="38dp"
-            android:background="@drawable/sl_profile_follow_button"
-            android:text="@string/give_away_gift"
-            android:textColor="@color/white"
-            android:layout_marginEnd="8dp"
-            android:textSize="14sp"
-            android:visibility="invisible"
-            tools:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@id/base_profile_avatar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/base_profile_avatar"
-            />
+    <Button
+        android:id="@+id/button_send_gift"
+        android:layout_width="64dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/sl_profile_follow_button"
+        android:text="@string/give_away_gift"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/base_profile_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/base_profile_avatar"
+        tools:visibility="visible" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_received_gift"
@@ -129,10 +124,10 @@
         android:layout_marginEnd="16dp"
         android:scaleX="4"
         android:scaleY="4"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/base_profile_avatar"
-        app:layout_constraintTop_toTopOf="@id/base_profile_avatar"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/base_profile_avatar"
         app:lottie_autoPlay="true"
         app:lottie_fileName="receive-gift.json"
         app:lottie_loop="true"

@@ -12,8 +12,8 @@ class GalleryDecoration : RecyclerView.ItemDecoration() {
         outRect: Rect,
         view: View,
         parent: RecyclerView,
-        state: RecyclerView.State,
-    ) {
+        state: RecyclerView.State) {
+
         super.getItemOffsets(outRect, view, parent, state)
 
         val lp = view.layoutParams as RecyclerView.LayoutParams
@@ -25,4 +25,6 @@ class GalleryDecoration : RecyclerView.ItemDecoration() {
             lp.width = itemWidth
         }
     }
+
 }
+

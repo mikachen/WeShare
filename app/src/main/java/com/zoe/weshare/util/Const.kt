@@ -44,4 +44,15 @@ object Const {
     const val FIELD_USER_INTRO_MSG = "introMsg"
     const val FIELD_USER_IMAGE = "image"
     const val FIELD_NOTIFICATION_READ = "read"
+
+
+    const val HINT_STEP_DEFAULT = 0
+    const val HINT_STEP_ONE = 1
+    const val HINT_STEP_TWO = 2
+    const val HINT_STEP_THREE = 3
+    const val HINT_STEP_FOUR = 4
+    const val HINT_STEP_FIVE = 5
+    const val HINT_STEP_SIX = 6
+    const val HINT_STEP_END = 7
+
 }

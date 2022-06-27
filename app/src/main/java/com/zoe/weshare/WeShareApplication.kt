@@ -24,4 +24,7 @@ class WeShareApplication : Application() {
         super.onCreate()
         instance = this
     }
+
+    fun isLiveDataDesign() = true
+
 }

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:background="@color/home_background_grey"
     android:layout_marginTop="@dimen/height_bottom_app_bar"
+    android:layout_marginBottom="@dimen/height_toolbar"
     android:layout_height="match_parent"
     tools:context=".message.roomlist.RoomListFragment">
 

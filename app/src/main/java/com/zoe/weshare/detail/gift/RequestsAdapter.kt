@@ -29,8 +29,8 @@ class RequestGiftAdapter(val viewModel: GiftDetailViewModel) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val comment = getItem(position)
+
         holder.bind(comment, viewModel)
     }
 

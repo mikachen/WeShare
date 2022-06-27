@@ -10,7 +10,7 @@ import com.zoe.weshare.databinding.ItemHotGiftGridBinding
 import com.zoe.weshare.ext.bindImage
 import java.util.*
 
-class GiftsBrowseAdapter(private val onClickListener: GiftsALLOnClickListener) :
+class GiftsBrowseAdapter(val listener: (GiftPost) -> Unit) :
     ListAdapter<GiftPost, GiftsBrowseAdapter.AllGiftsViewHolder>(DiffCallback) {
 
     private var unfilteredList = listOf<GiftPost>()
@@ -19,7 +19,7 @@ class GiftsBrowseAdapter(private val onClickListener: GiftsALLOnClickListener) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(gift: GiftPost) {
             binding.apply {
-                textHotGiftLocation.text = gift.location?.locationName ?: ""
+                textHotGiftLocation.text = gift.location.locationName
                 textHotGiftTitle.text = gift.title
                 bindImage(imageHotGift, gift.image)
             }
@@ -38,20 +38,14 @@ class GiftsBrowseAdapter(private val onClickListener: GiftsALLOnClickListener) :
     }
 
     override fun onBindViewHolder(holder: AllGiftsViewHolder, position: Int) {
-        val data = getItem(position)
-        holder.bind(data)
+        val gift = getItem(position)
+        holder.bind(gift)
 
-        holder.itemView.setOnClickListener {
-            onClickListener.onClick(data)
-        }
+        holder.itemView.setOnClickListener { listener(gift) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllGiftsViewHolder {
         return AllGiftsViewHolder.from(parent)
-    }
-
-    class GiftsALLOnClickListener(val doNothing: (gift: GiftPost) -> Unit) {
-        fun onClick(selectedGift: GiftPost) = doNothing(selectedGift)
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<GiftPost>() {

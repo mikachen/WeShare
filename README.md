@@ -1,12 +1,15 @@
 ## WeShare
-![](https://img.shields.io/badge/Version-1.9.0-blue) ![GitHub](https://img.shields.io/github/license/Willy-Chuang/Meet-Tutor)  <img
+![](https://img.shields.io/badge/Version-2.1.1-blue) ![GitHub](https://img.shields.io/github/license/Willy-Chuang/Meet-Tutor)  <img
 src="https://img.shields.io/badge/platform-Android-brightgreen"/>
 
 A platform for you to swap used goods and join charity events.
 
-<img src=https://github.com/mikachen/WeShare/blob/develop/images/weShare_logo_round.png height="200" />
+[<img src="https://github.com/mikachen/WeShare/blob/develop/images/weShare_logo_round.png" height="200" />](https://play.google.com/store/apps/details?id=com.zoe.weshare)
 
-<img src=https://github.com/mikachen/WeShare/blob/develop/images/google-play-badge.png height="80" />
+
+[<img
+src ="https://github.com/mikachen/WeShare/blob/develop/images/google-play-badge.png"  height="80" />](https://play.google.com/store/apps/details?id=com.zoe.weshare)
+
 
 LET'S SHARE NOW!! :)<br>
 <br>

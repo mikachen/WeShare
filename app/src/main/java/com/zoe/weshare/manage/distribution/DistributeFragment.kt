@@ -22,6 +22,8 @@ import com.zoe.weshare.databinding.FragmentDistributeBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.sendNotificationToTarget
 import com.zoe.weshare.ext.sendNotificationsToFollowers
+import com.zoe.weshare.ext.showToast
+import com.zoe.weshare.map.CardGalleryAdapter
 import com.zoe.weshare.util.UserManager.weShareUser
 
 class DistributeFragment : BottomSheetDialogFragment() {
@@ -86,8 +88,10 @@ class DistributeFragment : BottomSheetDialogFragment() {
         viewModel.saveLogComplete.observe(viewLifecycleOwner) {
             sendNotificationsToFollowers(it)
 
-            Toast.makeText(requireContext(), "送出成功", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(DistributeFragmentDirections.actionDistributeFragmentToGiftManageFragment())
+            activity.showToast(getString(R.string.toast_gift_has_been_sent_out))
+
+            findNavController().navigate(
+                DistributeFragmentDirections.actionDistributeFragmentToGiftManageFragment())
         }
 
         setupBtn()
@@ -153,3 +157,6 @@ class DistributeFragment : BottomSheetDialogFragment() {
         bottomSheet.layoutParams = layoutParams
     }
 }
+
+
+

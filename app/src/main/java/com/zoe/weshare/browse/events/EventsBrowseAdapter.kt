@@ -13,7 +13,7 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.toDisplayDateFormat
 import java.util.*
 
-class EventsBrowseAdapter(private val onClickListener: EventsAllOnClickListener) :
+class EventsBrowseAdapter(val listener: (EventPost) -> Unit) :
     ListAdapter<EventPost, EventsBrowseAdapter.AllEventsViewHolder>(DiffCallback) {
 
     private var unfilteredList = listOf<EventPost>()
@@ -22,7 +22,7 @@ class EventsBrowseAdapter(private val onClickListener: EventsAllOnClickListener)
         RecyclerView.ViewHolder(binding.root) {
         fun bind(event: EventPost) {
             binding.apply {
-                textEventLocation.text = event.location?.locationName ?: ""
+                textEventLocation.text = event.location.locationName
 
                 textEventTime.text = WeShareApplication.instance.getString(
                     R.string.preview_event_time,
@@ -40,28 +40,21 @@ class EventsBrowseAdapter(private val onClickListener: EventsAllOnClickListener)
                 val layoutInflater = LayoutInflater.from(parent.context)
 
                 return AllEventsViewHolder(
-                    ItemEventsAllGridBinding
-                        .inflate(layoutInflater, parent, false)
+                    ItemEventsAllGridBinding.inflate(layoutInflater, parent, false)
                 )
             }
         }
     }
 
     override fun onBindViewHolder(holder: AllEventsViewHolder, position: Int) {
-        val data = getItem(position)
-        holder.bind(data)
+        val event = getItem(position)
+        holder.bind(event)
 
-        holder.itemView.setOnClickListener {
-            onClickListener.onClick(data)
-        }
+        holder.itemView.setOnClickListener { listener(event)}
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllEventsViewHolder {
         return AllEventsViewHolder.from(parent)
-    }
-
-    class EventsAllOnClickListener(val doNothing: (event: EventPost) -> Unit) {
-        fun onClick(event: EventPost) = doNothing(event)
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<EventPost>() {

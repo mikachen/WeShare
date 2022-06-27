@@ -10,15 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.BounceInterpolator
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -46,9 +43,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var currentLocation: LatLng
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var recyclerView: RecyclerView
-    private lateinit var manager: LinearLayoutManager
-    private lateinit var adapter: CardGalleryAdapter
-    private val marginDecoration = GalleryDecoration()
+    private lateinit var cardGalleryAdapter: CardGalleryAdapter
+    private val marginDecoration by lazy { GalleryDecoration() }
     private val markersRef = mutableListOf<Marker>()
     private val viewModel by viewModels<MapViewModel> { getVmFactory(weShareUser) }
 
@@ -66,7 +62,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentMapBinding.inflate(inflater, container, false)
@@ -93,7 +89,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                     createMarker(it)
 
                     // display cards recycler view
-                    adapter.submitCards(it)
+                    cardGalleryAdapter.submitCards(it)
                 }
             }
 
@@ -104,6 +100,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 //make sure the camera set at user's actual location when first time entry
                 if (firstEntryMap) {
                     firstEntryMap = false
+
                 } else {
                     map.animateCamera(
                         CameraUpdateFactory.newLatLngZoom(markersRef[it].position, 13F)
@@ -131,10 +128,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
 
             binding.mapView.onCreate(savedInstanceState)
-
             binding.mapView.getMapAsync(this)
 
             setupCardGallery()
+
         } else {
             requestLocationPermissions()
         }
@@ -145,6 +142,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onMapReady(googleMap: GoogleMap) {
 
         map = googleMap
+
         fusedLocationClient =
             LocationServices.getFusedLocationProviderClient(requireContext())
 
@@ -272,30 +270,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         recyclerView = binding.cardsRecycleview
 
-        adapter = CardGalleryAdapter(
-            viewModel, CardGalleryAdapter.CardOnClickListener { selectedCard ->
-                viewModel.onNavigateToDetail(selectedCard)
-            }
-        )
+        cardGalleryAdapter = CardGalleryAdapter(viewModel){ viewModel.onNavigateToDetail(it) }
 
-        manager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.HORIZONTAL, false
-        )
-
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = manager
 
         val linearSnapHelper = LinearSnapHelper().apply {
             attachToRecyclerView(recyclerView)
         }
 
-        recyclerView.addItemDecoration(marginDecoration)
 
-        recyclerView.setOnScrollChangeListener { _, _, _, _, _ ->
-            viewModel.onGalleryScrollChange(
-                recyclerView.layoutManager, linearSnapHelper
-            )
+        recyclerView.run {
+            adapter = cardGalleryAdapter
+
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+            addItemDecoration(marginDecoration)
+
+            setOnScrollChangeListener { _, _, _, _, _ ->
+                viewModel.onGalleryScrollChange(this.layoutManager, linearSnapHelper)
+            }
         }
     }
 

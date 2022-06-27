@@ -9,6 +9,7 @@ import com.zoe.weshare.data.Result
 import com.zoe.weshare.data.UserInfo
 import com.zoe.weshare.data.UserProfile
 import com.zoe.weshare.data.source.WeShareRepository
+import com.zoe.weshare.data.source.remote.WeShareRemoteDataSource
 import com.zoe.weshare.network.LoadApiStatus
 import com.zoe.weshare.util.UserManager.userBlackList
 import com.zoe.weshare.util.UserManager.userInfo

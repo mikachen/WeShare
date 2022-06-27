@@ -26,14 +26,10 @@ import com.zoe.weshare.util.UserManager
 class EventManageFragment : Fragment() {
 
     lateinit var binding: FragmentEventManageBinding
-    lateinit var adapter: EventManageAdapter
-    lateinit var manager: LinearLayoutManager
+    lateinit var manageAdapter: EventManageAdapter
 
     private val showQrcode: Animation by lazy {
-        AnimationUtils.loadAnimation(
-            requireContext(),
-            R.anim.qrcode_generate_show
-        )
+        AnimationUtils.loadAnimation(requireContext(), R.anim.qrcode_generate_show)
     }
 
     var currentTabPosition = 0
@@ -43,13 +39,13 @@ class EventManageFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentEventManageBinding.inflate(inflater, container, false)
 
         viewModel.allEventsResult.observe(viewLifecycleOwner) {
-            adapter.modifyList(it, currentTabPosition)
+            manageAdapter.modifyList(it, currentTabPosition)
         }
 
         viewModel.onFilterEmpty.observe(viewLifecycleOwner) {
@@ -84,37 +80,34 @@ class EventManageFragment : Fragment() {
             viewModel.refreshFilterView()
         }
 
+
         setupView()
         return binding.root
     }
 
     fun setupView() {
-        val swipeRefresh = binding.refreshLayout
 
-        swipeRefresh.setOnRefreshListener {
-            viewModel.getUserAllEventsPosts()
-            swipeRefresh.isRefreshing = false
+        binding.refreshLayout.apply {
+            this.setOnRefreshListener {
+                viewModel.getUserAllEventsPosts()
+                this.isRefreshing = false
+            }
         }
 
-        adapter = EventManageAdapter(
-            viewModel,
-            EventManageAdapter.OnClickListener {
-            }
-        )
+        manageAdapter = EventManageAdapter(viewModel)
 
-        manager = LinearLayoutManager(
-            requireContext(),
-            LinearLayoutManager.VERTICAL, false
-        )
+        binding.recyclerview.run {
+            adapter = manageAdapter
 
-        binding.recyclerview.adapter = adapter
-        binding.recyclerview.layoutManager = manager
+            layoutManager = LinearLayoutManager(
+                requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
 
         binding.filterTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 currentTabPosition = tab.position
 
-                adapter.filter(tab.position)
+                manageAdapter.filter(tab.position)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -122,6 +115,7 @@ class EventManageFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
+
 
     fun generateQrcode(docId: String) {
 
@@ -167,7 +161,7 @@ class EventManageFragment : Fragment() {
             setPositiveButton(getString(R.string.force_end_yes)) { dialog, id ->
                 viewModel.forceEndedEvent(event)
 
-                adapter.viewBinderHelper.closeLayout(event.id)
+                manageAdapter.viewBinderHelper.closeLayout(event.id)
                 dialog.cancel()
             }
 

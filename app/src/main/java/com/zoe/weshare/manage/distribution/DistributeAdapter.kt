@@ -19,7 +19,7 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int,
+        viewType: Int
     ): DistributionViewHolder {
         return DistributionViewHolder.from(parent)
     }
@@ -61,14 +61,10 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
                 }
 
                 GiftStatusType.CLOSED.code -> {
-                    val userReceiveGift: Boolean =
-                        viewModel.gift.whoGetGift == comment.uid
+                    val userReceiveGift: Boolean = viewModel.gift.whoGetGift == comment.uid
 
-                    if (userReceiveGift) {
-                        binding.lottieReceivedGift.visibility = View.VISIBLE
-                    } else {
-                        binding.lottieReceivedGift.visibility = View.INVISIBLE
-                    }
+                    binding.lottieReceivedGift.visibility =
+                        if (userReceiveGift) { View.VISIBLE } else { View.INVISIBLE }
                 }
 
                 GiftStatusType.ABANDONED.code -> {}
@@ -88,17 +84,11 @@ class DistributeAdapter(val viewModel: DistributeViewModel) :
 }
 
 class DiffCall : DiffUtil.ItemCallback<Comment>() {
-    override fun areItemsTheSame(
-        oldItem: Comment,
-        newItem: Comment,
-    ): Boolean {
+    override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(
-        oldItem: Comment,
-        newItem: Comment,
-    ): Boolean {
+    override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
         return oldItem == newItem
     }
 }
