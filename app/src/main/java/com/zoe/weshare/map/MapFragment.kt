@@ -128,7 +128,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             }
 
             binding.mapView.onCreate(savedInstanceState)
-
             binding.mapView.getMapAsync(this)
 
             setupCardGallery()

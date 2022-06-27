@@ -13,9 +13,11 @@ import com.zoe.weshare.data.ChatRoom
 import com.zoe.weshare.databinding.FragmentChatroomBinding
 import com.zoe.weshare.ext.getVmFactory
 import com.zoe.weshare.ext.hideKeyboard
+import com.zoe.weshare.ext.setSoftInputMode
 import com.zoe.weshare.util.ChatRoomType
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getStringWithStrParm
+
 
 class ChatRoomFragment : Fragment() {
 
@@ -31,7 +33,7 @@ class ChatRoomFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
         binding = FragmentChatroomBinding.inflate(inflater, container, false)
 
@@ -77,6 +79,15 @@ class ChatRoomFragment : Fragment() {
         return binding.root
     }
 
+
+    override fun onResume() {
+        super.onResume()
+
+        (activity as MainActivity).setSoftInputMode(
+            WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
+                    or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun setupView() {
 
@@ -89,29 +100,21 @@ class ChatRoomFragment : Fragment() {
             false
         }
 
-        val targetsInfo = chatRoom.usersInfo.filter { it.uid != weShareUser!!.uid }
+        val targetsInfo = chatRoom.usersInfo.filter { it.uid != weShareUser.uid }
 
         when (chatRoom.type) {
             ChatRoomType.PRIVATE.value ->
                 if (chatRoom.participants.size == 2) {
 
                     setupTopBarTitle(targetsInfo.single().name)
-//                    binding.textRoomTargetTitle.text = targetsInfo.single().name
                 } else {
-                    setupTopBarTitle("不明")
-//                    binding.textRoomTargetTitle.text = "不明"
+                    setupTopBarTitle(getString(R.string.unknown_chatroom))
                 }
 
             ChatRoomType.MULTIPLE.value -> {
 
                 setupTopBarTitle(getStringWithStrParm(
                     R.string.room_list_event_title, chatRoom.eventTitle))
-//
-//                binding.textRoomTargetTitle.text =
-//                    getStringWithStrParm(
-//                        R.string.room_list_event_title,
-//                        chatRoom.eventTitle
-//                    )
             }
         }
     }
@@ -150,7 +153,7 @@ class ChatRoomFragment : Fragment() {
                 oldLeft: Int,
                 oldTop: Int,
                 oldRight: Int,
-                oldBottom: Int,
+                oldBottom: Int
             ) {
                 if (bottom < oldBottom) {
                     recyclerView.postDelayed({
@@ -173,11 +176,5 @@ class ChatRoomFragment : Fragment() {
             viewModel.onSending(newMessage)
             binding.editBox.text?.clear()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        (activity as MainActivity).window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
 }

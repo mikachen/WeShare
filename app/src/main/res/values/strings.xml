@@ -205,6 +205,7 @@
 
     <string name="leave_this_chatroom_message">聊天室將會被刪除，確定要繼續嗎？</string>
     <string name="user_had_left_chatroom">用戶已離開聊天室</string>
+    <string name="unknown_chatroom">不明</string>
 
     <string name="gift_status_opening">開放中</string>
     <string name="gift_status_closed">已結案</string>
