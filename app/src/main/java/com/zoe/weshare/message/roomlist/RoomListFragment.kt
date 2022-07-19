@@ -37,6 +37,15 @@ class RoomListFragment : Fragment() {
             adapter.modifyList(it)
         }
 
+        viewModel.isRoomsListEmpty.observe(viewLifecycleOwner){
+            binding.hintNoChatrooms.visibility =
+                if (it) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+        }
+
         viewModel.navigateToSelectedRoom.observe(viewLifecycleOwner) {
             it?.let {
                 findNavController().navigate(NavGraphDirections.actionGlobalChatRoomFragment(it))

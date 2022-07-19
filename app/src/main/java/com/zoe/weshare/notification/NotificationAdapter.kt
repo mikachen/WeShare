@@ -26,10 +26,10 @@ class NotificationAdapter(val viewModel: NotificationViewModel) :
                 textMessage.text = Html.fromHtml(notification.logMsg)
                 textCreatedTime.text = notification.createdTime.getTimeAgoString()
 
-                if (notification.read) {
-                    unreadHintView.visibility = View.GONE
+                unreadHintView.visibility =  if (notification.read) {
+                    View.GONE
                 }else{
-                    unreadHintView.visibility = View.VISIBLE
+                    View.VISIBLE
                 }
 
                 when (notification.logType) {
@@ -81,11 +81,6 @@ class NotificationAdapter(val viewModel: NotificationViewModel) :
 
         holder.itemView.setOnClickListener {
             viewModel.userOnClickAndRead(notification)
-        }
-
-        //hide last divider view
-        if (position == itemCount - 1) {
-            holder.binding.divider.visibility = View.INVISIBLE
         }
     }
 

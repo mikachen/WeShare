@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class PostGiftViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo,
+    private val userInfo: UserInfo
 ) : ViewModel() {
 
     private lateinit var giftDraft: GiftPost

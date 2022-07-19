@@ -85,7 +85,7 @@ class LoginFragment : Fragment() {
                 signIn()
             }
         } else {
-            binding.consentPolicy2.setOnClickListener {
+            binding.btnPolicyTerm.setOnClickListener {
                 findNavController().navigate(NavGraphDirections.actionGlobalPolicyTermFragment())
             }
         }

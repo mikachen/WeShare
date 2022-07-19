@@ -1,5 +1,5 @@
 ## WeShare
-![](https://img.shields.io/badge/Version-2.1.1-blue) ![GitHub](https://img.shields.io/github/license/Willy-Chuang/Meet-Tutor)  <img
+![](https://img.shields.io/badge/Version-2.1.2-blue) ![GitHub](https://img.shields.io/github/license/Willy-Chuang/Meet-Tutor)  <img
 src="https://img.shields.io/badge/platform-Android-brightgreen"/>
 
 A platform for you to swap used goods and join charity events.

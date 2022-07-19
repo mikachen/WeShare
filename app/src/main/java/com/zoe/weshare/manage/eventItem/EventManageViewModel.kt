@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 
 class EventManageViewModel(
     private val repository: WeShareRepository,
-    private val userInfo: UserInfo,
+    private val userInfo: UserInfo
 ) : ViewModel() {
 
     private val _allEventsResult = MutableLiveData<List<EventPost>>()

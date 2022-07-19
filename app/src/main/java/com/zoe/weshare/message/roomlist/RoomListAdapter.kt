@@ -18,7 +18,6 @@ import com.zoe.weshare.ext.bindImage
 import com.zoe.weshare.ext.getPhoneVibrate
 import com.zoe.weshare.ext.toDisplaySentTime
 import com.zoe.weshare.util.ChatRoomType
-import com.zoe.weshare.util.Logger
 import com.zoe.weshare.util.UserManager.weShareUser
 import com.zoe.weshare.util.Util.getString
 import com.zoe.weshare.util.Util.getStringWithStrParm
@@ -166,6 +165,7 @@ class RoomListAdapter(val viewModel: RoomListViewModel) :
 
         val list = rooms.filterNot { it.lastMsgSentTime == -1L }
 
+        viewModel.onDisplayNoRoomsHint(list.isEmpty())
         submitList(list)
     }
 }
