@@ -25,6 +25,7 @@ class RoomListViewModel(
 ) : ViewModel() {
 
     var allRooms = MutableLiveData<List<ChatRoom>>()
+    var isRoomsListEmpty = MutableLiveData<Boolean>()
 
     private var _rooms = MutableLiveData<List<ChatRoom>>()
     val room: LiveData<List<ChatRoom>>
@@ -134,5 +135,9 @@ class RoomListViewModel(
     }
     fun showToastDone(){
         leaveRoomComplete.value = null
+    }
+
+    fun onDisplayNoRoomsHint(flag: Boolean) {
+        isRoomsListEmpty.value = flag
     }
 }

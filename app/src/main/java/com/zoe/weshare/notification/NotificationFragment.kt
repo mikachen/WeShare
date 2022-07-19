@@ -17,7 +17,7 @@ import com.zoe.weshare.util.UserManager.weShareUser
 class NotificationFragment : Fragment() {
 
     lateinit var binding: FragmentNotificationBinding
-    lateinit var adapter: NotificationAdapter
+    lateinit var notificationAdapter: NotificationAdapter
     lateinit var manager: LinearLayoutManager
 
     val viewModel by viewModels<NotificationViewModel> { getVmFactory(weShareUser) }
@@ -41,7 +41,7 @@ class NotificationFragment : Fragment() {
         }
 
         viewModel.notifications.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+            notificationAdapter.submitList(it)
             showNoNewsView(it)
         }
 
@@ -50,13 +50,13 @@ class NotificationFragment : Fragment() {
     }
 
     private fun setupView() {
-        adapter = NotificationAdapter(viewModel)
+        notificationAdapter = NotificationAdapter(viewModel)
 
-        manager = LinearLayoutManager(requireContext(),
-            LinearLayoutManager.VERTICAL, false)
-
-        binding.notificationRv.adapter = adapter
-        binding.notificationRv.layoutManager = manager
+        binding.notificationRv.apply{
+            adapter = notificationAdapter
+            layoutManager = LinearLayoutManager(requireContext(),
+                LinearLayoutManager.VERTICAL, false)
+        }
 
         binding.notificationTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -72,11 +72,8 @@ class NotificationFragment : Fragment() {
     }
 
     private fun showNoNewsView(news: List<OperationLog>) {
-        if (news.isEmpty()) {
-            binding.hintNoNews.visibility = View.VISIBLE
-        } else {
-            binding.hintNoNews.visibility = View.INVISIBLE
-        }
+        binding.hintNoNews.visibility =
+            if (news.isEmpty()) { View.VISIBLE } else { View.INVISIBLE }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

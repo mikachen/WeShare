@@ -92,18 +92,18 @@
         <entry key="app/src/main/res/layout/fragment_hero_rank.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.43206256109481916" />
         <entry key="app/src/main/res/layout/fragment_home_cards.xml" value="0.3619791666666667" />
-        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.5475638051044084" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.1847206385404789" />
         <entry key="app/src/main/res/layout/fragment_new.xml" value="0.25908507909362977" />
         <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_pager.xml" value="0.18896964514749892" />
         <entry key="app/src/main/res/layout/fragment_pager_filter.xml" value="0.1393758016246259" />
-        <entry key="app/src/main/res/layout/fragment_policy_term.xml" value="0.17193340129119947" />
+        <entry key="app/src/main/res/layout/fragment_policy_term.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_post_event.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_post_gift.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_report_violation_dialog.xml" value="0.18896964514749892" />
-        <entry key="app/src/main/res/layout/fragment_room_list.xml" value="0.28762135922330095" />
+        <entry key="app/src/main/res/layout/fragment_room_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_search.xml" value="0.231722958529286" />
         <entry key="app/src/main/res/layout/fragment_search_location.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_self.xml" value="0.33" />
@@ -125,7 +125,7 @@
         <entry key="app/src/main/res/layout/item_hot_gift_grid.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_message_receive.xml" value="0.375" />
         <entry key="app/src/main/res/layout/item_message_send.xml" value="0.335" />
-        <entry key="app/src/main/res/layout/item_notifications.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/item_notifications.xml" value="0.335" />
         <entry key="app/src/main/res/layout/item_related_room_list.xml" value="0.335" />
         <entry key="app/src/main/res/layout/notification_badge.xml" value="1.5" />
         <entry key="app/src/main/res/layout/shape_header_curved.xml" value="0.6225" />
@@ -146,7 +146,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

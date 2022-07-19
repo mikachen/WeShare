@@ -17,7 +17,7 @@ class PolicyTermFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
 
         binding = FragmentPolicyTermBinding.inflate(inflater, container, false)
@@ -37,30 +37,27 @@ class PolicyTermFragment : Fragment() {
 
     private fun setupBtn(){
 
-        binding.layoutConsentButton.setOnClickListener {
-            if(!userConsentPolicy){
-                binding.consentBox.isChecked = true
-                userConsentPolicy = true
-            }else{
-                binding.consentBox.isChecked = false
-                userConsentPolicy = false
-            }
-        }
+        binding.apply {
 
-        binding.buttonAgree.setOnClickListener {
-            if (hasUserAgreed()){
+            layoutConsentButton.setOnClickListener {
+                this.consentBox.isChecked = !hasUserAgreed()
+            }
+
+            buttonAgree.setOnClickListener {
+                if (hasUserAgreed()){
+                    findNavController().navigate(
+                        PolicyTermFragmentDirections.actionPolicyTermFragmentToLoginFragment())
+                    userConsentPolicy = true
+                }else{
+                    activity.showToast(getString(R.string.toast_must_check_agree))
+                }
+            }
+
+            buttonDisagree.setOnClickListener {
                 findNavController().navigate(
                     PolicyTermFragmentDirections.actionPolicyTermFragmentToLoginFragment())
-            }else{
-                activity.showToast(getString(R.string.toast_must_check_agree))
             }
         }
-
-        binding.buttonDisagree.setOnClickListener {
-            findNavController().navigate(
-                PolicyTermFragmentDirections.actionPolicyTermFragmentToLoginFragment())
-        }
-
     }
 
     fun hasUserAgreed(): Boolean {

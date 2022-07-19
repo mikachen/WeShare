@@ -11,11 +11,11 @@
         android:id="@+id/text_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp"
-        app:layout_constraintEnd_toStartOf="@id/layout_tag"
+        android:layout_marginEnd="32dp"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/layout_tag"
         tools:text="公益讀書會 志工工會 志工工會 志工工會 志工工會 志工工" />
 
     <TextView
@@ -55,8 +55,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/unread_hint_view"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="@id/text_created_time"
         app:cardCornerRadius="10dp"

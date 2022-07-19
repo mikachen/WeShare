@@ -49,11 +49,8 @@ class EventManageFragment : Fragment() {
         }
 
         viewModel.onFilterEmpty.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.hintNoItem.visibility = View.VISIBLE
-            } else {
-                binding.hintNoItem.visibility = View.INVISIBLE
-            }
+            binding.hintNoItem.visibility =
+                if (it) { View.VISIBLE } else { View.INVISIBLE }
         }
 
         viewModel.firstEntryEmpty.observe(viewLifecycleOwner) {

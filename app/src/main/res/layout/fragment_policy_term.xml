@@ -315,6 +315,7 @@ WeShare上的物品是由贈與之會員（以下稱贈送者）無報酬的提�
                 <CheckBox
                     android:id="@+id/consent_box"
                     android:layout_width="wrap_content"
+                    android:focusable="false"
                     android:layout_height="18dp" />
 
 
